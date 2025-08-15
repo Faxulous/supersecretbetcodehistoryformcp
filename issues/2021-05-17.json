@@ -1,0 +1,1003 @@
+[
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1621257785.289000",
+        "client_msg_id": "1dd01fe6-fd20-46f8-a73f-ec9094cc72fb",
+        "text": "<@ULDAVFDRP> I have made progress here:\n\n```    def process_market_book(self, market, market_book):\n        # process marketBook object\n\n        ''' Adds existing market orders (from a previous session) into the current strategy  '''\n        for order in self.existing_orders:\n            if order.customer_order_ref is not None and order.market_id == market.market_id:\n                if order.bet_id not in [o.bet_id for o in market.blotter._live_orders]:\n                    print('Adding Bet_id: ', order.bet_id, ' to blotter for market: ', market.market_id)\n                    trade = Trade(order.market_id, order.selection_id, order.handicap, self)\n                    order_id = order.customer_order_ref[STRATEGY_NAME_HASH_LENGTH + 1:]\n                    order = trade.create_order_from_current(order, order_id)\n                    order.status = OrderStatus.EXECUTABLE\n                    market.blotter.__setitem__(customer_order_ref=order.customer_order_ref, order=order)\n\n        print(market.blotter._live_orders)```\nSo by trying that approach it adds the order that was created in a previous session into the blotter...however it also then adds a duplicate into the blotter....but importantly does not send a request to try and place this on the exchange (at least from what I can see...it definitely hasn't placed any and I'm not seeing any errors to suggest its trying to).\n\nSo it feels like this approach is close, by chance <@U4H19D1D2> can you see what I might need to tweak here to pick up the previous session order and not create a duplicate in the current live blotter?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "vg5",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "user",
+                                "user_id": "ULDAVFDRP"
+                            },
+                            {
+                                "type": "text",
+                                "text": " I have made progress here:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "    def process_market_book(self, market, market_book):\n        # process marketBook object\n\n        ''' Adds existing market orders (from a previous session) into the current strategy  '''\n        for order in self.existing_orders:\n            if order.customer_order_ref is not None and order.market_id == market.market_id:\n                if order.bet_id not in [o.bet_id for o in market.blotter._live_orders]:\n                    print('Adding Bet_id: ', order.bet_id, ' to blotter for market: ', market.market_id)\n                    trade = Trade(order.market_id, order.selection_id, order.handicap, self)\n                    order_id = order.customer_order_ref[STRATEGY_NAME_HASH_LENGTH + 1:]\n                    order = trade.create_order_from_current(order, order_id)\n                    order.status = OrderStatus.EXECUTABLE\n                    market.blotter.__setitem__(customer_order_ref=order.customer_order_ref, order=order)\n\n        print(market.blotter._live_orders)"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\nSo by trying that approach it adds the order that was created in a previous session into the blotter...however it also then adds a duplicate into the blotter....but importantly does not send a request to try and place this on the exchange (at least from what I can see...it definitely hasn't placed any and I'm not seeing any errors to suggest its trying to).\n\nSo it feels like this approach is close, by chance "
+                            },
+                            {
+                                "type": "user",
+                                "user_id": "U4H19D1D2"
+                            },
+                            {
+                                "type": "text",
+                                "text": " can you see what I might need to tweak here to pick up the previous session order and not create a duplicate in the current live blotter?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1621259788.289500",
+        "client_msg_id": "3bcf7619-a9fe-4253-ac68-1f42d2536d80",
+        "text": "Ah I think I can see what is causing this, hang on, just going to confirm now",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "pzXO",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Ah I think I can see what is causing this, hang on, just going to confirm now"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1621260014.291500",
+        "client_msg_id": "6522a709-c00f-4076-8823-1381bfcc1e18",
+        "text": "Yeah so its caused by the order stream starting before the market stream has loaded\/processed all markets which means you get the warning regarding the missing local market. Easy fix would be to delay the start of the order stream but this would still cause issues because you would then potentially have the same issue during the start delay. I think better fix is for me to figure out this <https:\/\/github.com\/liampauling\/flumine\/blob\/05182a42c654f505b12f176bcbe7d37edbf099c5\/flumine\/streams\/orderstream.py#L65|todo> so that it effectively retries to add the live orders",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "attachments": [
+            {
+                "text": "```\n            except queue.Empty:  # todo snap every 5s or so anyway\n```",
+                "title": "<https:\/\/github.com\/liampauling\/flumine\/blob\/05182a42c654f505b12f176bcbe7d37edbf099c5\/flumine\/streams\/orderstream.py | orderstream.py>",
+                "footer": "<https:\/\/github.com\/liampauling\/flumine|liampauling\/flumine>",
+                "id": 1,
+                "footer_icon": "https:\/\/slack.github.com\/static\/img\/favicon-neutral.png",
+                "color": "24292f",
+                "mrkdwn_in": [
+                    "text"
+                ],
+                "fallback": "<https:\/\/github.com\/liampauling\/flumine\/blob\/05182a42c654f505b12f176bcbe7d37edbf099c5\/flumine\/streams\/orderstream.py | orderstream.py>",
+                "bot_id": "B021ZJYSBMW",
+                "app_unfurl_url": "https:\/\/github.com\/liampauling\/flumine\/blob\/05182a42c654f505b12f176bcbe7d37edbf099c5\/flumine\/streams\/orderstream.py#L65",
+                "is_app_unfurl": true
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "i6MF",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Yeah so its caused by the order stream starting before the market stream has loaded\/processed all markets which means you get the warning regarding the missing local market. Easy fix would be to delay the start of the order stream but this would still cause issues because you would then potentially have the same issue during the start delay. I think better fix is for me to figure out this "
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/liampauling\/flumine\/blob\/05182a42c654f505b12f176bcbe7d37edbf099c5\/flumine\/streams\/orderstream.py#L65",
+                                "text": "todo"
+                            },
+                            {
+                                "type": "text",
+                                "text": " so that it effectively retries to add the live orders"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1621260148.292000",
+        "client_msg_id": "72dc5033-76d5-421a-9e71-2603a17acc06",
+        "text": "Cool, I will leave it for now then :slightly_smiling_face:",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "O4tT",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Cool, I will leave it for now then "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "slightly_smiling_face",
+                                "unicode": "1f642"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1621260294.293300",
+        "client_msg_id": "acf43dfc-8599-4064-bf12-6202855c4d14",
+        "text": "so its a quick fix where it will snap the order stream every 5s (default) however you would need some logic\/delay to stop and orders being placed on initial startup, does that make sense?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "FSb",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "so its a quick fix where it will snap the order stream every 5s (default) however you would need some logic\/delay to stop and orders being placed on initial startup, does that make sense?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1621261289.294100",
+        "client_msg_id": "8c932b49-4373-4410-b4b4-0559d2a97b68",
+        "text": "<@UFTBRB3F1> can you try <https:\/\/github.com\/liampauling\/flumine\/pull\/437|1.18.11b0> works on my side",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "attachments": [
+            {
+                "text": "• start delay\n• delta snap of 5s\n• add market streams to front of list (start first)  \n    should prevent hanging orders \/ duplicate execution on restart",
+                "title": "<https:\/\/github.com\/liampauling\/flumine\/pull\/437|#437 Add order stream>",
+                "footer": "<https:\/\/github.com\/liampauling\/flumine|liampauling\/flumine>",
+                "id": 1,
+                "footer_icon": "https:\/\/slack.github.com\/static\/img\/favicon-neutral.png",
+                "ts": 1621261250,
+                "color": "36a64f",
+                "mrkdwn_in": [
+                    "text"
+                ],
+                "fallback": "<https:\/\/github.com\/liampauling\/flumine\/pull\/437|#437 Add order stream>",
+                "bot_id": "B021ZJYSBMW",
+                "app_unfurl_url": "https:\/\/github.com\/liampauling\/flumine\/pull\/437",
+                "is_app_unfurl": true
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "AQPQ6",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "user",
+                                "user_id": "UFTBRB3F1"
+                            },
+                            {
+                                "type": "text",
+                                "text": " can you try "
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/liampauling\/flumine\/pull\/437",
+                                "text": "1.18.11b0"
+                            },
+                            {
+                                "type": "text",
+                                "text": " works on my side"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1621261302.294400",
+        "client_msg_id": "b0a8d858-c891-458b-bd21-588b860ba917",
+        "text": "sure one sec...",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "sF3",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "sure one sec..."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1621261650.294600",
+        "client_msg_id": "c4ae877a-115c-453c-8726-a88dab69521e",
+        "text": "it does appear to work!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "q0FGT",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "it does appear to work!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "grin",
+                "users": [
+                    "U4H19D1D2"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1621263540.295400",
+        "client_msg_id": "17093e79-1cb3-42ff-a91f-37289fc4252b",
+        "text": "middleware <https:\/\/github.com\/liampauling\/flumine\/pull\/437\/files#diff-dae24ee21ed02d5552079cb23302f678d32cfa8f30d20885222eef2e545ae81e|example> added on how to add execution complete orders on startup",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "JX\/",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "middleware "
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/liampauling\/flumine\/pull\/437\/files#diff-dae24ee21ed02d5552079cb23302f678d32cfa8f30d20885222eef2e545ae81e",
+                                "text": "example"
+                            },
+                            {
+                                "type": "text",
+                                "text": " added on how to add execution complete orders on startup"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "magic_wand",
+                "users": [
+                    "U0128E7BEHW"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1621263864.297200",
+        "client_msg_id": "25358617-12e0-4862-abda-cc9833b3eb14",
+        "text": "Ah thats much better than my way! I just called list_current_orders and got a net exposure from that!\n\nAre there likely to be any performance issues here if you have 1000's of orders (I'm thinking a use case for this could be say Wimbledon - Tournament Winner, so you could have a strategy running that market for potentially weeks)?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "T+2Dw",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Ah thats much better than my way! I just called list_current_orders and got a net exposure from that!\n\nAre there likely to be any performance issues here if you have 1000's of orders (I'm thinking a use case for this could be say Wimbledon - Tournament Winner, so you could have a strategy running that market for potentially weeks)?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1621264258.297900",
+        "client_msg_id": "962262b5-495d-4fc8-ab4b-a829025e6f4f",
+        "text": "1k+ orders per market is normal for me, there is a limitation in that example though as it doesn't have a loop as that endpoint only returns 1k I think?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "0fkqg",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "1k+ orders per market is normal for me, there is a limitation in that example though as it doesn't have a loop as that endpoint only returns 1k I think?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1621264523.299900",
+        "client_msg_id": "c4d47389-28b5-4467-b341-8d07c73a5303",
+        "text": "Yeah I think you're right about the 1k limit if it doesn't loop. But I can always stick to my current approach if it gets too big, actually might not be too bad an idea for some of the long running markets anyway, doing all the calcs on startup for existing exposure might be marginally more efficient.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Pkt",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Yeah I think you're right about the 1k limit if it doesn't loop. But I can always stick to my current approach if it gets too big, actually might not be too bad an idea for some of the long running markets anyway, doing all the calcs on startup for existing exposure might be marginally more efficient."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1621282211.301200",
+        "client_msg_id": "ecd193af-13a0-4460-803f-fe6cdfd83788",
+        "text": "I think I'm misunderstanding how to implement middleware (I put that in before framework.run()) and get the following error, where should I be calling this from?\n\n```    framework.add_market_middleware(OrdersMiddleware())\nTypeError: __init__() missing 1 required positional argument: 'flumine'```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "18lM0",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I think I'm misunderstanding how to implement middleware (I put that in before framework.run()) and get the following error, where should I be calling this from?\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "    framework.add_market_middleware(OrdersMiddleware())\nTypeError: __init__() missing 1 required positional argument: 'flumine'"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UUCD6P13J",
+        "type": "message",
+        "ts": "1621282486.303300",
+        "client_msg_id": "5ec1117f-47cf-4d04-8bb0-12dfbc667840",
+        "text": "if you're using the example you need to instantiate OrdersMiddleware with flumine which i think in your case might be framework. i.e. `framework.add_market_middleware(OrdersMiddleware(framework))`",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6898272ab81",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6898272ab810e419c2c9ca9af1e53da8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0012-72.png",
+            "first_name": "Lee",
+            "real_name": "Lee U",
+            "display_name": "Lee",
+            "team": "T4G9NBD2M",
+            "name": "lunswor",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "LqhL",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "if you're using the example you need to instantiate OrdersMiddleware with flumine which i think in your case might be framework. i.e. "
+                            },
+                            {
+                                "type": "text",
+                                "text": "framework.add_market_middleware(OrdersMiddleware(framework))",
+                                "style": {
+                                    "code": true
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UUCD6P13J",
+        "type": "message",
+        "ts": "1621282527.303800",
+        "client_msg_id": "14a34330-463f-4bcf-ad92-4fca370c2715",
+        "text": "it's because the OrdersMiddleware class has the init method <https:\/\/github.com\/liampauling\/flumine\/pull\/437\/files#diff-dae24ee21ed02d5552079cb23302f678d32cfa8f30d20885222eef2e545ae81eR18>",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6898272ab81",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6898272ab810e419c2c9ca9af1e53da8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0012-72.png",
+            "first_name": "Lee",
+            "real_name": "Lee U",
+            "display_name": "Lee",
+            "team": "T4G9NBD2M",
+            "name": "lunswor",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "qcm",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "it's because the OrdersMiddleware class has the init method "
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/liampauling\/flumine\/pull\/437\/files#diff-dae24ee21ed02d5552079cb23302f678d32cfa8f30d20885222eef2e545ae81eR18"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1621282671.304200",
+        "client_msg_id": "1ca46595-16a5-4d2f-83fd-cc4e3eb320e1",
+        "text": "Ah okay cool, that's what I wasn't getting, cool tks!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "rJvZg",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Ah okay cool, that's what I wasn't getting, cool tks!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1621288441.305500",
+        "client_msg_id": "ecec28be-8acc-4721-8ba5-6fb453262c83",
+        "text": "<@U4H19D1D2> when running that middleware example I get a ton of these errors (is it possible there is no error catching if there are no completed orders for that market\/strategy combo as that appears to be the case, but I could be wrong)?\n\n```{\"asctime\": \"2021-05-17 21:51:02,008\", \"levelname\": \"CRITICAL\", \"message\": \"Unknown error  in &lt;middleware_example.OrdersMiddleware object at 0x000001D04E45E580&gt; (1.180015935)\", \"exc_info\": \"Traceback (most recent call last):\\n  File \\\"D:\\\\Python38\\\\lib\\\\site-packages\\\\flumine\\\\utils.py\\\", line 220, in call_middleware_error_handling\\n    middleware(market)\\n  File \\\"D:\\\\Python38\\\\lib\\\\site-packages\\\\flumine\\\\markets\\\\middleware.py\\\", line 16, in __call__\\n    raise NotImplementedError\\nNotImplementedError\"}\nINFO:flumine.baseflumine:Adding: 1.180957876 to markets\n{\"asctime\": \"2021-05-17 21:51:02,011\", \"levelname\": \"INFO\", \"message\": \"Adding: 1.180957876 to markets\"}\nCRITICAL:flumine.utils:Unknown error  in &lt;middleware_example.OrdersMiddleware object at 0x000001D04E45E580&gt; (1.180957876)\nTraceback (most recent call last):\n  File \"D:\\Python38\\lib\\site-packages\\flumine\\utils.py\", line 220, in call_middleware_error_handling\n    middleware(market)\n  File \"D:\\Python38\\lib\\site-packages\\flumine\\markets\\middleware.py\", line 16, in __call__\n    raise NotImplementedError\nNotImplementedError```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "i\/R1S",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "user",
+                                "user_id": "U4H19D1D2"
+                            },
+                            {
+                                "type": "text",
+                                "text": " when running that middleware example I get a ton of these errors (is it possible there is no error catching if there are no completed orders for that market\/strategy combo as that appears to be the case, but I could be wrong)?\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "{\"asctime\": \"2021-05-17 21:51:02,008\", \"levelname\": \"CRITICAL\", \"message\": \"Unknown error  in <middleware_example.OrdersMiddleware object at 0x000001D04E45E580> (1.180015935)\", \"exc_info\": \"Traceback (most recent call last):\\n  File \\\"D:\\\\Python38\\\\lib\\\\site-packages\\\\flumine\\\\utils.py\\\", line 220, in call_middleware_error_handling\\n    middleware(market)\\n  File \\\"D:\\\\Python38\\\\lib\\\\site-packages\\\\flumine\\\\markets\\\\middleware.py\\\", line 16, in __call__\\n    raise NotImplementedError\\nNotImplementedError\"}\nINFO:flumine.baseflumine:Adding: 1.180957876 to markets\n{\"asctime\": \"2021-05-17 21:51:02,011\", \"levelname\": \"INFO\", \"message\": \"Adding: 1.180957876 to markets\"}\nCRITICAL:flumine.utils:Unknown error  in <middleware_example.OrdersMiddleware object at 0x000001D04E45E580> (1.180957876)\nTraceback (most recent call last):\n  File \"D:\\Python38\\lib\\site-packages\\flumine\\utils.py\", line 220, in call_middleware_error_handling\n    middleware(market)\n  File \"D:\\Python38\\lib\\site-packages\\flumine\\markets\\middleware.py\", line 16, in __call__\n    raise NotImplementedError\nNotImplementedError"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UUCD6P13J",
+        "type": "message",
+        "ts": "1621288857.306800",
+        "edited": {
+            "user": "UUCD6P13J",
+            "ts": "1621288906.000000"
+        },
+        "client_msg_id": "DA621B38-4B9E-4347-A107-4BCDF365218E",
+        "text": "Try upgrading flumine, the __ call__ method I think was changed to be not mandatory ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6898272ab81",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6898272ab810e419c2c9ca9af1e53da8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0012-72.png",
+            "first_name": "Lee",
+            "real_name": "Lee U",
+            "display_name": "Lee",
+            "team": "T4G9NBD2M",
+            "name": "lunswor",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "z=Ye",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Try upgrading flumine, the __ call__ method I think was changed to be not mandatory "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UUCD6P13J",
+        "type": "message",
+        "ts": "1621288880.307500",
+        "client_msg_id": "AAB1EA02-2405-4883-8F5F-EFCF25258751",
+        "text": "Or add the call method with no logic",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6898272ab81",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6898272ab810e419c2c9ca9af1e53da8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0012-72.png",
+            "first_name": "Lee",
+            "real_name": "Lee U",
+            "display_name": "Lee",
+            "team": "T4G9NBD2M",
+            "name": "lunswor",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "saO",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Or add the call method with no logic"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1621289332.309400",
+        "client_msg_id": "9dcc1838-2c3a-434d-bc66-af63f9da4b08",
+        "text": "I seem to have the latest version of flumine, so its not that.\n\nRemoving the logic does remove the errors as expected, but seems to produce a lot of latency warnings on startup (may just be co-incidence as I'm not sure why that would be...it did take a long time to cycle through everything)!\n\n```WARNING:flumine.baseflumine:High latency between current time and MarketBook publish time\n{\"asctime\": \"2021-05-17 22:06:31,634\", \"levelname\": \"WARNING\", \"message\": \"High latency between current time and MarketBook publish time\", \"market_id\": \"1.167249195\", \"latency\": 2.0103297233581543, \"pt\": \"2021-05-17T22:06:29.624000\"}```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "11zH1",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I seem to have the latest version of flumine, so its not that.\n\nRemoving the logic does remove the errors as expected, but seems to produce a lot of latency warnings on startup (may just be co-incidence as I'm not sure why that would be...it did take a long time to cycle through everything)!\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "WARNING:flumine.baseflumine:High latency between current time and MarketBook publish time\n{\"asctime\": \"2021-05-17 22:06:31,634\", \"levelname\": \"WARNING\", \"message\": \"High latency between current time and MarketBook publish time\", \"market_id\": \"1.167249195\", \"latency\": 2.0103297233581543, \"pt\": \"2021-05-17T22:06:29.624000\"}"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1621289342.309700",
+        "client_msg_id": "8848d39f-71d8-42d7-9d6c-bcc97296a3c4",
+        "text": "But importantly it does appear to work (I think)",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "ZsS",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "But importantly it does appear to work (I think)"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1621317903.000900",
+        "client_msg_id": "4F1BA339-79BA-4251-819A-DB8F13E7044C",
+        "text": "Yeah it’s setup for the beta version, not sure what to do about the warnings ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Z=jIH",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Yeah it’s setup for the beta version, not sure what to do about the warnings "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

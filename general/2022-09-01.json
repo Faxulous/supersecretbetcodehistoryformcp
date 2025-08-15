@@ -1,0 +1,214 @@
+[
+    {
+        "user": "U033HM6Q8BU",
+        "type": "message",
+        "ts": "1662030765.633849",
+        "client_msg_id": "27c50358-b18a-47dd-8a0a-4753cd2f9bc3",
+        "text": "In the tennis example on Flumine (<https:\/\/github.com\/betcode-org\/flumine\/blob\/master\/examples\/tennisexample.py>) I can see that it refernces a score from the market context. Does anyone know if this score data is available in the historical pro data files from betfair?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "5852523ef409",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2022-02-17\/3122043950356_5852523ef409c4ffc813_72.png",
+            "first_name": "LM",
+            "real_name": "LM",
+            "display_name": "LM",
+            "team": "T4G9NBD2M",
+            "name": "yeetljuicer",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1662030765.633849",
+        "reply_count": 3,
+        "reply_users_count": 2,
+        "latest_reply": "1662075064.886669",
+        "reply_users": [
+            "UBS7QANF3",
+            "U033HM6Q8BU"
+        ],
+        "replies": [
+            {
+                "user": "UBS7QANF3",
+                "ts": "1662034294.884229"
+            },
+            {
+                "user": "U033HM6Q8BU",
+                "ts": "1662066842.821789"
+            },
+            {
+                "user": "U033HM6Q8BU",
+                "ts": "1662075064.886669"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": false,
+        "attachments": [
+            {
+                "id": 1,
+                "footer_icon": "https:\/\/slack.github.com\/static\/img\/favicon-neutral.png",
+                "color": "24292f",
+                "bot_id": "B021ZJYSBMW",
+                "app_unfurl_url": "https:\/\/github.com\/betcode-org\/flumine\/blob\/master\/examples\/tennisexample.py",
+                "is_app_unfurl": true,
+                "app_id": "A01BP7R4KNY",
+                "fallback": "<https:\/\/github.com\/betcode-org\/flumine\/blob\/master\/examples\/tennisexample.py | tennisexample.py>",
+                "text": "```\nimport time\nimport logging\nimport betfairlightweight\nfrom betfairlightweight.filters import streaming_market_filter\nfrom pythonjsonlogger import jsonlogger\n\nfrom flumine import Flumine, clients, BaseStrategy\nfrom flumine.worker import BackgroundWorker\nfrom workers.inplayservice import poll_in_play_service\n\nlogger = logging.getLogger()\n\ncustom_format = \"%(asctime) %(levelname) %(message)\"\nlog_handler = logging.StreamHandler()\nformatter = jsonlogger.JsonFormatter(custom_format)\nformatter.converter = time.gmtime\nlog_handler.setFormatter(formatter)\nlogger.addHandler(log_handler)\nlogger.setLevel(<http:\/\/logging.INFO|logging.INFO>)\n\n\nclass ExampleStrategy(BaseStrategy):\n    def check_market_book(self, market, market_book):\n        # process_market_book only executed if this returns True\n        if market_book.status != \"CLOSED\":\n            return True\n\n    def process_market_book(self, market, market_book):\n        # process marketBook object\n        if \"score\" in market.context:\n            score = market.context[\"score\"]\n            print(\n                score.match_status,\n                score.current_game,\n                score.current_set,\n                score.current_point,\n                score.score.home.score,\n                score.score.away.score,\n            )\n\n\ntrading = betfairlightweight.APIClient(\"username\")\nclient = clients.BetfairClient(trading)\n\nframework = Flumine(client=client)\n\nstrategy = ExampleStrategy(\n    market_filter=streaming_market_filter(market_ids=[\"1.172415939\"]),\n)\nframework.add_strategy(strategy)\n\nframework.add_worker(\n    BackgroundWorker(\n        framework,\n        poll_in_play_service,\n        func_kwargs={\"event_type_id\": \"2\"},\n        interval=30,\n        start_delay=4,\n    )\n)\n\nframework.run()\n\n```",
+                "title": "<https:\/\/github.com\/betcode-org\/flumine\/blob\/master\/examples\/tennisexample.py | tennisexample.py>",
+                "footer": "<https:\/\/github.com\/betcode-org\/flumine|betcode-org\/flumine>",
+                "mrkdwn_in": [
+                    "text"
+                ]
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "0s0",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "In the tennis example on Flumine ("
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/betcode-org\/flumine\/blob\/master\/examples\/tennisexample.py"
+                            },
+                            {
+                                "type": "text",
+                                "text": ") I can see that it refernces a score from the market context. Does anyone know if this score data is available in the historical pro data files from betfair?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1662034294.884229",
+        "edited": {
+            "user": "UBS7QANF3",
+            "ts": "1662102810.000000"
+        },
+        "client_msg_id": "75FBBB2F-6309-42A8-B8F4-D9464B4A1574",
+        "text": "It’s not available historically. I believe they don’t record this or the cricket or horse racing feeds as it’s not really their data. They just repackage it for their users",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1662030765.633849",
+        "parent_user_id": "U033HM6Q8BU",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "eau2H",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "It’s not available historically. I believe they don’t record this or the cricket or horse racing feeds as it’s not really their data. They just repackage it for their users"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U033HM6Q8BU",
+        "type": "message",
+        "ts": "1662066842.821789",
+        "client_msg_id": "2e162d98-dc7d-4c91-9cff-e5f05ea1e0ff",
+        "text": "cheers, mo!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "5852523ef409",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2022-02-17\/3122043950356_5852523ef409c4ffc813_72.png",
+            "first_name": "LM",
+            "real_name": "LM",
+            "display_name": "LM",
+            "team": "T4G9NBD2M",
+            "name": "yeetljuicer",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1662030765.633849",
+        "parent_user_id": "U033HM6Q8BU",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "mYKTp",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "cheers, mo!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U033HM6Q8BU",
+        "type": "message",
+        "ts": "1662075064.886669",
+        "client_msg_id": "707dd319-417f-435d-99b8-1ee1e23b3451",
+        "text": "In that case does anyone have any example data that they'd be willing to share?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "5852523ef409",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2022-02-17\/3122043950356_5852523ef409c4ffc813_72.png",
+            "first_name": "LM",
+            "real_name": "LM",
+            "display_name": "LM",
+            "team": "T4G9NBD2M",
+            "name": "yeetljuicer",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1662030765.633849",
+        "parent_user_id": "U033HM6Q8BU",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "11Yi",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "In that case does anyone have any example data that they'd be willing to share?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

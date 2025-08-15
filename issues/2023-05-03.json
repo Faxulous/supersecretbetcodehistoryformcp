@@ -1,0 +1,113 @@
+[
+    {
+        "user": "U03N5G2T8S0",
+        "type": "message",
+        "ts": "1683182688.081329",
+        "client_msg_id": "39db5e87-da98-49ac-bb9e-cf6e4c67551d",
+        "text": "Hi All, I'm hoping you can help me. I'm new to flumine and I'm having trouble achieving what I'm trying to achieve for a backtest simulation.\n\nI'm trying to run a simulation on soccer MATCH_ODDS market with the following conditions:\n\n1. Record the odds of the favourite at 60secs before kick off\n2. Place a BACK bet on the pre match favourite whilst match is in play and the odds of the favourite have increased by 20%\nI'm not sure where it is going wrong or whether I am using the market.context correctly.\n\nCode as per this:\ndef check_market_book(self, market, market_book):\n        if (market_book.status == \"OPEN\") and market.seconds_to_start &lt; 60:\n            # store favourite's starting price\n            runners = sorted(\n                market_book.runners, key=lambda r: r.ex.available_to_back[0]['price']\n            )\n            if runners:\n                fav = runners[0]\n                market.context[\"fav_starting_price\"] = fav.ex.available_to_back[0]['price']\n                market.context[\"market_start_time\"] = market_book.market_definition.market_time\n                return True\n\n    def process_market_book(self, market, market_book):\n\n        if \"fav_starting_price\" in market.context:\n            # get favourite\n            runners = sorted(\n                market_book.runners, key=lambda r: r.ex.available_to_back[0]['price']\n            )\n            if runners:\n\n                fav = runners[0]\n                # calculate favourite's odds\n\n                if market.seconds_to_start &lt; 60 and market.seconds_to_start &gt; 50:\n                    fav_starting_price = fav.ex.available_to_back[0]['price']\n                    fav_starting_price = market.context[\"fav_starting_price\"]\n\n\n\n                elif market_book.inplay == True:\n                    if fav.ex.available_to_back[0]['price'] &gt; market.context[\"fav_starting_price\"] * 1.2:\n                        # place BACK bet on the favourite\n                        runner_context = self.get_runner_context(\n                            market.market_id, fav.selection_id, fav.handicap\n                        )\n                        if runner_context.live_trade_count == 0:\n                            trade = Trade(\n                                market.market_id, fav.selection_id, fav.handicap, self\n                            )\n                            order = trade.create_order(\n                                side=\"BACK\",\n                                order_type=LimitOrder(\n                                    get_price(fav.ex.available_to_back, 0),\n                                    size=5,\n                                ),\n                            )\n                            market.place_order(order)",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "ge1f468aaaa7",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/e1f468aaaa76b35cffe4aad049ab92ad.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0001-72.png",
+            "first_name": "Nick",
+            "real_name": "Nick S",
+            "display_name": "Nick",
+            "team": "T4G9NBD2M",
+            "name": "nicksim1980",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1683182688.081329",
+        "reply_count": 4,
+        "reply_users_count": 2,
+        "latest_reply": "1683188929.815249",
+        "reply_users": [
+            "U4H19D1D2",
+            "U03N5G2T8S0"
+        ],
+        "replies": [
+            {
+                "user": "U4H19D1D2",
+                "ts": "1683186588.476029"
+            },
+            {
+                "user": "U03N5G2T8S0",
+                "ts": "1683188682.409749"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1683188725.161259"
+            },
+            {
+                "user": "U03N5G2T8S0",
+                "ts": "1683188929.815249"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": true,
+        "last_read": "1683188929.815249",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "YM\/",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Hi All, I'm hoping you can help me. I'm new to flumine and I'm having trouble achieving what I'm trying to achieve for a backtest simulation.\n\nI'm trying to run a simulation on soccer MATCH_ODDS market with the following conditions:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_list",
+                        "elements": [
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "Record the odds of the favourite at 60secs before kick off"
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "Place a BACK bet on the pre match favourite whilst match is in play and the odds of the favourite have increased by 20%"
+                                    }
+                                ]
+                            }
+                        ],
+                        "style": "ordered",
+                        "indent": 0,
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\nI'm not sure where it is going wrong or whether I am using the market.context correctly.\n\nCode as per this:\ndef check_market_book(self, market, market_book):\n        if (market_book.status == \"OPEN\") and market.seconds_to_start < 60:\n            # store favourite's starting price\n            runners = sorted(\n                market_book.runners, key=lambda r: r.ex.available_to_back[0]['price']\n            )\n            if runners:\n                fav = runners[0]\n                market.context[\"fav_starting_price\"] = fav.ex.available_to_back[0]['price']\n                market.context[\"market_start_time\"] = market_book.market_definition.market_time\n                return True\n\n    def process_market_book(self, market, market_book):\n\n        if \"fav_starting_price\" in market.context:\n            # get favourite\n            runners = sorted(\n                market_book.runners, key=lambda r: r.ex.available_to_back[0]['price']\n            )\n            if runners:\n\n                fav = runners[0]\n                # calculate favourite's odds\n\n                if market.seconds_to_start < 60 and market.seconds_to_start > 50:\n                    fav_starting_price = fav.ex.available_to_back[0]['price']\n                    fav_starting_price = market.context[\"fav_starting_price\"]\n\n\n\n                elif market_book.inplay == True:\n                    if fav.ex.available_to_back[0]['price'] > market.context[\"fav_starting_price\"] * 1.2:\n                        # place BACK bet on the favourite\n                        runner_context = self.get_runner_context(\n                            market.market_id, fav.selection_id, fav.handicap\n                        )\n                        if runner_context.live_trade_count == 0:\n                            trade = Trade(\n                                market.market_id, fav.selection_id, fav.handicap, self\n                            )\n                            order = trade.create_order(\n                                side=\"BACK\",\n                                order_type=LimitOrder(\n                                    get_price(fav.ex.available_to_back, 0),\n                                    size=5,\n                                ),\n                            )\n                            market.place_order(order)"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "eyes",
+                "users": [
+                    "U053A382VFX"
+                ],
+                "count": 1
+            }
+        ]
+    }
+]

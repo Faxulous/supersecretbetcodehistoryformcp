@@ -1,0 +1,230 @@
+[
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1713770188.746409",
+        "client_msg_id": "ac73bcd6-9816-4a94-b64c-349df1188949",
+        "text": "<https:\/\/github.com\/betcode-org\/flumine\/blob\/master\/examples\/middleware\/orders.py|This> what you are after?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1713644504.995369",
+        "parent_user_id": "U013K4VNB6D",
+        "attachments": [
+            {
+                "id": 1,
+                "footer_icon": "https:\/\/slack.github.com\/static\/img\/favicon-neutral.png",
+                "color": "24292f",
+                "bot_id": "B021ZJYSBMW",
+                "app_unfurl_url": "https:\/\/github.com\/betcode-org\/flumine\/blob\/master\/examples\/middleware\/orders.py",
+                "is_app_unfurl": true,
+                "app_id": "A01BP7R4KNY",
+                "fallback": "<https:\/\/github.com\/betcode-org\/flumine\/blob\/master\/examples\/middleware\/orders.py | orders.py>",
+                "text": "```\nimport logging\nfrom flumine import config\nfrom flumine.utils import STRATEGY_NAME_HASH_LENGTH\nfrom flumine.markets.middleware import Middleware\nfrom flumine.order.trade import Trade\n\nlogger = logging.getLogger(__name__)\n\n\nclass OrdersMiddleware(Middleware):\n    \"\"\"\n    Middleware to add execution complete orders\n    to the blotter. This is required on a restart\n    as the order stream does not include\n    EXECUTION_COMPLETE orders\n    \"\"\"\n\n    def __init__(self, flumine):\n        self.flumine = flumine\n\n    def add_market(self, market) -> None:\n        for client in self.flumine.clients:\n            resp = client.betting_client.betting.list_current_orders(\n                customer_strategy_refs=[config.customer_strategy_ref],\n                order_projection=\"EXECUTION_COMPLETE\",\n            )\n            for current_order in resp.orders:\n                <http:\/\/logger.info|logger.info>(\n                    \"OrdersMiddleware: Processing order %s\",\n                    current_order.bet_id,\n                    extra={\n                        \"bet_id\": current_order.bet_id,\n                        \"market_id\": current_order.market_id,\n                        \"customer_strategy_ref\": current_order.customer_strategy_ref,\n                        \"customer_order_ref\": current_order.customer_order_ref,\n                        \"client_username\": client.username,\n                    },\n                )\n                order = self._create_order_from_current(client, current_order, market)\n                if order:\n                    order.update_current_order(current_order)\n                    order.execution_complete()\n\n    def _create_order_from_current(self, client, current_order, market):\n        strategy_name_hash = current_order.customer_order_ref[\n            :STRATEGY_NAME_HASH_LENGTH\n        ]\n        order_id = current_order.customer_order_ref[STRATEGY_NAME_HASH_LENGTH + 1 :]\n        # get strategy\n        strategy = self.flumine.strategies.hashes.get(strategy_name_hash)\n        if strategy is None:\n            logger.warning(\n                \"OrdersMiddleware: Strategy not available to create order %s\",\n                order_id,\n                extra={\n                    \"bet_id\": current_order.bet_id,\n                    \"market_id\": current_order.market_id,\n                    \"customer_strategy_ref\": current_order.customer_strategy_ref,\n                    \"customer_order_ref\": current_order.customer_order_ref,\n                    \"strategy_name\": str(strategy),\n                    \"client_username\": client.username,\n                },\n            )\n            return\n        # add trade\/order\n        trade = Trade(\n            market.market_id,\n            current_order.selection_id,\n            current_order.handicap,\n            strategy,\n        )\n        order = trade.create_order_from_current(client, current_order, order_id)\n        market.blotter[order.id] = order\n        runner_context = strategy.get_runner_context(*order.lookup)\n        runner_context.place(trade.id)\n        <http:\/\/logger.info|logger.info>(\n            \"OrdersMiddleware: New order trade created\",\n            extra={\n                \"bet_id\": current_order.bet_id,\n                \"market_id\": current_order.market_id,\n                \"customer_strategy_ref\": current_order.customer_strategy_ref,\n                \"customer_order_ref\": current_order.customer_order_ref,\n                \"strategy_name\": str(strategy),\n                \"client_username\": client.username,\n            },\n        )\n        return order\n\n```",
+                "title": "<https:\/\/github.com\/betcode-org\/flumine\/blob\/master\/examples\/middleware\/orders.py | orders.py>",
+                "footer": "<https:\/\/github.com\/betcode-org\/flumine|betcode-org\/flumine>",
+                "mrkdwn_in": [
+                    "text"
+                ]
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "0LiVp",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/betcode-org\/flumine\/blob\/master\/examples\/middleware\/orders.py",
+                                "text": "This"
+                            },
+                            {
+                                "type": "text",
+                                "text": " what you are after?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1713770253.216179",
+        "client_msg_id": "9f5f76a7-b7ee-4aa5-819e-48201468f36a",
+        "text": ":man-shrugging: just send bdp an email",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1713522737.820149",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "\/hraT",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "emoji",
+                                "name": "man-shrugging",
+                                "unicode": "1f937-200d-2642-fe0f"
+                            },
+                            {
+                                "type": "text",
+                                "text": " just send bdp an email"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U013K4VNB6D",
+        "type": "message",
+        "ts": "1713770438.397139",
+        "client_msg_id": "00947f8e-4939-4663-a4db-eec04350b0ca",
+        "text": "Thanks Liam. Yes, I think so.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gf188478b89f",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/f188478b89f4a5e2c5af9eafa0433712.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0004-72.png",
+            "first_name": "",
+            "real_name": "Jeff Waters",
+            "display_name": "Jeff Waters",
+            "team": "T4G9NBD2M",
+            "name": "watersjg",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1713644504.995369",
+        "parent_user_id": "U013K4VNB6D",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "23gml",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Thanks Liam. Yes, I think so."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01FJN59B52",
+        "type": "message",
+        "ts": "1713783338.578589",
+        "client_msg_id": "38D4720E-58BB-4476-9CE5-1723401DFC1C",
+        "text": "Look at the examples in the repo mate.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "ec27c9e723af",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-11-26\/1537761741556_ec27c9e723af59f09f68_72.png",
+            "first_name": "A",
+            "real_name": "A",
+            "display_name": "A",
+            "team": "T4G9NBD2M",
+            "name": "adam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1713522555.851169",
+        "parent_user_id": "U03N4QBJ0TV",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Ywejn",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Look at the examples in the repo mate."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U06R7GCC26B",
+        "type": "message",
+        "ts": "1713787819.844999",
+        "client_msg_id": "628fbea0-3b27-4306-a4bf-a4e7ce22ee66",
+        "text": "Rob - no criteria - email sent on thursday, they confirmed this morning; and I’m definitely not a high volume user at the moment",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g68a674a57e0",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/68a674a57e001129884dc5a186684950.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0004-72.png",
+            "first_name": "Ammar",
+            "real_name": "Ammar",
+            "display_name": "Ammar",
+            "team": "T4G9NBD2M",
+            "name": "ammarorama",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1713522737.820149",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "eLTkc",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Rob - no criteria - email sent on thursday, they confirmed this morning; and I’m definitely not a high volume user at the moment"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

@@ -1,0 +1,484 @@
+[
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1550577903.084800",
+        "client_msg_id": "2a61f8ac-8fed-4efe-acfd-e50ad239bb5c",
+        "text": "No luck with different ports or browsers, I even tried a fresh install on my Surface Go (which admittedly is also Windows 10, but doesn't have much on it). No joy, but I did get different errors, which may be more useful to decypher:\n\nHTTP400: BAD REQUEST - The request could not be processed by the server due to invalid syntax.\n(XHR)GET - <http:\/\/localhost:3000\/socket.io\/?EIO=3&amp;transport=polling&amp;t=1550577763533-16&amp;sid=a30e5471ac3446018e7290fa00eba7a5>\n\n HTTP400: BAD REQUEST - The request could not be processed by the server due to invalid syntax.\n(XHR)POST - <http:\/\/localhost:3000\/socket.io\/?EIO=3&amp;transport=polling&amp;t=1550577763604-17&amp;sid=a30e5471ac3446018e7290fa00eba7a5>\n\nDoesn't make a great deal of sense to me, as the message is logically the same as the previous one that worked fine, but perhaps it needs a line break or something in it?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "0l+ur",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "No luck with different ports or browsers, I even tried a fresh install on my Surface Go (which admittedly is also Windows 10, but doesn't have much on it). No joy, but I did get different errors, which may be more useful to decypher:\n\nHTTP400: BAD REQUEST - The request could not be processed by the server due to invalid syntax.\n(XHR)GET - "
+                            },
+                            {
+                                "type": "link",
+                                "url": "http:\/\/localhost:3000\/socket.io\/?EIO=3&amp;transport=polling&amp;t=1550577763533-16&amp;sid=a30e5471ac3446018e7290fa00eba7a5",
+                                "text": "http:\/\/localhost:3000\/socket.io\/?EIO=3&transport=polling&t=1550577763533-16&sid=a30e5471ac3446018e7290fa00eba7a5"
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n\n HTTP400: BAD REQUEST - The request could not be processed by the server due to invalid syntax.\n(XHR)POST - "
+                            },
+                            {
+                                "type": "link",
+                                "url": "http:\/\/localhost:3000\/socket.io\/?EIO=3&amp;transport=polling&amp;t=1550577763604-17&amp;sid=a30e5471ac3446018e7290fa00eba7a5",
+                                "text": "http:\/\/localhost:3000\/socket.io\/?EIO=3&transport=polling&t=1550577763604-17&sid=a30e5471ac3446018e7290fa00eba7a5"
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n\nDoesn't make a great deal of sense to me, as the message is logically the same as the previous one that worked fine, but perhaps it needs a line break or something in it?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1550585777.088000",
+        "client_msg_id": "ff5f1c96-ff2d-475f-9f51-17aee5346743",
+        "text": "Ok, I thought I'd test something and its interesting to see where the problem lies.\n\n```\n@socketio.on('ping')\ndef handle_message(*_args, **_kwargs):\n    socketio.sleep(1)\n    market_books = output_queue.get()\n    emit('my_response2', {'message': 'update', 'mb': len(market_books)})\n    socketio.sleep(0.5)\n    emit('my_response3')\n```\n\nThat shouldn't clog anything up, yet it still hangs on the last ping (i.e.  the client receives the message with the number of array items, it pings back, it then receives the null response and pings back...then nothing happens).\n\nOn the server side, it looks like this:\n\n```\n127.0.0.1 - - [19\/Feb\/2019 14:14:19] \"GET \/socket.io\/?EIO=3&amp;transport=polling&amp;t=1550585641996-6 HTTP\/1.1\" 200 381 0.000999\nINFO:engineio.server:116a710b7ac54ccb89b0c116f4c15675: Received packet MESSAGE data 2[\"ping\"]\nINFO:socketio.server:received event \"ping\" from 116a710b7ac54ccb89b0c116f4c15675 [\/]\n(5068) accepted ('127.0.0.1', 60202)\nINFO:engineio.server:116a710b7ac54ccb89b0c116f4c15675: Received request to upgrade to websocket\n127.0.0.1 - - [19\/Feb\/2019 14:14:20] \"GET \/socket.io\/?EIO=3&amp;transport=polling&amp;t=1550585659960-8&amp;sid=116a710b7ac54ccb89b0c116f4c15675 HTTP\/1.1\" 200 215 0.291910\nINFO:socketio.server:emitting event \"my_response3\" to b3a33d164b34497f9e9cbafe6df082a3 [\/]\nINFO:engineio.server:b3a33d164b34497f9e9cbafe6df082a3: Received packet MESSAGE data 2[\"ping\"]\nINFO:socketio.server:received event \"ping\" from b3a33d164b34497f9e9cbafe6df082a3 [\/]\nINFO:engineio.server:b3a33d164b34497f9e9cbafe6df082a3: Received packet PING data None\nINFO:engineio.server:Receive error -- socket is closed\n127.0.0.1 - - [19\/Feb\/2019 14:14:20] \"GET \/socket.io\/?EIO=3&amp;transport=websocket&amp;sid=b3a33d164b34497f9e9cbafe6df082a3 HTTP\/1.1\" 200 0 178.484812\n```\n\nI thought at first perhaps the loop wasn't ending somehow, but that doesn't appear to be the issue...but at least I can see where the problem must lie...just can't figure out the final step, ha!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "kypu",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Ok, I thought I'd test something and its interesting to see where the problem lies.\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "@socketio.on('ping')\ndef handle_message(*_args, **_kwargs):\n    socketio.sleep(1)\n    market_books = output_queue.get()\n    emit('my_response2', {'message': 'update', 'mb': len(market_books)})\n    socketio.sleep(0.5)\n    emit('my_response3')\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\n\nThat shouldn't clog anything up, yet it still hangs on the last ping (i.e.  the client receives the message with the number of array items, it pings back, it then receives the null response and pings back...then nothing happens).\n\nOn the server side, it looks like this:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "127.0.0.1 - - [19\/Feb\/2019 14:14:19] \"GET \/socket.io\/?EIO=3&transport=polling&t=1550585641996-6 HTTP\/1.1\" 200 381 0.000999\nINFO:engineio.server:116a710b7ac54ccb89b0c116f4c15675: Received packet MESSAGE data 2[\"ping\"]\nINFO:socketio.server:received event \"ping\" from 116a710b7ac54ccb89b0c116f4c15675 [\/]\n(5068) accepted ('127.0.0.1', 60202)\nINFO:engineio.server:116a710b7ac54ccb89b0c116f4c15675: Received request to upgrade to websocket\n127.0.0.1 - - [19\/Feb\/2019 14:14:20] \"GET \/socket.io\/?EIO=3&transport=polling&t=1550585659960-8&sid=116a710b7ac54ccb89b0c116f4c15675 HTTP\/1.1\" 200 215 0.291910\nINFO:socketio.server:emitting event \"my_response3\" to b3a33d164b34497f9e9cbafe6df082a3 [\/]\nINFO:engineio.server:b3a33d164b34497f9e9cbafe6df082a3: Received packet MESSAGE data 2[\"ping\"]\nINFO:socketio.server:received event \"ping\" from b3a33d164b34497f9e9cbafe6df082a3 [\/]\nINFO:engineio.server:b3a33d164b34497f9e9cbafe6df082a3: Received packet PING data None\nINFO:engineio.server:Receive error -- socket is closed\n127.0.0.1 - - [19\/Feb\/2019 14:14:20] \"GET \/socket.io\/?EIO=3&transport=websocket&sid=b3a33d164b34497f9e9cbafe6df082a3 HTTP\/1.1\" 200 0 178.484812\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\n\nI thought at first perhaps the loop wasn't ending somehow, but that doesn't appear to be the issue...but at least I can see where the problem must lie...just can't figure out the final step, ha!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U5D4ZBEAG",
+        "type": "message",
+        "ts": "1550585840.088300",
+        "client_msg_id": "9cd3b656-8f9f-4bec-a1a2-5aa6480c467a",
+        "text": "just again, that `emit`",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g147ed91a398",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/7147ed91a39866d363a9cfa66ef64cb8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0015-72.png",
+            "first_name": "",
+            "real_name": "seaders",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "seaders",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "LSiG",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "just again, that "
+                            },
+                            {
+                                "type": "text",
+                                "text": "emit",
+                                "style": {
+                                    "code": true
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U5D4ZBEAG",
+        "type": "message",
+        "ts": "1550585860.088900",
+        "client_msg_id": "69dcc9eb-9f0a-4960-9e5d-cbc34d24a9d9",
+        "text": "stringify that, with json or something, just to 100% things",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g147ed91a398",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/7147ed91a39866d363a9cfa66ef64cb8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0015-72.png",
+            "first_name": "",
+            "real_name": "seaders",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "seaders",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "W4V",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "stringify that, with json or something, just to 100% things"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1550586307.089100",
+        "client_msg_id": "ba77a046-85ab-46a7-8a3b-f712fc1c295a",
+        "text": "the null one?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "irrE",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "the null one?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U5D4ZBEAG",
+        "type": "message",
+        "ts": "1550586318.089500",
+        "client_msg_id": "02b745fb-760c-4a14-9364-e2a9a2d08362",
+        "text": "`    emit('my_response2', {'message': 'update', 'mb': len(market_books)})`",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g147ed91a398",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/7147ed91a39866d363a9cfa66ef64cb8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0015-72.png",
+            "first_name": "",
+            "real_name": "seaders",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "seaders",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "fpz",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "    emit('my_response2', {'message': 'update', 'mb': len(market_books)})",
+                                "style": {
+                                    "code": true
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1550586322.089700",
+        "client_msg_id": "5d6cf0ad-9974-446e-af80-3160da1c05ec",
+        "text": "ah okay",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "CqQaI",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "ah okay"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U5D4ZBEAG",
+        "type": "message",
+        "ts": "1550586323.089800",
+        "client_msg_id": "f9a346de-2d27-40b6-a647-6937fd95b0e5",
+        "text": "instead of a dict",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g147ed91a398",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/7147ed91a39866d363a9cfa66ef64cb8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0015-72.png",
+            "first_name": "",
+            "real_name": "seaders",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "seaders",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "WIL",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "instead of a dict"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1550587193.092100",
+        "client_msg_id": "d575b75d-0530-468a-9d29-023e9bd51711",
+        "text": "the behaviour is the same, it pings once after then hangs...however playing around with one other thing I noticed something.\n\nIf I take the following out of the def:\n\nmarket_books = output_queue.get()\n\nIt works (in the sense that it sends the array and ping pongs successfully).\n\nThe array data however doesn't update as presumably its not being asked to update.\n\nSo...I'm wondering, if I can update that elsewhere (again perhaps coming back to background threads)...that could work?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "tHv=N",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "the behaviour is the same, it pings once after then hangs...however playing around with one other thing I noticed something.\n\nIf I take the following out of the def:\n\nmarket_books = output_queue.get()\n\nIt works (in the sense that it sends the array and ping pongs successfully).\n\nThe array data however doesn't update as presumably its not being asked to update.\n\nSo...I'm wondering, if I can update that elsewhere (again perhaps coming back to background threads)...that could work?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1550588572.092500",
+        "client_msg_id": "19c9b50a-56f5-495c-8eac-faa22f1767e8",
+        "text": "(when I say take out, I mean define outside...but obviously it remains static)",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "0HCJj",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "(when I say take out, I mean define outside...but obviously it remains static)"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1550588578.092800",
+        "client_msg_id": "254ec1db-503b-4093-a579-5dcc79c44015",
+        "text": "just wanted to see how it would behave",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "vvec",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "just wanted to see how it would behave"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

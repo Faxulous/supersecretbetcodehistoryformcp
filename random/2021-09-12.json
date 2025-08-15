@@ -1,0 +1,538 @@
+[
+    {
+        "user": "UPMUFSGCR",
+        "type": "message",
+        "ts": "1631485523.193500",
+        "client_msg_id": "54971f01-6528-4ddb-bd8f-26822b72c3f3",
+        "text": "What is the recommended way to stop a flumine application? In particular if I want to pull all orders before allowing the process to terminate?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "31c0bb5a442c",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2019-10-28\/812386967189_31c0bb5a442c5b8d2c61_72.png",
+            "first_name": "Jon",
+            "real_name": "Jon Jon Jon Jon Jon Jon Jon Jon",
+            "display_name": "Jonjonjon",
+            "team": "T4G9NBD2M",
+            "name": "fcmisc",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "pdih",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "What is the recommended way to stop a flumine application? In particular if I want to pull all orders before allowing the process to terminate?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1631511337.193900",
+        "client_msg_id": "FCE7421B-0EFA-4413-9530-20A176ADB653",
+        "text": "Poison pill <https:\/\/github.com\/liampauling\/flumine\/blob\/master\/examples\/workers\/terminate.py|https:\/\/github.com\/liampauling\/flumine\/blob\/master\/examples\/workers\/terminate.py>",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1631511337.193900",
+        "reply_count": 1,
+        "reply_users_count": 1,
+        "latest_reply": "1631526807.232400",
+        "reply_users": [
+            "U02ABPZRT2N"
+        ],
+        "replies": [
+            {
+                "user": "U02ABPZRT2N",
+                "ts": "1631526807.232400"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": true,
+        "last_read": "1631526807.232400",
+        "attachments": [
+            {
+                "text": "```\nimport logging\nimport datetime\nfrom flumine.events.events import TerminationEvent\n\nlogger = logging.getLogger(__name__)\n\n\"\"\"\nWorker can be used as followed:\n\n    framework.add_worker(\n        BackgroundWorker(\n            framework,\n            terminate,\n            func_kwargs={\"today_only\": True, \"seconds_closed\": 1200},\n            interval=60,\n            start_delay=60,\n        )\n    )\n\nThis will run every 60s and will terminate \nthe framework if all markets starting 'today' \nhave been closed for at least 1200s\n\"\"\"\n\n\ndef terminate(\n    context: dict, flumine, today_only: bool = True, seconds_closed: int = 600\n) -&gt; None:\n    \"\"\"terminate framework if no markets\n    live today.\n    \"\"\"\n    markets = list(flumine.markets.markets.values())\n    markets_today = [\n        m\n        for m in markets\n        if m.market_start_datetime.date() == datetime.datetime.utcnow().date()\n        and (\n            m.elapsed_seconds_closed is None\n            or (m.elapsed_seconds_closed and m.elapsed_seconds_closed &lt; seconds_closed)\n        )\n    ]\n    if today_only:\n        market_count = len(markets_today)\n    else:\n        market_count = len(markets)\n    if market_count == 0:\n        <http:\/\/logger.info|logger.info>(\"No more markets available, terminating framework\")\n        flumine.handler_queue.put(TerminationEvent(flumine))\n\n```",
+                "title": "<https:\/\/github.com\/liampauling\/flumine\/blob\/master\/examples\/workers\/terminate.py | terminate.py>",
+                "footer": "<https:\/\/github.com\/liampauling\/flumine|liampauling\/flumine>",
+                "id": 1,
+                "footer_icon": "https:\/\/slack.github.com\/static\/img\/favicon-neutral.png",
+                "color": "24292f",
+                "mrkdwn_in": [
+                    "text"
+                ],
+                "fallback": "<https:\/\/github.com\/liampauling\/flumine\/blob\/master\/examples\/workers\/terminate.py | terminate.py>",
+                "bot_id": "B021ZJYSBMW",
+                "app_unfurl_url": "https:\/\/github.com\/liampauling\/flumine\/blob\/master\/examples\/workers\/terminate.py",
+                "is_app_unfurl": true
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "kVq",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Poison pill "
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/liampauling\/flumine\/blob\/master\/examples\/workers\/terminate.py",
+                                "text": "https:\/\/github.com\/liampauling\/flumine\/blob\/master\/examples\/workers\/terminate.py"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1::skin-tone-6",
+                "users": [
+                    "UPMUFSGCR"
+                ],
+                "count": 1
+            },
+            {
+                "name": "+1",
+                "users": [
+                    "U02ABPZRT2N"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "ULDAVFDRP",
+        "type": "message",
+        "ts": "1631514976.196600",
+        "client_msg_id": "ef56c647-cdc0-4a90-846a-7f81294ac0d7",
+        "text": "Do we have many cricket people on here out of interest?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g46fe1c1bf03",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/b46fe1c1bf03e18d951e7032fb494283.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0019-72.png",
+            "first_name": "",
+            "real_name": "Oliver Varney",
+            "display_name": "Oliver Varney",
+            "team": "T4G9NBD2M",
+            "name": "oliverashleyvarney",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "BEDwH",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Do we have many cricket people on here out of interest?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1631515179.196900",
+        "client_msg_id": "a436cbc9-7591-468d-9e2a-3f6aa76b3dea",
+        "text": "As in fans or bettors?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "R25y",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "As in fans or bettors?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "ULDAVFDRP",
+        "type": "message",
+        "ts": "1631515219.197500",
+        "client_msg_id": "49e0d0f6-7fde-45a2-b958-a00c0848d7eb",
+        "text": "bettors but I guess it would be interesting to know if people like it as a sport as well",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g46fe1c1bf03",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/b46fe1c1bf03e18d951e7032fb494283.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0019-72.png",
+            "first_name": "",
+            "real_name": "Oliver Varney",
+            "display_name": "Oliver Varney",
+            "team": "T4G9NBD2M",
+            "name": "oliverashleyvarney",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "f0bZG",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "bettors but I guess it would be interesting to know if people like it as a sport as well"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1631515236.197800",
+        "client_msg_id": "36a2fa50-cc3c-4874-97bf-5eee7a887586",
+        "text": "I'm a very casual fan and have been involved in betting it in the past but not currently",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "tw9",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I'm a very casual fan and have been involved in betting it in the past but not currently"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "ULDAVFDRP",
+        "type": "message",
+        "ts": "1631515366.198500",
+        "client_msg_id": "e61b3da3-6918-4bd6-90f4-cba4f382d31c",
+        "text": "have you looked into \/ thought about revisiting it with all the t20 \/ short format stuff going on now and the large volumes?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g46fe1c1bf03",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/b46fe1c1bf03e18d951e7032fb494283.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0019-72.png",
+            "first_name": "",
+            "real_name": "Oliver Varney",
+            "display_name": "Oliver Varney",
+            "team": "T4G9NBD2M",
+            "name": "oliverashleyvarney",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "NYuu",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "have you looked into \/ thought about revisiting it with all the t20 \/ short format stuff going on now and the large volumes?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1631515461.199600",
+        "client_msg_id": "0f5f86f3-b505-4a5b-91be-235e96966449",
+        "text": "I don't think this is privledged information so hopefully I will not get into trouble for mentioning it but Betfair is planning to or possibly already offering an in-running cricket feed. The difference to the other scores feeds they do is you have to pay for it",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "rvPR",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I don't think this is privledged information so hopefully I will not get into trouble for mentioning it but Betfair is planning to or possibly already offering an in-running cricket feed. The difference to the other scores feeds they do is you have to pay for it"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1631515533.200400",
+        "client_msg_id": "1722d9eb-5a86-4a78-9d0e-fd2cdc36d2b8",
+        "text": "We declined to get involved because:\n\n1. Going to be hard to beat courtsiders\n2. Modelling the impact of weather is a nightmare",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "9Kr",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "We declined to get involved because:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_list",
+                        "elements": [
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "Going to be hard to beat courtsiders"
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "Modelling the impact of weather is a nightmare"
+                                    }
+                                ]
+                            }
+                        ],
+                        "style": "ordered",
+                        "indent": 0,
+                        "border": 0
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1631515574.200900",
+        "client_msg_id": "459574d8-2b02-40a7-8229-20a24acc081e",
+        "text": "However the volumes (for T20) are very compelling and modelling it is certainly intellectual stimulating",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "edTR",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "However the volumes (for T20) are very compelling and modelling it is certainly intellectual stimulating"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "ULDAVFDRP",
+        "type": "message",
+        "ts": "1631515814.204000",
+        "client_msg_id": "408c4c77-f7fc-4bac-8cb0-4551d4c8e4ae",
+        "text": "Yes personally I like the sport \/ play it and from a betting point of view it certainly seems interesting. Just wondering if its worth giving a few hours to each week as a prototype now summer racing is gone. I cant really remember too many people in here say they do it. I watched the first 8 overs of a CPL game on friday I think it was and thought price movements for smallish things happening were fairly decent.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g46fe1c1bf03",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/b46fe1c1bf03e18d951e7032fb494283.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0019-72.png",
+            "first_name": "",
+            "real_name": "Oliver Varney",
+            "display_name": "Oliver Varney",
+            "team": "T4G9NBD2M",
+            "name": "oliverashleyvarney",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "ao=",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Yes personally I like the sport \/ play it and from a betting point of view it certainly seems interesting. Just wondering if its worth giving a few hours to each week as a prototype now summer racing is gone. I cant really remember too many people in here say they do it. I watched the first 8 overs of a CPL game on friday I think it was and thought price movements for smallish things happening were fairly decent."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "ULDAVFDRP",
+        "type": "message",
+        "ts": "1631515859.204600",
+        "client_msg_id": "28d002bc-68b8-4d5e-b669-a79d92e30c61",
+        "text": "and racing volumes as a sports seems to be going nowhere but down in the long run",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g46fe1c1bf03",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/b46fe1c1bf03e18d951e7032fb494283.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0019-72.png",
+            "first_name": "",
+            "real_name": "Oliver Varney",
+            "display_name": "Oliver Varney",
+            "team": "T4G9NBD2M",
+            "name": "oliverashleyvarney",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "BzT",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "and racing volumes as a sports seems to be going nowhere but down in the long run"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

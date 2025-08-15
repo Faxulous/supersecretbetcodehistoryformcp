@@ -1,0 +1,1401 @@
+[
+    {
+        "user": "U016TGY3676",
+        "type": "message",
+        "ts": "1608731707.129900",
+        "client_msg_id": "d7ac4b42-8bcd-4bf4-bba8-901235375969",
+        "text": "Quick question regarding Flumine...to get the matched bets liabilities for each runner, do we need to calculate in process_orders() or are they already calculated but I've not found the parameter yet?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6a681220e11",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6a681220e11c1a2ed3685375d658dadb.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0001-72.png",
+            "first_name": "",
+            "real_name": "birchy",
+            "display_name": "birchy",
+            "team": "T4G9NBD2M",
+            "name": "birchy",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "n5nL",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Quick question regarding Flumine...to get the matched bets liabilities for each runner, do we need to calculate in process_orders() or are they already calculated but I've not found the parameter yet?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1608732372.130400",
+        "client_msg_id": "ADB7E935-CA9A-4167-AE95-D26770D5E906",
+        "text": "I think there are a few helper functions in the blotter ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "MSt",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I think there are a few helper functions in the blotter "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "U016TGY3676"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1608732402.130700",
+        "client_msg_id": "3e2310f3-639a-473f-a34b-2bb60576e981",
+        "text": "<https:\/\/github.com\/liampauling\/flumine\/blob\/master\/flumine\/markets\/blotter.py>\n\nSelection exposure might be what you're after?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "attachments": [
+            {
+                "fallback": "[liampauling\/flumine] flumine\/markets\/blotter.py",
+                "text": "```\nimport logging\nfrom typing import Iterable\n\nfrom ..order.ordertype import OrderTypes\nfrom ..utils import chunks, calculate_unmatched_exposure, calculate_matched_exposure\nfrom ..order.order import BaseOrder, OrderStatus\nfrom ..order.orderpackage import OrderPackageType, BetfairOrderPackage\n\nlogger = logging.getLogger(__name__)\n\n# <https:\/\/www.betfair.com\/aboutUs\/Betfair.Charges\/#charges6>\nIMPLIED_COMMISSION_RATE = 0.03\n\n\nclass Blotter:\n    def __init__(self, market_id: str):\n        self.market_id = market_id\n        self._orders = {}  # {Order.id: Order}\n        self._live_orders = []  # cached list of live orders\n        # pending orders\n        self.pending_place = []\n        self.pending_cancel = []\n        self.pending_update = []\n        self.pending_replace = []\n\n    def strategy_orders(self, strategy) -&gt; list:\n        \"\"\"Returns all orders related to a strategy.\"\"\"\n        return [order for order in self if order.trade.strategy == strategy]\n\n    def process_orders(self, client, bet_delay: int = 0) -&gt; list:\n        packages = []\n        if self.pending_place:\n            packages += self._create_packages(\n                client, self.pending_place, OrderPackageType.PLACE, bet_delay\n            )\n        if self.pending_cancel:\n            packages += self._create_packages(\n                client, self.pending_cancel, OrderPackageType.CANCEL, bet_delay\n            )\n        if self.pending_update:\n            packages += self._create_packages(\n                client, self.pending_update, OrderPackageType.UPDATE, bet_delay\n            )\n        if self.pending_replace:\n            packages += self._create_packages(\n                client, self.pending_replace, OrderPackageType.REPLACE, bet_delay\n            )\n        if packages:\n            <http:\/\/logger.info|logger.info>(\n                \"%s order packages created\" % len(packages),\n                extra={\n                    \"order_packages\": [o.info for o in packages],\n                    \"bet_delay\": bet_delay,\n                },\n            )\n        return packages\n\n    def _create_packages(\n        self, client, orders: list, package_type: OrderPackageType, bet_delay: int\n    ) -&gt; list:\n        packages = []\n        _package_cls = BetfairOrderPackage\n        limit = _package_cls.order_limit(package_type)\n        for chunked_orders in chunks(orders, limit):\n            order_package = _package_cls(\n                client=client,\n                market_id=self.market_id,\n                orders=chunked_orders,\n                package_type=package_type,\n                bet_delay=bet_delay,\n            )\n            packages.append(order_package)\n        orders.clear()\n        return packages\n\n    @property\n    def pending_orders(self) -&gt; bool:\n        return any(\n            (\n                self.pending_place,\n                self.pending_cancel,\n                self.pending_update,\n                self.pending_replace,\n            )\n        )\n\n    @property\n    def live_orders(self):\n        return iter(self._live_orders)\n\n    @property\n    def has_live_orders(self) -&gt; bool:\n        return bool(self._live_orders)\n\n    def process_closed_market(self, market_book) -&gt; None:\n        for order in self:\n            for runner in market_book.runners:\n                if (order.selection_id, order.handicap) == (\n                    runner.selection_id,\n                    runner.handicap,\n                ):\n                    order.runner_status = runner.status\n\n    def process_cleared_orders(self, cleared_orders) -&gt; list:\n        # todo update order.cleared?\n        return [order for order in self]\n\n    \"\"\" position \"\"\"\n\n    def selection_exposure(self, strategy, lookup: tuple) -&gt; float:\n        \"\"\"Returns strategy\/selection exposure, which is the worse-case loss arising\n        from the selection either winning or losing. Can be positive or zero.\n            positive = potential loss\n            zero = no potential loss\n        \"\"\"\n        mb, ml = [], []  # matched bets, (price, size)\n        ub, ul = [], []  # unmatched bets, (price, size)\n        moc_win_liability = 0.0\n        moc_lose_liability = 0.0\n        for order in self:\n            if order.trade.strategy == strategy and order.lookup == lookup:\n                if order.status == OrderStatus.VIOLATION:\n                    continue\n\n                if order.order_type.ORDER_TYPE == OrderTypes.LIMIT:\n                    if order.size_matched:\n                        if order.side == \"BACK\":\n                            mb.append((order.average_price_matched, order.size_matched))\n                        else:\n                            ml.append((order.average_price_matched, order.size_matched))\n                    if order.order_type.price and order.size_remaining:\n                        if order.side == \"BACK\":\n                            ub.append((order.order_type.price, order.size_remaining))\n                        else:\n                            ul.append((order.order_type.price, order.size_remaining))\n                elif order.order_type.ORDER_TYPE in (\n                    OrderTypes.LIMIT_ON_CLOSE,\n                    OrderTypes.MARKET_ON_CLOSE,\n                ):\n                    if order.side == \"BACK\":\n                        moc_lose_liability -= order.order_type.liability\n                    else:\n                        moc_win_liability -= order.order_type.liability\n                else:\n                    raise ValueError(\n                        \"Unexpected order type: %s\" % order.order_type.ORDER_TYPE\n                    )\n\n        matched_exposure = calculate_matched_exposure(mb, ml)\n        unmatched_exposure = calculate_unmatched_exposure(ub, ul)\n\n        worst_possible_profit_on_win = (\n            matched_exposure[0] + unmatched_exposure[0] + moc_win_liability\n        )\n        worst_possible_profit_on_lose = (\n            matched_exposure[1] + unmatched_exposure[1] + moc_lose_liability\n        )\n        exposure = -min(worst_possible_profit_on_win, worst_possible_profit_on_lose)\n        return max(exposure, 0.0)\n\n    \"\"\" getters \/ setters \"\"\"\n\n    def complete_order(self, order) -&gt; None:\n        self._live_orders.remove(order)\n\n    def has_order(self, customer_order_ref: str) -&gt; bool:\n        return customer_order_ref in self._orders\n\n    __contains__ = has_order\n\n    def __setitem__(self, customer_order_ref: str, order) -&gt; None:\n        self._orders[customer_order_ref] = order\n        self._live_orders.append(order)\n\n    def __getitem__(self, customer_order_ref: str):\n        return self._orders[customer_order_ref]\n\n    def __iter__(self) -&gt; Iterable[BaseOrder]:\n        return iter(list(self._orders.values()))\n\n    def __len__(self) -&gt; int:\n        return len(self._orders)\n\n```",
+                "title": "flumine\/markets\/blotter.py",
+                "footer": "<https:\/\/github.com\/liampauling\/flumine|liampauling\/flumine>",
+                "id": 1,
+                "title_link": "https:\/\/github.com\/liampauling\/flumine\/blob\/master\/flumine\/markets\/blotter.py",
+                "footer_icon": "https:\/\/github.githubassets.com\/favicon.ico",
+                "color": "24292f",
+                "mrkdwn_in": [
+                    "text"
+                ],
+                "bot_id": "B01144Z0734",
+                "app_unfurl_url": "https:\/\/github.com\/liampauling\/flumine\/blob\/master\/flumine\/markets\/blotter.py",
+                "is_app_unfurl": true
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "DY2d9",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/liampauling\/flumine\/blob\/master\/flumine\/markets\/blotter.py"
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n\nSelection exposure might be what you're after?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "U016TGY3676"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "subtype": "channel_join",
+        "user": "U01HQ97J5HA",
+        "text": "<@U01HQ97J5HA> has joined the channel",
+        "type": "message",
+        "ts": "1608737222.131000"
+    },
+    {
+        "user": "U01HQ97J5HA",
+        "type": "message",
+        "ts": "1608737441.133000",
+        "client_msg_id": "a37f7ac5-11e2-4ad1-a212-eb6c56f2f809",
+        "text": "New guy here.\n\nManually traded for 4 years and realise would be sensible to explore automation properly.\n\nMy first task is to learn python.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "32438a94ff5b",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-12-23\/1596357610883_32438a94ff5b8841a65e_72.jpg",
+            "first_name": "Christopher",
+            "real_name": "Christopher Croft",
+            "display_name": "Crofty",
+            "team": "T4G9NBD2M",
+            "name": "telephoneprospector",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1608737441.133000",
+        "reply_count": 2,
+        "reply_users_count": 2,
+        "latest_reply": "1608744118.145800",
+        "reply_users": [
+            "U01HPRM31G8",
+            "U01HQ97J5HA"
+        ],
+        "replies": [
+            {
+                "user": "U01HPRM31G8",
+                "ts": "1608739982.144600"
+            },
+            {
+                "user": "U01HQ97J5HA",
+                "ts": "1608744118.145800"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": false,
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "aq+zQ",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "New guy here.\n\nManually traded for 4 years and realise would be sensible to explore automation properly.\n\nMy first task is to learn python."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "wave",
+                "users": [
+                    "U010GM77S4W",
+                    "U4H19D1D2",
+                    "U01HQ97J5HA"
+                ],
+                "count": 3
+            },
+            {
+                "name": "100",
+                "users": [
+                    "U016TGY3676"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "U016TGY3676",
+        "type": "message",
+        "ts": "1608737971.136600",
+        "client_msg_id": "d111a843-cde4-4404-a01c-053b8e82b986",
+        "text": "Thanks for the guidance <@U4H19D1D2>  and <@UFTBRB3F1>. I thought there might already be something in there. Presumably I need to build the mb\/ml lists from the orders, or do they exist already in the blotter?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6a681220e11",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6a681220e11c1a2ed3685375d658dadb.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0001-72.png",
+            "first_name": "",
+            "real_name": "birchy",
+            "display_name": "birchy",
+            "team": "T4G9NBD2M",
+            "name": "birchy",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "YQI",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Thanks for the guidance "
+                            },
+                            {
+                                "type": "user",
+                                "user_id": "U4H19D1D2"
+                            },
+                            {
+                                "type": "text",
+                                "text": "  and "
+                            },
+                            {
+                                "type": "user",
+                                "user_id": "UFTBRB3F1"
+                            },
+                            {
+                                "type": "text",
+                                "text": ". I thought there might already be something in there. Presumably I need to build the mb\/ml lists from the orders, or do they exist already in the blotter?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1608738017.137100",
+        "client_msg_id": "a6814e4b-f530-4d0a-bda3-297507d18d67",
+        "text": "the matched bets are already in there",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "grEQ",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "the matched bets are already in there"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1608738038.137600",
+        "client_msg_id": "36bd9d42-f49c-474c-9368-4f1dc35efcac",
+        "text": "I think the function was updated fairly recently though and I haven't played around with it since the update",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "A=La",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I think the function was updated fairly recently though and I haven't played around with it since the update"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1608738068.138400",
+        "client_msg_id": "eb01834a-1b7c-4177-bc9f-4c9eb8909244",
+        "text": "(I think now it looks at overall liability across all runers)",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "2q=",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "(I think now it looks at overall liability across all runers)"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1608738074.138900",
+        "client_msg_id": "4E12232D-81D7-4304-BBD8-834896D5725B",
+        "text": "Welcome and you are in the right group for that :+1:",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "bpiX",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Welcome and you are in the right group for that "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "+1",
+                                "unicode": "1f44d"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1608738075.139000",
+        "client_msg_id": "65e3a72f-4e12-481e-b5ea-814341551d28",
+        "text": "previously it was just orders for that particular runner",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Cll",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "previously it was just orders for that particular runner"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1608738167.140500",
+        "edited": {
+            "user": "UFTBRB3F1",
+            "ts": "1608738741.000000"
+        },
+        "client_msg_id": "fc3b71f5-f0a1-452e-97ce-b5df800c9d01",
+        "text": "I'm probably explaining that badly, but in essence, the last line probably explains it better than I did!\n\n```exposure = -min(worst_possible_profit_on_win, worst_possible_profit_on_lose)\nreturn max(exposure, 0.0)```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "j\/Dz",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I'm probably explaining that badly, but in essence, the last line probably explains it better than I did!\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "exposure = -min(worst_possible_profit_on_win, worst_possible_profit_on_lose)\nreturn max(exposure, 0.0)"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1608738604.141400",
+        "client_msg_id": "B51D498F-41FF-4C32-89FB-071A87F662FC",
+        "text": "Welcome <@U01HQ97J5HA> ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "A82PU",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Welcome "
+                            },
+                            {
+                                "type": "user",
+                                "user_id": "U01HQ97J5HA"
+                            },
+                            {
+                                "type": "text",
+                                "text": " "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U016TGY3676",
+        "type": "message",
+        "ts": "1608739575.142300",
+        "client_msg_id": "156488c5-069f-4076-8277-7c36a17969bc",
+        "text": "Oh... I'm not seeing the matched orders or liabilities in the blotter? Obviously overlooking it. Or is it because I'm developing as backtest?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6a681220e11",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6a681220e11c1a2ed3685375d658dadb.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0001-72.png",
+            "first_name": "",
+            "real_name": "birchy",
+            "display_name": "birchy",
+            "team": "T4G9NBD2M",
+            "name": "birchy",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "1yv",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Oh... I'm not seeing the matched orders or liabilities in the blotter? Obviously overlooking it. Or is it because I'm developing as backtest?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "text": "",
+        "files": [
+            {
+                "id": "F01H3E1MWS3",
+                "mode": "hidden_by_limit"
+            }
+        ],
+        "upload": false,
+        "user": "U016TGY3676",
+        "display_as_bot": false,
+        "type": "message",
+        "ts": "1608739662.142400"
+    },
+    {
+        "user": "U016TGY3676",
+        "type": "message",
+        "ts": "1608739716.143500",
+        "client_msg_id": "837aea54-5caa-4631-83e9-cea440af0ddf",
+        "text": "That's with at least one fully matched order according to `process_orders()`  in my strategy.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6a681220e11",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6a681220e11c1a2ed3685375d658dadb.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0001-72.png",
+            "first_name": "",
+            "real_name": "birchy",
+            "display_name": "birchy",
+            "team": "T4G9NBD2M",
+            "name": "birchy",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "R0n",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "That's with at least one fully matched order according to "
+                            },
+                            {
+                                "type": "text",
+                                "text": "process_orders()",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "  in my strategy."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01HPRM31G8",
+        "type": "message",
+        "ts": "1608739982.144600",
+        "client_msg_id": "96EF6675-59B8-474A-B46E-ABC7BF2FB9CC",
+        "text": "Do you have any software development or data analysis experience?\n",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "ga1c31a17334",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a1c31a1733448fccbcf8a01fe21b89c3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0007-72.png",
+            "first_name": "John",
+            "real_name": "John A",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "adamjohnson1872",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1608737441.133000",
+        "parent_user_id": "U01HQ97J5HA",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "awE",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Do you have any software development or data analysis experience?\n"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1608740384.145600",
+        "edited": {
+            "user": "U4H19D1D2",
+            "ts": "1608742029.000000"
+        },
+        "client_msg_id": "9A094756-CDDC-47C1-BDBF-21921F5072E7",
+        "text": "All the orders are in _orders so it’s hidden at the bottom (_`protected___attributes`) or you can loop it with `for order in blotter:`",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1608740384.145600",
+        "reply_count": 1,
+        "reply_users_count": 1,
+        "latest_reply": "1608745007.150200",
+        "reply_users": [
+            "U016TGY3676"
+        ],
+        "replies": [
+            {
+                "user": "U016TGY3676",
+                "ts": "1608745007.150200"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": true,
+        "last_read": "1608745007.150200",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "AxvVs",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "All the orders are in "
+                            },
+                            {
+                                "type": "text",
+                                "text": "orders so it’s hidden at the bottom (",
+                                "style": {
+                                    "italic": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "protected",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "_",
+                                "style": {
+                                    "italic": true,
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "attributes",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": ") or you can loop it with "
+                            },
+                            {
+                                "type": "text",
+                                "text": "for order in blotter:",
+                                "style": {
+                                    "code": true
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01HQ97J5HA",
+        "type": "message",
+        "ts": "1608744118.145800",
+        "client_msg_id": "e9ec64c4-6bc3-4049-b814-f9bd47ffc6ec",
+        "text": "None at all but I work on the basis that neither did anyone here at some point :grinning:\n\nSeriously though, I'm very realistic about what's involved and if nothing else, I get to meet some new people.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "32438a94ff5b",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-12-23\/1596357610883_32438a94ff5b8841a65e_72.jpg",
+            "first_name": "Christopher",
+            "real_name": "Christopher Croft",
+            "display_name": "Crofty",
+            "team": "T4G9NBD2M",
+            "name": "telephoneprospector",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1608737441.133000",
+        "parent_user_id": "U01HQ97J5HA",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "w+V",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "None at all but I work on the basis that neither did anyone here at some point "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "grinning",
+                                "unicode": "1f600"
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n\nSeriously though, I'm very realistic about what's involved and if nothing else, I get to meet some new people."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "U0131E2H1SP"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "U01C12ZEADQ",
+        "type": "message",
+        "ts": "1608744611.147100",
+        "client_msg_id": "688463e6-aab7-48b1-98d1-0ebd63e9ba06",
+        "text": "hey folks, what's the canonical way of attaching something to an order so that I can later print it in the blotter (backtesting) ? i see the Trade notes don't get copied, but I can't find an easy way to put something else.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "e3b7687b0ef8",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-10-06\/1432945617648_e3b7687b0ef86e4f28b8_72.png",
+            "first_name": "Alessio",
+            "real_name": "Alessio",
+            "display_name": "Alessio",
+            "team": "T4G9NBD2M",
+            "name": "alessio",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "gIDT",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "hey folks, what's the canonical way of attaching something to an order so that I can later print it in the blotter (backtesting) ? i see the Trade notes don't get copied, but I can't find an easy way to put something else."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1608744686.147500",
+        "client_msg_id": "B9F65B75-5A8D-4C54-93EF-7EC36C7E4617",
+        "text": "What’s wrong with trade.notes?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Z6rPJ",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "What’s wrong with trade.notes?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1608744703.148000",
+        "client_msg_id": "CECF7CC1-C3D0-41BA-B708-DA2B5493A4DD",
+        "text": "You can always add your own such as order.notes ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "=Pd1b",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "You can always add your own such as order.notes "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01C12ZEADQ",
+        "type": "message",
+        "ts": "1608744952.149100",
+        "client_msg_id": "9c62d16d-7c9d-45e7-8207-47d0a5fca0ba",
+        "text": "Oh the  order has the trade inside, not the other way around.. that's what I didn't realize..",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "e3b7687b0ef8",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-10-06\/1432945617648_e3b7687b0ef86e4f28b8_72.png",
+            "first_name": "Alessio",
+            "real_name": "Alessio",
+            "display_name": "Alessio",
+            "team": "T4G9NBD2M",
+            "name": "alessio",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "t=xN",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Oh the  order has the trade inside, not the other way around.. that's what I didn't realize.."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01C12ZEADQ",
+        "type": "message",
+        "ts": "1608744964.149500",
+        "edited": {
+            "user": "U01C12ZEADQ",
+            "ts": "1608744972.000000"
+        },
+        "client_msg_id": "416f703b-6f33-40c1-b48b-703409d7540e",
+        "text": "so i guess order.trade.notes will work",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "e3b7687b0ef8",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-10-06\/1432945617648_e3b7687b0ef86e4f28b8_72.png",
+            "first_name": "Alessio",
+            "real_name": "Alessio",
+            "display_name": "Alessio",
+            "team": "T4G9NBD2M",
+            "name": "alessio",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "4lgeP",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "so i guess order.trade.notes will work"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1608744985.149700",
+        "client_msg_id": "446F11CE-8C38-4B69-ABEB-9C290C82E848",
+        "text": "Yeah trades have orders but you can access the trade from the order as above ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "w67sD",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Yeah trades have orders but you can access the trade from the order as above "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01C12ZEADQ",
+        "type": "message",
+        "ts": "1608745003.150000",
+        "client_msg_id": "485e84de-f907-49f1-af77-2dcd6384a7dd",
+        "text": "k k,  thanks!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "e3b7687b0ef8",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-10-06\/1432945617648_e3b7687b0ef86e4f28b8_72.png",
+            "first_name": "Alessio",
+            "real_name": "Alessio",
+            "display_name": "Alessio",
+            "team": "T4G9NBD2M",
+            "name": "alessio",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "p02g",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "k k,  thanks!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U016TGY3676",
+        "type": "message",
+        "ts": "1608745007.150200",
+        "client_msg_id": "32f1a4db-de0f-45be-b739-c318b6aa8892",
+        "text": "Thank you mate. Was getting myself into an infinite loop with that.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6a681220e11",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6a681220e11c1a2ed3685375d658dadb.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0001-72.png",
+            "first_name": "",
+            "real_name": "birchy",
+            "display_name": "birchy",
+            "team": "T4G9NBD2M",
+            "name": "birchy",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1608740384.145600",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "v2e5",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Thank you mate. Was getting myself into an infinite loop with that."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "subtype": "channel_join",
+        "user": "U01J98RDHRN",
+        "text": "<@U01J98RDHRN> has joined the channel",
+        "type": "message",
+        "ts": "1608788848.151800"
+    },
+    {
+        "user": "U01J98RDHRN",
+        "type": "message",
+        "ts": "1608788958.152600",
+        "client_msg_id": "2da3b3b1-ab1a-4e83-b1f9-c92ffd6deadb",
+        "text": "Hey guys, I'm new to the betfair API and having some fun messing with it.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "8b8d5a5cf363",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2021-05-13\/2062433979347_8b8d5a5cf363b0cb041b_72.jpg",
+            "first_name": "",
+            "real_name": "Sam Asin",
+            "display_name": "Sam Asin",
+            "team": "T4G9NBD2M",
+            "name": "asin.sam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "YT78N",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Hey guys, I'm new to the betfair API and having some fun messing with it."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01J98RDHRN",
+        "type": "message",
+        "ts": "1608789250.154400",
+        "client_msg_id": "7614d282-d9ec-4cd1-9cd2-b5c7546b144e",
+        "text": "Right now I only have this delayed API key, and i see a lot of chatter about how useless it is. Does anyone have any tips for getting the non-delayed key active? Do I have to just pay betfair for it or something?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "8b8d5a5cf363",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2021-05-13\/2062433979347_8b8d5a5cf363b0cb041b_72.jpg",
+            "first_name": "",
+            "real_name": "Sam Asin",
+            "display_name": "Sam Asin",
+            "team": "T4G9NBD2M",
+            "name": "asin.sam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "aIw0",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Right now I only have this delayed API key, and i see a lot of chatter about how useless it is. Does anyone have any tips for getting the non-delayed key active? Do I have to just pay betfair for it or something?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01EYDA8345",
+        "type": "message",
+        "ts": "1608790348.155500",
+        "edited": {
+            "user": "U01EYDA8345",
+            "ts": "1608799467.000000"
+        },
+        "client_msg_id": "1960f911-d57e-4257-accb-79333834a1c0",
+        "text": "Hey Sam, write <@U4H19D1D2> a message.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "f85e9daa4f82",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-11-19\/1519870713748_f85e9daa4f821f26e3d2_72.jpg",
+            "first_name": "",
+            "real_name": "Artur Gräfenstein",
+            "display_name": "Artur Gräfenstein",
+            "team": "T4G9NBD2M",
+            "name": "grefenstein.artur",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1608790348.155500",
+        "reply_count": 6,
+        "reply_users_count": 3,
+        "latest_reply": "1608799598.158400",
+        "reply_users": [
+            "UBS7QANF3",
+            "ULDAVFDRP",
+            "U01EYDA8345"
+        ],
+        "replies": [
+            {
+                "user": "UBS7QANF3",
+                "ts": "1608798729.157100"
+            },
+            {
+                "user": "ULDAVFDRP",
+                "ts": "1608798792.157300"
+            },
+            {
+                "user": "U01EYDA8345",
+                "ts": "1608798802.157500"
+            },
+            {
+                "user": "U01EYDA8345",
+                "ts": "1608798926.157700"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1608799092.157900"
+            },
+            {
+                "user": "U01EYDA8345",
+                "ts": "1608799598.158400"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": true,
+        "last_read": "1608799598.158400",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Wlp",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Hey Sam, write "
+                            },
+                            {
+                                "type": "user",
+                                "user_id": "U4H19D1D2"
+                            },
+                            {
+                                "type": "text",
+                                "text": " a message."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01J98RDHRN",
+        "type": "message",
+        "ts": "1608791265.157000",
+        "client_msg_id": "dd42cbd0-feb8-4a7a-a9a8-22b0a1947d9c",
+        "text": "thanks artur! I'll DM Liam too and see what he says!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "8b8d5a5cf363",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2021-05-13\/2062433979347_8b8d5a5cf363b0cb041b_72.jpg",
+            "first_name": "",
+            "real_name": "Sam Asin",
+            "display_name": "Sam Asin",
+            "team": "T4G9NBD2M",
+            "name": "asin.sam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "eReTu",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "thanks artur! I'll DM Liam too and see what he says!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

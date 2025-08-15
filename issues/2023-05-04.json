@@ -1,0 +1,180 @@
+[
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1683186588.476029",
+        "client_msg_id": "74eb5da6-1e9e-4e22-b6a6-e4fcefbf67d0",
+        "text": "Almost, does this make sense:\n\n```class FootballFavBacker(BaseStrategy):\n\n    def check_market_book(self, market, market_book):\n        if \"fav_selection_id\" not in market.context:\n            if market_book.status == \"OPEN\" and market.seconds_to_start &lt; 60:\n                # store favourite's starting price\n                runners = sorted(\n                    market_book.runners, key=lambda r: get_price(r.ex.available_to_back, 0) or 1001\n                )\n                if runners:\n                    fav = runners[0]\n                    market.context[\"fav_selection_id\"] = fav.selection_id\n                    market.context[\"fav_starting_price\"] = get_price(fav.ex.available_to_back, 0)\n                    market.context[\"market_start_time\"] = market_book.market_definition.market_time\n                    print(\"Updated context:\", market.context[\"fav_starting_price\"], market.context[\"market_start_time\"])\n\n        # process when market open and inplay\n        if market_book.status == \"OPEN\" and market_book.inplay:\n            return True\n\n    def process_market_book(self, market, market_book):\n        fav_selection_id = market.context.get(\"fav_selection_id\")\n        if fav_selection_id:\n            # get favourite\n            runners = {r.selection_id: r for r in market_book.runners}\n            if runners:\n                fav = runners[fav_selection_id]\n                # get favourite's odds from context\n                fav_current_price = get_price(fav.ex.available_to_back, 0)\n                fav_starting_price = market.context[\"fav_starting_price\"]\n\n                if fav_current_price &gt; fav_starting_price * 1.2:\n                    # place BACK bet on the favourite\n                    runner_context = self.get_runner_context(\n                        market.market_id, fav.selection_id, fav.handicap\n                    )\n                    if runner_context.trade_count == 0:\n                        trade = Trade(\n                            market.market_id, fav.selection_id, fav.handicap, self\n                        )\n                        order = trade.create_order(\n                            side=\"BACK\",\n                            order_type=LimitOrder(\n                                get_price(fav.ex.available_to_back, 0),\n                                size=5,\n                            ),\n                        )\n                        market.place_order(order)```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1683182688.081329",
+        "parent_user_id": "U03N5G2T8S0",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "FwTVz",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Almost, does this make sense:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "class FootballFavBacker(BaseStrategy):\n\n    def check_market_book(self, market, market_book):\n        if \"fav_selection_id\" not in market.context:\n            if market_book.status == \"OPEN\" and market.seconds_to_start < 60:\n                # store favourite's starting price\n                runners = sorted(\n                    market_book.runners, key=lambda r: get_price(r.ex.available_to_back, 0) or 1001\n                )\n                if runners:\n                    fav = runners[0]\n                    market.context[\"fav_selection_id\"] = fav.selection_id\n                    market.context[\"fav_starting_price\"] = get_price(fav.ex.available_to_back, 0)\n                    market.context[\"market_start_time\"] = market_book.market_definition.market_time\n                    print(\"Updated context:\", market.context[\"fav_starting_price\"], market.context[\"market_start_time\"])\n\n        # process when market open and inplay\n        if market_book.status == \"OPEN\" and market_book.inplay:\n            return True\n\n    def process_market_book(self, market, market_book):\n        fav_selection_id = market.context.get(\"fav_selection_id\")\n        if fav_selection_id:\n            # get favourite\n            runners = {r.selection_id: r for r in market_book.runners}\n            if runners:\n                fav = runners[fav_selection_id]\n                # get favourite's odds from context\n                fav_current_price = get_price(fav.ex.available_to_back, 0)\n                fav_starting_price = market.context[\"fav_starting_price\"]\n\n                if fav_current_price > fav_starting_price * 1.2:\n                    # place BACK bet on the favourite\n                    runner_context = self.get_runner_context(\n                        market.market_id, fav.selection_id, fav.handicap\n                    )\n                    if runner_context.trade_count == 0:\n                        trade = Trade(\n                            market.market_id, fav.selection_id, fav.handicap, self\n                        )\n                        order = trade.create_order(\n                            side=\"BACK\",\n                            order_type=LimitOrder(\n                                get_price(fav.ex.available_to_back, 0),\n                                size=5,\n                            ),\n                        )\n                        market.place_order(order)"
+                            }
+                        ],
+                        "border": 0
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U03N5G2T8S0",
+        "type": "message",
+        "ts": "1683188682.409749",
+        "client_msg_id": "ddd5dcc1-e50f-41b7-8608-637938764680",
+        "text": "Thanks <@U4H19D1D2>! I see where I went wrong... I was continually updating the fav_starting_price in the check_market_book function.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "ge1f468aaaa7",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/e1f468aaaa76b35cffe4aad049ab92ad.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0001-72.png",
+            "first_name": "Nick",
+            "real_name": "Nick S",
+            "display_name": "Nick",
+            "team": "T4G9NBD2M",
+            "name": "nicksim1980",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1683182688.081329",
+        "parent_user_id": "U03N5G2T8S0",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "y0C",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Thanks "
+                            },
+                            {
+                                "type": "user",
+                                "user_id": "U4H19D1D2"
+                            },
+                            {
+                                "type": "text",
+                                "text": "! I see where I went wrong... I was continually updating the fav_starting_price in the check_market_book function."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1683188725.161259",
+        "client_msg_id": "b318b1f0-d14a-4fa3-a5ca-85710f2812ae",
+        "text": "Yeah pretty much, just keep it simple, start with the check_market_book function and just print stuff till its doing what you want",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1683182688.081329",
+        "parent_user_id": "U03N5G2T8S0",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "KIm",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Yeah pretty much, just keep it simple, start with the check_market_book function and just print stuff till its doing what you want"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U03N5G2T8S0",
+        "type": "message",
+        "ts": "1683188929.815249",
+        "client_msg_id": "00720910-7bc3-47b4-a7f3-d7378eebb13f",
+        "text": "Yep I noticed you added the print there. Thanks for your help and tips.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "ge1f468aaaa7",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/e1f468aaaa76b35cffe4aad049ab92ad.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0001-72.png",
+            "first_name": "Nick",
+            "real_name": "Nick S",
+            "display_name": "Nick",
+            "team": "T4G9NBD2M",
+            "name": "nicksim1980",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1683182688.081329",
+        "parent_user_id": "U03N5G2T8S0",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Zq=",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Yep I noticed you added the print there. Thanks for your help and tips."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

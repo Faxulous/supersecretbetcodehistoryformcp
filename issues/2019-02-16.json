@@ -1,0 +1,3518 @@
+[
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1550338776.004800",
+        "client_msg_id": "50921cc7-820f-47ae-8a37-e52911d24a5a",
+        "text": "hello again, I have spent a lot of time stepping through the logic in a bit more of a sensible fashion and tidied things up a bit. From a logical point of view, I'm still missing something, the code appears to make sense and doesn't throw up any errors. I've setup a ping from the client, the server then responds with a pong...but only on the first ping. In the console.log on the client after that it pings away, but the server never receives them, which seems odd. I make the assumption that the error is actually along the lines of my server code is not looking for the ping, rather than any issue on the client side. I'm guessing there is an issue with Threads that I'm not understanding, because I can't see what else it could be.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "vmm\/D",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "hello again, I have spent a lot of time stepping through the logic in a bit more of a sensible fashion and tidied things up a bit. From a logical point of view, I'm still missing something, the code appears to make sense and doesn't throw up any errors. I've setup a ping from the client, the server then responds with a pong...but only on the first ping. In the console.log on the client after that it pings away, but the server never receives them, which seems odd. I make the assumption that the error is actually along the lines of my server code is not looking for the ping, rather than any issue on the client side. I'm guessing there is an issue with Threads that I'm not understanding, because I can't see what else it could be."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1550338792.005100",
+        "client_msg_id": "3cdd4ed5-86aa-4388-aa98-5beeea0d049a",
+        "text": "```\nimport os\nimport logging\nimport queue\nfrom threading import Thread\nfrom flask import Flask, render_template\nfrom flask_socketio import SocketIO, emit\nimport betfairlightweight\nfrom betfairlightweight.filters import (\n            streaming_market_filter,\n            streaming_market_data_filter,\n        )\n\n# setup logging\nlogging.basicConfig(level=<http:\/\/logging.INFO|logging.INFO>)  # change to DEBUG to see log all updates\n\n# create trading instance (app key must be activated for streaming)\nusername = os.environ.get('username')\ntrading = betfairlightweight.APIClient(user_name, password, appkey, certs=cert_path)\ntrading.login()\n\n# create queue\noutput_queue = queue.Queue()\n\n# create stream listener\nlistener = betfairlightweight.StreamListener(\n    output_queue=output_queue,\n)\n\n# create stream\nstream = trading.streaming.create_stream(\n    listener=listener,\n)\n\n# create filters (GB WIN racing)\nmarket_filter = streaming_market_filter(\n        event_type_ids=['7'],\n        country_codes=['US'],\n        market_types=['WIN'],\n)\nmarket_data_filter = streaming_market_data_filter(\n    fields=['EX_BEST_OFFERS', 'EX_MARKET_DEF'],\n    ladder_levels=3,\n)\n\n# subscribe\nstreaming_unique_id = stream.subscribe_to_markets(\n    market_filter=market_filter,\n    market_data_filter=market_data_filter,\n    conflate_ms=1000,  # send update every 1000ms\n)\n\n# start stream\nstream.start(_async=True)\n\n# Create a flask app\napp = Flask(__name__)\napp.config['SECRET_KEY'] = 'secret!'\n# Use the flask app to create a socketio decorator\nsocketio = SocketIO(app)\nthread = None\n\n@app.route('\/')\ndef index():\n    global thread\n    if thread is None:\n        thread = Thread(target=handle_message)\n        thread.start()\n        socketio.sleep(2)\n        return render_template('index.html')\n\n@socketio.on('connect', namespace='\/test')\ndef test_connect():\n        global thread\n        socketio.sleep(1)\n        market_books = output_queue.get()\n        print(market_books)\n        for market_book in market_books:\n             print(\n             market_book,\n             market_book.streaming_unique_id,  # unique id of stream (returned from subscribe request)\n             market_book.streaming_update,  # json update received\n             market_book.market_definition,  # streaming definition, similar to catalogue request\n             market_book.publish_time  # betfair publish time of update\n        )\n\n        for market_book in market_books:\n             emit('my_response', {'data': 'connect', 'mb': market_book.streaming_update, 'namespace': '\/test'})\n        socketio.sleep(1)\n@socketio.on('ping', namespace='\/test')\ndef handle_message(*_args, **_kwargs):\n    global thread\n    while True:\n        socketio.sleep(2)\n        emit('my_response', {'data': 'pong', 'mb': 'pong', 'namespace': '\/test'})\n        socketio.sleep(2)\n        market_books = output_queue.get()\n        print(market_books)\n\n        for market_book in market_books:\n            print(\n                market_book,\n                market_book.streaming_unique_id,  # unique id of stream (returned from subscribe request)\n                market_book.streaming_update,  # json update received\n                market_book.market_definition,  # streaming definition, similar to catalogue request\n                market_book.publish_time  # betfair publish time of update\n            )\n\n        for market_book in market_books:\n            emit('my_response', {'data': 'update', 'mb': market_book.streaming_update, 'namespace': '\/test'})\n        socketio.sleep(1)\n\nif __name__ == '__main__':\n    socketio.run(app, debug=True, host='127.0.0.1', port=5000)\nstream.stop()\n```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "=BQ",
+                "elements": [
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "import os\nimport logging\nimport queue\nfrom threading import Thread\nfrom flask import Flask, render_template\nfrom flask_socketio import SocketIO, emit\nimport betfairlightweight\nfrom betfairlightweight.filters import (\n            streaming_market_filter,\n            streaming_market_data_filter,\n        )\n\n# setup logging\nlogging.basicConfig(level="
+                            },
+                            {
+                                "type": "link",
+                                "url": "http:\/\/logging.INFO",
+                                "text": "logging.INFO"
+                            },
+                            {
+                                "type": "text",
+                                "text": ")  # change to DEBUG to see log all updates\n\n# create trading instance (app key must be activated for streaming)\nusername = os.environ.get('username')\ntrading = betfairlightweight.APIClient(user_name, password, appkey, certs=cert_path)\ntrading.login()\n\n# create queue\noutput_queue = queue.Queue()\n\n# create stream listener\nlistener = betfairlightweight.StreamListener(\n    output_queue=output_queue,\n)\n\n# create stream\nstream = trading.streaming.create_stream(\n    listener=listener,\n)\n\n# create filters (GB WIN racing)\nmarket_filter = streaming_market_filter(\n        event_type_ids=['7'],\n        country_codes=['US'],\n        market_types=['WIN'],\n)\nmarket_data_filter = streaming_market_data_filter(\n    fields=['EX_BEST_OFFERS', 'EX_MARKET_DEF'],\n    ladder_levels=3,\n)\n\n# subscribe\nstreaming_unique_id = stream.subscribe_to_markets(\n    market_filter=market_filter,\n    market_data_filter=market_data_filter,\n    conflate_ms=1000,  # send update every 1000ms\n)\n\n# start stream\nstream.start(_async=True)\n\n# Create a flask app\napp = Flask(__name__)\napp.config['SECRET_KEY'] = 'secret!'\n# Use the flask app to create a socketio decorator\nsocketio = SocketIO(app)\nthread = None\n\n@app.route('\/')\ndef index():\n    global thread\n    if thread is None:\n        thread = Thread(target=handle_message)\n        thread.start()\n        socketio.sleep(2)\n        return render_template('index.html')\n\n@socketio.on('connect', namespace='\/test')\ndef test_connect():\n        global thread\n        socketio.sleep(1)\n        market_books = output_queue.get()\n        print(market_books)\n        for market_book in market_books:\n             print(\n             market_book,\n             market_book.streaming_unique_id,  # unique id of stream (returned from subscribe request)\n             market_book.streaming_update,  # json update received\n             market_book.market_definition,  # streaming definition, similar to catalogue request\n             market_book.publish_time  # betfair publish time of update\n        )\n\n        for market_book in market_books:\n             emit('my_response', {'data': 'connect', 'mb': market_book.streaming_update, 'namespace': '\/test'})\n        socketio.sleep(1)\n@socketio.on('ping', namespace='\/test')\ndef handle_message(*_args, **_kwargs):\n    global thread\n    while True:\n        socketio.sleep(2)\n        emit('my_response', {'data': 'pong', 'mb': 'pong', 'namespace': '\/test'})\n        socketio.sleep(2)\n        market_books = output_queue.get()\n        print(market_books)\n\n        for market_book in market_books:\n            print(\n                market_book,\n                market_book.streaming_unique_id,  # unique id of stream (returned from subscribe request)\n                market_book.streaming_update,  # json update received\n                market_book.market_definition,  # streaming definition, similar to catalogue request\n                market_book.publish_time  # betfair publish time of update\n            )\n\n        for market_book in market_books:\n            emit('my_response', {'data': 'update', 'mb': market_book.streaming_update, 'namespace': '\/test'})\n        socketio.sleep(1)\n\nif __name__ == '__main__':\n    socketio.run(app, debug=True, host='127.0.0.1', port=5000)\nstream.stop()\n"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1550338800.005300",
+        "client_msg_id": "de27f35c-96ae-4ea3-973a-c09a6b9be02f",
+        "text": "The server logs:\n\n```\n...\nINFO:engineio.server:1726df8b49a247d288eaf69682a7e314: Sending packet MESSAGE data 2\/test,[\"my_response\",{\"data\":\"connect\",\"mb\":{\"id\":\"1.154978678\",\"marketDefinition\":{\"bspMarket\":true,\"turnInPlayEnabled\":false,\"persistenceEnabled\":false,\"marketBaseRate\":5,\"eventId\":\"29132645\",\"eventTypeId\":\"7\",\"numberOfWinners\":1,\"bettingType\":\"ODDS\",\"marketType\":\"WIN\",\"marketTime\":\"2019-02-17T00:42:00.000Z\",\"suspendTime\":\"2019-02-17T00:42:00.000Z\",\"bspReconciled\":false,\"complete\":true,\"inPlay\":false,\"crossMatching\":false,\"runnersVoidable\":false,\"numberOfActiveRunners\":9,\"betDelay\":0,\"status\":\"OPEN\",\"runners\":[{\"adjustmentFactor\":3.385,\"status\":\"ACTIVE\",\"sortPriority\":1,\"id\":22656315},{\"adjustmentFactor\":5.242,\"status\":\"ACTIVE\",\"sortPriority\":2,\"id\":15485733},{\"adjustmentFactor\":3.385,\"status\":\"ACTIVE\",\"sortPriority\":3,\"id\":18714219},{\"adjustmentFactor\":39.422,\"status\":\"ACTIVE\",\"sortPriority\":4,\"id\":16848322},{\"adjustmentFactor\":15.48,\"status\":\"ACTIVE\",\"sortPriority\":5,\"id\":18962512},{\"adjustmentFactor\":15.48,\"status\":\"ACTIVE\",\"sortPriority\":6,\"id\":22656316},{\"adjustmentFactor\":3.385,\"status\":\"ACTIVE\",\"sortPriority\":7,\"id\":22888268},{\"adjustmentFactor\":4.468,\"status\":\"ACTIVE\",\"sortPriority\":8,\"id\":13570670},{\"adjustmentFactor\":9.752,\"status\":\"ACTIVE\",\"sortPriority\":9,\"id\":16729511}],\"regulators\":[\"MR_INT\"],\"venue\":\"Turfway Park\",\"countryCode\":\"US\",\"discountAllowed\":true,\"timezone\":\"US\/Eastern\",\"openDate\":\"2019-02-16T23:15:00.000Z\",\"version\":2639247738,\"raceType\":\"Flat\",\"priceLadderDefinition\":{\"type\":\"CLASSIC\"}},\"rc\":[{\"batb\":[[0,1.2,1.84],[1,1.13,400],[2,1.01,10.41]],\"batl\":[[0,1000,1.66]],\"id\":13570670},{\"batb\":[[0,1.2,1.84],[1,1.13,400],[2,1.01,10.41]],\"batl\":[[0,990,1.82],[1,1000,1.71]],\"id\":15485733},{\"batb\":[[0,1.2,1.84],[1,1.13,400],[2,1.01,10.41]],\"batl\":[[0,1000,1.71]],\"id\":18714219},{\"batb\":[[0,1.2,1.84],[1,1.13,400],[2,1.01,10.41]],\"batl\":[[0,990,1.82],[1,1000,1.66]],\"id\":16729511},{\"batb\":[[0,1.2,1.84],[1,1.13,400],[2,1.01,10.41]],\"batl\":[[0,990,1.82],[1,1000,1.67]],\"id\":18962512},{\"batb\":[[0,1.2,1.84],[1,1.13,400],[2,1.01,10.64]],\"batl\":[[0,990,1.82],[1,1000,1.64]],\"id\":22656316},{\"batb\":[[0,1.2,1.84],[1,1.13,400],[2,1.01,10.41]],\"batl\":[[0,1000,1.66]],\"id\":22656315},{\"batb\":[[0,1.2,1.84],[1,1.13,400],[2,1.01,10.41]],\"batl\":[[0,990,1.82],[1,1000,1.66]],\"id\":16848322},{\"batb\":[[0,1.2,1.84],[1,1.13,400],[2,1.01,10.41]],\"batl\":[[0,1000,1.71]],\"id\":22888268}],\"img\":true},\"namespace\":\"\/test\"}]\nINFO:engineio.server:1726df8b49a247d288eaf69682a7e314: Sending packet MESSAGE data 0\/test\n127.0.0.1 - - [16\/Feb\/2019 17:33:37] \"POST \/socket.io\/?EIO=3&amp;transport=polling&amp;t=1550338415425-28&amp;sid=1726df8b49a247d288eaf69682a7e314 HTTP\/1.1\" 200 219 2.186162\nINFO:engineio.server:1726df8b49a247d288eaf69682a7e314: Upgrade to websocket successful\nINFO:engineio.server:1726df8b49a247d288eaf69682a7e314: Received packet MESSAGE data 2\/test,[\"ping\",\"localhost\"]\nINFO:socketio.server:received event \"ping\" from 1726df8b49a247d288eaf69682a7e314 [\/test]\nINFO:socketio.server:emitting event \"my_response\" to 1726df8b49a247d288eaf69682a7e314 [\/test]\nINFO:engineio.server:1726df8b49a247d288eaf69682a7e314: Sending packet MESSAGE data 2\/test,[\"my_response\",{\"data\":\"pong\",\"mb\":\"pong\",\"namespace\":\"\/test\"}]\n```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "BuC",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "The server logs:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "...\nINFO:engineio.server:1726df8b49a247d288eaf69682a7e314: Sending packet MESSAGE data 2\/test,[\"my_response\",{\"data\":\"connect\",\"mb\":{\"id\":\"1.154978678\",\"marketDefinition\":{\"bspMarket\":true,\"turnInPlayEnabled\":false,\"persistenceEnabled\":false,\"marketBaseRate\":5,\"eventId\":\"29132645\",\"eventTypeId\":\"7\",\"numberOfWinners\":1,\"bettingType\":\"ODDS\",\"marketType\":\"WIN\",\"marketTime\":\"2019-02-17T00:42:00.000Z\",\"suspendTime\":\"2019-02-17T00:42:00.000Z\",\"bspReconciled\":false,\"complete\":true,\"inPlay\":false,\"crossMatching\":false,\"runnersVoidable\":false,\"numberOfActiveRunners\":9,\"betDelay\":0,\"status\":\"OPEN\",\"runners\":[{\"adjustmentFactor\":3.385,\"status\":\"ACTIVE\",\"sortPriority\":1,\"id\":22656315},{\"adjustmentFactor\":5.242,\"status\":\"ACTIVE\",\"sortPriority\":2,\"id\":15485733},{\"adjustmentFactor\":3.385,\"status\":\"ACTIVE\",\"sortPriority\":3,\"id\":18714219},{\"adjustmentFactor\":39.422,\"status\":\"ACTIVE\",\"sortPriority\":4,\"id\":16848322},{\"adjustmentFactor\":15.48,\"status\":\"ACTIVE\",\"sortPriority\":5,\"id\":18962512},{\"adjustmentFactor\":15.48,\"status\":\"ACTIVE\",\"sortPriority\":6,\"id\":22656316},{\"adjustmentFactor\":3.385,\"status\":\"ACTIVE\",\"sortPriority\":7,\"id\":22888268},{\"adjustmentFactor\":4.468,\"status\":\"ACTIVE\",\"sortPriority\":8,\"id\":13570670},{\"adjustmentFactor\":9.752,\"status\":\"ACTIVE\",\"sortPriority\":9,\"id\":16729511}],\"regulators\":[\"MR_INT\"],\"venue\":\"Turfway Park\",\"countryCode\":\"US\",\"discountAllowed\":true,\"timezone\":\"US\/Eastern\",\"openDate\":\"2019-02-16T23:15:00.000Z\",\"version\":2639247738,\"raceType\":\"Flat\",\"priceLadderDefinition\":{\"type\":\"CLASSIC\"}},\"rc\":[{\"batb\":[[0,1.2,1.84],[1,1.13,400],[2,1.01,10.41]],\"batl\":[[0,1000,1.66]],\"id\":13570670},{\"batb\":[[0,1.2,1.84],[1,1.13,400],[2,1.01,10.41]],\"batl\":[[0,990,1.82],[1,1000,1.71]],\"id\":15485733},{\"batb\":[[0,1.2,1.84],[1,1.13,400],[2,1.01,10.41]],\"batl\":[[0,1000,1.71]],\"id\":18714219},{\"batb\":[[0,1.2,1.84],[1,1.13,400],[2,1.01,10.41]],\"batl\":[[0,990,1.82],[1,1000,1.66]],\"id\":16729511},{\"batb\":[[0,1.2,1.84],[1,1.13,400],[2,1.01,10.41]],\"batl\":[[0,990,1.82],[1,1000,1.67]],\"id\":18962512},{\"batb\":[[0,1.2,1.84],[1,1.13,400],[2,1.01,10.64]],\"batl\":[[0,990,1.82],[1,1000,1.64]],\"id\":22656316},{\"batb\":[[0,1.2,1.84],[1,1.13,400],[2,1.01,10.41]],\"batl\":[[0,1000,1.66]],\"id\":22656315},{\"batb\":[[0,1.2,1.84],[1,1.13,400],[2,1.01,10.41]],\"batl\":[[0,990,1.82],[1,1000,1.66]],\"id\":16848322},{\"batb\":[[0,1.2,1.84],[1,1.13,400],[2,1.01,10.41]],\"batl\":[[0,1000,1.71]],\"id\":22888268}],\"img\":true},\"namespace\":\"\/test\"}]\nINFO:engineio.server:1726df8b49a247d288eaf69682a7e314: Sending packet MESSAGE data 0\/test\n127.0.0.1 - - [16\/Feb\/2019 17:33:37] \"POST \/socket.io\/?EIO=3&transport=polling&t=1550338415425-28&sid=1726df8b49a247d288eaf69682a7e314 HTTP\/1.1\" 200 219 2.186162\nINFO:engineio.server:1726df8b49a247d288eaf69682a7e314: Upgrade to websocket successful\nINFO:engineio.server:1726df8b49a247d288eaf69682a7e314: Received packet MESSAGE data 2\/test,[\"ping\",\"localhost\"]\nINFO:socketio.server:received event \"ping\" from 1726df8b49a247d288eaf69682a7e314 [\/test]\nINFO:socketio.server:emitting event \"my_response\" to 1726df8b49a247d288eaf69682a7e314 [\/test]\nINFO:engineio.server:1726df8b49a247d288eaf69682a7e314: Sending packet MESSAGE data 2\/test,[\"my_response\",{\"data\":\"pong\",\"mb\":\"pong\",\"namespace\":\"\/test\"}]\n"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U5D4ZBEAG",
+        "type": "message",
+        "ts": "1550338810.005600",
+        "client_msg_id": "0335adf7-8b24-4e8e-aa30-3ca3b11a68a9",
+        "text": "while True:",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g147ed91a398",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/7147ed91a39866d363a9cfa66ef64cb8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0015-72.png",
+            "first_name": "",
+            "real_name": "seaders",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "seaders",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "bRX",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "while True:"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U5D4ZBEAG",
+        "type": "message",
+        "ts": "1550338813.005800",
+        "client_msg_id": "6cac058e-788e-4845-b25f-74f393327a51",
+        "text": "once again",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g147ed91a398",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/7147ed91a39866d363a9cfa66ef64cb8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0015-72.png",
+            "first_name": "",
+            "real_name": "seaders",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "seaders",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "XCD9z",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "once again"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U5D4ZBEAG",
+        "type": "message",
+        "ts": "1550338822.006100",
+        "client_msg_id": "8899b325-f0f9-4e47-a628-0d6300341b9c",
+        "text": "1 thread gets in, and never gets out",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g147ed91a398",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/7147ed91a39866d363a9cfa66ef64cb8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0015-72.png",
+            "first_name": "",
+            "real_name": "seaders",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "seaders",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "BhLu",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "1 thread gets in, and never gets out"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1550338910.007100",
+        "client_msg_id": "e573e20a-a92c-4731-aa60-ca0d5137b556",
+        "text": "Yep, that makes sense,",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "g=19",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Yep, that makes sense,"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1550339324.013400",
+        "client_msg_id": "c81354e7-0d49-4ae5-affc-39dac9f2cc89",
+        "text": "But thats the issue I guess, I'm not understanding what is necessary to resolve that, I added the socketio.sleep(1) at the end as someone suggested that could free up the CPU and would exit the thread, but that a) seems a bit untidy and b) clearly doesn't do exactly what I need.\n\nSo in effect, it sticks there as the server is looking for instruction and nothing is telling it what to do in effect as I don't get any errors, because it pauses there (which is logical from what you say).\n\nBut having read up on python loop logic I don't see an obvious solution here, I thought maybe the logic needs to involve a background thread, but although I can get that to fire, I still end up in the same place as it just executes through once.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "whu",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "But thats the issue I guess, I'm not understanding what is necessary to resolve that, I added the socketio.sleep(1) at the end as someone suggested that could free up the CPU and would exit the thread, but that a) seems a bit untidy and b) clearly doesn't do exactly what I need.\n\nSo in effect, it sticks there as the server is looking for instruction and nothing is telling it what to do in effect as I don't get any errors, because it pauses there (which is logical from what you say).\n\nBut having read up on python loop logic I don't see an obvious solution here, I thought maybe the logic needs to involve a background thread, but although I can get that to fire, I still end up in the same place as it just executes through once."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U5D4ZBEAG",
+        "type": "message",
+        "ts": "1550339343.014100",
+        "client_msg_id": "63ff0c04-ab84-4640-b01e-6958a2fcc4ff",
+        "text": "why are you doing `while True`?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g147ed91a398",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/7147ed91a39866d363a9cfa66ef64cb8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0015-72.png",
+            "first_name": "",
+            "real_name": "seaders",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "seaders",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Mcd",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "why are you doing "
+                            },
+                            {
+                                "type": "text",
+                                "text": "while True",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U5D4ZBEAG",
+        "type": "message",
+        "ts": "1550339347.014300",
+        "client_msg_id": "e80a1998-3ca2-4988-8809-6796f38146ce",
+        "text": "that's the whole point of the ping",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g147ed91a398",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/7147ed91a39866d363a9cfa66ef64cb8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0015-72.png",
+            "first_name": "",
+            "real_name": "seaders",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "seaders",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "SiPXS",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "that's the whole point of the ping"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1550339353.014700",
+        "client_msg_id": "2763ad3f-61f5-4276-a959-339396ca9b0c",
+        "text": "It makes no difference whether I include that or not tbh",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "gtCI",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "It makes no difference whether I include that or not tbh"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1550339359.014900",
+        "client_msg_id": "4fc20892-d890-4763-998b-ab124b487711",
+        "text": "I get the same result either way",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "sr82",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I get the same result either way"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U5D4ZBEAG",
+        "type": "message",
+        "ts": "1550339408.016100",
+        "client_msg_id": "2ed922a0-4778-46c3-acbf-29775cd8fcc3",
+        "text": "there's other ways of doing socket connections as well, you store the socket connection on connect,",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g147ed91a398",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/7147ed91a39866d363a9cfa66ef64cb8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0015-72.png",
+            "first_name": "",
+            "real_name": "seaders",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "seaders",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "VnM",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "there's other ways of doing socket connections as well, you store the socket connection on connect,"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U5D4ZBEAG",
+        "type": "message",
+        "ts": "1550339434.016700",
+        "client_msg_id": "ccd2059a-1821-45a8-b052-4c275e00b83c",
+        "text": "and then in your own place, when you get an update, you `emit` to that conn",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g147ed91a398",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/7147ed91a39866d363a9cfa66ef64cb8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0015-72.png",
+            "first_name": "",
+            "real_name": "seaders",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "seaders",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "0jg",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "and then in your own place, when you get an update, you "
+                            },
+                            {
+                                "type": "text",
+                                "text": "emit",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " to that conn"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U5D4ZBEAG",
+        "type": "message",
+        "ts": "1550339443.016900",
+        "client_msg_id": "1c1530ad-1f30-420c-b376-efb7d13a08a9",
+        "text": "(that's without ping)",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g147ed91a398",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/7147ed91a39866d363a9cfa66ef64cb8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0015-72.png",
+            "first_name": "",
+            "real_name": "seaders",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "seaders",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "+6mna",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "(that's without ping)"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U5D4ZBEAG",
+        "type": "message",
+        "ts": "1550339486.017700",
+        "client_msg_id": "1b7ec442-2656-43be-b5fb-bc3f4b217333",
+        "text": "```\n    if thread is None:\n        thread = Thread(target=handle_message)\n        thread.start()\n        socketio.sleep(2)\n        return render_template('index.html')```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g147ed91a398",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/7147ed91a39866d363a9cfa66ef64cb8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0015-72.png",
+            "first_name": "",
+            "real_name": "seaders",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "seaders",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Ka5vE",
+                "elements": [
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "    if thread is None:\n        thread = Thread(target=handle_message)\n        thread.start()\n        socketio.sleep(2)\n        return render_template('index.html')"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U5D4ZBEAG",
+        "type": "message",
+        "ts": "1550339501.017900",
+        "client_msg_id": "1fd0e8fa-4af6-408f-8402-e6fb972d3848",
+        "text": "what's that about?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g147ed91a398",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/7147ed91a39866d363a9cfa66ef64cb8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0015-72.png",
+            "first_name": "",
+            "real_name": "seaders",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "seaders",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "\/eV",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "what's that about?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1550339533.018600",
+        "client_msg_id": "f54b932f-54a1-42d0-b5fe-7013da2ee4a4",
+        "text": "That was playing around with background thread logic (its superfluous...doesn't do anything, should have taken it out)",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Y=M2S",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "That was playing around with background thread logic (its superfluous...doesn't do anything, should have taken it out)"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1550339557.019100",
+        "client_msg_id": "ed925a17-90f4-41bc-a695-6579366128b8",
+        "text": "I was just experimenting with the logic to see different results",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "i1x07",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I was just experimenting with the logic to see different results"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1550339594.019600",
+        "client_msg_id": "29095754-6ba3-4986-b33d-52a4a3abd806",
+        "text": "But thank you for the pointer on the socket connection, I can go and look into that a bit more",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "mEzm",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "But thank you for the pointer on the socket connection, I can go and look into that a bit more"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U5D4ZBEAG",
+        "type": "message",
+        "ts": "1550339629.020100",
+        "client_msg_id": "cb238c00-f1d0-49c4-9bb5-8b34ce28ee30",
+        "text": "that seems very wrong, tbh",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g147ed91a398",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/7147ed91a39866d363a9cfa66ef64cb8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0015-72.png",
+            "first_name": "",
+            "real_name": "seaders",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "seaders",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "F5u",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "that seems very wrong, tbh"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U5D4ZBEAG",
+        "type": "message",
+        "ts": "1550339645.020600",
+        "client_msg_id": "257caa4d-2725-4208-8b4c-2786dc35cbbb",
+        "text": "you only return the template page once ever?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g147ed91a398",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/7147ed91a39866d363a9cfa66ef64cb8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0015-72.png",
+            "first_name": "",
+            "real_name": "seaders",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "seaders",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "R=V",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "you only return the template page once ever?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1550339653.021100",
+        "client_msg_id": "fc80f6bb-4c91-4905-be91-682c8720aca7",
+        "text": "yes",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "oYtD",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "yes"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1550339700.022100",
+        "client_msg_id": "ef6408de-9489-4a4e-8d6a-c0f413d7ac8c",
+        "text": "Ah, you think that is in the wrong place? All the examples I looked at seemed to only return that once",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "zc2a",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Ah, you think that is in the wrong place? All the examples I looked at seemed to only return that once"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U5D4ZBEAG",
+        "type": "message",
+        "ts": "1550339839.022300",
+        "client_msg_id": "7597ac00-f561-4c9e-8c1d-367e5df076f7",
+        "text": "no no",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g147ed91a398",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/7147ed91a39866d363a9cfa66ef64cb8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0015-72.png",
+            "first_name": "",
+            "real_name": "seaders",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "seaders",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "qsg",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "no no"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U5D4ZBEAG",
+        "type": "message",
+        "ts": "1550339848.022600",
+        "client_msg_id": "828202af-c813-4dae-b5db-c52ddda25d8e",
+        "text": "you're only returning the template if thread is None",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g147ed91a398",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/7147ed91a39866d363a9cfa66ef64cb8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0015-72.png",
+            "first_name": "",
+            "real_name": "seaders",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "seaders",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "AW1cc",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "you're only returning the template if thread is None"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1550339993.023000",
+        "client_msg_id": "4ade6a85-3a42-45dd-b4a4-b47e8b7bd01b",
+        "text": "Ah got you, okay let me re-structure that!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "63o9",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Ah got you, okay let me re-structure that!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1550340498.024700",
+        "client_msg_id": "c45957cc-b9a9-46cf-bb0f-3869ca8e900d",
+        "text": "Just for reference, re-structuring as follows:\n\n```\n@app.route('\/')\ndef index():\n    return render_template('index.html')\n\n@socketio.on('ping', namespace='\/test')\ndef handle_message(*_args, **_kwargs):\n        global thread\n        socketio.sleep(2)\n        emit('my_response', {'data': 'pong', 'mb': 'pong', 'namespace': '\/test'})\n        socketio.sleep(2)\n        market_books = output_queue.get()\n        print(market_books)\n.....\n```\n\nI get exactly the same result (i.e. the client continues to ping, but only the first pong is sent), so I may need to look more into your suggestion about the connection. As I'm just not getting the logic here :disappointed:",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "dq=",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Just for reference, re-structuring as follows:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "@app.route('\/')\ndef index():\n    return render_template('index.html')\n\n@socketio.on('ping', namespace='\/test')\ndef handle_message(*_args, **_kwargs):\n        global thread\n        socketio.sleep(2)\n        emit('my_response', {'data': 'pong', 'mb': 'pong', 'namespace': '\/test'})\n        socketio.sleep(2)\n        market_books = output_queue.get()\n        print(market_books)\n.....\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\n\nI get exactly the same result (i.e. the client continues to ping, but only the first pong is sent), so I may need to look more into your suggestion about the connection. As I'm just not getting the logic here "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "disappointed",
+                                "unicode": "1f61e"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U5D4ZBEAG",
+        "type": "message",
+        "ts": "1550340531.025200",
+        "client_msg_id": "c785d7eb-192f-48fa-8df7-5a42dc7b57d7",
+        "text": "still no idea why you're doing any \"sleep\" things here, nor anything with threads",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g147ed91a398",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/7147ed91a39866d363a9cfa66ef64cb8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0015-72.png",
+            "first_name": "",
+            "real_name": "seaders",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "seaders",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "RDz",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "still no idea why you're doing any \"sleep\" things here, nor anything with threads"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1550340730.027300",
+        "client_msg_id": "d2a364f3-2734-4572-a209-7c78e5d35368",
+        "text": "The sleep was just a suggestion from another forum, someone was having the same issue as me and the suggestion to stick in the sleep(s) worked for them (the apparent logic being that it forced the CPU to move on from what it was sticking on...whether that is accurate of course is another matter, but it apparently worked for them)!\n\nThe threads was an idea, which again I thought was relevant, but seemingly isn't, so will remove those references.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "+Y3gg",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "The sleep was just a suggestion from another forum, someone was having the same issue as me and the suggestion to stick in the sleep(s) worked for them (the apparent logic being that it forced the CPU to move on from what it was sticking on...whether that is accurate of course is another matter, but it apparently worked for them)!\n\nThe threads was an idea, which again I thought was relevant, but seemingly isn't, so will remove those references."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U5D4ZBEAG",
+        "type": "message",
+        "ts": "1550340773.027600",
+        "client_msg_id": "a6bbb4b0-0d3d-4034-8385-cf1cf92b70c4",
+        "text": "pop the javascript in here too, so I can check that",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g147ed91a398",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/7147ed91a39866d363a9cfa66ef64cb8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0015-72.png",
+            "first_name": "",
+            "real_name": "seaders",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "seaders",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "p+cCF",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "pop the javascript in here too, so I can check that"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U5D4ZBEAG",
+        "type": "message",
+        "ts": "1550340811.028000",
+        "client_msg_id": "fa8eeee5-c239-4447-b3ea-2bd8cbf0acd9",
+        "text": "```\n    socket.on('connect', function() {\n        console.log('connected');\n\n        setInterval(function() {\n            socket.emit('ping');\n        }, 1);\n    });``` worked np for me",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g147ed91a398",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/7147ed91a39866d363a9cfa66ef64cb8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0015-72.png",
+            "first_name": "",
+            "real_name": "seaders",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "seaders",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "GjFK",
+                "elements": [
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "    socket.on('connect', function() {\n        console.log('connected');\n\n        setInterval(function() {\n            socket.emit('ping');\n        }, 1);\n    });"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": " worked np for me"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U5D4ZBEAG",
+        "type": "message",
+        "ts": "1550340834.028600",
+        "client_msg_id": "345de448-01c9-445e-bc41-9d557331c81f",
+        "text": "100% your `setInterval` (or alternate) is ticking?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g147ed91a398",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/7147ed91a39866d363a9cfa66ef64cb8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0015-72.png",
+            "first_name": "",
+            "real_name": "seaders",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "seaders",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "hay",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "100% your "
+                            },
+                            {
+                                "type": "text",
+                                "text": "setInterval",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " (or alternate) is ticking?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1550340902.029100",
+        "client_msg_id": "eac91ca0-5a27-43fa-8fae-3491f157e916",
+        "text": "sure, thank you, one sec",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "eEyWZ",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "sure, thank you, one sec"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1550340986.030500",
+        "client_msg_id": "248a7186-da70-4d1b-a026-930145e4e6ca",
+        "text": "```\n&lt;!DOCTYPE HTML&gt;\n&lt;html&gt;\n&lt;head&gt;\n    &lt;title&gt;Flask-SocketIO Test&lt;\/title&gt;\n    &lt;script type=\"text\/javascript\" src=\"\/\/code.jquery.com\/jquery-1.4.2.min.js\"&gt;&lt;\/script&gt;\n    &lt;script type=\"text\/javascript\" src=\"\/\/cdnjs.cloudflare.com\/ajax\/libs\/socket.io\/1.3.5\/socket.io.min.js\"&gt;&lt;\/script&gt;\n    &lt;script type=\"text\/javascript\" charset=\"utf-8\"&gt;\n\n            namespace = '\/test';\n            var socket = io.connect(location.protocol + '\/\/' + document.domain + ':' + location.port + namespace);\n            \n            socket.on('my_response', function(msg) { \n\t\tconsole.log(msg.mb); \n\n\t\t\n});\n\nsetInterval(function() {\nconsole.log(socket.emit('ping',document.domain));}, 10000);\n\t    \n    &lt;\/script&gt;\n&lt;\/head&gt;\n\n&lt;\/html&gt;\n```\n\nThe console.log in the browser shows the pings firing every 10 seconds (I've tried 1 second etc. just in case), it also shows the first pong received back...then just pings :--(",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "OgY",
+                "elements": [
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "<!DOCTYPE HTML>\n<html>\n<head>\n    <title>Flask-SocketIO Test<\/title>\n    <script type=\"text\/javascript\" src=\"\/\/code.jquery.com\/jquery-1.4.2.min.js\"><\/script>\n    <script type=\"text\/javascript\" src=\"\/\/cdnjs.cloudflare.com\/ajax\/libs\/socket.io\/1.3.5\/socket.io.min.js\"><\/script>\n    <script type=\"text\/javascript\" charset=\"utf-8\">\n\n            namespace = '\/test';\n            var socket = io.connect(location.protocol + '\/\/' + document.domain + ':' + location.port + namespace);\n            \n            socket.on('my_response', function(msg) { \n        console.log(msg.mb); \n\n        \n});\n\nsetInterval(function() {\nconsole.log(socket.emit('ping',document.domain));}, 10000);\n        \n    <\/script>\n<\/head>\n\n<\/html>\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\n\nThe console.log in the browser shows the pings firing every 10 seconds (I've tried 1 second etc. just in case), it also shows the first pong received back...then just pings :--("
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1550341042.031300",
+        "client_msg_id": "af2cd95d-7482-4b27-a975-c4c6c7b67b15",
+        "text": "(I've got the document.domain in there on the ping, purely as a sanity check, just wanted to see if that was displaying anything weird...which it isn't, it shows localhost as expected)",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "hTl",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "(I've got the document.domain in there on the ping, purely as a sanity check, just wanted to see if that was displaying anything weird...which it isn't, it shows localhost as expected)"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U5D4ZBEAG",
+        "type": "message",
+        "ts": "1550341185.031900",
+        "client_msg_id": "0f8ea747-82f2-46b6-8d63-a338add42d6b",
+        "text": "once the connection happens, that's not important any more",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g147ed91a398",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/7147ed91a39866d363a9cfa66ef64cb8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0015-72.png",
+            "first_name": "",
+            "real_name": "seaders",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "seaders",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "VB7C",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "once the connection happens, that's not important any more"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U5D4ZBEAG",
+        "type": "message",
+        "ts": "1550341258.032300",
+        "edited": {
+            "user": "U5D4ZBEAG",
+            "ts": "1550341296.000000"
+        },
+        "client_msg_id": "10dc8518-8cd5-47b5-8be0-3057961908a6",
+        "text": "just change to, if you could\n```\n        setInterval(function() {\n            console.log('pinging');\n            socket.emit('ping');\n        }, 1);\n```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g147ed91a398",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/7147ed91a39866d363a9cfa66ef64cb8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0015-72.png",
+            "first_name": "",
+            "real_name": "seaders",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "seaders",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "8bJfw",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "just change to, if you could"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "        setInterval(function() {\n            console.log('pinging');\n            socket.emit('ping');\n        }, 1);\n"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U5D4ZBEAG",
+        "type": "message",
+        "ts": "1550341300.032600",
+        "client_msg_id": "0fc5020f-f8de-402f-a109-4d9da68bfa31",
+        "text": "sorry ^^^",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g147ed91a398",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/7147ed91a39866d363a9cfa66ef64cb8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0015-72.png",
+            "first_name": "",
+            "real_name": "seaders",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "seaders",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "bIyqt",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "sorry ^^^"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U5D4ZBEAG",
+        "type": "message",
+        "ts": "1550341333.032800",
+        "client_msg_id": "ba946a90-43ca-4888-96c6-0698ed745650",
+        "text": "just to 100% that",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g147ed91a398",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/7147ed91a39866d363a9cfa66ef64cb8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0015-72.png",
+            "first_name": "",
+            "real_name": "seaders",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "seaders",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "014nY",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "just to 100% that"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U5D4ZBEAG",
+        "type": "message",
+        "ts": "1550341400.033400",
+        "client_msg_id": "b3ba80ee-c1d1-4926-a1a0-01832786bec7",
+        "text": "you could also change handle message to ```\n\n@socketio.on('ping')\ndef handle_message(*_args, **_kwargs):\n    emit('my_response', 'received a ping')\n```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g147ed91a398",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/7147ed91a39866d363a9cfa66ef64cb8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0015-72.png",
+            "first_name": "",
+            "real_name": "seaders",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "seaders",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "C\/k",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "you could also change handle message to "
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\n@socketio.on('ping')\ndef handle_message(*_args, **_kwargs):\n    emit('my_response', 'received a ping')\n"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U5D4ZBEAG",
+        "type": "message",
+        "ts": "1550341412.033800",
+        "client_msg_id": "b2894bb6-7ad1-4c76-a539-3c96ddc07a2e",
+        "text": "as in, text (like my sample code), not a dict",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g147ed91a398",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/7147ed91a39866d363a9cfa66ef64cb8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0015-72.png",
+            "first_name": "",
+            "real_name": "seaders",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "seaders",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "mML5",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "as in, text (like my sample code), not a dict"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U5D4ZBEAG",
+        "type": "message",
+        "ts": "1550341427.034100",
+        "client_msg_id": "6a27aa2a-588e-44dc-a311-3c414f3c7a19",
+        "text": "and *only* that, nothing else",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g147ed91a398",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/7147ed91a39866d363a9cfa66ef64cb8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0015-72.png",
+            "first_name": "",
+            "real_name": "seaders",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "seaders",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "YMI",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "and "
+                            },
+                            {
+                                "type": "text",
+                                "text": "only",
+                                "style": {
+                                    "bold": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " that, nothing else"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U5D4ZBEAG",
+        "type": "message",
+        "ts": "1550341432.034400",
+        "client_msg_id": "d7c00744-fac3-4994-bf1b-ed62efbf09a6",
+        "text": "just to simplify things a bit",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g147ed91a398",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/7147ed91a39866d363a9cfa66ef64cb8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0015-72.png",
+            "first_name": "",
+            "real_name": "seaders",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "seaders",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "mVjU",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "just to simplify things a bit"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1550341434.034500",
+        "client_msg_id": "6c3ba777-2dd0-4330-91b9-769c36e9ea18",
+        "text": "ok one, sec, will do that now",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "NNL",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "ok one, sec, will do that now"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1550341555.035500",
+        "client_msg_id": "5b8a8e46-d4bf-49df-8805-520f1029b31e",
+        "text": "no errors (I took out all the sleep's too as that would have messed things up with the faster pings).\n\nThe server log reads fine...but again it only fires once:\n\n```\nINFO:engineio.server:a552c499c6ab49508a89e7982010a99c: Received request to upgrade to websocket\nINFO:engineio.server:a552c499c6ab49508a89e7982010a99c: Received packet MESSAGE data 2\/test,[\"ping\"]\nINFO:socketio.server:received event \"ping\" from a552c499c6ab49508a89e7982010a99c [\/test]\nINFO:socketio.server:emitting event \"my_response\" to a552c499c6ab49508a89e7982010a99c [\/test]\nINFO:engineio.server:a552c499c6ab49508a89e7982010a99c: Sending packet MESSAGE data 2\/test,[\"my_response\",\"received a ping\"]\n```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "kX5dQ",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "no errors (I took out all the sleep's too as that would have messed things up with the faster pings).\n\nThe server log reads fine...but again it only fires once:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "INFO:engineio.server:a552c499c6ab49508a89e7982010a99c: Received request to upgrade to websocket\nINFO:engineio.server:a552c499c6ab49508a89e7982010a99c: Received packet MESSAGE data 2\/test,[\"ping\"]\nINFO:socketio.server:received event \"ping\" from a552c499c6ab49508a89e7982010a99c [\/test]\nINFO:socketio.server:emitting event \"my_response\" to a552c499c6ab49508a89e7982010a99c [\/test]\nINFO:engineio.server:a552c499c6ab49508a89e7982010a99c: Sending packet MESSAGE data 2\/test,[\"my_response\",\"received a ping\"]\n"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U5D4ZBEAG",
+        "type": "message",
+        "ts": "1550341572.035800",
+        "client_msg_id": "93eeb90e-198b-43fc-a55f-a5cc850ccd25",
+        "text": "how about the browser console",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g147ed91a398",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/7147ed91a39866d363a9cfa66ef64cb8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0015-72.png",
+            "first_name": "",
+            "real_name": "seaders",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "seaders",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "9Lw",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "how about the browser console"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U5D4ZBEAG",
+        "type": "message",
+        "ts": "1550341579.036200",
+        "client_msg_id": "39402a7d-d819-4ebd-b1e8-631bdfd5de5a",
+        "text": "it should be spamming \"pinging\" there",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g147ed91a398",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/7147ed91a39866d363a9cfa66ef64cb8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0015-72.png",
+            "first_name": "",
+            "real_name": "seaders",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "seaders",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "cCCT",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "it should be spamming \"pinging\" there"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1550341588.036400",
+        "client_msg_id": "85461bef-0843-457c-b939-5f949817d060",
+        "text": "interestingly it is not",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "PhK5",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "interestingly it is not"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U5D4ZBEAG",
+        "type": "message",
+        "ts": "1550341611.037100",
+        "client_msg_id": "b76a15dc-e3ad-4d05-b79d-eb429b41b456",
+        "text": "you added that `console.log` in there?  I edited that in",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g147ed91a398",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/7147ed91a39866d363a9cfa66ef64cb8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0015-72.png",
+            "first_name": "",
+            "real_name": "seaders",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "seaders",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "P1P",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "you added that "
+                            },
+                            {
+                                "type": "text",
+                                "text": "console.log",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " in there?  I edited that in"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1550341612.037200",
+        "client_msg_id": "9e2289fb-f45e-4f5e-9d8e-4150c5335ab9",
+        "text": "we're not actually logging the ping in that last code htough?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "wSh",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "we're not actually logging the ping in that last code htough?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U5D4ZBEAG",
+        "type": "message",
+        "ts": "1550341625.037600",
+        "client_msg_id": "6b4bae9d-640d-4400-8368-0e1bd8cc3444",
+        "text": "this is only the call _to the server_",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g147ed91a398",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/7147ed91a39866d363a9cfa66ef64cb8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0015-72.png",
+            "first_name": "",
+            "real_name": "seaders",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "seaders",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "98loB",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "this is only the call "
+                            },
+                            {
+                                "type": "text",
+                                "text": "to the server",
+                                "style": {
+                                    "italic": true
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U5D4ZBEAG",
+        "type": "message",
+        "ts": "1550341629.037800",
+        "client_msg_id": "5a22c6fc-6db8-400d-8b7b-bf7436dff0d9",
+        "text": "not the response",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g147ed91a398",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/7147ed91a39866d363a9cfa66ef64cb8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0015-72.png",
+            "first_name": "",
+            "real_name": "seaders",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "seaders",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "8fxrM",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "not the response"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1550341659.038200",
+        "client_msg_id": "1510cb95-299f-4895-9f6f-33f22c9e91ca",
+        "text": "yeah I missed your update, one sec",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "jcP",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "yeah I missed your update, one sec"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1550341696.038500",
+        "client_msg_id": "329df5ac-efa7-4706-81d4-0617482a583c",
+        "text": "okay cool yeah ping going crazy now as intended",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "NwD\/",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "okay cool yeah ping going crazy now as intended"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1550341728.038800",
+        "client_msg_id": "423b6de4-2c26-41fa-822a-7d03c5b02312",
+        "text": "(as in, in the browser console.log I mean)",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "0vB+",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "(as in, in the browser console.log I mean)"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U5D4ZBEAG",
+        "type": "message",
+        "ts": "1550341763.039400",
+        "client_msg_id": "b30c6387-8f86-4a6e-a71b-babe16fd7c6f",
+        "text": "ok then, up the interval time to 2000 (so it's not as spammy, but still well frequent)",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g147ed91a398",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/7147ed91a39866d363a9cfa66ef64cb8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0015-72.png",
+            "first_name": "",
+            "real_name": "seaders",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "seaders",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "kY6u",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "ok then, up the interval time to 2000 (so it's not as spammy, but still well frequent)"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U5D4ZBEAG",
+        "type": "message",
+        "ts": "1550341783.039800",
+        "client_msg_id": "0730b9a0-c17e-4143-8312-b7bea1df3153",
+        "text": "and handle_message is *nothing but* ```@socketio.on('ping')\ndef handle_message(*_args, **_kwargs):\n    emit('my_response', 'received a ping')```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g147ed91a398",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/7147ed91a39866d363a9cfa66ef64cb8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0015-72.png",
+            "first_name": "",
+            "real_name": "seaders",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "seaders",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "qnANu",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "and handle_message is "
+                            },
+                            {
+                                "type": "text",
+                                "text": "nothing but",
+                                "style": {
+                                    "bold": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " "
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "@socketio.on('ping')\ndef handle_message(*_args, **_kwargs):\n    emit('my_response', 'received a ping')"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U5D4ZBEAG",
+        "type": "message",
+        "ts": "1550341793.040100",
+        "client_msg_id": "db3d1764-7b15-4c70-bb22-4cd078ea80a8",
+        "text": "can you post the server code again, it really should be working",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g147ed91a398",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/7147ed91a39866d363a9cfa66ef64cb8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0015-72.png",
+            "first_name": "",
+            "real_name": "seaders",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "seaders",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "5nb",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "can you post the server code again, it really should be working"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1550341890.040700",
+        "client_msg_id": "99b054da-f51f-48ab-80aa-ab2abe93ccde",
+        "text": "ok so interesting, it is receving the pings now...but doesn't appear to be emitting, here are the logs:\n\n```\nINFO:socketio.server:received event \"ping\" from 42b7dbcd7e0b4453b3a7104e7a43b52e [\/test]\nINFO:engineio.server:42b7dbcd7e0b4453b3a7104e7a43b52e: Received packet MESSAGE data 2\/test,[\"ping\"]\nINFO:socketio.server:received event \"ping\" from 42b7dbcd7e0b4453b3a7104e7a43b52e [\/test]\nINFO:engineio.server:42b7dbcd7e0b4453b3a7104e7a43b52e: Received packet MESSAGE data 2\/test,[\"ping\"]\nINFO:socketio.server:received event \"ping\" from 42b7dbcd7e0b4453b3a7104e7a43b52e [\/test]\nINFO:engineio.server:42b7dbcd7e0b4453b3a7104e7a43b52e: Received packet MESSAGE data 2\/test,[\"ping\"]\nINFO:socketio.server:received event \"ping\" from 42b7dbcd7e0b4453b3a7104e7a43b52e [\/test]\nINFO:engineio.server:42b7dbcd7e0b4453b3a7104e7a43b52e: Received packet MESSAGE data 2\/test,[\"ping\"]\nINFO:socketio.server:received event \"ping\" from 42b7dbcd7e0b4453b3a7104e7a43b52e [\/test]\n```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "7CJ7r",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "ok so interesting, it is receving the pings now...but doesn't appear to be emitting, here are the logs:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "INFO:socketio.server:received event \"ping\" from 42b7dbcd7e0b4453b3a7104e7a43b52e [\/test]\nINFO:engineio.server:42b7dbcd7e0b4453b3a7104e7a43b52e: Received packet MESSAGE data 2\/test,[\"ping\"]\nINFO:socketio.server:received event \"ping\" from 42b7dbcd7e0b4453b3a7104e7a43b52e [\/test]\nINFO:engineio.server:42b7dbcd7e0b4453b3a7104e7a43b52e: Received packet MESSAGE data 2\/test,[\"ping\"]\nINFO:socketio.server:received event \"ping\" from 42b7dbcd7e0b4453b3a7104e7a43b52e [\/test]\nINFO:engineio.server:42b7dbcd7e0b4453b3a7104e7a43b52e: Received packet MESSAGE data 2\/test,[\"ping\"]\nINFO:socketio.server:received event \"ping\" from 42b7dbcd7e0b4453b3a7104e7a43b52e [\/test]\nINFO:engineio.server:42b7dbcd7e0b4453b3a7104e7a43b52e: Received packet MESSAGE data 2\/test,[\"ping\"]\nINFO:socketio.server:received event \"ping\" from 42b7dbcd7e0b4453b3a7104e7a43b52e [\/test]\n"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1550341928.041200",
+        "client_msg_id": "76e37710-f126-4951-814d-31ba3d6bba14",
+        "text": "and just to sanity check, copy pasted literally:\n\n```\n@socketio.on('ping')\ndef handle_message(*_args, **_kwargs):\n        emit('my_response', 'received a ping')\n```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "jWV",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "and just to sanity check, copy pasted literally:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "@socketio.on('ping')\ndef handle_message(*_args, **_kwargs):\n        emit('my_response', 'received a ping')\n"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U5D4ZBEAG",
+        "type": "message",
+        "ts": "1550341997.041800",
+        "client_msg_id": "f1f31d86-94dd-4664-8b28-b603f61af4ff",
+        "text": "```@socketio.on('ping')\ndef handle_message(*_args, **_kwargs):\n    logging.critical('gotta ping')\n    emit('my_response', 'received a ping')\n    logging.critical('emitted')```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g147ed91a398",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/7147ed91a39866d363a9cfa66ef64cb8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0015-72.png",
+            "first_name": "",
+            "real_name": "seaders",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "seaders",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "0ZL\/",
+                "elements": [
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "@socketio.on('ping')\ndef handle_message(*_args, **_kwargs):\n    logging.critical('gotta ping')\n    emit('my_response', 'received a ping')\n    logging.critical('emitted')"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U5D4ZBEAG",
+        "type": "message",
+        "ts": "1550342012.042200",
+        "client_msg_id": "1cb0d0f1-cec1-4779-b64e-c12e2febe943",
+        "text": "(`import logging` if you hadn't already)",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g147ed91a398",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/7147ed91a39866d363a9cfa66ef64cb8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0015-72.png",
+            "first_name": "",
+            "real_name": "seaders",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "seaders",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "lCW",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "("
+                            },
+                            {
+                                "type": "text",
+                                "text": "import logging",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " if you hadn't already)"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U5D4ZBEAG",
+        "type": "message",
+        "ts": "1550342147.043000",
+        "client_msg_id": "98b1cbeb-a532-4a9b-bbea-1073015a3ef7",
+        "text": "hold on",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g147ed91a398",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/7147ed91a39866d363a9cfa66ef64cb8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0015-72.png",
+            "first_name": "",
+            "real_name": "seaders",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "seaders",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "ji1x",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "hold on"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U5D4ZBEAG",
+        "type": "message",
+        "ts": "1550342157.043500",
+        "client_msg_id": "5a2a8d92-faf6-4f56-ae90-915b99a2098f",
+        "text": "`namespace='\/test'`",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g147ed91a398",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/7147ed91a39866d363a9cfa66ef64cb8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0015-72.png",
+            "first_name": "",
+            "real_name": "seaders",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "seaders",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "WcSQ",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "namespace='\/test'",
+                                "style": {
+                                    "code": true
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1550342169.044000",
+        "client_msg_id": "f29a9861-ce1f-406a-b177-8b3937698812",
+        "text": "ah put that back in?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "dj\/",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "ah put that back in?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1550342172.044300",
+        "client_msg_id": "2c4064fb-3882-4ee7-b769-c38da31a964c",
+        "text": "we took it out?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "AvhXu",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "we took it out?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U5D4ZBEAG",
+        "type": "message",
+        "ts": "1550342172.044400",
+        "client_msg_id": "a08b6750-0bbe-4475-bc38-dd34ba11fb90",
+        "text": "does that mean all things should be `\/test`",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g147ed91a398",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/7147ed91a39866d363a9cfa66ef64cb8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0015-72.png",
+            "first_name": "",
+            "real_name": "seaders",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "seaders",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Yv1",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "does that mean all things should be "
+                            },
+                            {
+                                "type": "text",
+                                "text": "\/test",
+                                "style": {
+                                    "code": true
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1550342177.044700",
+        "client_msg_id": "412564fa-ab20-426f-9637-3c11c4b50625",
+        "text": "yeah",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "LXSJc",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "yeah"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1550342198.045100",
+        "client_msg_id": "a76113af-0474-48e6-ab37-2b8eb7bfdf5f",
+        "text": "yeah just one namespace",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "PRRU",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "yeah just one namespace"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U5D4ZBEAG",
+        "type": "message",
+        "ts": "1550342199.045300",
+        "client_msg_id": "bad1a496-0280-412c-b5ae-0a502c06e978",
+        "text": "I'd remove that entirely, until everything's working",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g147ed91a398",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/7147ed91a39866d363a9cfa66ef64cb8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0015-72.png",
+            "first_name": "",
+            "real_name": "seaders",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "seaders",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "XyoK",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I'd remove that entirely, until everything's working"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1550342204.045500",
+        "client_msg_id": "b0336f3c-4aaf-4fd2-b007-c2c3af6de31f",
+        "text": "okay cool",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "K9=vr",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "okay cool"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1550342342.046300",
+        "client_msg_id": "99487a81-c5fc-481a-85ce-2f0767bfc6eb",
+        "text": "So all references to the namespace removed (in the javascript too).\n\nThe additional logging shows up in the logs...but again, only once:\n\n```\n127.0.0.1 - - [16\/Feb\/2019 18:37:32] \"GET \/socket.io\/?EIO=3&amp;transport=polling&amp;t=1550342252317-0 HTTP\/1.1\" 200 30698 0.234783\n(8316) accepted ('127.0.0.1', 61470)\nINFO:engineio.server:6193f0c8fc0f4f6fad3ae0230246f9eb: Received request to upgrade to websocket\n127.0.0.1 - - [16\/Feb\/2019 18:37:32] \"GET \/socket.io\/?EIO=3&amp;transport=polling&amp;t=1550342252674-1&amp;sid=6193f0c8fc0f4f6fad3ae0230246f9eb HTTP\/1.1\" 200 215 0.214803\nINFO:engineio.server:6193f0c8fc0f4f6fad3ae0230246f9eb: Upgrade to websocket successful\nINFO:engineio.server:6193f0c8fc0f4f6fad3ae0230246f9eb: Received packet MESSAGE data 2[\"ping\"]\nINFO:socketio.server:received event \"ping\" from 6193f0c8fc0f4f6fad3ae0230246f9eb [\/]\nCRITICAL:root:gotta ping\nINFO:socketio.server:emitting event \"my_response\" to 6193f0c8fc0f4f6fad3ae0230246f9eb [\/]\nINFO:engineio.server:6193f0c8fc0f4f6fad3ae0230246f9eb: Sending packet MESSAGE data 2[\"my_response\",\"received a ping\"]\nCRITICAL:root:emitted\n```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "oKZ",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "So all references to the namespace removed (in the javascript too).\n\nThe additional logging shows up in the logs...but again, only once:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "127.0.0.1 - - [16\/Feb\/2019 18:37:32] \"GET \/socket.io\/?EIO=3&transport=polling&t=1550342252317-0 HTTP\/1.1\" 200 30698 0.234783\n(8316) accepted ('127.0.0.1', 61470)\nINFO:engineio.server:6193f0c8fc0f4f6fad3ae0230246f9eb: Received request to upgrade to websocket\n127.0.0.1 - - [16\/Feb\/2019 18:37:32] \"GET \/socket.io\/?EIO=3&transport=polling&t=1550342252674-1&sid=6193f0c8fc0f4f6fad3ae0230246f9eb HTTP\/1.1\" 200 215 0.214803\nINFO:engineio.server:6193f0c8fc0f4f6fad3ae0230246f9eb: Upgrade to websocket successful\nINFO:engineio.server:6193f0c8fc0f4f6fad3ae0230246f9eb: Received packet MESSAGE data 2[\"ping\"]\nINFO:socketio.server:received event \"ping\" from 6193f0c8fc0f4f6fad3ae0230246f9eb [\/]\nCRITICAL:root:gotta ping\nINFO:socketio.server:emitting event \"my_response\" to 6193f0c8fc0f4f6fad3ae0230246f9eb [\/]\nINFO:engineio.server:6193f0c8fc0f4f6fad3ae0230246f9eb: Sending packet MESSAGE data 2[\"my_response\",\"received a ping\"]\nCRITICAL:root:emitted\n"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1550342377.046700",
+        "client_msg_id": "216d8aa7-80f3-4cb1-b73a-bcd56ab39969",
+        "text": "(the browser seems to be emitting pings correctly every 2 seconds still)",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "dob",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "(the browser seems to be emitting pings correctly every 2 seconds still)"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U5D4ZBEAG",
+        "type": "message",
+        "ts": "1550342390.046900",
+        "client_msg_id": "a325663a-0dd8-4836-a709-6aa05c097408",
+        "text": "that's crazy",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g147ed91a398",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/7147ed91a39866d363a9cfa66ef64cb8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0015-72.png",
+            "first_name": "",
+            "real_name": "seaders",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "seaders",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Ynd",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "that's crazy"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U5D4ZBEAG",
+        "type": "message",
+        "ts": "1550342406.047400",
+        "client_msg_id": "6f097d5a-f771-4279-9d29-b2954c0ec1bb",
+        "text": "network tab of the browser dev tools showing anything?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g147ed91a398",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/7147ed91a39866d363a9cfa66ef64cb8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0015-72.png",
+            "first_name": "",
+            "real_name": "seaders",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "seaders",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "s4J",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "network tab of the browser dev tools showing anything?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1550342510.048100",
+        "client_msg_id": "3f579d60-f8bb-4360-9673-d186148b1ba3",
+        "text": "ah wait...sorry, must have not saved corretly or something...I restarted again and yes the pongs are now getting through",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Oxf",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "ah wait...sorry, must have not saved corretly or something...I restarted again and yes the pongs are now getting through"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1550342598.049200",
+        "client_msg_id": "f9193e32-9f2e-4e89-9eab-c6aacd8d35c6",
+        "text": "logs now read:\n\n```\nCRITICAL:root:gotta ping\nINFO:socketio.server:emitting event \"my_response\" to b9e94396066b41bfaa6dd67666a16a1e [\/]\nINFO:engineio.server:b9e94396066b41bfaa6dd67666a16a1e: Sending packet MESSAGE data 2[\"my_response\",\"received a ping\"]\nCRITICAL:root:emitted\nINFO:engineio.server:b9e94396066b41bfaa6dd67666a16a1e: Received packet MESSAGE data 2[\"ping\"]\nINFO:socketio.server:received event \"ping\" from b9e94396066b41bfaa6dd67666a16a1e [\/]\nCRITICAL:root:gotta ping\nINFO:socketio.server:emitting event \"my_response\" to b9e94396066b41bfaa6dd67666a16a1e [\/]\nINFO:engineio.server:b9e94396066b41bfaa6dd67666a16a1e: Sending packet MESSAGE data 2[\"my_response\",\"received a ping\"]\nCRITICAL:root:emitted\n```\n\nAnd in the browser the pongs are coming up as undefined (which makes sense as I've got it looking for a particular name, rather than just data so thats expected behaviour_",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "w2FH",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "logs now read:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "CRITICAL:root:gotta ping\nINFO:socketio.server:emitting event \"my_response\" to b9e94396066b41bfaa6dd67666a16a1e [\/]\nINFO:engineio.server:b9e94396066b41bfaa6dd67666a16a1e: Sending packet MESSAGE data 2[\"my_response\",\"received a ping\"]\nCRITICAL:root:emitted\nINFO:engineio.server:b9e94396066b41bfaa6dd67666a16a1e: Received packet MESSAGE data 2[\"ping\"]\nINFO:socketio.server:received event \"ping\" from b9e94396066b41bfaa6dd67666a16a1e [\/]\nCRITICAL:root:gotta ping\nINFO:socketio.server:emitting event \"my_response\" to b9e94396066b41bfaa6dd67666a16a1e [\/]\nINFO:engineio.server:b9e94396066b41bfaa6dd67666a16a1e: Sending packet MESSAGE data 2[\"my_response\",\"received a ping\"]\nCRITICAL:root:emitted\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\n\nAnd in the browser the pongs are coming up as undefined (which makes sense as I've got it looking for a particular name, rather than just data so thats expected behaviour_"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1550342663.049600",
+        "client_msg_id": "3b6a7150-05bd-4b33-9bd3-acad5ee48bb4",
+        "text": "cool yep, the browser is receiving the correct text",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "\/Sed",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "cool yep, the browser is receiving the correct text"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1550342985.050400",
+        "client_msg_id": "0de550fc-b8c8-452b-9620-7460cb2af452",
+        "text": "what it doesn't seem to like however, is if I actually try to emit the following:\n\n```\n market_books = output_queue.get()\n        for market_book in market_books:\n         emit('my_response', {'data': 'update', 'mb': market_book.streaming_update})\n```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "vkCO",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "what it doesn't seem to like however, is if I actually try to emit the following:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": " market_books = output_queue.get()\n        for market_book in market_books:\n         emit('my_response', {'data': 'update', 'mb': market_book.streaming_update})\n"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1550343006.050700",
+        "client_msg_id": "4a5000e5-63aa-4a2d-98fe-80d46ea99556",
+        "text": "It just sticks here:\n\n```\nINFO:engineio.server:229e6d4529dc42828a9009da0b94a74d: Received packet MESSAGE data 2[\"ping\"]\nINFO:socketio.server:received event \"ping\" from 229e6d4529dc42828a9009da0b94a74d [\/]\nCRITICAL:root:gotta ping\n```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "M=V",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "It just sticks here:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "INFO:engineio.server:229e6d4529dc42828a9009da0b94a74d: Received packet MESSAGE data 2[\"ping\"]\nINFO:socketio.server:received event \"ping\" from 229e6d4529dc42828a9009da0b94a74d [\/]\nCRITICAL:root:gotta ping\n"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1550347857.053100",
+        "edited": {
+            "user": "UFTBRB3F1",
+            "ts": "1550347874.000000"
+        },
+        "client_msg_id": "4e042f66-df2c-46d5-9d00-84f9fdee599a",
+        "text": "I just had a thought (which may be incorrect), as I'm still on the delayed key, updates only come every 3 minutes. Could this be the issue?\n\nWith the following:\n```\n@socketio.on('ping')\ndef handle_message(*_args, **_kwargs):\n    logging.critical('gotta ping')\n    emit('my_response', output_queue.get())\n    socketio.sleep(300)\n    logging.critical('emitted')\n```\nEffectively it times out, but I'm just wondering, if I had 'live' prices the updates would be more frequent and could that be the issue?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "89RoZ",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I just had a thought (which may be incorrect), as I'm still on the delayed key, updates only come every 3 minutes. Could this be the issue?\n\nWith the following:"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "@socketio.on('ping')\ndef handle_message(*_args, **_kwargs):\n    logging.critical('gotta ping')\n    emit('my_response', output_queue.get())\n    socketio.sleep(300)\n    logging.critical('emitted')\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Effectively it times out, but I'm just wondering, if I had 'live' prices the updates would be more frequent and could that be the issue?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1550347926.053800",
+        "client_msg_id": "44d937e4-44c5-4884-92f3-a49e32b1569e",
+        "text": "(I stuck in the 300ms sleep as I got a verbose error on the client and thought that should reduce that risk)",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "prpd",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "(I stuck in the 300ms sleep as I got a verbose error on the client and thought that should reduce that risk)"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U5D4ZBEAG",
+        "type": "message",
+        "ts": "1550359540.054000",
+        "client_msg_id": "239a023a-f80a-4ac1-8a3a-827c921e3fa3",
+        "text": "<@UFTBRB3F1> <https:\/\/github.com\/seaders\/newbie_socket_flaskio>",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g147ed91a398",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/7147ed91a39866d363a9cfa66ef64cb8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0015-72.png",
+            "first_name": "",
+            "real_name": "seaders",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "seaders",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "0ave",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "user",
+                                "user_id": "UFTBRB3F1"
+                            },
+                            {
+                                "type": "text",
+                                "text": " "
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/seaders\/newbie_socket_flaskio"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1550361781.054600",
+        "client_msg_id": "eaec442a-8be3-4510-9a5d-b98bcc7e23e1",
+        "text": "thank you, will have a play around with that and report back! Really appreciate your assistance here!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Euy",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "thank you, will have a play around with that and report back! Really appreciate your assistance here!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

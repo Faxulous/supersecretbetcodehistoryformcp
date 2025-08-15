@@ -1,0 +1,1314 @@
+[
+    {
+        "subtype": "channel_join",
+        "user": "U02PP7NQSF7",
+        "text": "<@U02PP7NQSF7> has joined the channel",
+        "type": "message",
+        "ts": "1638864620.235400"
+    },
+    {
+        "user": "U013K4VNB6D",
+        "type": "message",
+        "ts": "1638889842.235700",
+        "client_msg_id": "534f358d-646c-4e09-abb8-a774f0849b77",
+        "text": "Hi <@UUCD6P13J>\n\nI've amended my code - line 74 and 75 in <https:\/\/github.com\/JeffW12345\/runbacktests-python-file\/blob\/main\/runbacktests.py>.\n\nHowever, when I run the test print in process_market_book, I get told:\n\n _AttributeError: 'NoneType' object has no attribute 'runners'\"}_\n\nWhat do you suggest, please?\n\nIt is possible that me using multi-processing is what's causing the problem?\n\nThanks,\n\nJeff",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gf188478b89f",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/f188478b89f4a5e2c5af9eafa0433712.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0004-72.png",
+            "first_name": "",
+            "real_name": "Jeff Waters",
+            "display_name": "Jeff Waters",
+            "team": "T4G9NBD2M",
+            "name": "watersjg",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1638119866.121200",
+        "parent_user_id": "U016TGY3676",
+        "attachments": [
+            {
+                "text": "```\n'''\nThis file executes mock trades using the orders and trades created in teststrategy.py.\n'''\nimport multiprocessing\nimport logging\nfrom pythonjsonlogger import jsonlogger\n\nimport marketcatalogue\nimport results_analysis\nfrom teststrategy import TestStrategy\nfrom datetime import datetime\nimport os\nfrom pathlib import Path\nimport time\nimport mock\nimport smart_open\nimport multiprocessing as mp\nfrom flumine import FlumineBacktest, clients\nimport files\n\nlogger = logging.getLogger()\n\ncustom_format = \"%(asctime) %(levelname) %(message)\"\nlog_handler = logging.StreamHandler()\nformatter = jsonlogger.JsonFormatter(custom_format)\nformatter.converter = time.gmtime\nlog_handler.setFormatter(formatter)\nlogger.addHandler(log_handler)\nlogger.setLevel(logging.CRITICAL)\n# Get start time\nnow = datetime.now()\nrunning_start_time = now.strftime(\"%d\/%m\/%Y %H:%M:%S\")\n\n\ndef get_markets(data_dir):\n    markets = []\n    for dir_, _, files in os.walk(data_dir):\n        for file_name in files:\n            if file_name[0] != '1':\n                continue\n            dirName = Path(dir_).absolute()\n            rel_file = os.path.join(dirName, file_name)\n            markets.append(rel_file)\n    return markets\n\n\nstrategy = TestStrategy(\n    market_filter={\"markets\": get_markets(\"PRO\"),\n                   \"listener_kwargs\": {\"seconds_to_start\": 0},\n                   \"market_types\": [\"WIN\"]},\n    max_order_exposure=100000,\n    max_selection_exposure=100500,\n    max_live_trade_count=2,\n)\n\n\ndef backtest(markets: list, counter: int, counter_lock, number_of_markets: int):\n    \"\"\"handles backtesting\"\"\"\n    # initialise the play object\n    client = clients.BacktestClient()\n    framework = FlumineBacktest(client=client)\n\n    # add the market and multiprocessing context information\n    strategy.market_filter[\"markets\"] = markets\n    strategy.market_filter[\"markets\"] = markets\n    strategy.context[\"number_of_markets\"] = number_of_markets\n    strategy.context[\"markets_processed\"] = set()\n    strategy.context[\"counter\"] = counter\n    strategy.context[\"counter_lock\"] = counter_lock\n\n    # patch smart_open so that .gz files are supported natively\n    with mock.patch(\"builtins.open\", smart_open.open):\n        framework.add_strategy(strategy)\n        market_catalogue_middleware = marketcatalogue.MarketCatalogueMiddleware()\n        framework.add_market_middleware(market_catalogue_middleware)\n        framework.run()\n        files.output_results(framework)\n\n\ndef chunker(data: list, chunk_size: int):\n    \"\"\"yields successive n-sized chunks from list\"\"\"\n    while data:\n        chunk, data = data[:chunk_size], data[chunk_size:]\n        yield chunk\n\n\ndef get_optimum_chunksize(\n        max_chunksize: int, number_of_items: int, core_count: int\n) -&gt; int:\n    \"\"\"gives you the best chunksize for your core count\"\"\"\n    if core_count &gt;= number_of_items:\n        return 1\n    else:\n        if number_of_items \/\/ core_count &gt; max_chunksize:\n            return max_chunksize\n        else:\n            return number_of_items \/\/ core_count\n\n\ndef main():\n    \"\"\"main function\"\"\"\n    # get all markets which have not been run on the given strategy\n    markets = get_markets(\"PRO\")\n\n    if not markets:\n        print(\"no markets to run...\")\n        return\n\n    # get core count\n    cores = mp.cpu_count()\n\n    # determine best batch size for markets to pass to processes\n    number_of_markets = len(markets)\n    chunk_size = get_optimum_chunksize(20, number_of_markets, cores)\n    market_groups = list(chunker(markets, chunk_size))\n\n    # process safe market counter\n    manager = mp.Manager()\n    counter = manager.Value(\"I\", 0)\n    counter_lock = manager.Lock()\n\n    # create jobs\n    jobs = []\n    for market_group in market_groups:\n        job = (market_group, counter, counter_lock, number_of_markets)\n        jobs.append(job)\n\n    # batch up jobs which can be run separately to stop memory leakage\n    batches = chunker(jobs, cores * 10)\n\n    print(f\"backtesting {number_of_markets} markets on {cores} cores\")\n    global numMarkets\n    numMarkets = number_of_markets\n    # run the back testing\n    for batch in batches:\n        with multiprocessing.Pool(processes=cores) as pool:\n            pool.starmap(backtest, batch)\n            pool.close()\n            pool.join()\n\n\nif __name__ == \"__main__\":\n    files.delete_old_files()\n    tic = time.time()\n    main()\n    toc = time.time()\n    print(f\"process took {toc - tic} seconds...\")\n    ra = results_analysis.Results()\n    ra.get_results_from_files()\n    ra.present_results()\n\n```",
+                "title": "<https:\/\/github.com\/JeffW12345\/runbacktests-python-file\/blob\/main\/runbacktests.py | runbacktests.py>",
+                "footer": "<https:\/\/github.com\/JeffW12345\/runbacktests-python-file|JeffW12345\/runbacktests-python-file>",
+                "id": 1,
+                "footer_icon": "https:\/\/slack.github.com\/static\/img\/favicon-neutral.png",
+                "color": "24292f",
+                "mrkdwn_in": [
+                    "text"
+                ],
+                "fallback": "<https:\/\/github.com\/JeffW12345\/runbacktests-python-file\/blob\/main\/runbacktests.py | runbacktests.py>",
+                "bot_id": "B021ZJYSBMW",
+                "app_unfurl_url": "https:\/\/github.com\/JeffW12345\/runbacktests-python-file\/blob\/main\/runbacktests.py",
+                "is_app_unfurl": true,
+                "app_id": "A01BP7R4KNY"
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "4BlS",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Hi "
+                            },
+                            {
+                                "type": "user",
+                                "user_id": "UUCD6P13J"
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n\nI've amended my code - line 74 and 75 in "
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/JeffW12345\/runbacktests-python-file\/blob\/main\/runbacktests.py"
+                            },
+                            {
+                                "type": "text",
+                                "text": ".\n\nHowever, when I run the test print in process_market_book, I get told:\n\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": " AttributeError: 'NoneType' object has no attribute 'runners'\"}",
+                                "style": {
+                                    "italic": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n\nWhat do you suggest, please?\n\nIt is possible that me using multi-processing is what's causing the problem?\n\nThanks,\n\nJeff"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UUCD6P13J",
+        "type": "message",
+        "ts": "1638890029.236000",
+        "client_msg_id": "691a8de3-4cd9-47b6-a62e-4ed95e30e068",
+        "text": "Sounds like you don't have a market catalogue, what does your middleware class look like?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6898272ab81",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6898272ab810e419c2c9ca9af1e53da8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0012-72.png",
+            "first_name": "Lee",
+            "real_name": "Lee U",
+            "display_name": "Lee",
+            "team": "T4G9NBD2M",
+            "name": "lunswor",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1638119866.121200",
+        "parent_user_id": "U016TGY3676",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "yKDb",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Sounds like you don't have a market catalogue, what does your middleware class look like?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UUCD6P13J",
+        "type": "message",
+        "ts": "1638890160.236200",
+        "client_msg_id": "24501678-8697-451b-85fa-200f659ac727",
+        "text": "Add a breakpoint in the add_market method and step through to see where it's not picking it up",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6898272ab81",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6898272ab810e419c2c9ca9af1e53da8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0012-72.png",
+            "first_name": "Lee",
+            "real_name": "Lee U",
+            "display_name": "Lee",
+            "team": "T4G9NBD2M",
+            "name": "lunswor",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1638119866.121200",
+        "parent_user_id": "U016TGY3676",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "8Sq2",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Add a breakpoint in the add_market method and step through to see where it's not picking it up"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U013K4VNB6D",
+        "type": "message",
+        "ts": "1638890412.236400",
+        "client_msg_id": "39ff2cd9-f935-4d0b-9bdd-884795b3cd0d",
+        "text": "Thanks <@UUCD6P13J>\n\nThe middleware code should be fine, as I literally just copied and pasted the code that Liam provided in this thread:\n\n```import json\nimport os\n\nfrom betfairlightweight.resources import MarketCatalogue\nfrom flumine.markets.middleware import Middleware\n\nMARKET_CATALOGUE_PATH = \"PRO\"  # update to correct path\n\n\n# Will read and parse the market_catalogue file and add to the market object when backtesting\n# Usage framework.add_middleware(MarketCatalogueMiddleware())\nclass MarketCatalogueMiddleware(Middleware):\n    def add_market(self, market) -&gt; None:\n        catalogue_file_path = os.path.join(MARKET_CATALOGUE_PATH, market.market_id)\n        if os.path.exists(catalogue_file_path):\n            with open(catalogue_file_path, \"r\") as r:\n                data = r.read()\n                catalogue_json_data = json.loads(data)\n                market.market_catalogue = MarketCatalogue(**catalogue_json_data)```\n",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gf188478b89f",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/f188478b89f4a5e2c5af9eafa0433712.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0004-72.png",
+            "first_name": "",
+            "real_name": "Jeff Waters",
+            "display_name": "Jeff Waters",
+            "team": "T4G9NBD2M",
+            "name": "watersjg",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1638119866.121200",
+        "parent_user_id": "U016TGY3676",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "i2J7",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Thanks "
+                            },
+                            {
+                                "type": "user",
+                                "user_id": "UUCD6P13J"
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n\nThe middleware code should be fine, as I literally just copied and pasted the code that Liam provided in this thread:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "import json\nimport os\n\nfrom betfairlightweight.resources import MarketCatalogue\nfrom flumine.markets.middleware import Middleware\n\nMARKET_CATALOGUE_PATH = \"PRO\"  # update to correct path\n\n\n# Will read and parse the market_catalogue file and add to the market object when backtesting\n# Usage framework.add_middleware(MarketCatalogueMiddleware())\nclass MarketCatalogueMiddleware(Middleware):\n    def add_market(self, market) -> None:\n        catalogue_file_path = os.path.join(MARKET_CATALOGUE_PATH, market.market_id)\n        if os.path.exists(catalogue_file_path):\n            with open(catalogue_file_path, \"r\") as r:\n                data = r.read()\n                catalogue_json_data = json.loads(data)\n                market.market_catalogue = MarketCatalogue(**catalogue_json_data)"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": []
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UUCD6P13J",
+        "type": "message",
+        "ts": "1638890461.236600",
+        "client_msg_id": "47bb6fe9-0115-4811-8ee9-02587867ceed",
+        "text": "Have you checked `catalogue_file_path` actually refers to the catalogue file on your disk?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6898272ab81",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6898272ab810e419c2c9ca9af1e53da8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0012-72.png",
+            "first_name": "Lee",
+            "real_name": "Lee U",
+            "display_name": "Lee",
+            "team": "T4G9NBD2M",
+            "name": "lunswor",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1638119866.121200",
+        "parent_user_id": "U016TGY3676",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "2ZF",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Have you checked "
+                            },
+                            {
+                                "type": "text",
+                                "text": "catalogue_file_path",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " actually refers to the catalogue file on your disk?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U013K4VNB6D",
+        "type": "message",
+        "ts": "1638891054.236800",
+        "client_msg_id": "dd0248bc-adce-4f1a-8c4d-5bda9e2bbf7e",
+        "text": "Thanks <@UUCD6P13J>.\n\nI'm assuming it does, as line 48 in <https:\/\/github.com\/JeffW12345\/runbacktests-python-file\/blob\/main\/runbacktests.py> uses the same reference, and works fine.\n\nHowever, I've just tried creating an explicit reference to the folder - MARKET_CATALOGUE_PATH = \"C:\\\\Users\\\\User\\\\Desktop\\\\bet-project\\\\PRO\" - and I'm still having the same issue.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gf188478b89f",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/f188478b89f4a5e2c5af9eafa0433712.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0004-72.png",
+            "first_name": "",
+            "real_name": "Jeff Waters",
+            "display_name": "Jeff Waters",
+            "team": "T4G9NBD2M",
+            "name": "watersjg",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1638119866.121200",
+        "parent_user_id": "U016TGY3676",
+        "attachments": [
+            {
+                "text": "```\n'''\nThis file executes mock trades using the orders and trades created in teststrategy.py.\n'''\nimport multiprocessing\nimport logging\nfrom pythonjsonlogger import jsonlogger\n\nimport marketcatalogue\nimport results_analysis\nfrom teststrategy import TestStrategy\nfrom datetime import datetime\nimport os\nfrom pathlib import Path\nimport time\nimport mock\nimport smart_open\nimport multiprocessing as mp\nfrom flumine import FlumineBacktest, clients\nimport files\n\nlogger = logging.getLogger()\n\ncustom_format = \"%(asctime) %(levelname) %(message)\"\nlog_handler = logging.StreamHandler()\nformatter = jsonlogger.JsonFormatter(custom_format)\nformatter.converter = time.gmtime\nlog_handler.setFormatter(formatter)\nlogger.addHandler(log_handler)\nlogger.setLevel(logging.CRITICAL)\n# Get start time\nnow = datetime.now()\nrunning_start_time = now.strftime(\"%d\/%m\/%Y %H:%M:%S\")\n\n\ndef get_markets(data_dir):\n    markets = []\n    for dir_, _, files in os.walk(data_dir):\n        for file_name in files:\n            if file_name[0] != '1':\n                continue\n            dirName = Path(dir_).absolute()\n            rel_file = os.path.join(dirName, file_name)\n            markets.append(rel_file)\n    return markets\n\n\nstrategy = TestStrategy(\n    market_filter={\"markets\": get_markets(\"PRO\"),\n                   \"listener_kwargs\": {\"seconds_to_start\": 0},\n                   \"market_types\": [\"WIN\"]},\n    max_order_exposure=100000,\n    max_selection_exposure=100500,\n    max_live_trade_count=2,\n)\n\n\ndef backtest(markets: list, counter: int, counter_lock, number_of_markets: int):\n    \"\"\"handles backtesting\"\"\"\n    # initialise the play object\n    client = clients.BacktestClient()\n    framework = FlumineBacktest(client=client)\n\n    # add the market and multiprocessing context information\n    strategy.market_filter[\"markets\"] = markets\n    strategy.market_filter[\"markets\"] = markets\n    strategy.context[\"number_of_markets\"] = number_of_markets\n    strategy.context[\"markets_processed\"] = set()\n    strategy.context[\"counter\"] = counter\n    strategy.context[\"counter_lock\"] = counter_lock\n\n    # patch smart_open so that .gz files are supported natively\n    with mock.patch(\"builtins.open\", smart_open.open):\n        framework.add_strategy(strategy)\n        market_catalogue_middleware = marketcatalogue.MarketCatalogueMiddleware()\n        framework.add_market_middleware(market_catalogue_middleware)\n        framework.run()\n        files.output_results(framework)\n\n\ndef chunker(data: list, chunk_size: int):\n    \"\"\"yields successive n-sized chunks from list\"\"\"\n    while data:\n        chunk, data = data[:chunk_size], data[chunk_size:]\n        yield chunk\n\n\ndef get_optimum_chunksize(\n        max_chunksize: int, number_of_items: int, core_count: int\n) -&gt; int:\n    \"\"\"gives you the best chunksize for your core count\"\"\"\n    if core_count &gt;= number_of_items:\n        return 1\n    else:\n        if number_of_items \/\/ core_count &gt; max_chunksize:\n            return max_chunksize\n        else:\n            return number_of_items \/\/ core_count\n\n\ndef main():\n    \"\"\"main function\"\"\"\n    # get all markets which have not been run on the given strategy\n    markets = get_markets(\"PRO\")\n\n    if not markets:\n        print(\"no markets to run...\")\n        return\n\n    # get core count\n    cores = mp.cpu_count()\n\n    # determine best batch size for markets to pass to processes\n    number_of_markets = len(markets)\n    chunk_size = get_optimum_chunksize(20, number_of_markets, cores)\n    market_groups = list(chunker(markets, chunk_size))\n\n    # process safe market counter\n    manager = mp.Manager()\n    counter = manager.Value(\"I\", 0)\n    counter_lock = manager.Lock()\n\n    # create jobs\n    jobs = []\n    for market_group in market_groups:\n        job = (market_group, counter, counter_lock, number_of_markets)\n        jobs.append(job)\n\n    # batch up jobs which can be run separately to stop memory leakage\n    batches = chunker(jobs, cores * 10)\n\n    print(f\"backtesting {number_of_markets} markets on {cores} cores\")\n    global numMarkets\n    numMarkets = number_of_markets\n    # run the back testing\n    for batch in batches:\n        with multiprocessing.Pool(processes=cores) as pool:\n            pool.starmap(backtest, batch)\n            pool.close()\n            pool.join()\n\n\nif __name__ == \"__main__\":\n    files.delete_old_files()\n    tic = time.time()\n    main()\n    toc = time.time()\n    print(f\"process took {toc - tic} seconds...\")\n    ra = results_analysis.Results()\n    ra.get_results_from_files()\n    ra.present_results()\n\n```",
+                "title": "<https:\/\/github.com\/JeffW12345\/runbacktests-python-file\/blob\/main\/runbacktests.py | runbacktests.py>",
+                "footer": "<https:\/\/github.com\/JeffW12345\/runbacktests-python-file|JeffW12345\/runbacktests-python-file>",
+                "id": 1,
+                "footer_icon": "https:\/\/slack.github.com\/static\/img\/favicon-neutral.png",
+                "color": "24292f",
+                "mrkdwn_in": [
+                    "text"
+                ],
+                "fallback": "<https:\/\/github.com\/JeffW12345\/runbacktests-python-file\/blob\/main\/runbacktests.py | runbacktests.py>",
+                "bot_id": "B021ZJYSBMW",
+                "app_unfurl_url": "https:\/\/github.com\/JeffW12345\/runbacktests-python-file\/blob\/main\/runbacktests.py",
+                "is_app_unfurl": true,
+                "app_id": "A01BP7R4KNY"
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "qBNk",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Thanks "
+                            },
+                            {
+                                "type": "user",
+                                "user_id": "UUCD6P13J"
+                            },
+                            {
+                                "type": "text",
+                                "text": ".\n\nI'm assuming it does, as line 48 in "
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/JeffW12345\/runbacktests-python-file\/blob\/main\/runbacktests.py"
+                            },
+                            {
+                                "type": "text",
+                                "text": " uses the same reference, and works fine.\n\nHowever, I've just tried creating an explicit reference to the folder - MARKET_CATALOGUE_PATH = \"C:\\\\Users\\\\User\\\\Desktop\\\\bet-project\\\\PRO\" - and I'm still having the same issue."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1638891074.237100",
+        "client_msg_id": "8cdd10ef-c8c5-4ad9-bed1-f572f80e4484",
+        "text": "do you have the catalogues?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1638119866.121200",
+        "parent_user_id": "U016TGY3676",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "9qVn",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "do you have the catalogues?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U013K4VNB6D",
+        "type": "message",
+        "ts": "1638891308.237300",
+        "client_msg_id": "7206f3b4-4295-409d-9a54-6b598f909806",
+        "text": "Hi <@U4H19D1D2>. I don't know. Do I need to import them, and if so how do I do that?\n\nIf you're referring to the MarketCatalogue class, I have that, as Pycharm is fine with this import:\n\nfrom betfairlightweight.resources import MarketCatalogue",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gf188478b89f",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/f188478b89f4a5e2c5af9eafa0433712.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0004-72.png",
+            "first_name": "",
+            "real_name": "Jeff Waters",
+            "display_name": "Jeff Waters",
+            "team": "T4G9NBD2M",
+            "name": "watersjg",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1638119866.121200",
+        "parent_user_id": "U016TGY3676",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "xiD",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Hi "
+                            },
+                            {
+                                "type": "user",
+                                "user_id": "U4H19D1D2"
+                            },
+                            {
+                                "type": "text",
+                                "text": ". I don't know. Do I need to import them, and if so how do I do that?\n\nIf you're referring to the MarketCatalogue class, I have that, as Pycharm is fine with this import:\n\nfrom betfairlightweight.resources import MarketCatalogue"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1638891325.237500",
+        "client_msg_id": "5a38ff67-b236-4605-be37-6fc1bed89b07",
+        "text": "you need to have recorded them",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1638119866.121200",
+        "parent_user_id": "U016TGY3676",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "l68z2",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "you need to have recorded them"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1638891336.237700",
+        "client_msg_id": "b8118e32-6ebc-48e5-9c7e-cbeab0f512b6",
+        "text": "you don't get them from the betfair data",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1638119866.121200",
+        "parent_user_id": "U016TGY3676",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "fZ=k",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "you don't get them from the betfair data"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1638891389.237900",
+        "client_msg_id": "218f290a-6aca-473e-86ac-4c9d5d5df1a2",
+        "text": "but you do get the runner names in the marketDefinition from betfair data if that is what you are after",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1638119866.121200",
+        "parent_user_id": "U016TGY3676",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "OBUvX",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "but you do get the runner names in the marketDefinition from betfair data if that is what you are after"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U013K4VNB6D",
+        "type": "message",
+        "ts": "1638891462.238100",
+        "client_msg_id": "2313f132-341f-4c3e-beb2-75c3b76436f6",
+        "text": "Fair enough. I think that's where I was going wrong then.\n\nYes, that's exactly what I'm after. What I am looking for is some way of knowing the name of each selection I bet on in my backtesting.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gf188478b89f",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/f188478b89f4a5e2c5af9eafa0433712.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0004-72.png",
+            "first_name": "",
+            "real_name": "Jeff Waters",
+            "display_name": "Jeff Waters",
+            "team": "T4G9NBD2M",
+            "name": "watersjg",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1638119866.121200",
+        "parent_user_id": "U016TGY3676",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "D8hl",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Fair enough. I think that's where I was going wrong then.\n\nYes, that's exactly what I'm after. What I am looking for is some way of knowing the name of each selection I bet on in my backtesting."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U013K4VNB6D",
+        "type": "message",
+        "ts": "1638891483.238300",
+        "client_msg_id": "92c12ccc-c00d-4f58-b86d-87660ff3a039",
+        "text": "I can get their selection id's no problem, but I haven't managed to find a way of getting selection names.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gf188478b89f",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/f188478b89f4a5e2c5af9eafa0433712.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0004-72.png",
+            "first_name": "",
+            "real_name": "Jeff Waters",
+            "display_name": "Jeff Waters",
+            "team": "T4G9NBD2M",
+            "name": "watersjg",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1638119866.121200",
+        "parent_user_id": "U016TGY3676",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "uVm",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I can get their selection id's no problem, but I haven't managed to find a way of getting selection names."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1638891535.238500",
+        "client_msg_id": "0f5ecac6-348b-4af1-bb6c-ff25493dd917",
+        "text": "look in the definition",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1638119866.121200",
+        "parent_user_id": "U016TGY3676",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "\/t1q",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "look in the definition"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U013K4VNB6D",
+        "type": "message",
+        "ts": "1638891652.238700",
+        "client_msg_id": "843a618b-bfc5-41a9-9a6e-633779a2b101",
+        "text": "Will do, thanks.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gf188478b89f",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/f188478b89f4a5e2c5af9eafa0433712.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0004-72.png",
+            "first_name": "",
+            "real_name": "Jeff Waters",
+            "display_name": "Jeff Waters",
+            "team": "T4G9NBD2M",
+            "name": "watersjg",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1638119866.121200",
+        "parent_user_id": "U016TGY3676",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "5I5a",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Will do, thanks."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U013K4VNB6D",
+        "type": "message",
+        "ts": "1638892124.238900",
+        "client_msg_id": "6eaa4527-7784-4794-81a8-0907cb24c9e8",
+        "text": "I googled Betfair market definitions, and got this page: <https:\/\/docs.developer.betfair.com\/display\/1smk3cen4v3lu3yomq5qye0ni\/Betting+Type+Definitions>,\n\nselectionId and runnerName are listed next to one another.\n\nIf I write print(runner.selection_id), I get the id of the runner. However, when I write print(runner.runnerName), Pycharm gives me an unresolved attribute error message.\n\nHow do I get around this, please?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gf188478b89f",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/f188478b89f4a5e2c5af9eafa0433712.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0004-72.png",
+            "first_name": "",
+            "real_name": "Jeff Waters",
+            "display_name": "Jeff Waters",
+            "team": "T4G9NBD2M",
+            "name": "watersjg",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1638119866.121200",
+        "parent_user_id": "U016TGY3676",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "qRa6b",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I googled Betfair market definitions, and got this page: "
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/docs.developer.betfair.com\/display\/1smk3cen4v3lu3yomq5qye0ni\/Betting+Type+Definitions"
+                            },
+                            {
+                                "type": "text",
+                                "text": ",\n\nselectionId and runnerName are listed next to one another.\n\nIf I write print(runner.selection_id), I get the id of the runner. However, when I write print(runner.runnerName), Pycharm gives me an unresolved attribute error message.\n\nHow do I get around this, please?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1638892318.239100",
+        "client_msg_id": "1dbbc359-f900-46e8-8c83-1f3af10cb71d",
+        "text": "open up your debugger and have a look in `market_book.market_definition.runners`",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1638119866.121200",
+        "parent_user_id": "U016TGY3676",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "tuR3",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "open up your debugger and have a look in "
+                            },
+                            {
+                                "type": "text",
+                                "text": "market_book.market_definition.runners",
+                                "style": {
+                                    "code": true
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "raised_hands",
+                "users": [
+                    "U013K4VNB6D"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "text": "Fantastic, thanks Liam. I think that now it will just be a case of doing a simple 'for' loop to find the runner name corresponding to a particular selection ID.\n\nCheers.",
+        "files": [
+            {
+                "id": "F02PU8VGYEP",
+                "mode": "hidden_by_limit"
+            }
+        ],
+        "upload": false,
+        "user": "U013K4VNB6D",
+        "display_as_bot": false,
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "qeA",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Fantastic, thanks Liam. I think that now it will just be a case of doing a simple 'for' loop to find the runner name corresponding to a particular selection ID.\n\nCheers."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "type": "message",
+        "ts": "1638892837.239300",
+        "client_msg_id": "030d60b4-4d2f-4660-bc64-c4acd262228a",
+        "thread_ts": "1638119866.121200",
+        "parent_user_id": "U016TGY3676",
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "U4H19D1D2"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "subtype": "channel_join",
+        "user": "U02PEHLQV71",
+        "text": "<@U02PEHLQV71> has joined the channel",
+        "type": "message",
+        "ts": "1638902435.239900"
+    },
+    {
+        "user": "U016TGY3676",
+        "type": "message",
+        "ts": "1638910302.245100",
+        "client_msg_id": "3c6ae2ea-ae2e-4714-ba11-bea615d97584",
+        "text": "In Flumine, if we wanted bets on multiple runners to be executed at the same time, does the following send each bet individually?\n<https:\/\/github.com\/liampauling\/flumine\/blob\/bdd46e21b4015779bdccc30bbd5c0f1f86c90d79\/examples\/strategies\/priceblockage.py#L73>",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6a681220e11",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6a681220e11c1a2ed3685375d658dadb.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0001-72.png",
+            "first_name": "",
+            "real_name": "birchy",
+            "display_name": "birchy",
+            "team": "T4G9NBD2M",
+            "name": "birchy",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "attachments": [
+            {
+                "text": "```\n                    market.place_order(order)\n```",
+                "title": "<https:\/\/github.com\/liampauling\/flumine\/blob\/bdd46e21b4015779bdccc30bbd5c0f1f86c90d79\/examples\/strategies\/priceblockage.py | priceblockage.py>",
+                "footer": "<https:\/\/github.com\/liampauling\/flumine|liampauling\/flumine>",
+                "id": 1,
+                "footer_icon": "https:\/\/slack.github.com\/static\/img\/favicon-neutral.png",
+                "color": "24292f",
+                "mrkdwn_in": [
+                    "text"
+                ],
+                "fallback": "<https:\/\/github.com\/liampauling\/flumine\/blob\/bdd46e21b4015779bdccc30bbd5c0f1f86c90d79\/examples\/strategies\/priceblockage.py | priceblockage.py>",
+                "bot_id": "B021ZJYSBMW",
+                "app_unfurl_url": "https:\/\/github.com\/liampauling\/flumine\/blob\/bdd46e21b4015779bdccc30bbd5c0f1f86c90d79\/examples\/strategies\/priceblockage.py#L73",
+                "is_app_unfurl": true,
+                "app_id": "A01BP7R4KNY"
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "7Hsa+",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "In Flumine, if we wanted bets on multiple runners to be executed at the same time, does the following send each bet individually?\n"
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/liampauling\/flumine\/blob\/bdd46e21b4015779bdccc30bbd5c0f1f86c90d79\/examples\/strategies\/priceblockage.py#L73"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01MPC0GUK1",
+        "type": "message",
+        "ts": "1638910543.245900",
+        "edited": {
+            "user": "U01MPC0GUK1",
+            "ts": "1638910552.000000"
+        },
+        "client_msg_id": "536b2a07-62cb-4295-a1c8-d1a955f802e0",
+        "text": "I think if you use the Transaction class and use it with the context manager you can batch up orders",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "3be8fa875ec4",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2021-02-15\/1752388211523_3be8fa875ec4866620ff_72.png",
+            "first_name": "Beeblebrox",
+            "real_name": "Beeblebrox",
+            "display_name": "Beeblebrox",
+            "team": "T4G9NBD2M",
+            "name": "arch4672",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "eFaB",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I think if you use the Transaction class and use it with the context manager you can batch up orders"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01MPC0GUK1",
+        "type": "message",
+        "ts": "1638910560.246200",
+        "client_msg_id": "98bd7b4f-a03f-4251-8d97-d035391b7de0",
+        "text": "<https:\/\/github.com\/liampauling\/flumine\/blob\/0737461323da409990d3108a158092487506aa7f\/flumine\/execution\/transaction.py#L12>",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "3be8fa875ec4",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2021-02-15\/1752388211523_3be8fa875ec4866620ff_72.png",
+            "first_name": "Beeblebrox",
+            "real_name": "Beeblebrox",
+            "display_name": "Beeblebrox",
+            "team": "T4G9NBD2M",
+            "name": "arch4672",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "attachments": [
+            {
+                "text": "```\nclass Transaction:\n```",
+                "title": "<https:\/\/github.com\/liampauling\/flumine\/blob\/0737461323da409990d3108a158092487506aa7f\/flumine\/execution\/transaction.py | transaction.py>",
+                "footer": "<https:\/\/github.com\/liampauling\/flumine|liampauling\/flumine>",
+                "id": 1,
+                "footer_icon": "https:\/\/slack.github.com\/static\/img\/favicon-neutral.png",
+                "color": "24292f",
+                "mrkdwn_in": [
+                    "text"
+                ],
+                "fallback": "<https:\/\/github.com\/liampauling\/flumine\/blob\/0737461323da409990d3108a158092487506aa7f\/flumine\/execution\/transaction.py | transaction.py>",
+                "bot_id": "B021ZJYSBMW",
+                "app_unfurl_url": "https:\/\/github.com\/liampauling\/flumine\/blob\/0737461323da409990d3108a158092487506aa7f\/flumine\/execution\/transaction.py#L12",
+                "is_app_unfurl": true,
+                "app_id": "A01BP7R4KNY"
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "NVL",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/liampauling\/flumine\/blob\/0737461323da409990d3108a158092487506aa7f\/flumine\/execution\/transaction.py#L12"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1638910675.246900",
+        "client_msg_id": "8FB2D539-DF75-41F7-AD65-47BB6E84B96A",
+        "text": "Yeah as above you need to wrap it in a transaction to sent at the same time ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "SBaSQ",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Yeah as above you need to wrap it in a transaction to sent at the same time "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U016TGY3676",
+        "type": "message",
+        "ts": "1638911210.249300",
+        "client_msg_id": "89e4d4ef-eefc-4a69-b630-7061a4c0a297",
+        "text": "Bugger, I have a strategy leak. Was wondering why my bets were arriving at slightly different times. So something like this:\n```for runner in market_book.runners:\n    atb = get_price(runner.ex.available_to_back, 0)\n    trade = Trade(\n        market_book.market_id,\n        runner.selection_id,\n        runner.handicap,\n        self,\n    )\n    # create order\n    order = trade.create_order(\n        side=\"BACK\",\n        order_type=LimitOrder(atb, self.context[\"stake\"]),\n    )\n    # place order for execution\n    market.place_order(order)```\nShould be done like this instead....???\n```with market.transaction() as batch:\n    for runner in market_book.runners:\n        atb = get_price(runner.ex.available_to_back, 0)\n        trade = Trade(\n            market_book.market_id,\n            runner.selection_id,\n            runner.handicap,\n            self,\n        )\n        # create order &amp; add to batch\n        order = trade.create_order(\n            side=\"BACK\",\n            order_type=LimitOrder(atb, self.context[\"stake\"]),\n        )\n        batch.place_order(order)\n    batch.execute()```\n",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6a681220e11",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6a681220e11c1a2ed3685375d658dadb.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0001-72.png",
+            "first_name": "",
+            "real_name": "birchy",
+            "display_name": "birchy",
+            "team": "T4G9NBD2M",
+            "name": "birchy",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Oxx42",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Bugger, I have a strategy leak. Was wondering why my bets were arriving at slightly different times. So something like this:\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "for runner in market_book.runners:\n    atb = get_price(runner.ex.available_to_back, 0)\n    trade = Trade(\n        market_book.market_id,\n        runner.selection_id,\n        runner.handicap,\n        self,\n    )\n    # create order\n    order = trade.create_order(\n        side=\"BACK\",\n        order_type=LimitOrder(atb, self.context[\"stake\"]),\n    )\n    # place order for execution\n    market.place_order(order)"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Should be done like this instead....???\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "with market.transaction() as batch:\n    for runner in market_book.runners:\n        atb = get_price(runner.ex.available_to_back, 0)\n        trade = Trade(\n            market_book.market_id,\n            runner.selection_id,\n            runner.handicap,\n            self,\n        )\n        # create order & add to batch\n        order = trade.create_order(\n            side=\"BACK\",\n            order_type=LimitOrder(atb, self.context[\"stake\"]),\n        )\n        batch.place_order(order)\n    batch.execute()"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": []
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1638911399.249900",
+        "client_msg_id": "DF241E5F-F26F-432F-9461-E1B287E9A600",
+        "text": "Last line isn’t required, context manager does this on exit ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "rk9",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Last line isn’t required, context manager does this on exit "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "dart",
+                "users": [
+                    "U016TGY3676"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "U02FXEUUMRN",
+        "type": "message",
+        "ts": "1638937425.250100",
+        "client_msg_id": "5255d5cc-d315-437f-8edc-e1d7f807aa3e",
+        "text": "No betting interest in football really but is that spike directly after or before half time?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "15c960fd4585",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2021-09-21\/2541506499648_15c960fd4585096f5419_72.png",
+            "first_name": "Finn",
+            "real_name": "Finn",
+            "display_name": "Finn",
+            "team": "T4G9NBD2M",
+            "name": "finnodonoghue",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1638652315.189700",
+        "parent_user_id": "UBS7QANF3",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "u6j0",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "No betting interest in football really but is that spike directly after or before half time?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1638942050.250900",
+        "client_msg_id": "0e24f05a-4c3c-4550-a045-6024cbcb026c",
+        "text": "It's because everything scored in time added on in the first half is classified as 45 minutes",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1638652315.189700",
+        "parent_user_id": "UBS7QANF3",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "ytvG",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "It's because everything scored in time added on in the first half is classified as 45 minutes"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U02FXEUUMRN",
+        "type": "message",
+        "ts": "1638942193.251100",
+        "client_msg_id": "9ccb13e4-60ae-42da-a826-0921298eb0b6",
+        "text": "Thanks!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "15c960fd4585",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2021-09-21\/2541506499648_15c960fd4585096f5419_72.png",
+            "first_name": "Finn",
+            "real_name": "Finn",
+            "display_name": "Finn",
+            "team": "T4G9NBD2M",
+            "name": "finnodonoghue",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1638652315.189700",
+        "parent_user_id": "UBS7QANF3",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "fyyE",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Thanks!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

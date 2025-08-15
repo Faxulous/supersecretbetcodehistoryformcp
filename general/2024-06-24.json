@@ -1,0 +1,580 @@
+[
+    {
+        "user": "U06DURYFXK7",
+        "type": "message",
+        "ts": "1719219015.098489",
+        "client_msg_id": "a3b50079-5396-4a2f-a185-ae3e25c7fc11",
+        "text": "Thanks <@U4H19D1D2>. Hows this look\n```    def process_orders(self, market: Market, orders: list) -&gt; None:\n        orders = market.blotter.strategy_orders(self)\n        for order in orders:\n            if order.execution_complete:\n                if order.id not in self.order_trigger:                    \n                    side = <http:\/\/order.info['info']['side']|order.info['info']['side']>\n                    opp = {'LAY': 'BACK', 'BACK': 'LAY'}[side]\n                    selection_id = <http:\/\/order.info['selection_id']|order.info['selection_id']>\n                    handicap = <http:\/\/order.info['handicap']|order.info['handicap']>\n                    size = <http:\/\/order.info['order_type']['size']|order.info['order_type']['size']>\n                    print(f'Order trigger {opp}, {selection_id}, {size}')\n                    trade = Trade(market.market_id,selection_id, handicap, self)\n                    new_order = trade.create_order(side=opp, order_type=MarketOnCloseOrder(size)) \n                    self.order_trigger[order.id] = order\n                    market.place_order(new_order)\n        return```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "e397ac707759",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-01-15\/6473811233506_e397ac707759c168298e_72.png",
+            "first_name": "Jared",
+            "real_name": "Jared King",
+            "display_name": "Jared King",
+            "team": "T4G9NBD2M",
+            "name": "jaristyking",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1719142759.150759",
+        "parent_user_id": "U06DURYFXK7",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "kNBO5",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Thanks "
+                            },
+                            {
+                                "type": "user",
+                                "user_id": "U4H19D1D2"
+                            },
+                            {
+                                "type": "text",
+                                "text": ". Hows this look\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "    def process_orders(self, market: Market, orders: list) -> None:\n        orders = market.blotter.strategy_orders(self)\n        for order in orders:\n            if order.execution_complete:\n                if order.id not in self.order_trigger:                    \n                    side = order.info['info']['side']\n                    opp = {'LAY': 'BACK', 'BACK': 'LAY'}[side]\n                    selection_id = order.info['selection_id']\n                    handicap = order.info['handicap']\n                    size = order.info['order_type']['size']\n                    print(f'Order trigger {opp}, {selection_id}, {size}')\n                    trade = Trade(market.market_id,selection_id, handicap, self)\n                    new_order = trade.create_order(side=opp, order_type=MarketOnCloseOrder(size)) \n                    self.order_trigger[order.id] = order\n                    market.place_order(new_order)\n        return"
+                            }
+                        ],
+                        "border": 0
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1719219105.903399",
+        "client_msg_id": "ece57dc7-3b92-493c-9831-725ce29fc64d",
+        "text": "Does it work? I would use the real values rather than from info `order.selection_id` `order.handicap` etc",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1719142759.150759",
+        "parent_user_id": "U06DURYFXK7",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "kaLqQ",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Does it work? I would use the real values rather than from info "
+                            },
+                            {
+                                "type": "text",
+                                "text": "order.selection_id",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " "
+                            },
+                            {
+                                "type": "text",
+                                "text": "order.handicap",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " etc"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1719219130.481419",
+        "client_msg_id": "4570768a-71f8-4bea-a4f4-142c8cf56c62",
+        "text": "Keep them all in one trade as well `order.trade` you don't need to create a new trade object",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1719142759.150759",
+        "parent_user_id": "U06DURYFXK7",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "8HHnR",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Keep them all in one trade as well "
+                            },
+                            {
+                                "type": "text",
+                                "text": "order.trade",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " you don't need to create a new trade object"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "U06DURYFXK7"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "U06DURYFXK7",
+        "type": "message",
+        "ts": "1719219131.647739",
+        "client_msg_id": "a6d67be6-6714-48c1-86bd-afed33c17a1b",
+        "text": "seems to :stuck_out_tongue: like get them from get_runner_book?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "e397ac707759",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-01-15\/6473811233506_e397ac707759c168298e_72.png",
+            "first_name": "Jared",
+            "real_name": "Jared King",
+            "display_name": "Jared King",
+            "team": "T4G9NBD2M",
+            "name": "jaristyking",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1719142759.150759",
+        "parent_user_id": "U06DURYFXK7",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "yuy9j",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "seems to "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "stuck_out_tongue",
+                                "unicode": "1f61b"
+                            },
+                            {
+                                "type": "text",
+                                "text": " like get them from get_runner_book?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1719219142.553809",
+        "client_msg_id": "a26c0ae0-6b92-45b9-a11e-079b2311daa3",
+        "text": "no",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1719142759.150759",
+        "parent_user_id": "U06DURYFXK7",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "H6wa6",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "no"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U06DURYFXK7",
+        "type": "message",
+        "ts": "1719219178.591559",
+        "client_msg_id": "d2efc6d4-11d1-4a35-99c7-12a12d210349",
+        "text": "market.market_book.runners",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "e397ac707759",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-01-15\/6473811233506_e397ac707759c168298e_72.png",
+            "first_name": "Jared",
+            "real_name": "Jared King",
+            "display_name": "Jared King",
+            "team": "T4G9NBD2M",
+            "name": "jaristyking",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1719142759.150759",
+        "parent_user_id": "U06DURYFXK7",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "16F9f",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "market.market_book.runners"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1719219861.461789",
+        "client_msg_id": "1974e522-4f9a-41b6-8736-c6e203db0852",
+        "text": "No, you have it all in the `order` object, `order.trade` `order.selection_id`",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1719142759.150759",
+        "parent_user_id": "U06DURYFXK7",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Q2qGj",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "No, you have it all in the "
+                            },
+                            {
+                                "type": "text",
+                                "text": "order",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " object, "
+                            },
+                            {
+                                "type": "text",
+                                "text": "order.trade",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " "
+                            },
+                            {
+                                "type": "text",
+                                "text": "order.selection_id",
+                                "style": {
+                                    "code": true
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "smiling_face_with_3_hearts",
+                "users": [
+                    "U06DURYFXK7"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "U06J422BWCD",
+        "type": "message",
+        "ts": "1719280090.687909",
+        "client_msg_id": "bffdc3ca-bb1c-4a73-baa1-1478768f8a78",
+        "text": "Hi Guys,\nI am wanting to access the market catalogue within the process_closed_market function within a flumine strategy class to gather a few bits of information about the markets I have bet on including the market base rate and the market name. I tried calling market.market_catalogue however it just returned None. I have managed to call this successfully before in other strategies however it doesn't seem to be working for me now. Is there anything you need to specify to be able to gather the market catalogue information?\nAlso, unrelated question, is a bet directly into the SP considered a 'live bet' in the context of setting the argument max_live_trade_count when calling your class, I assume not?\nCheers",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g39be4fa9de3",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/39be4fa9de3ea186eb2080ab6f8221a5.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0015-72.png",
+            "first_name": "Ben",
+            "real_name": "Ben Coleman",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "buster.coleman",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1719280090.687909",
+        "reply_count": 5,
+        "reply_users_count": 2,
+        "latest_reply": "1719365269.784729",
+        "reply_users": [
+            "U4H19D1D2",
+            "U06J422BWCD"
+        ],
+        "replies": [
+            {
+                "user": "U4H19D1D2",
+                "ts": "1719295512.366459"
+            },
+            {
+                "user": "U06J422BWCD",
+                "ts": "1719296250.313919"
+            },
+            {
+                "user": "U06J422BWCD",
+                "ts": "1719296450.619069"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1719300560.630729"
+            },
+            {
+                "user": "U06J422BWCD",
+                "ts": "1719365269.784729"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": true,
+        "last_read": "1719365269.784729",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "y3FOt",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Hi Guys,\nI am wanting to access the market catalogue within the process_closed_market function within a flumine strategy class to gather a few bits of information about the markets I have bet on including the market base rate and the market name. I tried calling market.market_catalogue however it just returned None. I have managed to call this successfully before in other strategies however it doesn't seem to be working for me now. Is there anything you need to specify to be able to gather the market catalogue information?\nAlso, unrelated question, is a bet directly into the SP considered a 'live bet' in the context of setting the argument max_live_trade_count when calling your class, I assume not?\nCheers"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1719295512.366459",
+        "client_msg_id": "44EB156D-A414-48CA-8C01-4056FB20EDF8",
+        "text": "Live or simulated?\n\nYes ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1719280090.687909",
+        "parent_user_id": "U06J422BWCD",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "ws\/qa",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Live or simulated?\n\nYes "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U06J422BWCD",
+        "type": "message",
+        "ts": "1719296250.313919",
+        "client_msg_id": "d20abb61-abd1-4cea-a7c4-e40fb4fba9f8",
+        "text": "Live",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g39be4fa9de3",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/39be4fa9de3ea186eb2080ab6f8221a5.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0015-72.png",
+            "first_name": "Ben",
+            "real_name": "Ben Coleman",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "buster.coleman",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1719280090.687909",
+        "parent_user_id": "U06J422BWCD",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "LHzkC",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Live"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U06J422BWCD",
+        "type": "message",
+        "ts": "1719296450.619069",
+        "client_msg_id": "9effd57c-fc85-4ca0-80e5-bdd354cab324",
+        "text": "Thats interesting because I thought live bets were just orders that were executable and I wouldn't of thought SP bets would fit in that category",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g39be4fa9de3",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/39be4fa9de3ea186eb2080ab6f8221a5.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0015-72.png",
+            "first_name": "Ben",
+            "real_name": "Ben Coleman",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "buster.coleman",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1719280090.687909",
+        "parent_user_id": "U06J422BWCD",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "qmlP7",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Thats interesting because I thought live bets were just orders that were executable and I wouldn't of thought SP bets would fit in that category"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

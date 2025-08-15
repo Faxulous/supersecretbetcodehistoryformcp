@@ -1,0 +1,69 @@
+[
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1734079412.754259",
+        "client_msg_id": "6e1c1449-8bc4-48dc-a555-03421db423b5",
+        "text": "<https:\/\/github.com\/betcode-org\/flumine\/blob\/master\/tests\/test_integration.py>",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1732729328.140189",
+        "parent_user_id": "UQL0QDEKA",
+        "attachments": [
+            {
+                "id": 1,
+                "footer_icon": "https:\/\/slack.github.com\/static\/img\/favicon-neutral.png",
+                "color": "24292f",
+                "bot_id": "B021ZJYSBMW",
+                "app_unfurl_url": "https:\/\/github.com\/betcode-org\/flumine\/blob\/master\/tests\/test_integration.py",
+                "is_app_unfurl": true,
+                "app_id": "A01BP7R4KNY",
+                "fallback": "<https:\/\/github.com\/betcode-org\/flumine\/blob\/master\/tests\/test_integration.py | test_integration.py>",
+                "text": "```\nimport unittest\n\nfrom flumine import FlumineSimulation, clients, BaseStrategy, config\nfrom flumine.order.trade import Trade\nfrom flumine.order.order import OrderStatus\nfrom flumine.order.ordertype import LimitOrder, MarketOnCloseOrder, LimitOnCloseOrder\nfrom flumine.utils import get_price, get_nearest_price\nfrom examples.middleware.marketcatalogue import MarketCatalogueMiddleware\n\n\nclass IntegrationTest(unittest.TestCase):\n    def setUp(self) -> None:\n        # change config to raise errors\n        config.raise_errors = True\n\n    def test_market_catalogues(self):\n        \"\"\"Tests handling and processing of market catalogues.\"\"\"\n\n        class UseCatalogues(BaseStrategy):\n            def add(self, flumine):\n                self.catalogues_processed = []\n                # stream._listener.stream is None when initialised but not registered.\n                # The call below tests that such a case is handled and an exception is not thrown.\n                self.market_cached(\"123\")\n\n            def process_market_catalogue(self, market, market_catalogue):\n                self.catalogues_processed.append(market.market_id)\n\n        client = clients.SimulatedClient()\n        framework = FlumineSimulation(client=client)\n        framework.add_market_middleware(\n            MarketCatalogueMiddleware(\"tests\/resources\/catalogues\")\n        )\n        # Strategies overlap on one market but have different market filters overall.\n        # This is deliberate so that streams do not get shared.\n        strategy_1 = UseCatalogues(\n            name=\"Single market\",\n            market_filter={\n                \"markets\": [\"tests\/resources\/1.197931750\"],\n                \"event_processing\": True,\n            },\n        )\n        strategy_2 = UseCatalogues(\n            name=\"Double market\",\n            market_filter={\n                \"markets\": [\n                    \"tests\/resources\/1.197931750\",\n                    \"tests\/resources\/1.197931751\",\n                ],\n                \"event_processing\": True,\n            },\n        )\n        framework.add_strategy(strategy_1)\n        framework.add_strategy(strategy_2)\n        framework.run()\n        self.assertEqual(strategy_1.catalogues_processed, [\"1.197931750\"])\n        self.assertEqual(\n            strategy_2.catalogues_processed, [\"1.197931750\", \"1.197931751\"]\n        )\n\n    def test_simulation_gzipped(self):\n        class Ex(BaseStrategy):\n            def check_market_book(self, market, market_book):\n                return True\n\n            def process_market_book(self, market, market_book):\n                return\n\n        client = clients.SimulatedClient()\n        framework = FlumineSimulation(client=client)\n        strategy = Ex(\n            market_filter={\"markets\": [\"tests\/resources\/BASIC-1.132153978.gz\"]}\n        )\n        framework.add_strategy(strategy)\n        framework.run()\n\n    def test_simulation_basic(self):\n        class Ex(BaseStrategy):\n            def check_market_book(self, market, market_book):\n                return True\n\n            def process_market_book(self, market, market_book):\n                return\n\n        client = clients.SimulatedClient()\n        framework = FlumineSimulation(client=client)\n        strategy = Ex(market_filter={\"markets\": [\"tests\/resources\/BASIC-1.132153978\"]})\n        framework.add_strategy(strategy)\n        framework.run()\n\n    def test_simulation_pro(self):\n        class LimitOrders(BaseStrategy):\n            def check_market_book(self, market, market_book):\n                if not market_book.inplay and market.seconds_to_start < 100:\n                    return True\n\n            def process_market_book(self, market, market_book):\n                with market.transaction() as t:\n                    for runner in market_book.runners:\n                        if runner.status == \"ACTIVE\":\n                            back = get_price(runner.ex.available_to_back, 0)\n                            runner_context = self.get_runner_context(\n                                market.market_id, runner.selection_id\n                            )\n                            if runner_context.trade_count == 0:\n                                trade = Trade(\n                                    market_book.market_id,\n                                    runner.selection_id,\n                                    runner.handicap,\n                                    self,\n                                )\n                                order = trade.create_order(\n                                    side=\"BACK\",\n                                    order_type=LimitOrder(back, 2.00),\n                                )\n                                t.place_order(order)\n\n        class LimitReplaceOrders(BaseStrategy):\n            def check_market_book(self, market, market_book):\n                if not market_book.inplay and market.seconds_to_start < 100:\n                    return True\n\n            def process_market_book(self, market, market_book):\n                with market.transaction() as t:\n                    for runner in market_book.runners:\n                        if runner.status == \"ACTIVE\":\n                            runner_context = self.get_runner_context(\n                                market.market_id, runner.selection_id\n                            )\n                            if runner_context.trade_count == 0:\n                                trade = Trade(\n                                    market_book.market_id,\n                                    runner.selection_id,\n                                    runner.handicap,\n                                    self,\n                                )\n                                order = trade.create_order(\n                                    side=\"BACK\",\n                                    order_type=LimitOrder(1000, 2.00),\n                                )\n                                t.place_order(order)\n\n            def process_orders(self, market, orders: list) -> None:\n                with market.transaction() as t:\n                    for order in orders:\n                        if order.status == OrderStatus.EXECUTABLE:\n                            if order.size_matched == 0:\n                                t.replace_order(order, new_price=1.01)\n\n        class LimitOrdersInplay(BaseStrategy):\n            def check_market_book(self, market, market_book):\n                if market_book.inplay:\n                    return True\n\n            def process_market_book(self, market, market_book):\n                for runner in market_book.runners:\n                    if runner.status == \"ACTIVE\" and runner.last_price_traded < 2:\n                        lay = get_price(runner.ex.available_to_lay, 0)\n                        trade = Trade(\n                            market_book.market_id,\n                            runner.selection_id,\n                            runner.handicap,\n                            self,\n                        )\n                        order = trade.create_order(\n                            side=\"LAY\",\n                            order_type=LimitOrder(lay, 2.00),\n                        )\n                        market.place_order(order)\n\n            def process_orders(self, market, orders):\n                for order in orders:\n                    if order.status == OrderStatus.EXECUTABLE:\n                        if order.elapsed_seconds and order.elapsed_seconds > 2:\n                            market.cancel_order(order)\n\n        class LimitOnCloseOrders(BaseStrategy):\n            def check_market_book(self, market, market_book):\n                if not market_book.inplay and market.seconds_to_start < 100:\n                    return True\n\n            def process_market_book(self, market, market_book):\n                for runner in market_book.runners:\n                    if runner.status == \"ACTIVE\":\n                        runner_context = self.get_runner_context(\n                            market.market_i…",
+                "title": "<https:\/\/github.com\/betcode-org\/flumine\/blob\/master\/tests\/test_integration.py | test_integration.py>",
+                "footer": "<https:\/\/github.com\/betcode-org\/flumine|betcode-org\/flumine>",
+                "mrkdwn_in": [
+                    "text"
+                ]
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "fPzUF",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/betcode-org\/flumine\/blob\/master\/tests\/test_integration.py"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "raised_hands",
+                "users": [
+                    "U05C31YKZ1C"
+                ],
+                "count": 1
+            }
+        ]
+    }
+]

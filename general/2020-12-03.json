@@ -1,0 +1,1196 @@
+[
+    {
+        "user": "UB4T65SCS",
+        "type": "message",
+        "ts": "1606999723.278500",
+        "client_msg_id": "871c8cac-0011-45e3-bbae-10e80535f114",
+        "text": "hi guys, i am using flumine and i have got a basic strategy working well enough i can run it using the API client or back testing client. most of the behavior i have extended is from process_market_book. but my strategy actually requires that positions are closed after a certain amount of time(not yet implemented).\n\njust wondering if someone could point me in the right direction for how to call this timed behavior?  an easy way is just to call a method at the very start of process_market_book, but it means that bets might be open for longer than i actually want. do you think i should look at BackgroundWorker and adding custom events to the handler_queue?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g2937fad370b",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/12937fad370beaea7eeeaaf2fc5f3609.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0009-72.png",
+            "first_name": "",
+            "real_name": "Jeremy G",
+            "display_name": "jgnz",
+            "team": "T4G9NBD2M",
+            "name": "jgnzemail",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "88RIi",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "hi guys, i am using flumine and i have got a basic strategy working well enough i can run it using the API client or back testing client. most of the behavior i have extended is from process_market_book. but my strategy actually requires that positions are closed after a certain amount of time(not yet implemented).\n\njust wondering if someone could point me in the right direction for how to call this timed behavior?  an easy way is just to call a method at the very start of process_market_book, but it means that bets might be open for longer than i actually want. do you think i should look at BackgroundWorker and adding custom events to the handler_queue?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1606999770.279100",
+        "client_msg_id": "767d0bd7-5737-4148-9cf1-1fdc4317e121",
+        "text": "`process_orders`",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "fXwn",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "process_orders",
+                                "style": {
+                                    "code": true
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1606999859.280200",
+        "client_msg_id": "03c37eb3-0ce2-4323-8792-816f2e098487",
+        "text": "If I understand correctly it would be similar to this 2s <https:\/\/github.com\/liampauling\/flumine\/blob\/4f08f389a3c5c2722b60252055b143cfdfefb0f7\/examples\/strategies\/lowestlayer.py#L55|fillkill> as process_orders will be called every 0.25s whilst you have live orders, however you can do something similar in process_market_book by looping the orders `market.blotter`",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "attachments": [
+            {
+                "fallback": "[liampauling\/flumine] examples\/strategies\/lowestlayer.py:55",
+                "text": "```\n                if order.elapsed_seconds and order.elapsed_seconds &gt; 2:\n```",
+                "title": "examples\/strategies\/lowestlayer.py:55",
+                "footer": "<https:\/\/github.com\/liampauling\/flumine|liampauling\/flumine>",
+                "id": 1,
+                "title_link": "https:\/\/github.com\/liampauling\/flumine\/blob\/4f08f389a3c5c2722b60252055b143cfdfefb0f7\/examples\/strategies\/lowestlayer.py#L55",
+                "footer_icon": "https:\/\/github.githubassets.com\/favicon.ico",
+                "color": "24292f",
+                "mrkdwn_in": [
+                    "text"
+                ],
+                "bot_id": "B01144Z0734",
+                "app_unfurl_url": "https:\/\/github.com\/liampauling\/flumine\/blob\/4f08f389a3c5c2722b60252055b143cfdfefb0f7\/examples\/strategies\/lowestlayer.py#L55",
+                "is_app_unfurl": true
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "nDnZC",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "If I understand correctly it would be similar to this 2s "
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/liampauling\/flumine\/blob\/4f08f389a3c5c2722b60252055b143cfdfefb0f7\/examples\/strategies\/lowestlayer.py#L55",
+                                "text": "fillkill"
+                            },
+                            {
+                                "type": "text",
+                                "text": " as process_orders will be called every 0.25s whilst you have live orders, however you can do something similar in process_market_book by looping the orders "
+                            },
+                            {
+                                "type": "text",
+                                "text": "market.blotter",
+                                "style": {
+                                    "code": true
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFPEU7URG",
+        "type": "message",
+        "ts": "1606999906.280400",
+        "client_msg_id": "7558f0ef-c6c6-43a2-9040-3c68461e4ad6",
+        "text": "With the streaming API when collecting the marketbook info with the API-NG you have the option to \"virtualise\" which shows the back\/lay prices of the opposite side of the books as the price like the website does, if I want to do this when using using streaming do I need to calculate these prices myself by using both sides of the market, or is there some other way I am not aware of?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gad95b05e95e",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/cad95b05e95ed7575f487d75e10e36c2.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0025-72.png",
+            "first_name": "",
+            "real_name": "Chris Davidson",
+            "display_name": "Chris",
+            "team": "T4G9NBD2M",
+            "name": "chris",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "3Vu0",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "With the streaming API when collecting the marketbook info with the API-NG you have the option to \"virtualise\" which shows the back\/lay prices of the opposite side of the books as the price like the website does, if I want to do this when using using streaming do I need to calculate these prices myself by using both sides of the market, or is there some other way I am not aware of?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1606999960.280600",
+        "client_msg_id": "c11efd99-d5a5-4b83-9678-f7c671da5aef",
+        "text": "Add `EX_BEST_OFFERS_DISP` to your filter",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "kn4L",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Add "
+                            },
+                            {
+                                "type": "text",
+                                "text": "EX_BEST_OFFERS_DISP",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " to your filter"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1606999988.281100",
+        "client_msg_id": "5812d87c-f83b-40cd-8132-2ebddf955d31",
+        "text": "It's pretty clearly explained here: <https:\/\/docs.developer.betfair.com\/display\/1smk3cen4v3lu3yomq5qye0ni\/Exchange+Stream+API#ExchangeStreamAPI-Marketdatafieldfiltering\/MarketDataFilter>",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "jBG",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "It's pretty clearly explained here: "
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/docs.developer.betfair.com\/display\/1smk3cen4v3lu3yomq5qye0ni\/Exchange+Stream+API#ExchangeStreamAPI-Marketdatafieldfiltering\/MarketDataFilter"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UB4T65SCS",
+        "type": "message",
+        "ts": "1607000004.281400",
+        "client_msg_id": "91a04ccd-184c-4803-9a64-a666df464e45",
+        "text": "i looked at process_orders but i thought an order was only unmatched bets",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g2937fad370b",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/12937fad370beaea7eeeaaf2fc5f3609.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0009-72.png",
+            "first_name": "",
+            "real_name": "Jeremy G",
+            "display_name": "jgnz",
+            "team": "T4G9NBD2M",
+            "name": "jgnzemail",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Ep\/5",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "i looked at process_orders but i thought an order was only unmatched bets"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFPEU7URG",
+        "type": "message",
+        "ts": "1607000078.282400",
+        "client_msg_id": "59bfa64b-665b-41e8-a11b-6a67b16ac007",
+        "text": "<@UBS7QANF3> thanks, I was using the API explorer and seeing it was passing \"virtualise\": \"true\", in a bad habit of comparing the API-NG and the Streaming API when I should just be reading the docs, my bad",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gad95b05e95e",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/cad95b05e95ed7575f487d75e10e36c2.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0025-72.png",
+            "first_name": "",
+            "real_name": "Chris Davidson",
+            "display_name": "Chris",
+            "team": "T4G9NBD2M",
+            "name": "chris",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Eb8Q",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "user",
+                                "user_id": "UBS7QANF3"
+                            },
+                            {
+                                "type": "text",
+                                "text": " thanks, I was using the API explorer and seeing it was passing \"virtualise\": \"true\", in a bad habit of comparing the API-NG and the Streaming API when I should just be reading the docs, my bad"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1607000120.282900",
+        "client_msg_id": "0cfdbb4d-8526-4c6c-bd3d-51de741689f3",
+        "text": "Sorry I could have phrased that better :joy:",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "13S",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Sorry I could have phrased that better "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "joy",
+                                "unicode": "1f602"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFPEU7URG",
+        "type": "message",
+        "ts": "1607000184.284100",
+        "client_msg_id": "50c75768-ac71-4f89-a30b-3378ea7f8f47",
+        "text": "Haha, no it's no bother, think sometimes it's easy to get lazy when you don't find the answer straight away and there's people here you get tempted into getting somebody else to do the work for you",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gad95b05e95e",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/cad95b05e95ed7575f487d75e10e36c2.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0025-72.png",
+            "first_name": "",
+            "real_name": "Chris Davidson",
+            "display_name": "Chris",
+            "team": "T4G9NBD2M",
+            "name": "chris",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1607000184.284100",
+        "reply_count": 1,
+        "reply_users_count": 1,
+        "latest_reply": "1607000771.289200",
+        "reply_users": [
+            "U01EYDA8345"
+        ],
+        "replies": [
+            {
+                "user": "U01EYDA8345",
+                "ts": "1607000771.289200"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": false,
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Ddqt4",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Haha, no it's no bother, think sometimes it's easy to get lazy when you don't find the answer straight away and there's people here you get tempted into getting somebody else to do the work for you"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UB4T65SCS",
+        "type": "message",
+        "ts": "1607000270.285400",
+        "client_msg_id": "a0cf3456-2bb3-4299-baae-ba588f86ffec",
+        "text": "to be clear, i dont want to cancel any orders. for example, if i have a matched back bet on new zealand. after 10 seconds i want make a lay bet on new zealand that closes my position",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g2937fad370b",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/12937fad370beaea7eeeaaf2fc5f3609.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0009-72.png",
+            "first_name": "",
+            "real_name": "Jeremy G",
+            "display_name": "jgnz",
+            "team": "T4G9NBD2M",
+            "name": "jgnzemail",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "giWM",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "to be clear, i dont want to cancel any orders. for example, if i have a matched back bet on new zealand. after 10 seconds i want make a lay bet on new zealand that closes my position"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U919M37DL",
+        "type": "message",
+        "ts": "1607000675.287100",
+        "client_msg_id": "9075e09e-6528-44b0-9ebe-f33c3d178de3",
+        "text": "regarding `EX_BEST_OFFERS_DISP`, the docs say _The virtual price stream is updated ~150 m\/s after non-virtual prices._ ... what does that exactly mean?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "1879a7e748ff",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-05-05\/1102646833461_1879a7e748ffd58a149f_72.jpg",
+            "first_name": "Karlo",
+            "real_name": "Karlo L.",
+            "display_name": "klozovin",
+            "team": "T4G9NBD2M",
+            "name": "karl",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1607000675.287100",
+        "reply_count": 5,
+        "reply_users_count": 3,
+        "latest_reply": "1607151463.317900",
+        "reply_users": [
+            "U01CERWB7V3",
+            "U4H19D1D2",
+            "U919M37DL"
+        ],
+        "replies": [
+            {
+                "user": "U01CERWB7V3",
+                "ts": "1607043077.293800"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1607077792.300800"
+            },
+            {
+                "user": "U919M37DL",
+                "ts": "1607083651.301100"
+            },
+            {
+                "user": "U01CERWB7V3",
+                "ts": "1607116357.304700"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1607151463.317900"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": true,
+        "last_read": "1607151463.317900",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "G5z",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "regarding "
+                            },
+                            {
+                                "type": "text",
+                                "text": "EX_BEST_OFFERS_DISP",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": ", the docs say "
+                            },
+                            {
+                                "type": "text",
+                                "text": "The virtual price stream is updated ~150 m\/s after non-virtual prices.",
+                                "style": {
+                                    "italic": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " ... what does that exactly mean?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U919M37DL",
+        "type": "message",
+        "ts": "1607000708.287500",
+        "client_msg_id": "962a02f8-b192-47a5-bfb0-eb66f70a11bf",
+        "text": "virtual price stream is lagging? so it's better to use the non virtual one?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "1879a7e748ff",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-05-05\/1102646833461_1879a7e748ffd58a149f_72.jpg",
+            "first_name": "Karlo",
+            "real_name": "Karlo L.",
+            "display_name": "klozovin",
+            "team": "T4G9NBD2M",
+            "name": "karl",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "GDB",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "virtual price stream is lagging? so it's better to use the non virtual one?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1607000713.287800",
+        "client_msg_id": "4f0e7f14-f0a5-4e0d-bde7-6e7045a0acb2",
+        "text": "Correct",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "V\/jfn",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Correct"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U919M37DL",
+        "type": "message",
+        "ts": "1607000731.288600",
+        "client_msg_id": "956cfbbf-bfd8-453b-8171-cefa0b993fbf",
+        "text": "I'm guessing by 150 m\/s they mean miliseconds, not meters per second :laughing:",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "1879a7e748ff",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-05-05\/1102646833461_1879a7e748ffd58a149f_72.jpg",
+            "first_name": "Karlo",
+            "real_name": "Karlo L.",
+            "display_name": "klozovin",
+            "team": "T4G9NBD2M",
+            "name": "karl",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Q9Dfj",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I'm guessing by 150 m\/s they mean miliseconds, not meters per second "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "laughing",
+                                "unicode": "1f606"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1607000733.288700",
+        "client_msg_id": "dd5e790a-0275-4fd0-a824-1c774b8f38a6",
+        "text": "Unless you are happy to trade the speed for them doing the calculations for you",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "9JVci",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Unless you are happy to trade the speed for them doing the calculations for you"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1607000771.289100",
+        "client_msg_id": "1fc72aaa-564d-4587-b3c9-5d5da61f7907",
+        "text": "and, to be fair, the calculations can be tedious when cross market cross matching gets involved",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "dT3n",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "and, to be fair, the calculations can be tedious when cross market cross matching gets involved"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01EYDA8345",
+        "type": "message",
+        "ts": "1607000771.289200",
+        "client_msg_id": "cf8192f8-c10b-4930-bc27-cb7acf02207d",
+        "text": "I agree with you. But sometimes it is much more effective to ask briefly and get a qualified answer than to search for an hour. I also like to give an answer if someone asks something that I know.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "f85e9daa4f82",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-11-19\/1519870713748_f85e9daa4f821f26e3d2_72.jpg",
+            "first_name": "",
+            "real_name": "Artur Gräfenstein",
+            "display_name": "Artur Gräfenstein",
+            "team": "T4G9NBD2M",
+            "name": "grefenstein.artur",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1607000184.284100",
+        "parent_user_id": "UFPEU7URG",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "AYvV",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I agree with you. But sometimes it is much more effective to ask briefly and get a qualified answer than to search for an hour. I also like to give an answer if someone asks something that I know."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "UFPEU7URG",
+                    "U4H19D1D2",
+                    "U012ZFYR19V"
+                ],
+                "count": 3
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1607000793.289800",
+        "client_msg_id": "b71a1c73-2aa0-424b-9fa5-bc422df95f09",
+        "text": "process_orders will contain all orders but only called on a order stream update or every 0.25s when there are live orders, in your example you could do something like this\n```    def process_market_book(self, market, market_book):\n        for order in market.blotter:\n            if order.status == OrderStatus.EXECUTION_COMPLETE:\n                if order.size_remaining == 0 and order.elapsed_seconds &gt; (60 * 10):\n                    # place closing order..\n                    pass```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "51e",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "process_orders will contain all orders but only called on a order stream update or every 0.25s when there are live orders, in your example you could do something like this\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "    def process_market_book(self, market, market_book):\n        for order in market.blotter:\n            if order.status == OrderStatus.EXECUTION_COMPLETE:\n                if order.size_remaining == 0 and order.elapsed_seconds > (60 * 10):\n                    # place closing order..\n                    pass"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U919M37DL",
+        "type": "message",
+        "ts": "1607000797.290000",
+        "client_msg_id": "99b52e1f-2519-4a6a-a287-f831b35ca6ed",
+        "text": "yeah, was just thinking about x-market matching... it's simple to do it intra-market",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "1879a7e748ff",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-05-05\/1102646833461_1879a7e748ffd58a149f_72.jpg",
+            "first_name": "Karlo",
+            "real_name": "Karlo L.",
+            "display_name": "klozovin",
+            "team": "T4G9NBD2M",
+            "name": "karl",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "jzuqZ",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "yeah, was just thinking about x-market matching... it's simple to do it intra-market"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UB4T65SCS",
+        "type": "message",
+        "ts": "1607001184.292600",
+        "client_msg_id": "81ee5b41-5ce2-4c34-81d5-b054157b236c",
+        "text": "thanks liam, ill look into adding the behavior in process_market_book. i was thinking it might be a good time to investigate other parts of the library, but it sounds like adding it in process_market_book is the best way.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g2937fad370b",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/12937fad370beaea7eeeaaf2fc5f3609.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0009-72.png",
+            "first_name": "",
+            "real_name": "Jeremy G",
+            "display_name": "jgnz",
+            "team": "T4G9NBD2M",
+            "name": "jgnzemail",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "4Q9p",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "thanks liam, ill look into adding the behavior in process_market_book. i was thinking it might be a good time to investigate other parts of the library, but it sounds like adding it in process_market_book is the best way."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1607002052.293200",
+        "client_msg_id": "1A038F7D-559C-4870-8E3D-CBF68D7F58DF",
+        "text": "Tbh it is something I want to improve with the use of callbacks or something clever ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "6Gs",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Tbh it is something I want to improve with the use of callbacks or something clever "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "subtype": "channel_join",
+        "user": "U01G0QJCHEZ",
+        "text": "<@U01G0QJCHEZ> has joined the channel",
+        "type": "message",
+        "ts": "1607019978.293400"
+    },
+    {
+        "user": "U01CERWB7V3",
+        "type": "message",
+        "ts": "1607043077.293800",
+        "edited": {
+            "user": "U01CERWB7V3",
+            "ts": "1607043183.000000"
+        },
+        "client_msg_id": "93347179-571e-4129-a67b-350d972eb80b",
+        "text": "I've been confused by this for a while -- are the 'non-virtual' prices basically the raw prices before cross matching? Since cross matching is applied in most scenarios aren't the 'non-virtual' prices therefor moot?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g5225cab87ed",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/5225cab87ed197a04a4f61c14d29b44d.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0020-72.png",
+            "first_name": "",
+            "real_name": "Charlie 303",
+            "display_name": "Charlie 303",
+            "team": "T4G9NBD2M",
+            "name": "charl303",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1607000675.287100",
+        "parent_user_id": "U919M37DL",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "A4H",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I've been confused by this for a while -- are the 'non-virtual' prices basically the raw prices before cross matching? Since cross matching is applied in most scenarios aren't the 'non-virtual' prices therefor moot?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01FSSHULHE",
+        "type": "message",
+        "ts": "1607058625.297300",
+        "client_msg_id": "779b22c5-d293-417c-a896-496ac918ea6c",
+        "text": "Hopefully a simple question, but is there a way to access trade history for a runner in runner books? I can get a listing of all available to back and available to lay offerings, but is there somewhere in the cache for each runner where I can find trade prices and volumes?\n\nI know the stream sends that information, but can't seem to find out how to access if via the bflw classes",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "3d19f7a9e994",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-11-20\/1509171534310_3d19f7a9e99471355700_72.jpg",
+            "first_name": "Ben",
+            "real_name": "Ben Davis",
+            "display_name": "Ben",
+            "team": "T4G9NBD2M",
+            "name": "benjamindavis90",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1607058625.297300",
+        "reply_count": 2,
+        "reply_users_count": 2,
+        "latest_reply": "1607062361.297700",
+        "reply_users": [
+            "U01FSSHULHE",
+            "U4H19D1D2"
+        ],
+        "replies": [
+            {
+                "user": "U01FSSHULHE",
+                "ts": "1607059273.297400"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1607062361.297700"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": true,
+        "last_read": "1607062361.297700",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "jVbg",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Hopefully a simple question, but is there a way to access trade history for a runner in runner books? I can get a listing of all available to back and available to lay offerings, but is there somewhere in the cache for each runner where I can find trade prices and volumes?\n\nI know the stream sends that information, but can't seem to find out how to access if via the bflw classes"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01FSSHULHE",
+        "type": "message",
+        "ts": "1607059273.297400",
+        "client_msg_id": "d39845f5-773f-4bf2-9c42-6436c4da64e5",
+        "text": "Wondering if it could be runner.ex.traded_volume? That's looking most likely",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "3d19f7a9e994",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-11-20\/1509171534310_3d19f7a9e99471355700_72.jpg",
+            "first_name": "Ben",
+            "real_name": "Ben Davis",
+            "display_name": "Ben",
+            "team": "T4G9NBD2M",
+            "name": "benjamindavis90",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1607058625.297300",
+        "parent_user_id": "U01FSSHULHE",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "P9kvZ",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Wondering if it could be runner.ex.traded_volume? That's looking most likely"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1607062361.297700",
+        "client_msg_id": "0D520F67-1684-4EAF-BD95-29E909877BC6",
+        "text": "Yes it is",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1607058625.297300",
+        "parent_user_id": "U01FSSHULHE",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "4G6J",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Yes it is"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "U01FSSHULHE"
+                ],
+                "count": 1
+            }
+        ]
+    }
+]

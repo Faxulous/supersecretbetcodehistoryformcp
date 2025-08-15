@@ -1,0 +1,600 @@
+[
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1617778922.148000",
+        "client_msg_id": "8cf59d58-1a3b-4bd5-89f4-5873a7894396",
+        "text": "flumine <https:\/\/github.com\/liampauling\/flumine\/blob\/master\/HISTORY.rst#1180-2021-04-07|v1.18.0> now released, a few depreciations as warned in v1.17, cleared order now available (thanks <@U01MPC0GUK1>), a pretty major backtesting bug and now the ability to process event data as per live, big thanks to <@U01B8031PM1> on sponsoring this development and allowing it to be open source :smile:\n\nSmall change required to allow event processing:\n```strategy = ExampleStrategy(\n    market_filter={\"markets\": [..], \"event_processing\": True},\n)```\nThe `Market` object has a helper method for accessing other linked event markets (live and simulated):\n```place_market = market.event[\"PLACE\"]```\nThis allows you for example to backtest win\/place in racing or all football markets as per live, this also only seems to add around 5% in processing time. I don't think there is anything else out there on the market which allows backtesting like this :sunglasses:",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "attachments": [
+            {
+                "fallback": "[liampauling\/flumine] HISTORY.rst",
+                "text": "```\n.. :changelog:\n\nRelease History\n---------------\n\n1.18.0 (2021-04-07)\n+++++++++++++++++++\n\n**Improvements**\n\n- #404 Multi market processing (concurrent event market processing)\n- strategy order placement depreciated (breaking change as per warning version 1.17.0)\n- strategy.log_validation_failures depreciated (breaking change as per warning version 1.17.7)\n- Cleared order added to order object on closure (@arch4672)\n- gzip market catalogue data in marketrecorder.py example\n\n**Bug Fixes**\n\n- Nasty bug fixed in the way live orders are completed when backtesting (has potentially impacted previous tests)\n- Trade.create_order now correctly pulls handicap from trade (was defaulting to 0)\n\n1.17.15 (2021-03-25)\n+++++++++++++++++++\n\n**Improvements**\n\n- Blotter exposure refactoring out the get_worst_possible_profit method (@jsphon)\n- Market recorder example updated to use gzip compression\n\n1.17.14 (2021-03-24)\n+++++++++++++++++++\n\n**Improvements**\n\n- Execution \/ thread pool state logging\n- Default market recorder example to not remove files on clean up\n\n1.17.13 (2021-03-22)\n+++++++++++++++++++\n\n**Improvements**\n\n- Market recorder mode added to client (@jorgegarcia7)\n- Further execution logging (trying to find time)\n\n1.17.12 (2021-03-15)\n+++++++++++++++++++\n\n**Improvements**\n\n- Logging control cleanup \/ docs\n\n**Bug Fixes**\n\n- missing if in process.py to check order status\n\n1.17.11 (2021-03-12)\n+++++++++++++++++++\n\n**Improvements**\n\n- order context added\n\n**Bug Fixes**\n\n- Prevent duplicate order logging control calls\n\n1.17.10 (2021-03-12)\n+++++++++++++++++++\n\n**Improvements**\n\n- async placeOrder handling added, defaults to False via config.py\n- Execution logging improvements\n\n**Bug Fixes**\n\n- Handle race condition (seen daily) where cancel is not correctly update to execution complete\n\n1.17.9 (2021-03-09)\n+++++++++++++++++++\n\n**Improvements**\n\n- Remove session close in execution when removing stale sessions (very slow)\n- Refactor closure worker to check all closed markets requiring clearing\n\n**Libraries**\n\n- betfairlightweight upgraded to 2.12.1\n\n1.17.8 (2021-03-08)\n+++++++++++++++++++\n\n**Improvements**\n\n- Allow kwargs to be passed to `trade.create_order`\n- Correct handling off completed offset orders\n\n**Bug Fixes**\n\n- Prevent closure functions being called on a recorder closure\n\n1.17.7 (2021-03-05)\n+++++++++++++++++++\n\n**Improvements**\n\n- strategy.log_validation_failures marked for depreciation and logging pushed up to trading control\n- strategy.multi_order_trades var added to allow multiple orders to be placed under a single trade\n- RunnerContext trades made public\n- Docs cleanup and unused trade vars removed\n- config.max_workers renamed to max_execution_workers (*breaking change)\n\n**Bug Fixes**\n\n- Prevent double counting of trades if place called more than once\n\n1.17.6 (2021-03-05)\n+++++++++++++++++++\n\n**Improvements**\n\n- trade id added to context to prevent race condition and better visibility on live trades\n\n**Bug Fixes**\n\n- incorrect handling of replace on runner context fix (adds to live trade count)\n\n1.17.5 (2021-03-01)\n+++++++++++++++++++\n\n**Bug Fixes**\n\n- #382 replace order failure fix (no execute)\n\n1.17.4 (2021-02-26)\n+++++++++++++++++++\n\n**Improvements**\n\n- Transaction id and logging added\n- max_workers moved to config to allow int to be configurable\n\n1.17.3 (2021-02-25)\n+++++++++++++++++++\n\n**Improvements**\n\n- Potential thread pool exhaustion logging added\n\n1.17.2 (2021-02-25)\n+++++++++++++++++++\n\n**Improvements**\n\n- Allow patching of stream retry wait arg\n\n**Bug Fixes**\n\n- Incorrect handling of potential exposure in control\n\n1.17.1 (2021-02-24)\n+++++++++++++++++++\n\n**Improvements**\n\n- Current and total transactions available from client\n- `blotter.strategy_selection_orders` func added (speed improvement on exposure calc)\n\n**Bug Fixes**\n\n- Refactor of client transaction control to correctly apply the 5000 limit\n\n1.17.0 (2021-02-22)\n+++++++++++++++++++\n\n**Improvements**\n\n- Major refactor to order placement using Transaction class to allow user control over order placement\n- Trading controls executed on place rather than OrderPackage level (Breaking change to controls)\n- strategy order placement to be depreciated (Breaking change from version 1.18.0)\n- OrderPackage no longer processed through the queue (quicker tick to trade)\n- Error correctly raised on duplicate place calls\n- Execution worker count bumped\n\n1.16.3 (2021-02-08)\n+++++++++++++++++++\n\n**Bug Fixes**\n\n- Minor fix when combining data and market stream strategies\n\n1.16.2 (2021-02-05)\n+++++++++++++++++++\n\n**Improvements**\n\n- Blotter strategy orders added for faster lookup\n- Strategy name hash cached\n- Minor selection_exposure optimisations\n- Simulated optimisations\n\n1.16.1 (2021-01-28)\n+++++++++++++++++++\n\n**Improvements**\n\n- Various optimisations on pending_packages and low level listener updates\n- Cache stream_id when backtesting\n- Always run integrations tests (now possible with faster backtesting from bflw 2.12.0)\n\n1.16.0 (2021-01-25)\n+++++++++++++++++++\n\n**Improvements**\n\n- bflw changes \/ further listener optimisations\n\n**Libraries**\n\n- betfairlightweight upgraded to 2.12.0\n\n1.15.4 (2021-01-18)\n+++++++++++++++++++\n\n**Improvements**\n\n- Restrict catalogue requests to market version update\n\n**Bug Fixes**\n\n- #192 correctly lapse limit orders\n\n**Libraries**\n\n- betfairlightweight upgraded to 2.11.2\n\n1.15.3 (2021-01-11)\n+++++++++++++++++++\n\n**Bug Fixes**\n\n- Correctly handle runner removal \/ order void for LimitOnClose\/MarketOnClose orders\n\n1.15.2 (2021-01-11)\n+++++++++++++++++++\n\n**Improvements**\n\n- Order execution args added on place\/cancel\/update\/replace\n- License update\n- Example update (@lunswor)\n\n**Bug Fixes**\n\n- #358 dynamic keep alive (based on trading client)\n\n**Libraries**\n\n- py3.5 removed from setup.py\n\n1.15.1 (2020-12-28)\n+++++++++++++++++++\n\n**Improvements**\n\n- #356 Jupyter logging control added (POC) with info improvements\n- #344 lookup cache added and info optimisations\n- #327 correctly return orderStatus\n- Middleware optimisation by only processing updated runners\n- Minor test improvements\n\n**Libraries**\n\n- betfairlightweight upgraded to 2.11.1\n\n1.15.0 (2020-12-07)\n+++++++++++++++++++\n\n**Improvements**\n\n- Updates for bflw 2.11.0\n- logging improved on orphan orders\n\n**Bug Fixes**\n\n- #347 incorrect adjustment factor (sub 1.01)\n\n**Libraries**\n\n- betfairlightweight upgraded to 2.11.0\n\n1.14.13 (2020-12-05)\n+++++++++++++++++++\n\n**Improvements**\n\n- Backtest market catalogue middleware example (@lunswor)\n- #344 Initial work on improving calls when subscribed to 5k+ markets\n\n**Bug Fixes**\n\n- #342 market\/limit on close order size remaining bug\n\n1.14.12 (2020-11-28)\n+++++++++++++++++++\n\n**Improvements**\n\n- 'on_process' function optimised\n\n**Libraries**\n\n- betfairlightweight upgraded to 2.10.2\n\n1.14.11 (2020-11-25)\n+++++++++++++++++++\n\n**Improvements**\n\n- Flaky flaky integration tests\n\n**Bug Fixes**\n\n- Missing 'on_process' function (now subclassed)\n\n1.14.10 (2020-11-25)\n+++++++++++++++++++\n\n**Bug Fixes**\n\n- Revert removal of `add_stream` (removed by accident)\n\n1.14.9 (2020-11-25)\n+++++++++++++++++++\n\n**Improvements**\n\n- Historic stream cleanup for bflw 2.10.1\n- Adding logging of order validation\n\n**Libraries**\n\n- betfairlightweight upgraded to 2.10.1\n\n1.14.8 (2020-11-16)\n+++++++++++++++++++\n\n**Improvements**\n\n- Config event added and processed on start\n\n**Bug Fixes**\n\n- #320 prevent market on close limit order when below min bsp liability\n\n1.14.7 (2020-11-14)\n+++++++++++++++++++\n\n**Improvements**\n\n- Minor bug on initial init with calculate_traded func\n\n1.14.6 (2020-11-13)\n+++++++++++++++++++\n\n**Improvements**\n\n- Refactor on calculate_traded func (15% speed increase)\n\n**Bug Fixes**\n\n- Refactoring create_order_from_current, so that it is not dependent on the '-' separator (@jsphon)\n\n1.14.5 (2020-11-11)\n+++++++++++++++++++\n\n**Improvements**\n\n- Docs cleanup\n\n**Bug Fixes**\n\n- #318 process customer order ref\n- Rounding on order properties\n\n1.14.4 (2020-11-05)\n+++++++++++++++++++\n\n**Improvement…",
+                "title": "HISTORY.rst",
+                "footer": "<https:\/\/github.com\/liampauling\/flumine|liampauling\/flumine>",
+                "id": 1,
+                "title_link": "https:\/\/github.com\/liampauling\/flumine\/blob\/master\/HISTORY.rst",
+                "footer_icon": "https:\/\/github.githubassets.com\/favicon.ico",
+                "color": "24292f",
+                "mrkdwn_in": [
+                    "text"
+                ],
+                "bot_id": "B01144Z0734",
+                "app_unfurl_url": "https:\/\/github.com\/liampauling\/flumine\/blob\/master\/HISTORY.rst#1180-2021-04-07",
+                "is_app_unfurl": true
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "LqQ3",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "flumine "
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/liampauling\/flumine\/blob\/master\/HISTORY.rst#1180-2021-04-07",
+                                "text": "v1.18.0"
+                            },
+                            {
+                                "type": "text",
+                                "text": " now released, a few depreciations as warned in v1.17, cleared order now available (thanks "
+                            },
+                            {
+                                "type": "user",
+                                "user_id": "U01MPC0GUK1"
+                            },
+                            {
+                                "type": "text",
+                                "text": "), a pretty major backtesting bug and now the ability to process event data as per live, big thanks to "
+                            },
+                            {
+                                "type": "user",
+                                "user_id": "U01B8031PM1"
+                            },
+                            {
+                                "type": "text",
+                                "text": " on sponsoring this development and allowing it to be open source "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "smile",
+                                "unicode": "1f604"
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n\nSmall change required to allow event processing:\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "strategy = ExampleStrategy(\n    market_filter={\"markets\": [..], \"event_processing\": True},\n)"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\nThe "
+                            },
+                            {
+                                "type": "text",
+                                "text": "Market",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " object has a helper method for accessing other linked event markets (live and simulated):\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "place_market = market.event[\"PLACE\"]"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\nThis allows you for example to backtest win\/place in racing or all football markets as per live, this also only seems to add around 5% in processing time. I don't think there is anything else out there on the market which allows backtesting like this "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "sunglasses",
+                                "unicode": "1f60e"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "U01MPC0GUK1",
+                    "UBS7QANF3",
+                    "U010GM77S4W",
+                    "UUCD6P13J",
+                    "U0160E9HS2G",
+                    "U01DVUAE2G1",
+                    "URMM9463X",
+                    "UQL0QDEKA",
+                    "U01SCPDTV5J",
+                    "U01H1ALH18F",
+                    "U01N8P7UFPB"
+                ],
+                "count": 11
+            },
+            {
+                "name": "+1::skin-tone-6",
+                "users": [
+                    "UPMUFSGCR"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "U01C12ZEADQ",
+        "type": "message",
+        "ts": "1617780739.148500",
+        "client_msg_id": "53e2a02e-ba8c-4b60-88d8-dbe9005ccfb3",
+        "text": "That looks absolutely beautiful",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "e3b7687b0ef8",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-10-06\/1432945617648_e3b7687b0ef86e4f28b8_72.png",
+            "first_name": "Alessio",
+            "real_name": "Alessio",
+            "display_name": "Alessio",
+            "team": "T4G9NBD2M",
+            "name": "alessio",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "v5sa",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "That looks absolutely beautiful"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "grin",
+                "users": [
+                    "U4H19D1D2"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "subtype": "channel_join",
+        "user": "U01THEU7KQT",
+        "text": "<@U01THEU7KQT> has joined the channel",
+        "type": "message",
+        "ts": "1617786055.149400"
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1617793398.151700",
+        "client_msg_id": "e11af724-c076-4aeb-9a72-15e2f80c44b4",
+        "text": "<@U4H19D1D2>, I was just trying to play around with that new linked events feature, but am being a bit dense, how do I format for live streaming?\n\nLets say this is the streaming filter, its not a dict, so where does the event processing key go?\n\n```market_filter=streaming_market_filter(\n                event_type_ids=[7'],\n                country_codes=['GB'],\n                market_types=['WIN','PLACE', 'EACH_WAY']\n            )```\n",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1617793398.151700",
+        "reply_count": 2,
+        "reply_users_count": 2,
+        "latest_reply": "1617866197.161200",
+        "reply_users": [
+            "U4H19D1D2",
+            "UFTBRB3F1"
+        ],
+        "replies": [
+            {
+                "user": "U4H19D1D2",
+                "ts": "1617858354.159700"
+            },
+            {
+                "user": "UFTBRB3F1",
+                "ts": "1617866197.161200"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": true,
+        "last_read": "1617866197.161200",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "0drU",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "user",
+                                "user_id": "U4H19D1D2"
+                            },
+                            {
+                                "type": "text",
+                                "text": ", I was just trying to play around with that new linked events feature, but am being a bit dense, how do I format for live streaming?\n\nLets say this is the streaming filter, its not a dict, so where does the event processing key go?\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "market_filter=streaming_market_filter(\n                event_type_ids=[7'],\n                country_codes=['GB'],\n                market_types=['WIN','PLACE', 'EACH_WAY']\n            )"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": []
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "subtype": "channel_join",
+        "user": "U01TWECSFLH",
+        "text": "<@U01TWECSFLH> has joined the channel",
+        "type": "message",
+        "ts": "1617796663.152100"
+    },
+    {
+        "user": "U01MA2VM1NU",
+        "type": "message",
+        "ts": "1617825941.152900",
+        "client_msg_id": "879af40e-b4eb-4f3b-b59a-b42e79ca103a",
+        "text": "Is the Betfair exchange commission still 5% or does that now drop to 2% if you pick the right plan?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g93b01e84fb6",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/93b01e84fb6d9a2423433b28d82fce9a.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0006-72.png",
+            "first_name": "El",
+            "real_name": "El Creero",
+            "display_name": "ElCr",
+            "team": "T4G9NBD2M",
+            "name": "turkeygobble90",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "pjj8E",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Is the Betfair exchange commission still 5% or does that now drop to 2% if you pick the right plan?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01DCR5PXDY",
+        "type": "message",
+        "ts": "1617826570.153200",
+        "client_msg_id": "8a496268-51f5-4835-b0be-29887c314d9c",
+        "text": "2% if you choose the Basic Plan",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "903bc20cd9db",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-10-26\/1448127317798_903bc20cd9dba9a758e0_72.png",
+            "first_name": "thambie1",
+            "real_name": "thambie1",
+            "display_name": "thambie1",
+            "team": "T4G9NBD2M",
+            "name": "thambie1",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "c90e0",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "2% if you choose the Basic Plan"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01MA2VM1NU",
+        "type": "message",
+        "ts": "1617826998.153300",
+        "client_msg_id": "ed2ac4f6-0a7d-4a24-a4fc-73a9ca9998ff",
+        "text": "Ok although it does mean miss out on free spins....",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g93b01e84fb6",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/93b01e84fb6d9a2423433b28d82fce9a.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0006-72.png",
+            "first_name": "El",
+            "real_name": "El Creero",
+            "display_name": "ElCr",
+            "team": "T4G9NBD2M",
+            "name": "turkeygobble90",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "bkuIL",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Ok although it does mean miss out on free spins...."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "joy",
+                "users": [
+                    "U01LD3EU8B0"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "U019HMPCQT0",
+        "type": "message",
+        "ts": "1617830060.157400",
+        "edited": {
+            "user": "U019HMPCQT0",
+            "ts": "1617990178.000000"
+        },
+        "client_msg_id": "a9d73330-d821-4b60-ba7f-dd520c41d49f",
+        "text": "Is there a method that can be called on market_book.streaming_update to segregate each race in the update into its own json\/txt file or is this something I would have to code up myself. I am asking for logging purposes. Currently recording all market updates to one file and segregating them into individual races later, its in efficient. Want to record from the stream to a file unique to each race.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g3a944957ef0",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/3a944957ef00f52f3c23deff1914200e.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0000-72.png",
+            "first_name": "",
+            "real_name": "Taking Value",
+            "display_name": "Taking Value",
+            "team": "T4G9NBD2M",
+            "name": "humbolt866",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1617830060.157400",
+        "reply_count": 6,
+        "reply_users_count": 2,
+        "latest_reply": "1617995210.193400",
+        "reply_users": [
+            "U4H19D1D2",
+            "U019HMPCQT0"
+        ],
+        "replies": [
+            {
+                "user": "U4H19D1D2",
+                "ts": "1617858446.161000"
+            },
+            {
+                "user": "U019HMPCQT0",
+                "ts": "1617990143.189700"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1617994645.192100"
+            },
+            {
+                "user": "U019HMPCQT0",
+                "ts": "1617995040.192300"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1617995086.193200"
+            },
+            {
+                "user": "U019HMPCQT0",
+                "ts": "1617995210.193400"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": true,
+        "last_read": "1617995210.193400",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "+uRX",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Is there a method that can be called on market_book.streaming_update to segregate each race in the update into its own json\/txt file or is this something I would have to code up myself. I am asking for logging purposes. Currently recording all market updates to one file and segregating them into individual races later, its in efficient. Want to record from the stream to a file unique to each race."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1617858354.159700",
+        "client_msg_id": "CE55848D-4A0F-4201-8601-04587F483953",
+        "text": "It’s only for backtesting, accessing other markets using `market.event` has always worked when live as per your filter ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1617793398.151700",
+        "parent_user_id": "UFTBRB3F1",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "JruwN",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "It’s only for backtesting, accessing other markets using "
+                            },
+                            {
+                                "type": "text",
+                                "text": "market.event",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " has always worked when live as per your filter "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1617858446.161000",
+        "client_msg_id": "A341036C-F929-4709-8E80-A8910C31FDDC",
+        "text": "I am confused, each runner? or each race? Are you using flumine?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1617830060.157400",
+        "parent_user_id": "U019HMPCQT0",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "OSbS",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I am confused, each runner? or each race? Are you using flumine?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

@@ -1,0 +1,1903 @@
+[
+    {
+        "user": "UUCD6P13J",
+        "type": "message",
+        "ts": "1590567300.140800",
+        "edited": {
+            "user": "UUCD6P13J",
+            "ts": "1590567309.000000"
+        },
+        "client_msg_id": "c1850540-7c97-4187-958b-87ea2d7919a6",
+        "text": "Is the offset_orders functionality ready to use and am I using it correctly?\n```def process_orders(self, market, orders):\n    for order in orders:\n        trade = Trade(\n            market.market_book.market_id,\n            order.selection_id,\n            order.handicap,\n            self,\n        )\n        offset_order = trade.create_order(\n            side=\"LAY\", order_type=LimitOrder(lay, stake),\n        )\n        self.place_order(market, offset_order)\n        trade.offset_orders.append(order)```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6898272ab81",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6898272ab810e419c2c9ca9af1e53da8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0012-72.png",
+            "first_name": "Lee",
+            "real_name": "Lee U",
+            "display_name": "Lee",
+            "team": "T4G9NBD2M",
+            "name": "lunswor",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "FVStE",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Is the offset_orders functionality ready to use and am I using it correctly?\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "def process_orders(self, market, orders):\n    for order in orders:\n        trade = Trade(\n            market.market_book.market_id,\n            order.selection_id,\n            order.handicap,\n            self,\n        )\n        offset_order = trade.create_order(\n            side=\"LAY\", order_type=LimitOrder(lay, stake),\n        )\n        self.place_order(market, offset_order)\n        trade.offset_orders.append(order)"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1590567756.141800",
+        "client_msg_id": "555e2015-067f-4bd6-9f99-e7539eafc0f6",
+        "text": "both, not yet implemented but you could handle it in the strategy when processing orders. Typical use would be:\n\n```trade = Trade(\n    market_book.market_id, runner.selection_id, runner.handicap, self,\n)\norder = trade.create_order(\n    side=\"LAY\", order_type=LimitOrder(2, self.context[\"stake\"]),\n)\noffset_order = trade.create_order(\n    side=\"BACK\", order_type=LimitOrder(10, self.context[\"stake\"]),\n)\ntrade.offset_orders.append(offset_order)\nself.place_order(market, order)```\n",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "W8k",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "both, not yet implemented but you could handle it in the strategy when processing orders. Typical use would be:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "trade = Trade(\n    market_book.market_id, runner.selection_id, runner.handicap, self,\n)\norder = trade.create_order(\n    side=\"LAY\", order_type=LimitOrder(2, self.context[\"stake\"]),\n)\noffset_order = trade.create_order(\n    side=\"BACK\", order_type=LimitOrder(10, self.context[\"stake\"]),\n)\ntrade.offset_orders.append(offset_order)\nself.place_order(market, order)"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": []
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1590567798.142400",
+        "client_msg_id": "e25e68ab-4353-4a09-8b74-820d57909a9b",
+        "text": "this is where it would be handled <https:\/\/github.com\/liampauling\/flumine\/blob\/master\/flumine\/order\/process.py#L64> i.e. the initial order has been matched and offsets now need to be placed",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "attachments": [
+            {
+                "fallback": "[liampauling\/flumine] flumine\/order\/process.py:64",
+                "text": "```\n            if not order.trade.offset_orders:\n```",
+                "title": "flumine\/order\/process.py:64",
+                "footer": "<https:\/\/github.com\/liampauling\/flumine|liampauling\/flumine>",
+                "id": 1,
+                "title_link": "https:\/\/github.com\/liampauling\/flumine\/blob\/master\/flumine\/order\/process.py#L64",
+                "footer_icon": "https:\/\/github.githubassets.com\/favicon.ico",
+                "color": "24292f",
+                "mrkdwn_in": [
+                    "text"
+                ],
+                "bot_id": "B01144Z0734",
+                "app_unfurl_url": "https:\/\/github.com\/liampauling\/flumine\/blob\/master\/flumine\/order\/process.py#L64",
+                "is_app_unfurl": true
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "8Aml",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "this is where it would be handled "
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/liampauling\/flumine\/blob\/master\/flumine\/order\/process.py#L64"
+                            },
+                            {
+                                "type": "text",
+                                "text": " i.e. the initial order has been matched and offsets now need to be placed"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UUCD6P13J",
+        "type": "message",
+        "ts": "1590567994.143100",
+        "client_msg_id": "0e5684b3-d27f-45cc-b2a3-51cd4dcc4f60",
+        "text": "ah nice, so it will wait for the original order to complete",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6898272ab81",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6898272ab810e419c2c9ca9af1e53da8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0012-72.png",
+            "first_name": "Lee",
+            "real_name": "Lee U",
+            "display_name": "Lee",
+            "team": "T4G9NBD2M",
+            "name": "lunswor",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "lgZ",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "ah nice, so it will wait for the original order to complete"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UUCD6P13J",
+        "type": "message",
+        "ts": "1590568022.143700",
+        "client_msg_id": "15ddecb8-28c3-497d-819b-b0b648f5df95",
+        "text": "i was checking for that myself before placing it :)",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6898272ab81",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6898272ab810e419c2c9ca9af1e53da8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0012-72.png",
+            "first_name": "Lee",
+            "real_name": "Lee U",
+            "display_name": "Lee",
+            "team": "T4G9NBD2M",
+            "name": "lunswor",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "4bT=U",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "i was checking for that myself before placing it :)"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1590568263.145000",
+        "client_msg_id": "a7e9b625-a97b-4980-a78c-b941f0ebec91",
+        "text": "yeah that is the idea, I want to clean up the trade\/strategy reset logic so its cleaner and easier to work out if you have live trades\/pending orders etc. just haven't worked it out in my head yet hence why this hasn't been completed :slightly_smiling_face: I will look to put some warning logs going forward when something is being used which won't do anything",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1590568263.145000",
+        "reply_count": 3,
+        "reply_users_count": 2,
+        "latest_reply": "1590609994.168400",
+        "reply_users": [
+            "UUCD6P13J",
+            "U4H19D1D2"
+        ],
+        "replies": [
+            {
+                "user": "UUCD6P13J",
+                "ts": "1590607816.167400"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1590609187.168200"
+            },
+            {
+                "user": "UUCD6P13J",
+                "ts": "1590609994.168400"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": true,
+        "last_read": "1590611919.005259",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "9aje",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "yeah that is the idea, I want to clean up the trade\/strategy reset logic so its cleaner and easier to work out if you have live trades\/pending orders etc. just haven't worked it out in my head yet hence why this hasn't been completed "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "slightly_smiling_face",
+                                "unicode": "1f642"
+                            },
+                            {
+                                "type": "text",
+                                "text": " I will look to put some warning logs going forward when something is being used which won't do anything"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UUCD6P13J",
+        "type": "message",
+        "ts": "1590568327.145600",
+        "client_msg_id": "7e0702ef-4df9-4b47-8b82-1921c561ddbd",
+        "text": "thats cool, i understand it's still work in progress and evolving",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6898272ab81",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6898272ab810e419c2c9ca9af1e53da8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0012-72.png",
+            "first_name": "Lee",
+            "real_name": "Lee U",
+            "display_name": "Lee",
+            "team": "T4G9NBD2M",
+            "name": "lunswor",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "FXq=6",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "thats cool, i understand it's still work in progress and evolving"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1590568411.146300",
+        "client_msg_id": "55175e0a-d7c3-4546-b623-0392f87ebfd2",
+        "text": "yeah, looking at the code above, I think it would be easier to add a function\n```trade.create_offset_order(side=.. )```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "pWer",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "yeah, looking at the code above, I think it would be easier to add a function\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "trade.create_offset_order(side=.. )"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1590568491.147400",
+        "client_msg_id": "d0347b67-c96c-421c-9852-b9bf0aa59467",
+        "text": "the issue is handling partial matches as well as 'batching', i.e. offset whenever x has been matched, can result in multiple live orders per trade",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "zzY",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "the issue is handling partial matches as well as 'batching', i.e. offset whenever x has been matched, can result in multiple live orders per trade"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1590569321.148800",
+        "client_msg_id": "5498584e-8d28-4f0d-acdb-3b96237dd7a6",
+        "text": "Out of curiosity is there any GPS integration with BFLW currently, or do those that use GPS run a concurrent, but separate stream (just starting out with the GPS and am curious how people have it set up)?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "voah1",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Out of curiosity is there any GPS integration with BFLW currently, or do those that use GPS run a concurrent, but separate stream (just starting out with the GPS and am curious how people have it set up)?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1590569532.149600",
+        "client_msg_id": "81c34a2e-dc82-4b2d-accf-72e8ebfa0412",
+        "text": "Pretty simple to extend StreamListener, BaseStream and BaseResource",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "i4dC",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Pretty simple to extend StreamListener, BaseStream and BaseResource"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1590569677.150100",
+        "client_msg_id": "4134f70c-8cb6-45be-b039-da976a29e345",
+        "text": "And run it as a separate stream in the same way you'd have a separate price and order stream",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "lqibN",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "And run it as a separate stream in the same way you'd have a separate price and order stream"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1590569814.150600",
+        "client_msg_id": "1b3274d4-c68f-4178-b245-9a8eb3f9f718",
+        "text": "Ah okay yes, that could work, seems a good place to start!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "m6j9t",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Ah okay yes, that could work, seems a good place to start!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UUCD6P13J",
+        "type": "message",
+        "ts": "1590570231.151600",
+        "client_msg_id": "49bed920-cae2-4775-975d-95440cc6053c",
+        "text": "is batching for when you want to send multiple orders in one request?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6898272ab81",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6898272ab810e419c2c9ca9af1e53da8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0012-72.png",
+            "first_name": "Lee",
+            "real_name": "Lee U",
+            "display_name": "Lee",
+            "team": "T4G9NBD2M",
+            "name": "lunswor",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "UPl",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "is batching for when you want to send multiple orders in one request?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1590570724.152700",
+        "client_msg_id": "b8ea0dfa-31a0-41f6-ba4d-d88e8ee526d5",
+        "text": "no in this example its when you want to say place an initial order of 100 and an offset of 100, but as the initial order gets partially matched you batch off the offset",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "pifD",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "no in this example its when you want to say place an initial order of 100 and an offset of 100, but as the initial order gets partially matched you batch off the offset"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1590570762.153300",
+        "client_msg_id": "22b18175-4108-436c-8fd3-b48c556d7195",
+        "text": "initial: £100, offset: £10, £35, £50, £5",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "iET4F",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "initial: £100, offset: £10, £35, £50, £5"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01093Z1KF0",
+        "type": "message",
+        "ts": "1590591234.154500",
+        "client_msg_id": "0aa716c2-ac3e-42b7-b329-899f7c45b0b4",
+        "text": "quick pycharm question: has anyone ever had 'waiting for REPL response' in pycharm? Seems to be really slowing down code that shouldn't be slow",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g0e065c4f427",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/0e065c4f4274fd0a565c58690dfc4a58.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0023-72.png",
+            "first_name": "",
+            "real_name": "brightcake",
+            "display_name": "brightcake",
+            "team": "T4G9NBD2M",
+            "name": "vlademelianov",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "krYo",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "quick pycharm question: has anyone ever had 'waiting for REPL response' in pycharm? Seems to be really slowing down code that shouldn't be slow"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1590591253.154800",
+        "client_msg_id": "e3c3e46d-8488-4d5f-9590-9c4a0b5a743c",
+        "text": "Yeah seems to be a bug with recent versions",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "R5g5t",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Yeah seems to be a bug with recent versions"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1590591269.155000",
+        "client_msg_id": "f7f02dfd-3660-4a8d-a395-c291d1fea827",
+        "text": "<https:\/\/youtrack.jetbrains.com\/issue\/PY-40019>",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "sEPC",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "link",
+                                "url": "https:\/\/youtrack.jetbrains.com\/issue\/PY-40019"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01093Z1KF0",
+        "type": "message",
+        "ts": "1590591365.155900",
+        "client_msg_id": "afcdb601-2408-4228-a7ca-9d29591b123f",
+        "text": "ah it's a pain, all the stuff i found about this was from 2017 so interesting to see that this bug is still cropping up",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g0e065c4f427",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/0e065c4f4274fd0a565c58690dfc4a58.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0023-72.png",
+            "first_name": "",
+            "real_name": "brightcake",
+            "display_name": "brightcake",
+            "team": "T4G9NBD2M",
+            "name": "vlademelianov",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "RAp",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "ah it's a pain, all the stuff i found about this was from 2017 so interesting to see that this bug is still cropping up"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1590591399.156800",
+        "client_msg_id": "e9575581-7138-40b4-a6ae-0cd79288b863",
+        "text": "Maybe it crept back in",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "EEB",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Maybe it crept back in"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1590591407.157200",
+        "client_msg_id": "cb9d25db-1997-4a9e-ac5d-97d2c98cb7ff",
+        "text": "I think you can try rolling back to... 2019.2?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1590591407.157200",
+        "reply_count": 1,
+        "reply_users_count": 1,
+        "latest_reply": "1590591444.157900",
+        "reply_users": [
+            "U01093Z1KF0"
+        ],
+        "replies": [
+            {
+                "user": "U01093Z1KF0",
+                "ts": "1590591444.157900"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": false,
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "\/C0",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I think you can try rolling back to... 2019.2?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01093Z1KF0",
+        "type": "message",
+        "ts": "1590591432.157600",
+        "client_msg_id": "bbb534ee-8429-45f7-831f-6748b35f4900",
+        "text": "also, has anyone tried installing some colour schemes onto their IDE? Everytime i try to install a colour scheme it shows incorrect colours (as if the colour values are being set incorrectly)",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g0e065c4f427",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/0e065c4f4274fd0a565c58690dfc4a58.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0023-72.png",
+            "first_name": "",
+            "real_name": "brightcake",
+            "display_name": "brightcake",
+            "team": "T4G9NBD2M",
+            "name": "vlademelianov",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "3UNZ",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "also, has anyone tried installing some colour schemes onto their IDE? Everytime i try to install a colour scheme it shows incorrect colours (as if the colour values are being set incorrectly)"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01093Z1KF0",
+        "type": "message",
+        "ts": "1590591444.157900",
+        "client_msg_id": "bccaa56c-53a0-4a73-9152-ef4d85c6dbd3",
+        "text": "yeah i'll give that a try",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g0e065c4f427",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/0e065c4f4274fd0a565c58690dfc4a58.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0023-72.png",
+            "first_name": "",
+            "real_name": "brightcake",
+            "display_name": "brightcake",
+            "team": "T4G9NBD2M",
+            "name": "vlademelianov",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1590591407.157200",
+        "parent_user_id": "UBS7QANF3",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "SZ3G",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "yeah i'll give that a try"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "ULDAVFDRP",
+        "type": "message",
+        "ts": "1590603484.159100",
+        "client_msg_id": "c9e4bb74-4f3a-4f52-80c3-27fb8d32b670",
+        "text": "Quick question, but do the runners remain in the same or in the returned market book through the life of the market? Is it safe to look for the same runner at the same index if your comparing market books?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g46fe1c1bf03",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/b46fe1c1bf03e18d951e7032fb494283.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0019-72.png",
+            "first_name": "",
+            "real_name": "Oliver Varney",
+            "display_name": "Oliver Varney",
+            "team": "T4G9NBD2M",
+            "name": "oliverashleyvarney",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "YBv5B",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Quick question, but do the runners remain in the same or in the returned market book through the life of the market? Is it safe to look for the same runner at the same index if your comparing market books?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1590603910.159500",
+        "client_msg_id": "B64C5878-2E32-4096-BB53-EF63914DD3F2",
+        "text": "Do you mean same order?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "GklW",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Do you mean same order?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1590603947.160500",
+        "client_msg_id": "CF4122CF-F2BB-4069-BD9D-0234F6FC1EF9",
+        "text": "The sort priority changes, I wouldn’t and don’t trust the list order to stay the same  ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "zB=O",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "The sort priority changes, I wouldn’t and don’t trust the list order to stay the same  "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "ULDAVFDRP",
+        "type": "message",
+        "ts": "1590604371.160700",
+        "client_msg_id": "e1f62e1c-aa89-4967-8fcc-20574867d395",
+        "text": "from the cache",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g46fe1c1bf03",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/b46fe1c1bf03e18d951e7032fb494283.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0019-72.png",
+            "first_name": "",
+            "real_name": "Oliver Varney",
+            "display_name": "Oliver Varney",
+            "team": "T4G9NBD2M",
+            "name": "oliverashleyvarney",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "gyQ=u",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "from the cache"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "ULDAVFDRP",
+        "type": "message",
+        "ts": "1590604385.161000",
+        "client_msg_id": "a63b92b9-75b9-48b4-b823-92f7f4fe8c40",
+        "text": "currently I check for the same selectionId",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g46fe1c1bf03",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/b46fe1c1bf03e18d951e7032fb494283.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0019-72.png",
+            "first_name": "",
+            "real_name": "Oliver Varney",
+            "display_name": "Oliver Varney",
+            "team": "T4G9NBD2M",
+            "name": "oliverashleyvarney",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Mrb",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "currently I check for the same selectionId"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "ULDAVFDRP",
+        "type": "message",
+        "ts": "1590604400.161400",
+        "client_msg_id": "5ccf93b4-e4fb-40d7-83a5-5edde718ed3e",
+        "text": "but I wasnt sure if this was overkill or not",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g46fe1c1bf03",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/b46fe1c1bf03e18d951e7032fb494283.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0019-72.png",
+            "first_name": "",
+            "real_name": "Oliver Varney",
+            "display_name": "Oliver Varney",
+            "team": "T4G9NBD2M",
+            "name": "oliverashleyvarney",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "2Ju",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "but I wasnt sure if this was overkill or not"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "ULDAVFDRP",
+        "type": "message",
+        "ts": "1590604426.161900",
+        "client_msg_id": "6b2eac63-e6ec-485c-88a5-65202bcf618e",
+        "text": "just the same order in the 'runners' list in the market book",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g46fe1c1bf03",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/b46fe1c1bf03e18d951e7032fb494283.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0019-72.png",
+            "first_name": "",
+            "real_name": "Oliver Varney",
+            "display_name": "Oliver Varney",
+            "team": "T4G9NBD2M",
+            "name": "oliverashleyvarney",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "9WY9c",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "just the same order in the 'runners' list in the market book"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1590605072.162500",
+        "client_msg_id": "74EA504B-64A5-4B52-96FD-56957D0D8AC7",
+        "text": "Not sure I understand but are you trying to cut out the lookup?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "i4Eq5",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Not sure I understand but are you trying to cut out the lookup?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "ULDAVFDRP",
+        "type": "message",
+        "ts": "1590605641.164000",
+        "client_msg_id": "a8690106-dc7e-4c8f-b49a-748dfe4b360f",
+        "text": "not sure how to phase the question well but say I have two market books, one from an 30 seconds ago and one from the latest returned market book. Will all of the runners be at the same index?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g46fe1c1bf03",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/b46fe1c1bf03e18d951e7032fb494283.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0019-72.png",
+            "first_name": "",
+            "real_name": "Oliver Varney",
+            "display_name": "Oliver Varney",
+            "team": "T4G9NBD2M",
+            "name": "oliverashleyvarney",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "n65r",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "not sure how to phase the question well but say I have two market books, one from an 30 seconds ago and one from the latest returned market book. Will all of the runners be at the same index?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "ULDAVFDRP",
+        "type": "message",
+        "ts": "1590605846.164800",
+        "client_msg_id": "cd6f3317-cab7-49b0-a93b-b8cc382c14ce",
+        "text": "if a runner is a list index 0, will they remain at that for the entirety of the market, or do I have to do a lookup check ?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g46fe1c1bf03",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/b46fe1c1bf03e18d951e7032fb494283.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0019-72.png",
+            "first_name": "",
+            "real_name": "Oliver Varney",
+            "display_name": "Oliver Varney",
+            "team": "T4G9NBD2M",
+            "name": "oliverashleyvarney",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "kF6B",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "if a runner is a list index 0, will they remain at that for the entirety of the market, or do I have to do a lookup check ?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1590605900.165900",
+        "client_msg_id": "8A7F9CAE-F004-4271-B8B7-B1359CC4519B",
+        "text": "Once in the cache the order will stay the same, you can see when new it gets appended, once in a list the order is static ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "nXM\/M",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Once in the cache the order will stay the same, you can see when new it gets appended, once in a list the order is static "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "ULDAVFDRP",
+        "type": "message",
+        "ts": "1590605967.166300",
+        "client_msg_id": "7c2078dc-4247-4e7d-bc8d-bad589f8d44c",
+        "text": "cool thanks :+1:",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g46fe1c1bf03",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/b46fe1c1bf03e18d951e7032fb494283.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0019-72.png",
+            "first_name": "",
+            "real_name": "Oliver Varney",
+            "display_name": "Oliver Varney",
+            "team": "T4G9NBD2M",
+            "name": "oliverashleyvarney",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Pzt+",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "cool thanks "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "+1",
+                                "unicode": "1f44d"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1590606016.166600",
+        "edited": {
+            "user": "U4H19D1D2",
+            "ts": "1590606027.000000"
+        },
+        "client_msg_id": "0882DF20-E96D-4C0A-B6CD-74B2CC8EF9FA",
+        "text": "What you cooking up?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "RmUEG",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "What you cooking up?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "ULDAVFDRP",
+        "type": "message",
+        "ts": "1590606209.167000",
+        "client_msg_id": "906e6677-e3e5-4e2b-8c2a-f2fd16e810eb",
+        "text": "just trying to optimise some code",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g46fe1c1bf03",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/b46fe1c1bf03e18d951e7032fb494283.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0019-72.png",
+            "first_name": "",
+            "real_name": "Oliver Varney",
+            "display_name": "Oliver Varney",
+            "team": "T4G9NBD2M",
+            "name": "oliverashleyvarney",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "wYD",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "just trying to optimise some code"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "ULDAVFDRP",
+        "type": "message",
+        "ts": "1590606221.167300",
+        "client_msg_id": "01429720-2a3b-4c8b-9d10-652272c2a823",
+        "text": "that looks at market books",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g46fe1c1bf03",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/b46fe1c1bf03e18d951e7032fb494283.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0019-72.png",
+            "first_name": "",
+            "real_name": "Oliver Varney",
+            "display_name": "Oliver Varney",
+            "team": "T4G9NBD2M",
+            "name": "oliverashleyvarney",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Gw=",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "that looks at market books"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UUCD6P13J",
+        "type": "message",
+        "ts": "1590607816.167400",
+        "edited": {
+            "user": "UUCD6P13J",
+            "ts": "1590607987.000000"
+        },
+        "client_msg_id": "4d5f3d40-0f14-4bb6-a28f-3ff46a268489",
+        "text": "I just got one of the exceptions for something which i think works as a good warning. NotImplementedError on execute_replace :slightly_smiling_face:",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6898272ab81",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6898272ab810e419c2c9ca9af1e53da8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0012-72.png",
+            "first_name": "Lee",
+            "real_name": "Lee U",
+            "display_name": "Lee",
+            "team": "T4G9NBD2M",
+            "name": "lunswor",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1590568263.145000",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "T1n+u",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I just got one of the exceptions for something which i think works as a good warning. NotImplementedError on execute_replace "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "slightly_smiling_face",
+                                "unicode": "1f642"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1590609187.168200",
+        "client_msg_id": "3837C2DC-D213-4C6F-AA84-4F705C60AEF8",
+        "text": "Haha, yeah haven’t attempted coding that up yet!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1590568263.145000",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "FGcf",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Haha, yeah haven’t attempted coding that up yet!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UUCD6P13J",
+        "type": "message",
+        "ts": "1590609994.168400",
+        "edited": {
+            "user": "UUCD6P13J",
+            "ts": "1590610002.000000"
+        },
+        "client_msg_id": "b65b9513-d49f-46b3-b68c-d628884bea9f",
+        "text": "Seems quite tricky potentially handling partial matches",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6898272ab81",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6898272ab810e419c2c9ca9af1e53da8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0012-72.png",
+            "first_name": "Lee",
+            "real_name": "Lee U",
+            "display_name": "Lee",
+            "team": "T4G9NBD2M",
+            "name": "lunswor",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1590568263.145000",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "KyF",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Seems quite tricky potentially handling partial matches"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1590611146.169600",
+        "client_msg_id": "00d08ca9-49d6-4a0d-97b5-d823a0ee2527",
+        "text": "Using flumine, is there a way to only record the last x minutes of a market, or is the approach to record all, then remove what you don't need when processing?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "3+uV",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Using flumine, is there a way to only record the last x minutes of a market, or is the approach to record all, then remove what you don't need when processing?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1590612128.172700",
+        "client_msg_id": "829FC397-3065-4CED-ADF5-CAAF23FFF889",
+        "text": "The market recorder is setup to record the raw data so that won’t really work but you can modify the price recorder <https:\/\/github.com\/liampauling\/flumine\/blob\/master\/examples\/strategies\/pricerecorder.py|example>\n\nJust change the check_market_book\n\n```if market.seconds_to_start &lt; 600:\n    return True```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "attachments": [
+            {
+                "fallback": "[liampauling\/flumine] examples\/strategies\/pricerecorder.py",
+                "text": "```\nimport os\nimport csv\n\nfrom flumine import BaseStrategy\nfrom flumine.utils import get_price\n\nHEADERS = [\n    \"market_id\",\n    \"publish_time\",\n    \"status\",\n    \"inplay\",\n    \"selection_id\",\n    \"last_price_traded\",\n    \"back\",\n    \"lay\",\n]\n\n\nclass PriceRecorder(BaseStrategy):\n    \"\"\"\n    Example strategy for recording prices\n    from historical or live data.\n    \"\"\"\n\n    def __init__(self, *args, **kwargs):\n        BaseStrategy.__init__(self, *args, **kwargs)\n        self.local_dir = self.context.get(\"local_dir\", \"\/tmp\")\n        self.filename = self.context.get(\"filename\", \"output.txt\")\n        self.file_directory = os.path.join(self.local_dir, self.filename)\n\n    def add(self) -&gt; None:\n        # check local dir\n        if not os.path.isdir(self.local_dir):\n            raise OSError(\"File dir %s does not exist\" % self.local_dir)\n        # write headers\n        with open(self.file_directory, \"w\") as f:\n            writer = csv.DictWriter(f, fieldnames=HEADERS)\n            writer.writeheader()\n\n    def check_market_book(self, live_market, market_book):\n        return True\n\n    def process_market_book(self, live_market, market_book):\n        with open(self.file_directory, \"a\") as f:\n            writer = csv.DictWriter(f, fieldnames=HEADERS)\n            for runner in market_book.runners:\n                writer.writerow(\n                    {\n                        \"market_id\": market_book.market_id,\n                        \"publish_time\": market_book.publish_time,\n                        \"status\": market_book.status,\n                        \"inplay\": market_book.inplay,\n                        \"selection_id\": runner.selection_id,\n                        \"last_price_traded\": runner.last_price_traded,\n                        \"back\": get_price(runner.ex.available_to_back, 0),\n                        \"lay\": get_price(runner.ex.available_to_lay, 0),\n                    }\n                )\n\n```",
+                "title": "examples\/strategies\/pricerecorder.py",
+                "footer": "<https:\/\/github.com\/liampauling\/flumine|liampauling\/flumine>",
+                "id": 1,
+                "title_link": "https:\/\/github.com\/liampauling\/flumine\/blob\/master\/examples\/strategies\/pricerecorder.py",
+                "footer_icon": "https:\/\/github.githubassets.com\/favicon.ico",
+                "color": "24292f",
+                "mrkdwn_in": [
+                    "text"
+                ],
+                "bot_id": "B01144Z0734",
+                "app_unfurl_url": "https:\/\/github.com\/liampauling\/flumine\/blob\/master\/examples\/strategies\/pricerecorder.py",
+                "is_app_unfurl": true
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "+AC1l",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "The market recorder is setup to record the raw data so that won’t really work but you can modify the price recorder "
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/liampauling\/flumine\/blob\/master\/examples\/strategies\/pricerecorder.py",
+                                "text": "example"
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "\nJust change the check_market_book\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "if market.seconds_to_start < 600:\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "    return True"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1590612309.174300",
+        "client_msg_id": "edaec703-8e57-4e44-960c-2bb16c2c0a42",
+        "text": "Ah cool, okay that could work, although now that I've asked the question, I'm thinking to myself there's no downside to recording the complete raw data and then simply using the last x mins, so probably a pointless question now I've asked it, ha!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "C7F9",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Ah cool, okay that could work, although now that I've asked the question, I'm thinking to myself there's no downside to recording the complete raw data and then simply using the last x mins, so probably a pointless question now I've asked it, ha!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "subtype": "channel_join",
+        "user": "U0146JCHQB0",
+        "text": "<@U0146JCHQB0> has joined the channel",
+        "type": "message",
+        "ts": "1590626650.174400"
+    }
+]

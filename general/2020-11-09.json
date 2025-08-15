@@ -1,0 +1,897 @@
+[
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1604911193.348900",
+        "client_msg_id": "8348b251-2940-47bb-9ad3-7d909c19e864",
+        "text": "You can either log every order as it is created through `_process_order` or at the closure with `_process_cleared_orders_meta` that latter contains a list of all flumine `Order` objects for that particular market as per this <https:\/\/github.com\/liampauling\/flumine\/blob\/master\/examples\/controls\/backtestloggingcontrol.py|example>",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1603784701.132500",
+        "parent_user_id": "U4H19D1D2",
+        "attachments": [
+            {
+                "fallback": "[liampauling\/flumine] examples\/controls\/backtestloggingcontrol.py",
+                "text": "```\nimport csv\nimport logging\nfrom flumine.controls.loggingcontrols import LoggingControl\n\nlogger = logging.getLogger(__name__)\n\nFIELDNAMES = [\n    \"bet_id\",\n    \"strategy_name\",\n    \"market_id\",\n    \"selection_id\",\n    \"trade_id\",\n    \"date_time_placed\",\n    \"price\",\n    \"price_matched\",\n    \"size\",\n    \"size_matched\",\n    \"profit\",\n    \"side\",\n    \"elapsed_seconds_executable\",\n    \"order_status\",\n    \"market_note\",\n    \"notes\",\n]\n\n\nclass BacktestLoggingControl(LoggingControl):\n    NAME = \"BACKTEST_LOGGING_CONTROL\"\n\n    def __init__(self, *args, **kwargs):\n        super(BacktestLoggingControl, self).__init__(*args, **kwargs)\n        self._setup()\n\n    def _setup(self):\n        with open(\"orders.txt\", \"w\") as m:\n            csv_writer = csv.DictWriter(m, delimiter=\",\", fieldnames=FIELDNAMES)\n            csv_writer.writeheader()\n\n    def _process_cleared_orders_meta(self, event):\n        orders = event.event\n        with open(\"orders.txt\", \"a\") as m:\n            for order in orders:\n                try:\n                    order_data = {\n                        \"bet_id\": order.bet_id,\n                        \"strategy_name\": order.trade.strategy,\n                        \"market_id\": order.market_id,\n                        \"selection_id\": order.selection_id,\n                        \"trade_id\": order.trade.id,\n                        \"date_time_placed\": order.responses.date_time_placed,\n                        \"price\": order.order_type.price,\n                        \"price_matched\": order.average_price_matched,\n                        \"size\": order.order_type.size,\n                        \"size_matched\": order.size_matched,\n                        \"profit\": order.simulated.profit,\n                        \"side\": order.side,\n                        \"elapsed_seconds_executable\": order.elapsed_seconds_executable,\n                        \"order_status\": order.status.value,\n                        \"market_note\": order.trade.market_notes,\n                        \"notes\": order.trade.notes_str,\n                    }\n                    csv_writer = csv.DictWriter(m, delimiter=\",\", fieldnames=FIELDNAMES)\n                    csv_writer.writerow(order_data)\n                except Exception as e:\n                    logger.error(\n                        \"_process_cleared_orders_meta: %s\" % e,\n                        extra={\"order\": order, \"error\": e},\n                    )\n\n        <http:\/\/logger.info|logger.info>(\"Orders updated\", extra={\"order_count\": len(orders)})\n\n```",
+                "title": "examples\/controls\/backtestloggingcontrol.py",
+                "footer": "<https:\/\/github.com\/liampauling\/flumine|liampauling\/flumine>",
+                "id": 1,
+                "title_link": "https:\/\/github.com\/liampauling\/flumine\/blob\/master\/examples\/controls\/backtestloggingcontrol.py",
+                "footer_icon": "https:\/\/github.githubassets.com\/favicon.ico",
+                "color": "24292f",
+                "mrkdwn_in": [
+                    "text"
+                ],
+                "bot_id": "B01144Z0734",
+                "app_unfurl_url": "https:\/\/github.com\/liampauling\/flumine\/blob\/master\/examples\/controls\/backtestloggingcontrol.py",
+                "is_app_unfurl": true
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "AjiY",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "You can either log every order as it is created through "
+                            },
+                            {
+                                "type": "text",
+                                "text": "_process_order",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " or at the closure with "
+                            },
+                            {
+                                "type": "text",
+                                "text": "_process_cleared_orders_meta",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " that latter contains a list of all flumine "
+                            },
+                            {
+                                "type": "text",
+                                "text": "Order",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " objects for that particular market as per this "
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/liampauling\/flumine\/blob\/master\/examples\/controls\/backtestloggingcontrol.py",
+                                "text": "example"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1604918786.349300",
+        "text": "Reminder that this is happening tomorrow, not sure what the impact will be on order streaming if you are not running v2.10.0",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "attachments": [
+            {
+                "fallback": "[October 31st, 2020 6:53 AM] liam: <https:\/\/forum.developer.betfair.com\/forum\/developer-program\/announcements\/33437-exchange-stream-api-release-notification-tuesday-10th-november|Exchange Stream API - Release Notification - Tuesday 10th November>\n\nGoing to ask Neil if we can get a test on the integration endpoint before that  ",
+                "ts": "1604127188.233700",
+                "author_id": "U4H19D1D2",
+                "author_subname": "liam",
+                "channel_id": "C4HL6EZTQ",
+                "is_msg_unfurl": true,
+                "text": "<https:\/\/forum.developer.betfair.com\/forum\/developer-program\/announcements\/33437-exchange-stream-api-release-notification-tuesday-10th-november|Exchange Stream API - Release Notification - Tuesday 10th November>\n\nGoing to ask Neil if we can get a test on the integration endpoint before that  ",
+                "author_name": "liam",
+                "author_link": "https:\/\/betfairlightweight.slack.com\/team\/U4H19D1D2",
+                "author_icon": "https:\/\/secure.gravatar.com\/avatar\/cebcb7a36736d2bfe25c0fcb2d1dcc66.jpg?s=48&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0023-48.png",
+                "mrkdwn_in": [
+                    "text"
+                ],
+                "color": "D0D0D0",
+                "from_url": "https:\/\/betfairlightweight.slack.com\/archives\/C4HL6EZTQ\/p1604127188233700",
+                "is_share": true,
+                "footer": "Slack conversation"
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "eNXz",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Reminder that this is happening tomorrow, not sure what the impact will be on order streaming if you are not running v2.10.0"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "UUCD6P13J",
+                    "U01A3B4SBDZ"
+                ],
+                "count": 2
+            }
+        ]
+    },
+    {
+        "user": "UPMUFSGCR",
+        "type": "message",
+        "ts": "1604921395.350500",
+        "client_msg_id": "68c537d9-f7e9-47b5-abdb-de84c37d8f49",
+        "text": "Thanks Liam. From that, if we are running old code, is there basically a possibility that our code will think it has zero orders instead of the correct values?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "31c0bb5a442c",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2019-10-28\/812386967189_31c0bb5a442c5b8d2c61_72.png",
+            "first_name": "Jon",
+            "real_name": "Jon Jon Jon Jon Jon Jon Jon Jon",
+            "display_name": "Jonjonjon",
+            "team": "T4G9NBD2M",
+            "name": "fcmisc",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "ErVK",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Thanks Liam. From that, if we are running old code, is there basically a possibility that our code will think it has zero orders instead of the correct values?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1604925949.351300",
+        "client_msg_id": "976aecf0-1677-4f66-bf79-d408d47192bd",
+        "text": "I have no idea, I think if a full image comes through then the current data becomes stale but I am not sure how often this will happen",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "6Yp",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I have no idea, I think if a full image comes through then the current data becomes stale but I am not sure how often this will happen"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UPMUFSGCR",
+        "type": "message",
+        "ts": "1604925994.351600",
+        "client_msg_id": "b5b72a10-3828-4172-b8eb-74823780d7df",
+        "text": "I wonder what criteria they'll have for deciding whether or not to do it",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "31c0bb5a442c",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2019-10-28\/812386967189_31c0bb5a442c5b8d2c61_72.png",
+            "first_name": "Jon",
+            "real_name": "Jon Jon Jon Jon Jon Jon Jon Jon",
+            "display_name": "Jonjonjon",
+            "team": "T4G9NBD2M",
+            "name": "fcmisc",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "3IhGU",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I wonder what criteria they'll have for deciding whether or not to do it"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1604926031.352100",
+        "client_msg_id": "a97c621f-301c-4818-a24b-cf27551bc299",
+        "text": "maybe non runners? or a 503 recovery? I can't see why else",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "mGZ",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "maybe non runners? or a 503 recovery? I can't see why else"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "white_check_mark",
+                "users": [
+                    "UPMUFSGCR"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "U01BBMTK6R3",
+        "type": "message",
+        "ts": "1604933842.353800",
+        "client_msg_id": "735cf69b-b97a-4789-95af-6404f21bf8bd",
+        "text": "In flumine, if i place an limitorder with persistance type as market on close. will it be possible for my order get matched soon after i place it, or i have to wait until the SP action to get matched there?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gc439db68a96",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/c439db68a965588cbce0ffd6101791df.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0020-72.png",
+            "first_name": "danzhou2002",
+            "real_name": "danzhou2002",
+            "display_name": "dan2002",
+            "team": "T4G9NBD2M",
+            "name": "danzhou2002",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "rdp",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "In flumine, if i place an limitorder with persistance type as market on close. will it be possible for my order get matched soon after i place it, or i have to wait until the SP action to get matched there?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1604934458.354500",
+        "client_msg_id": "A8616498-098D-41A0-BC4B-3CB75ADD5F4A",
+        "text": "It will be possible but will be placed into the auction when turned in play ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "xc98",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "It will be possible but will be placed into the auction when turned in play "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01BBMTK6R3",
+        "type": "message",
+        "ts": "1604934571.354700",
+        "client_msg_id": "c1e18226-37cc-4dc2-bbae-d88d522280bc",
+        "text": "ok thanks",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gc439db68a96",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/c439db68a965588cbce0ffd6101791df.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0020-72.png",
+            "first_name": "danzhou2002",
+            "real_name": "danzhou2002",
+            "display_name": "dan2002",
+            "team": "T4G9NBD2M",
+            "name": "danzhou2002",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "WzX",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "ok thanks"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01BBMTK6R3",
+        "type": "message",
+        "ts": "1604934663.355800",
+        "client_msg_id": "3d8128a0-79f6-4184-81b2-59033257cedf",
+        "text": "just to be clear if it is get matched fully before auction, it will not be placed into auction even the persistence type is market on close?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gc439db68a96",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/c439db68a965588cbce0ffd6101791df.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0020-72.png",
+            "first_name": "danzhou2002",
+            "real_name": "danzhou2002",
+            "display_name": "dan2002",
+            "team": "T4G9NBD2M",
+            "name": "danzhou2002",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "YPjK",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "just to be clear if it is get matched fully before auction, it will not be placed into auction even the persistence type is market on close?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1604935132.356300",
+        "client_msg_id": "FEEC665F-5C7F-45B2-9BCA-7921DCDF5540",
+        "text": "Yep because it will have no sizeRemaining ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "mF\/4",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Yep because it will have no sizeRemaining "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01BBMTK6R3",
+        "type": "message",
+        "ts": "1604944702.357900",
+        "client_msg_id": "b9f0b5d3-a9a0-4396-adaf-411fc3d95370",
+        "text": "for auction, the minimum liability £10 applied to per runner or per bet? if there are two bets together for one runner exceed £10, but not individual ones....",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gc439db68a96",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/c439db68a965588cbce0ffd6101791df.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0020-72.png",
+            "first_name": "danzhou2002",
+            "real_name": "danzhou2002",
+            "display_name": "dan2002",
+            "team": "T4G9NBD2M",
+            "name": "danzhou2002",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "thwS",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "for auction, the minimum liability £10 applied to per runner or per bet? if there are two bets together for one runner exceed £10, but not individual ones...."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1604944727.358100",
+        "client_msg_id": "94a6ff30-6c2c-4da6-b2a2-7ff8301cf605",
+        "text": "1 bet",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "AQW",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "1 bet"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1604944736.358400",
+        "client_msg_id": "b623236b-fd53-41b3-9448-672487a3ac81",
+        "text": "and it appears to only be on the lay side",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "MYU=c",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "and it appears to only be on the lay side"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1604944747.358800",
+        "client_msg_id": "ce01078e-9f97-445e-b95d-4b9d2b68c737",
+        "text": "i.e. you seem to be able to back under the £10 min",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "AXh",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "i.e. you seem to be able to back under the £10 min"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1604944756.359200",
+        "client_msg_id": "0656759c-8549-489e-8b96-6bd5fcabc4ff",
+        "text": "but not lay (unless the stake is £2 or greater)",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "RFIa",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "but not lay (unless the stake is £2 or greater)"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01BBMTK6R3",
+        "type": "message",
+        "ts": "1604944828.360000",
+        "client_msg_id": "2e0008d0-757d-41fd-b70a-8246229d4710",
+        "text": "but with a lay £3 at 3, it is still not 10 liability",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gc439db68a96",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/c439db68a965588cbce0ffd6101791df.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0020-72.png",
+            "first_name": "danzhou2002",
+            "real_name": "danzhou2002",
+            "display_name": "dan2002",
+            "team": "T4G9NBD2M",
+            "name": "danzhou2002",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "wQp",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "but with a lay £3 at 3, it is still not 10 liability"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1604945053.360300",
+        "client_msg_id": "58787b3c-8714-4854-a16e-46832a0b15e5",
+        "text": "yep, but thats okay as its above the min stake size",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "k8sw",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "yep, but thats okay as its above the min stake size"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "subtype": "channel_join",
+        "user": "U01EC79GY75",
+        "text": "<@U01EC79GY75> has joined the channel",
+        "type": "message",
+        "ts": "1604947180.360500"
+    },
+    {
+        "user": "U01BBMTK6R3",
+        "type": "message",
+        "ts": "1604949477.363200",
+        "client_msg_id": "a0eeb9ea-e875-4982-a64f-9fd5b4608776",
+        "text": "No, Today I placed an limit order of less than £10 exposure for market on close Persistence type , it didn’t get filled. <@U4H19D1D2> is it possible modify flumine backtest for this so it won’t get filled in backtest either? Thanks.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gc439db68a96",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/c439db68a965588cbce0ffd6101791df.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0020-72.png",
+            "first_name": "danzhou2002",
+            "real_name": "danzhou2002",
+            "display_name": "dan2002",
+            "team": "T4G9NBD2M",
+            "name": "danzhou2002",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "qHX",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "No, Today I placed an limit order of less than £10 exposure for market on close Persistence type , it didn’t get filled. "
+                            },
+                            {
+                                "type": "user",
+                                "user_id": "U4H19D1D2"
+                            },
+                            {
+                                "type": "text",
+                                "text": " is it possible modify flumine backtest for this so it won’t get filled in backtest either? Thanks."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1604949830.364400",
+        "client_msg_id": "302C1B65-4D13-4251-AA5E-8BB420096686",
+        "text": "Sure, can you create an issue? It would be on this line <https:\/\/github.com\/liampauling\/flumine\/blob\/364988c715176ba5d4bc3b2478ca3b38a287f993\/flumine\/backtest\/simulated.py#L204|https:\/\/github.com\/liampauling\/flumine\/blob\/364988c715176ba5d4bc3b2478ca3b38a287f993\/flumine\/backtest\/simulated.py#L204>",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "attachments": [
+            {
+                "fallback": "[liampauling\/flumine] flumine\/backtest\/simulated.py:204",
+                "text": "```\n            if _order_type.ORDER_TYPE == OrderTypes.LIMIT:\n```",
+                "title": "flumine\/backtest\/simulated.py:204",
+                "footer": "<https:\/\/github.com\/liampauling\/flumine|liampauling\/flumine>",
+                "id": 1,
+                "title_link": "https:\/\/github.com\/liampauling\/flumine\/blob\/364988c715176ba5d4bc3b2478ca3b38a287f993\/flumine\/backtest\/simulated.py#L204",
+                "footer_icon": "https:\/\/github.githubassets.com\/favicon.ico",
+                "color": "24292f",
+                "mrkdwn_in": [
+                    "text"
+                ],
+                "bot_id": "B01144Z0734",
+                "app_unfurl_url": "https:\/\/github.com\/liampauling\/flumine\/blob\/364988c715176ba5d4bc3b2478ca3b38a287f993\/flumine\/backtest\/simulated.py#L204",
+                "is_app_unfurl": true
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "itj",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Sure, can you create an issue? It would be on this line "
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/liampauling\/flumine\/blob\/364988c715176ba5d4bc3b2478ca3b38a287f993\/flumine\/backtest\/simulated.py#L204",
+                                "text": "https:\/\/github.com\/liampauling\/flumine\/blob\/364988c715176ba5d4bc3b2478ca3b38a287f993\/flumine\/backtest\/simulated.py#L204"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

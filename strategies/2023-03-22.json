@@ -1,0 +1,266 @@
+[
+    {
+        "user": "UCQB6S222",
+        "type": "message",
+        "ts": "1679506075.313839",
+        "client_msg_id": "aaa4005f-892d-407e-971a-512dd8c1b7a7",
+        "text": "In flumine, is there a simple way to look at the market book but with my own executable orders deducted from it? Or is this something that the 'user' has to build themself?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g953ffd5e3b7",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/5813be539113b05ece8212c2a06d006a.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "George",
+            "real_name": "George",
+            "display_name": "George",
+            "team": "T4G9NBD2M",
+            "name": "gd",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1679506075.313839",
+        "reply_count": 3,
+        "reply_users_count": 3,
+        "latest_reply": "1679514719.949859",
+        "reply_users": [
+            "UBS7QANF3",
+            "UCQB6S222",
+            "U4H19D1D2"
+        ],
+        "replies": [
+            {
+                "user": "UBS7QANF3",
+                "ts": "1679506219.268669"
+            },
+            {
+                "user": "UCQB6S222",
+                "ts": "1679506328.341579"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1679514719.949859"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": true,
+        "last_read": "1679514719.949859",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "iSN",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "In flumine, is there a simple way to look at the market book but with my own executable orders deducted from it? Or is this something that the 'user' has to build themself?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1679506219.268669",
+        "client_msg_id": "ee56927a-9718-4e1a-97ea-280853c66d2c",
+        "text": "I have an implementation in betfairutil: <https:\/\/github.com\/mberk\/betfairutil\/blob\/525dc4dc9d87bc9438e72c24fd024d9bcab29b6c\/betfairutil\/__init__.py#L2905-L2955>",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1679506075.313839",
+        "parent_user_id": "UCQB6S222",
+        "attachments": [
+            {
+                "id": 1,
+                "footer_icon": "https:\/\/slack.github.com\/static\/img\/favicon-neutral.png",
+                "color": "24292f",
+                "bot_id": "B021ZJYSBMW",
+                "app_unfurl_url": "https:\/\/github.com\/mberk\/betfairutil\/blob\/525dc4dc9d87bc9438e72c24fd024d9bcab29b6c\/betfairutil\/__init__.py#L2905-L2955",
+                "is_app_unfurl": true,
+                "app_id": "A01BP7R4KNY",
+                "fallback": "<https:\/\/github.com\/mberk\/betfairutil\/blob\/525dc4dc9d87bc9438e72c24fd024d9bcab29b6c\/betfairutil\/__init__.py | __init__.py>",
+                "text": "```\ndef remove_bet_from_runner_book(\n    runner_book: Union[Dict[str, Any], RunnerBook],\n    price: Union[int, float],\n    size: Union[int, float],\n    available_side: Side,\n) -> Union[Dict[str, Any], RunnerBook]:\n    \"\"\"\n    Create a new runner book with a bet removed from the order book\n\n    :param runner_book: The runner book from which the bet is going to be removed either as a dictionary or betfairlightweight RunnerBook object\n    :param price: The price of the bet\n    :param size: The size of the bet\n    :param available_side: The side of the order book that the bet appears on\n    :return: A new runner book with the bet removed. The type of the return value will reflect the type of runner_book. If the given price is not available on the given side then the new runner book will be identical to runner_book\n    :raises: ValueError if size is greater than the size present in the order book\n    \"\"\"\n    runner_book = deepcopy(runner_book)\n    if isinstance(runner_book, dict):\n        for price_size in runner_book[\"ex\"][available_side.ex_key]:\n            if price_size[\"price\"] == price and price_size[\"size\"] < size:\n                raise ValueError(\n                    f'size = {size} but only {price_size[\"size\"]} available to {available_side.ex_key} at {price_size[\"price\"]}'\n                )\n\n        runner_book[\"ex\"][available_side.ex_key] = [\n            {\n                \"price\": price_size[\"price\"],\n                \"size\": price_size[\"size\"]\n                - (size if price_size[\"price\"] == price else 0),\n            }\n            for price_size in runner_book[\"ex\"][available_side.ex_key]\n            # If price_size['price'] == price and price_size['size'] == size then it should be removed from the list completely\n            if price_size[\"price\"] != price or price_size[\"size\"] != size\n        ]\n    else:\n        for price_size in getattr(runner_book.ex, available_side.ex_attribute):\n            if price_size.price == price and price_size.size < size:\n                raise ValueError(\n                    f\"size = {size} but only {price_size.size} available to {available_side.ex_key} at {price_size.price}\"\n                )\n\n        setattr(\n            runner_book.ex,\n            available_side.ex_attribute,\n            [\n                PriceSize(price=price_size.price, size=price_size.size)\n                for price_size in getattr(runner_book.ex, available_side.ex_attribute)\n                if price_size.price != price or price_size.size != size\n            ],\n        )\n    return runner_book\n```",
+                "title": "<https:\/\/github.com\/mberk\/betfairutil\/blob\/525dc4dc9d87bc9438e72c24fd024d9bcab29b6c\/betfairutil\/__init__.py | __init__.py>",
+                "footer": "<https:\/\/github.com\/mberk\/betfairutil|mberk\/betfairutil>",
+                "mrkdwn_in": [
+                    "text"
+                ]
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "0GI",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I have an implementation in betfairutil: "
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/mberk\/betfairutil\/blob\/525dc4dc9d87bc9438e72c24fd024d9bcab29b6c\/betfairutil\/__init__.py#L2905-L2955"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UCQB6S222",
+        "type": "message",
+        "ts": "1679506328.341579",
+        "client_msg_id": "9307f446-5795-4dcf-9092-ae4d5770ff78",
+        "text": "nice one thanks!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g953ffd5e3b7",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/5813be539113b05ece8212c2a06d006a.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "George",
+            "real_name": "George",
+            "display_name": "George",
+            "team": "T4G9NBD2M",
+            "name": "gd",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1679506075.313839",
+        "parent_user_id": "UCQB6S222",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Ubarf",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "nice one thanks!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1679514719.949859",
+        "client_msg_id": "2DFC5122-F5DA-40E2-A1DA-C3FD9BFF26AF",
+        "text": "Would be a great addition :wink: :wink: ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1679506075.313839",
+        "parent_user_id": "UCQB6S222",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "EgO7s",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Would be a great addition "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "wink",
+                                "unicode": "1f609"
+                            },
+                            {
+                                "type": "text",
+                                "text": " "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "wink",
+                                "unicode": "1f609"
+                            },
+                            {
+                                "type": "text",
+                                "text": " "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U042NB80A1X",
+        "type": "message",
+        "ts": "1679535608.880889",
+        "client_msg_id": "45e0ae60-8b80-4853-bb41-dcc082b73eb5",
+        "text": "I like how they use market odds for unknowns. I'm guessing these days there is some regression analysis on weighting historical analytical techniques vs market odds data\/probability.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g3ab37102618",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/3ab37102618df1ba57a0e6b5c8538c66.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0021-72.png",
+            "first_name": "Tom",
+            "real_name": "Tom",
+            "display_name": "Tom",
+            "team": "T4G9NBD2M",
+            "name": "tkuhnau",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1679395798.670319",
+        "parent_user_id": "U042NB80A1X",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "s=1",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I like how they use market odds for unknowns. I'm guessing these days there is some regression analysis on weighting historical analytical techniques vs market odds data\/probability."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

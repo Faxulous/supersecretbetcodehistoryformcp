@@ -1,0 +1,2502 @@
+[
+    {
+        "user": "U0155J92A7Q",
+        "type": "message",
+        "ts": "1649834595.039019",
+        "edited": {
+            "user": "U0155J92A7Q",
+            "ts": "1649834681.000000"
+        },
+        "client_msg_id": "681abb32-dfb3-414f-9d87-40bbbc72a256",
+        "text": "Hi, my streaming_market_data process is suddenly using a lot of memory RAM. For the first couple of days it is completely OK but then suddenly it starts accumulating more RAM and in a couple of days it takes all the available RAM in the Server, making the process freeze. Yesterday it took 80MB RAM (normal) and today it went up to 250MB RAM. Has anyone experienced something similar? This is basically my code for the process:\n\n```trading = betfairlightweight.APIClient(... , lightweight=True)\ntrading.login()\n\nmarket_filter = streaming_market_filter(event_type_ids=event_type_ids, market_types=market_type_codes, turn_in_play_enabled=True, country_codes=country_codes)\nmarket_data_filter = streaming_market_data_filter(fields=[\"EX_BEST_OFFERS_DISP\", 'EX_TRADED_VOL', \"EX_MARKET_DEF\"], ladder_levels=1)\nstreaming = Streaming(trading, market_filter, market_data_filter)\nstreaming.start()\n\nwhile True:\n    try:\n        new_market_books = streaming.output_queue.get()\n        publish_to_redis(db_0, new_market_books)\n        log_debug('Total markets saved in Redis: {}'.format(len(db_0.keys())))\n\n    except Exception as e:\n        log_exception(e)```\nI don't see any ERROR logs. Only some WARNINGs here and there about \"Latency high\", but I had those long time ago and the same process did not accumulate RAM memory...",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gde8c5d51af5",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/de8c5d51af54a5ac7b501f416ddb262c.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0016-72.png",
+            "first_name": "",
+            "real_name": "Jorge",
+            "display_name": "Jorge",
+            "team": "T4G9NBD2M",
+            "name": "jgarciam95",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "SnpMZ",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Hi, my streaming_market_data process is suddenly using a lot of memory RAM. For the first couple of days it is completely OK but then suddenly it starts accumulating more RAM and in a couple of days it takes all the available RAM in the Server, making the process freeze. Yesterday it took 80MB RAM (normal) and today it went up to 250MB RAM. Has anyone experienced something similar? This is basically my code for the process:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "trading = betfairlightweight.APIClient(... , lightweight=True)\ntrading.login()\n\nmarket_filter = streaming_market_filter(event_type_ids=event_type_ids, market_types=market_type_codes, turn_in_play_enabled=True, country_codes=country_codes)\nmarket_data_filter = streaming_market_data_filter(fields=[\"EX_BEST_OFFERS_DISP\", 'EX_TRADED_VOL', \"EX_MARKET_DEF\"], ladder_levels=1)\nstreaming = Streaming(trading, market_filter, market_data_filter)\nstreaming.start()\n\nwhile True:\n    try:\n        new_market_books = streaming.output_queue.get()\n        publish_to_redis(db_0, new_market_books)\n        log_debug('Total markets saved in Redis: {}'.format(len(db_0.keys())))\n\n    except Exception as e:\n        log_exception(e)"
+                            }
+                        ],
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\nI don't see any ERROR logs. Only some WARNINGs here and there about \"Latency high\", but I had those long time ago and the same process did not accumulate RAM memory..."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1649834840.994579",
+        "client_msg_id": "d480ba2d-ed04-4448-9afb-7258cea59cc8",
+        "text": "What are `event_type_ids`, `market_type_codes` and `country_codes` - i.e. how many markets are we talking about?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "ZzKS9",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "What are "
+                            },
+                            {
+                                "type": "text",
+                                "text": "event_type_ids",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": ", "
+                            },
+                            {
+                                "type": "text",
+                                "text": "market_type_codes",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " and "
+                            },
+                            {
+                                "type": "text",
+                                "text": "country_codes",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " - i.e. how many markets are we talking about?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1649834901.647189",
+        "client_msg_id": "6486b96b-e3d6-49ba-852d-179fd890a9e4",
+        "text": "PS  don't know how `.keys()` is implemented but if it's using the Redis function `KEYS` you probably don't want to do it that way",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1649834901.647189",
+        "reply_count": 1,
+        "reply_users_count": 1,
+        "latest_reply": "1649834966.042809",
+        "reply_users": [
+            "U0155J92A7Q"
+        ],
+        "replies": [
+            {
+                "user": "U0155J92A7Q",
+                "ts": "1649834966.042809"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": false,
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Ux5K",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "PS  don't know how "
+                            },
+                            {
+                                "type": "text",
+                                "text": ".keys()",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " is implemented but if it's using the Redis function "
+                            },
+                            {
+                                "type": "text",
+                                "text": "KEYS",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " you probably don't want to do it that way"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U0155J92A7Q",
+        "type": "message",
+        "ts": "1649834920.046289",
+        "client_msg_id": "ebc592eb-0a57-4f2c-9914-c0894fe174d8",
+        "text": "Approximately 1500 markets in the peak.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gde8c5d51af5",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/de8c5d51af54a5ac7b501f416ddb262c.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0016-72.png",
+            "first_name": "",
+            "real_name": "Jorge",
+            "display_name": "Jorge",
+            "team": "T4G9NBD2M",
+            "name": "jgarciam95",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "4M3",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Approximately 1500 markets in the peak."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U0155J92A7Q",
+        "type": "message",
+        "ts": "1649834966.042809",
+        "client_msg_id": "690753e3-b197-4910-a32c-b5ef81c119c7",
+        "text": "I think it does use it. Anyway, I can and will remove that line, it was there for debuggin purposes",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gde8c5d51af5",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/de8c5d51af54a5ac7b501f416ddb262c.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0016-72.png",
+            "first_name": "",
+            "real_name": "Jorge",
+            "display_name": "Jorge",
+            "team": "T4G9NBD2M",
+            "name": "jgarciam95",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1649834901.647189",
+        "parent_user_id": "UBS7QANF3",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "g\/9Y",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I think it does use it. Anyway, I can and will remove that line, it was there for debuggin purposes"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U0155J92A7Q",
+        "type": "message",
+        "ts": "1649835088.733139",
+        "client_msg_id": "bd010a3e-ca1b-48b6-9af4-65fba638f88e",
+        "text": "This is my code to push the markets to Redis, but I don't see how the problem could be here...\n```def get_runner_data_dict(market_book, runner_book):\n    return {'market_id': market_book.market_id,\n            'runner_id': runner_book.selection_id,\n            'back_odd': runner_book.ex.available_to_back[0].price if runner_book.ex.available_to_back else 0,\n            'back_liquidity': runner_book.ex.available_to_back[0].size if runner_book.ex.available_to_back else 0,\n            'lay_odd': runner_book.ex.available_to_lay[0].price if runner_book.ex.available_to_lay else 0,\n            'lay_liquidity': runner_book.ex.available_to_lay[0].size if runner_book.ex.available_to_lay else 0,\n            'total_matched': runner_book.total_matched if runner_book.total_matched else 0,\n            'runner_number': [x.sort_priority - 1 for x in market_book.market_definition.runners if x.selection_id == runner_book.selection_id][0]}\n\n\ndef publish_to_redis(r_database, market_books):\n    \"\"\"\n    Saves the content of market_books to the Redis database r_database.\n\n    \"\"\"\n    market_data_dictdict = {m.market_id: {r.selection_id: get_runner_data_dict(m, r) for r in m.runners} for m in market_books}\n\n    # Adding market level parameters:\n    for market in market_books:\n        market_data_dictdict[market.market_id].update({'market_data': {'inplay': market.inplay,\n                                                                       'status': market.status,\n                                                                       'total_matched': market.total_matched if market.total_matched else 0}})\n\n    with r_database.pipeline() as pipe:\n        for market_id, price_dict in market_data_dictdict.items():\n            pipe.set(market_id, json.dumps(price_dict))\n        pipe.set('last_update', now().strftime('%Y-%m-%d %H:%M:%S.%f'))\n        pipe.execute()```\n",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gde8c5d51af5",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/de8c5d51af54a5ac7b501f416ddb262c.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0016-72.png",
+            "first_name": "",
+            "real_name": "Jorge",
+            "display_name": "Jorge",
+            "team": "T4G9NBD2M",
+            "name": "jgarciam95",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1649835088.733139",
+        "reply_count": 25,
+        "reply_users_count": 2,
+        "latest_reply": "1649840187.775809",
+        "reply_users": [
+            "ULDAVFDRP",
+            "U0155J92A7Q"
+        ],
+        "replies": [
+            {
+                "user": "ULDAVFDRP",
+                "ts": "1649835325.834859"
+            },
+            {
+                "user": "U0155J92A7Q",
+                "ts": "1649835441.188379"
+            },
+            {
+                "user": "ULDAVFDRP",
+                "ts": "1649835569.802709"
+            },
+            {
+                "user": "ULDAVFDRP",
+                "ts": "1649835643.075539"
+            },
+            {
+                "user": "U0155J92A7Q",
+                "ts": "1649835726.268729"
+            },
+            {
+                "user": "ULDAVFDRP",
+                "ts": "1649835825.008989"
+            },
+            {
+                "user": "ULDAVFDRP",
+                "ts": "1649838397.525299"
+            },
+            {
+                "user": "U0155J92A7Q",
+                "ts": "1649838501.665139"
+            },
+            {
+                "user": "ULDAVFDRP",
+                "ts": "1649838617.871059"
+            },
+            {
+                "user": "ULDAVFDRP",
+                "ts": "1649838654.761869"
+            },
+            {
+                "user": "U0155J92A7Q",
+                "ts": "1649838717.541859"
+            },
+            {
+                "user": "ULDAVFDRP",
+                "ts": "1649838746.182149"
+            },
+            {
+                "user": "U0155J92A7Q",
+                "ts": "1649838796.459529"
+            },
+            {
+                "user": "ULDAVFDRP",
+                "ts": "1649838830.442289"
+            },
+            {
+                "user": "U0155J92A7Q",
+                "ts": "1649838875.712309"
+            },
+            {
+                "user": "ULDAVFDRP",
+                "ts": "1649839009.277539"
+            },
+            {
+                "user": "U0155J92A7Q",
+                "ts": "1649839222.719049"
+            },
+            {
+                "user": "U0155J92A7Q",
+                "ts": "1649839270.248749"
+            },
+            {
+                "user": "ULDAVFDRP",
+                "ts": "1649839316.355949"
+            },
+            {
+                "user": "ULDAVFDRP",
+                "ts": "1649839441.042649"
+            },
+            {
+                "user": "U0155J92A7Q",
+                "ts": "1649839968.202839"
+            },
+            {
+                "user": "ULDAVFDRP",
+                "ts": "1649839985.368999"
+            },
+            {
+                "user": "ULDAVFDRP",
+                "ts": "1649840066.814459"
+            },
+            {
+                "user": "U0155J92A7Q",
+                "ts": "1649840124.573219"
+            },
+            {
+                "user": "U0155J92A7Q",
+                "ts": "1649840187.775809"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": false,
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "R9TMs",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "This is my code to push the markets to Redis, but I don't see how the problem could be here...\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "def get_runner_data_dict(market_book, runner_book):\n    return {'market_id': market_book.market_id,\n            'runner_id': runner_book.selection_id,\n            'back_odd': runner_book.ex.available_to_back[0].price if runner_book.ex.available_to_back else 0,\n            'back_liquidity': runner_book.ex.available_to_back[0].size if runner_book.ex.available_to_back else 0,\n            'lay_odd': runner_book.ex.available_to_lay[0].price if runner_book.ex.available_to_lay else 0,\n            'lay_liquidity': runner_book.ex.available_to_lay[0].size if runner_book.ex.available_to_lay else 0,\n            'total_matched': runner_book.total_matched if runner_book.total_matched else 0,\n            'runner_number': [x.sort_priority - 1 for x in market_book.market_definition.runners if x.selection_id == runner_book.selection_id][0]}\n\n\ndef publish_to_redis(r_database, market_books):\n    \"\"\"\n    Saves the content of market_books to the Redis database r_database.\n\n    \"\"\"\n    market_data_dictdict = {m.market_id: {r.selection_id: get_runner_data_dict(m, r) for r in m.runners} for m in market_books}\n\n    # Adding market level parameters:\n    for market in market_books:\n        market_data_dictdict[market.market_id].update({'market_data': {'inplay': market.inplay,\n                                                                       'status': market.status,\n                                                                       'total_matched': market.total_matched if market.total_matched else 0}})\n\n    with r_database.pipeline() as pipe:\n        for market_id, price_dict in market_data_dictdict.items():\n            pipe.set(market_id, json.dumps(price_dict))\n        pipe.set('last_update', now().strftime('%Y-%m-%d %H:%M:%S.%f'))\n        pipe.execute()"
+                            }
+                        ],
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": []
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1649835162.162559",
+        "client_msg_id": "9a6505e8-0ad1-4d29-9ee8-072a93e4b053",
+        "text": "How much RAM is on the server?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "51Kn5",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "How much RAM is on the server?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U0155J92A7Q",
+        "type": "message",
+        "ts": "1649835246.282159",
+        "client_msg_id": "223bfafc-765e-4d57-929a-e5a58bb9ad86",
+        "text": "6GB, and the rest of the processes use under 1GB all combined",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gde8c5d51af5",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/de8c5d51af54a5ac7b501f416ddb262c.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0016-72.png",
+            "first_name": "",
+            "real_name": "Jorge",
+            "display_name": "Jorge",
+            "team": "T4G9NBD2M",
+            "name": "jgarciam95",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "+iuN",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "6GB, and the rest of the processes use under 1GB all combined"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "ULDAVFDRP",
+        "type": "message",
+        "ts": "1649835325.834859",
+        "client_msg_id": "ae095583-47da-4afb-a4b4-96ca241dbba7",
+        "text": "if you have no use in actually having human readable object in redis, i would switch out json for something like msgpack",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g46fe1c1bf03",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/b46fe1c1bf03e18d951e7032fb494283.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0019-72.png",
+            "first_name": "",
+            "real_name": "Oliver Varney",
+            "display_name": "Oliver Varney",
+            "team": "T4G9NBD2M",
+            "name": "oliverashleyvarney",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1649835088.733139",
+        "parent_user_id": "U0155J92A7Q",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "5mxUo",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "if you have no use in actually having human readable object in redis, i would switch out json for something like msgpack"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U0155J92A7Q",
+        "type": "message",
+        "ts": "1649835441.188379",
+        "client_msg_id": "7ddddb81-bc88-4813-89b5-d8f723383eb1",
+        "text": "Interesting, thanks! Is the read\/write faster with msgpack? Could you provide a link where I can read about implementing this?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gde8c5d51af5",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/de8c5d51af54a5ac7b501f416ddb262c.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0016-72.png",
+            "first_name": "",
+            "real_name": "Jorge",
+            "display_name": "Jorge",
+            "team": "T4G9NBD2M",
+            "name": "jgarciam95",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1649835088.733139",
+        "parent_user_id": "U0155J92A7Q",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "hpJv",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Interesting, thanks! Is the read\/write faster with msgpack? Could you provide a link where I can read about implementing this?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "ULDAVFDRP",
+        "type": "message",
+        "ts": "1649835569.802709",
+        "client_msg_id": "c8852942-676a-4705-8f95-ab47c56f32b0",
+        "text": "I think it outperforms json in all metrics, size, serialisation and deserialisation. I used it for this exact use case with redis previously. available across all languages. maybe play around with it? should be able to pip install it",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g46fe1c1bf03",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/b46fe1c1bf03e18d951e7032fb494283.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0019-72.png",
+            "first_name": "",
+            "real_name": "Oliver Varney",
+            "display_name": "Oliver Varney",
+            "team": "T4G9NBD2M",
+            "name": "oliverashleyvarney",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1649835088.733139",
+        "parent_user_id": "U0155J92A7Q",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "mZa9W",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I think it outperforms json in all metrics, size, serialisation and deserialisation. I used it for this exact use case with redis previously. available across all languages. maybe play around with it? should be able to pip install it"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "ULDAVFDRP",
+        "type": "message",
+        "ts": "1649835643.075539",
+        "client_msg_id": "376c4976-368d-4bbf-a7c9-0e9abf208444",
+        "text": "json can be beat by most libraries if human readability is not required",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g46fe1c1bf03",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/b46fe1c1bf03e18d951e7032fb494283.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0019-72.png",
+            "first_name": "",
+            "real_name": "Oliver Varney",
+            "display_name": "Oliver Varney",
+            "team": "T4G9NBD2M",
+            "name": "oliverashleyvarney",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1649835088.733139",
+        "parent_user_id": "U0155J92A7Q",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "7t1",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "json can be beat by most libraries if human readability is not required"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U0155J92A7Q",
+        "type": "message",
+        "ts": "1649835726.268729",
+        "client_msg_id": "0d69b72d-1c23-4448-9478-935acaec2d58",
+        "text": "Okay thanks, I'll take a look! Although, my redis-server process is only taking 7MB, so this isn't causing the memory leak...",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gde8c5d51af5",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/de8c5d51af54a5ac7b501f416ddb262c.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0016-72.png",
+            "first_name": "",
+            "real_name": "Jorge",
+            "display_name": "Jorge",
+            "team": "T4G9NBD2M",
+            "name": "jgarciam95",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1649835088.733139",
+        "parent_user_id": "U0155J92A7Q",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "kFC",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Okay thanks, I'll take a look! Although, my redis-server process is only taking 7MB, so this isn't causing the memory leak..."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "ULDAVFDRP",
+        "type": "message",
+        "ts": "1649835825.008989",
+        "client_msg_id": "762acece-7299-4261-ab9b-c723ac336fd8",
+        "text": "cool yer maybe not worth it then, but it implements the same methods so it should be able to be used as a direct replacement if you need it in the future",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g46fe1c1bf03",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/b46fe1c1bf03e18d951e7032fb494283.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0019-72.png",
+            "first_name": "",
+            "real_name": "Oliver Varney",
+            "display_name": "Oliver Varney",
+            "team": "T4G9NBD2M",
+            "name": "oliverashleyvarney",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1649835088.733139",
+        "parent_user_id": "U0155J92A7Q",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "04kX",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "cool yer maybe not worth it then, but it implements the same methods so it should be able to be used as a direct replacement if you need it in the future"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "U0155J92A7Q"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1649835913.104239",
+        "client_msg_id": "fe9f151f-5a88-4d88-8769-f06ffb7e1482",
+        "text": "What is `Streaming`?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1649835913.104239",
+        "reply_count": 1,
+        "reply_users_count": 1,
+        "latest_reply": "1649836119.139609",
+        "reply_users": [
+            "U0155J92A7Q"
+        ],
+        "replies": [
+            {
+                "user": "U0155J92A7Q",
+                "ts": "1649836119.139609"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": true,
+        "last_read": "1649836119.139609",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "8ZgUR",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "What is "
+                            },
+                            {
+                                "type": "text",
+                                "text": "Streaming",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "subtype": "thread_broadcast",
+        "user": "U0155J92A7Q",
+        "thread_ts": "1649835913.104239",
+        "root": {
+            "user": "U4H19D1D2",
+            "type": "message",
+            "ts": "1649835913.104239",
+            "client_msg_id": "fe9f151f-5a88-4d88-8769-f06ffb7e1482",
+            "text": "What is `Streaming`?",
+            "team": "T4G9NBD2M",
+            "thread_ts": "1649835913.104239",
+            "reply_count": 1,
+            "reply_users_count": 1,
+            "latest_reply": "1649836119.139609",
+            "reply_users": [
+                "U0155J92A7Q"
+            ],
+            "replies": [
+                {
+                    "user": "U0155J92A7Q",
+                    "ts": "1649836119.139609"
+                }
+            ],
+            "is_locked": false,
+            "subscribed": true,
+            "last_read": "1649836119.139609",
+            "blocks": [
+                {
+                    "type": "rich_text",
+                    "block_id": "8ZgUR",
+                    "elements": [
+                        {
+                            "type": "rich_text_section",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "What is "
+                                },
+                                {
+                                    "type": "text",
+                                    "text": "Streaming",
+                                    "style": {
+                                        "code": true
+                                    }
+                                },
+                                {
+                                    "type": "text",
+                                    "text": "?"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        "type": "message",
+        "ts": "1649836119.139609",
+        "edited": {
+            "user": "U0155J92A7Q",
+            "ts": "1649836233.000000"
+        },
+        "client_msg_id": "62137fa1-d364-4887-89f1-8672ab93cde5",
+        "text": "```from betfairlightweight import StreamListener\n\nclass Streaming(threading.Thread):\n    \"\"\"\n    Streaming example to handle timeouts or connection errors, with reconnect. Code uses 'tenacity' library for retrying.\n    Streaming class inherits threading module to simplify start\/stop.\n    \"\"\"\n    def __init__(\n            self,\n            client: betfairlightweight.APIClient,\n            market_filter: dict,\n            market_data_filter: dict,\n            conflate_ms: int = None,\n            streaming_unique_id: int = 1000,\n    ):\n        threading.Thread.__init__(self, daemon=True, name=self.__class__.__name__)\n        self.client = client\n        self.market_filter = market_filter\n        self.market_data_filter = market_data_filter\n        self.conflate_ms = conflate_ms\n        self.streaming_unique_id = streaming_unique_id\n        self.stream = None\n        self.output_queue = queue.Queue()\n        self.listener = StreamListener(output_queue=self.output_queue)\n\n    @retry(wait=wait_exponential(multiplier=1, min=2, max=20))\n    def run(self) -&gt; None:\n        log_info(\"Starting MarketStreaming\")\n        self.client.login()  # this is needed in case of reconnection so the session is started again\n        self.stream = self.client.streaming.create_stream(\n            unique_id=self.streaming_unique_id, listener=self.listener\n        )\n        try:\n            self.streaming_unique_id = self.stream.subscribe_to_markets(\n                market_filter=self.market_filter,\n                market_data_filter=self.market_data_filter,\n                conflate_ms=self.conflate_ms,\n                initial_clk=self.listener.initial_clk,  # supplying these two values allows a reconnect\n                clk=self.listener.clk,\n            )\n            self.stream.start()\n        except BetfairError:\n            log_exception(\"MarketStreaming run error\")\n            raise\n        except Exception:\n            log_exception(\"MarketStreaming run error\")\n            raise\n        log_info(\"Stopped MarketStreaming {0}\".format(self.streaming_unique_id))\n\n    def stop(self) -&gt; None:\n        if self.stream:\n            self.stream.stop()```",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "S4O",
+                "elements": [
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "from betfairlightweight import StreamListener\n\nclass Streaming(threading.Thread):\n    \"\"\"\n    Streaming example to handle timeouts or connection errors, with reconnect. Code uses 'tenacity' library for retrying.\n    Streaming class inherits threading module to simplify start\/stop.\n    \"\"\"\n    def __init__(\n            self,\n            client: betfairlightweight.APIClient,\n            market_filter: dict,\n            market_data_filter: dict,\n            conflate_ms: int = None,\n            streaming_unique_id: int = 1000,\n    ):\n        threading.Thread.__init__(self, daemon=True, name=self.__class__.__name__)\n        self.client = client\n        self.market_filter = market_filter\n        self.market_data_filter = market_data_filter\n        self.conflate_ms = conflate_ms\n        self.streaming_unique_id = streaming_unique_id\n        self.stream = None\n        self.output_queue = queue.Queue()\n        self.listener = StreamListener(output_queue=self.output_queue)\n\n    @retry(wait=wait_exponential(multiplier=1, min=2, max=20))\n    def run(self) -> None:\n        log_info(\"Starting MarketStreaming\")\n        self.client.login()  # this is needed in case of reconnection so the session is started again\n        self.stream = self.client.streaming.create_stream(\n            unique_id=self.streaming_unique_id, listener=self.listener\n        )\n        try:\n            self.streaming_unique_id = self.stream.subscribe_to_markets(\n                market_filter=self.market_filter,\n                market_data_filter=self.market_data_filter,\n                conflate_ms=self.conflate_ms,\n                initial_clk=self.listener.initial_clk,  # supplying these two values allows a reconnect\n                clk=self.listener.clk,\n            )\n            self.stream.start()\n        except BetfairError:\n            log_exception(\"MarketStreaming run error\")\n            raise\n        except Exception:\n            log_exception(\"MarketStreaming run error\")\n            raise\n        log_info(\"Stopped MarketStreaming {0}\".format(self.streaming_unique_id))\n\n    def stop(self) -> None:\n        if self.stream:\n            self.stream.stop()"
+                            }
+                        ],
+                        "border": 0
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1649836245.717889",
+        "client_msg_id": "5a3ea726-5021-428a-8295-a1443232dd1c",
+        "text": "Hang on 250MB? Why is that a problem",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "4be+",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Hang on 250MB? Why is that a problem"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U0155J92A7Q",
+        "type": "message",
+        "ts": "1649836295.548289",
+        "client_msg_id": "241d0828-db78-498c-ab9c-d83b6099f96d",
+        "text": "250MB is not a problem, but it starts growing and in 2\/3 days reaches 6GB and freezes :sweat_smile:",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gde8c5d51af5",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/de8c5d51af54a5ac7b501f416ddb262c.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0016-72.png",
+            "first_name": "",
+            "real_name": "Jorge",
+            "display_name": "Jorge",
+            "team": "T4G9NBD2M",
+            "name": "jgarciam95",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "PKG",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "250MB is not a problem, but it starts growing and in 2\/3 days reaches 6GB and freezes "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "sweat_smile",
+                                "unicode": "1f605"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1649836479.712249",
+        "client_msg_id": "1380134a-8967-46e2-9f17-ba9542006b06",
+        "text": "What do the logs look like before it crashes? I can confidently say it won't be bflw causing this, whats the memory use of redis?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "9KGC=",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "What do the logs look like before it crashes? I can confidently say it won't be bflw causing this, whats the memory use of redis?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U0155J92A7Q",
+        "type": "message",
+        "ts": "1649836606.399829",
+        "client_msg_id": "1d6a1f3a-e846-4c36-b340-b070e0f63043",
+        "text": "Nothing special in the logs before it freezes... Yes, very strange because I am using this same code for a year and just having problems this last month",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gde8c5d51af5",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/de8c5d51af54a5ac7b501f416ddb262c.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0016-72.png",
+            "first_name": "",
+            "real_name": "Jorge",
+            "display_name": "Jorge",
+            "team": "T4G9NBD2M",
+            "name": "jgarciam95",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "o9OK",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Nothing special in the logs before it freezes... Yes, very strange because I am using this same code for a year and just having problems this last month"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U0155J92A7Q",
+        "type": "message",
+        "ts": "1649836652.802319",
+        "client_msg_id": "8c6ffba2-609d-462e-9f7b-1bb97a74bb83",
+        "text": "It may be my crappy server provider, I also observed higher \"Latency high\" logs in general",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gde8c5d51af5",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/de8c5d51af54a5ac7b501f416ddb262c.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0016-72.png",
+            "first_name": "",
+            "real_name": "Jorge",
+            "display_name": "Jorge",
+            "team": "T4G9NBD2M",
+            "name": "jgarciam95",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "v99DX",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "It may be my crappy server provider, I also observed higher \"Latency high\" logs in general"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1649836707.816209",
+        "client_msg_id": "06949304-40e2-4a01-b557-4ae6329d4895",
+        "text": "you are describing a leak so unlikely to be the provider, upgraded anything recently?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "WdKWO",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "you are describing a leak so unlikely to be the provider, upgraded anything recently?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U0155J92A7Q",
+        "type": "message",
+        "ts": "1649837019.454319",
+        "client_msg_id": "b036a25e-441f-4564-b7d6-bfca11662aac",
+        "text": "Not really, I'll use pympler to try to understand where the leak is coming from",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gde8c5d51af5",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/de8c5d51af54a5ac7b501f416ddb262c.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0016-72.png",
+            "first_name": "",
+            "real_name": "Jorge",
+            "display_name": "Jorge",
+            "team": "T4G9NBD2M",
+            "name": "jgarciam95",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "wahI",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Not really, I'll use pympler to try to understand where the leak is coming from"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "USWDY5P7G",
+        "type": "message",
+        "ts": "1649838235.845069",
+        "client_msg_id": "c60ef749-5441-47ac-92b0-6f6df7daf276",
+        "text": "If you can’t find a solution, you could always make the process terminate itself gracefully at say 23:59:55 and have cron job starting it automatically at 00:00:00",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "693b14d0cc42",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2021-08-29\/2425858826214_693b14d0cc42bdbfb86a_72.jpg",
+            "first_name": "Fab",
+            "real_name": "Fab",
+            "display_name": "Fab",
+            "team": "T4G9NBD2M",
+            "name": "me1",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "AlKG",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "If you can’t find a solution, you could always make the process terminate itself gracefully at say 23:59:55 and have cron job starting it automatically at 00:00:00"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "ULDAVFDRP",
+        "type": "message",
+        "ts": "1649838397.525299",
+        "client_msg_id": "fcaaf06c-b6ed-4f84-bef8-894937eba75a",
+        "text": "Presumably your deleting these keys also?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g46fe1c1bf03",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/b46fe1c1bf03e18d951e7032fb494283.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0019-72.png",
+            "first_name": "",
+            "real_name": "Oliver Varney",
+            "display_name": "Oliver Varney",
+            "team": "T4G9NBD2M",
+            "name": "oliverashleyvarney",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1649835088.733139",
+        "parent_user_id": "U0155J92A7Q",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Hwp0",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Presumably your deleting these keys also?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U0155J92A7Q",
+        "type": "message",
+        "ts": "1649838447.096639",
+        "client_msg_id": "177bb4cc-34fb-408a-93a1-7195dd2c1002",
+        "text": "That's a great tip indeed, thanks Fab!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gde8c5d51af5",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/de8c5d51af54a5ac7b501f416ddb262c.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0016-72.png",
+            "first_name": "",
+            "real_name": "Jorge",
+            "display_name": "Jorge",
+            "team": "T4G9NBD2M",
+            "name": "jgarciam95",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "sKp",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "That's a great tip indeed, thanks Fab!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U0155J92A7Q",
+        "type": "message",
+        "ts": "1649838501.665139",
+        "client_msg_id": "052592ef-9d87-46e6-ad1a-889644f3e00b",
+        "text": "What keys?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gde8c5d51af5",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/de8c5d51af54a5ac7b501f416ddb262c.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0016-72.png",
+            "first_name": "",
+            "real_name": "Jorge",
+            "display_name": "Jorge",
+            "team": "T4G9NBD2M",
+            "name": "jgarciam95",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1649835088.733139",
+        "parent_user_id": "U0155J92A7Q",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "2AcEZ",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "What keys?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "ULDAVFDRP",
+        "type": "message",
+        "ts": "1649838617.871059",
+        "client_msg_id": "b0a2f857-5e2c-4f08-ba14-99bdbe26fb18",
+        "text": "The redis keys, if I'm understanding the code above correctly",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g46fe1c1bf03",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/b46fe1c1bf03e18d951e7032fb494283.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0019-72.png",
+            "first_name": "",
+            "real_name": "Oliver Varney",
+            "display_name": "Oliver Varney",
+            "team": "T4G9NBD2M",
+            "name": "oliverashleyvarney",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1649835088.733139",
+        "parent_user_id": "U0155J92A7Q",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "IFM",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "The redis keys, if I'm understanding the code above correctly"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "ULDAVFDRP",
+        "type": "message",
+        "ts": "1649838654.761869",
+        "client_msg_id": "98b0e145-9b31-4f7f-ac3c-fbe36c8147d1",
+        "text": "Or expiring them",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g46fe1c1bf03",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/b46fe1c1bf03e18d951e7032fb494283.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0019-72.png",
+            "first_name": "",
+            "real_name": "Oliver Varney",
+            "display_name": "Oliver Varney",
+            "team": "T4G9NBD2M",
+            "name": "oliverashleyvarney",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1649835088.733139",
+        "parent_user_id": "U0155J92A7Q",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "kRRyX",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Or expiring them"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U0155J92A7Q",
+        "type": "message",
+        "ts": "1649838717.541859",
+        "client_msg_id": "10c7127e-46fd-4b38-96cb-fee4c53709fd",
+        "text": "Every market_id is a key, and I overwrite them everytime the market data changes",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gde8c5d51af5",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/de8c5d51af54a5ac7b501f416ddb262c.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0016-72.png",
+            "first_name": "",
+            "real_name": "Jorge",
+            "display_name": "Jorge",
+            "team": "T4G9NBD2M",
+            "name": "jgarciam95",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1649835088.733139",
+        "parent_user_id": "U0155J92A7Q",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "=em",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Every market_id is a key, and I overwrite them everytime the market data changes"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "ULDAVFDRP",
+        "type": "message",
+        "ts": "1649838746.182149",
+        "client_msg_id": "9bdcab42-8894-4263-8b0a-499472f2cd54",
+        "text": "What happens to yesterday's markets, when do you wipe?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g46fe1c1bf03",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/b46fe1c1bf03e18d951e7032fb494283.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0019-72.png",
+            "first_name": "",
+            "real_name": "Oliver Varney",
+            "display_name": "Oliver Varney",
+            "team": "T4G9NBD2M",
+            "name": "oliverashleyvarney",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1649835088.733139",
+        "parent_user_id": "U0155J92A7Q",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "EG8vw",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "What happens to yesterday's markets, when do you wipe?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U0155J92A7Q",
+        "type": "message",
+        "ts": "1649838796.459529",
+        "client_msg_id": "3cfbafe8-cfdd-4c02-8d56-90386ac10e7b",
+        "text": "I only flushdb at the beggining of the process, so only if the process gets restarted",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gde8c5d51af5",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/de8c5d51af54a5ac7b501f416ddb262c.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0016-72.png",
+            "first_name": "",
+            "real_name": "Jorge",
+            "display_name": "Jorge",
+            "team": "T4G9NBD2M",
+            "name": "jgarciam95",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1649835088.733139",
+        "parent_user_id": "U0155J92A7Q",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "M825",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I only flushdb at the beggining of the process, so only if the process gets restarted"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "ULDAVFDRP",
+        "type": "message",
+        "ts": "1649838830.442289",
+        "client_msg_id": "dbba4ce6-f59d-4b06-93f7-61b2a80121e3",
+        "text": "Are you trying to use redis as a cache or primary database?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g46fe1c1bf03",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/b46fe1c1bf03e18d951e7032fb494283.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0019-72.png",
+            "first_name": "",
+            "real_name": "Oliver Varney",
+            "display_name": "Oliver Varney",
+            "team": "T4G9NBD2M",
+            "name": "oliverashleyvarney",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1649835088.733139",
+        "parent_user_id": "U0155J92A7Q",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "nqQ9T",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Are you trying to use redis as a cache or primary database?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U0155J92A7Q",
+        "type": "message",
+        "ts": "1649838875.712309",
+        "client_msg_id": "a9cc9296-e43a-41cc-8296-198a647185de",
+        "text": "Just as a cache, I just didn't mind having previous market_ids there, given they take very little space",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gde8c5d51af5",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/de8c5d51af54a5ac7b501f416ddb262c.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0016-72.png",
+            "first_name": "",
+            "real_name": "Jorge",
+            "display_name": "Jorge",
+            "team": "T4G9NBD2M",
+            "name": "jgarciam95",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1649835088.733139",
+        "parent_user_id": "U0155J92A7Q",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "DUG\/b",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Just as a cache, I just didn't mind having previous market_ids there, given they take very little space"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "ULDAVFDRP",
+        "type": "message",
+        "ts": "1649839009.277539",
+        "client_msg_id": "1a66035a-5a82-4c1d-915f-f5bb44ce2d13",
+        "text": "Have you verified this or just assumed it? Full ladder json of 1000s of markets only taking up 7mb doesn't sound right to me",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g46fe1c1bf03",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/b46fe1c1bf03e18d951e7032fb494283.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0019-72.png",
+            "first_name": "",
+            "real_name": "Oliver Varney",
+            "display_name": "Oliver Varney",
+            "team": "T4G9NBD2M",
+            "name": "oliverashleyvarney",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1649835088.733139",
+        "parent_user_id": "U0155J92A7Q",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Fcq",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Have you verified this or just assumed it? Full ladder json of 1000s of markets only taking up 7mb doesn't sound right to me"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U0155J92A7Q",
+        "type": "message",
+        "ts": "1649839222.719049",
+        "client_msg_id": "e3806aa0-464f-4930-ba44-2f051da911d8",
+        "text": "Just assumed it tbh, I don't record the full ladder, just  a dictionary of 10 string entries",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gde8c5d51af5",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/de8c5d51af54a5ac7b501f416ddb262c.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0016-72.png",
+            "first_name": "",
+            "real_name": "Jorge",
+            "display_name": "Jorge",
+            "team": "T4G9NBD2M",
+            "name": "jgarciam95",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1649835088.733139",
+        "parent_user_id": "U0155J92A7Q",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "iArN",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Just assumed it tbh, I don't record the full ladder, just  a dictionary of 10 string entries"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U0155J92A7Q",
+        "type": "message",
+        "ts": "1649839270.248749",
+        "client_msg_id": "f7e1547c-edd1-46a8-be97-b29313f91e3e",
+        "text": "But may be worth to verify it",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gde8c5d51af5",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/de8c5d51af54a5ac7b501f416ddb262c.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0016-72.png",
+            "first_name": "",
+            "real_name": "Jorge",
+            "display_name": "Jorge",
+            "team": "T4G9NBD2M",
+            "name": "jgarciam95",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1649835088.733139",
+        "parent_user_id": "U0155J92A7Q",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "FTwv",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "But may be worth to verify it"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "ULDAVFDRP",
+        "type": "message",
+        "ts": "1649839316.355949",
+        "client_msg_id": "8f2fb6bf-750f-4175-9973-639ef705d95e",
+        "text": "A slow increase over days would mirror a memory leak if your not deleting keys, if it is the cause",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g46fe1c1bf03",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/b46fe1c1bf03e18d951e7032fb494283.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0019-72.png",
+            "first_name": "",
+            "real_name": "Oliver Varney",
+            "display_name": "Oliver Varney",
+            "team": "T4G9NBD2M",
+            "name": "oliverashleyvarney",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1649835088.733139",
+        "parent_user_id": "U0155J92A7Q",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "IeG",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "A slow increase over days would mirror a memory leak if your not deleting keys, if it is the cause"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "ULDAVFDRP",
+        "type": "message",
+        "ts": "1649839441.042649",
+        "client_msg_id": "b8fb01a9-7d6b-45cb-940e-04d88c319310",
+        "text": "Not really sure why you wouldn't have a clean up process also, at some point either the data will need long term storage or it is worthless and can be deleted",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g46fe1c1bf03",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/b46fe1c1bf03e18d951e7032fb494283.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0019-72.png",
+            "first_name": "",
+            "real_name": "Oliver Varney",
+            "display_name": "Oliver Varney",
+            "team": "T4G9NBD2M",
+            "name": "oliverashleyvarney",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1649835088.733139",
+        "parent_user_id": "U0155J92A7Q",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "NVbzy",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Not really sure why you wouldn't have a clean up process also, at some point either the data will need long term storage or it is worthless and can be deleted"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U0155J92A7Q",
+        "type": "message",
+        "ts": "1649839968.202839",
+        "client_msg_id": "d5efde97-bcc9-481e-bdc1-c9c29511e5d1",
+        "text": "That's very true. Very simple to flush the database once per day and stop\/start the StreamListener",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gde8c5d51af5",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/de8c5d51af54a5ac7b501f416ddb262c.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0016-72.png",
+            "first_name": "",
+            "real_name": "Jorge",
+            "display_name": "Jorge",
+            "team": "T4G9NBD2M",
+            "name": "jgarciam95",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1649835088.733139",
+        "parent_user_id": "U0155J92A7Q",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "dMe",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "That's very true. Very simple to flush the database once per day and stop\/start the StreamListener"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "ULDAVFDRP",
+        "type": "message",
+        "ts": "1649839985.368999",
+        "client_msg_id": "3528f025-cb0e-484c-95b7-b08dd06842d9",
+        "text": "Just set an expirary on the key?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g46fe1c1bf03",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/b46fe1c1bf03e18d951e7032fb494283.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0019-72.png",
+            "first_name": "",
+            "real_name": "Oliver Varney",
+            "display_name": "Oliver Varney",
+            "team": "T4G9NBD2M",
+            "name": "oliverashleyvarney",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1649835088.733139",
+        "parent_user_id": "U0155J92A7Q",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "x=y",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Just set an expirary on the key?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "ULDAVFDRP",
+        "type": "message",
+        "ts": "1649840066.814459",
+        "client_msg_id": "a56faf27-9063-4be6-a231-abe2cb91342e",
+        "text": "I.e. look at the market time add a delta and set expirary on it",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g46fe1c1bf03",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/b46fe1c1bf03e18d951e7032fb494283.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0019-72.png",
+            "first_name": "",
+            "real_name": "Oliver Varney",
+            "display_name": "Oliver Varney",
+            "team": "T4G9NBD2M",
+            "name": "oliverashleyvarney",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1649835088.733139",
+        "parent_user_id": "U0155J92A7Q",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "74F",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I.e. look at the market time add a delta and set expirary on it"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U0155J92A7Q",
+        "type": "message",
+        "ts": "1649840124.573219",
+        "client_msg_id": "97029f9b-e903-4c22-95b6-d65534aa4500",
+        "text": "Ah I didn't know this was a parameter of `set()` , that's nit",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gde8c5d51af5",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/de8c5d51af54a5ac7b501f416ddb262c.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0016-72.png",
+            "first_name": "",
+            "real_name": "Jorge",
+            "display_name": "Jorge",
+            "team": "T4G9NBD2M",
+            "name": "jgarciam95",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1649835088.733139",
+        "parent_user_id": "U0155J92A7Q",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "2CM",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Ah I didn't know this was a parameter of "
+                            },
+                            {
+                                "type": "text",
+                                "text": "set()",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " , that's nit"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U0155J92A7Q",
+        "type": "message",
+        "ts": "1649840187.775809",
+        "client_msg_id": "e9e817b5-eba2-45de-832b-85a42f8d6701",
+        "text": "Yeah, I can just add the delta, because I overwrite the market_ids",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gde8c5d51af5",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/de8c5d51af54a5ac7b501f416ddb262c.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0016-72.png",
+            "first_name": "",
+            "real_name": "Jorge",
+            "display_name": "Jorge",
+            "team": "T4G9NBD2M",
+            "name": "jgarciam95",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1649835088.733139",
+        "parent_user_id": "U0155J92A7Q",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "aAI",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Yeah, I can just add the delta, because I overwrite the market_ids"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U02RN7YDRQ9",
+        "type": "message",
+        "ts": "1649848644.101209",
+        "client_msg_id": "d1cbf61d-6cd1-40e2-bb89-5ddd7d84d7fc",
+        "text": "I'm running 2 live frameworks on same server for the first time - one for \"ok\" strategies and another for suspect ones and debugging.\n\nAs they both place bets it ends up with cross-talk warnings in the other framework's log log saying \"Strategy not available to create order\" and \"Order %s not present in blotter\". Was a bit worrying at first sight lol.\n\nPresume this is in part caused by both frameworks having the socket hostname as the customer order ref since this does not happen when running the two frameworks on separate machines.\n\nSuggestions: if the common hostname is the cause then extend the hostname with python PID (poss problems with multi proc) or an instance specific framework uuid property (logging does a short uuid for example) ?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "ge46f1f8b708",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/e46f1f8b708a630e3191de7b2c42b1d1.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0023-72.png",
+            "first_name": "edblock",
+            "real_name": "edblock",
+            "display_name": "foxwood",
+            "team": "T4G9NBD2M",
+            "name": "eanb",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "zAc",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I'm running 2 live frameworks on same server for the first time - one for \"ok\" strategies and another for suspect ones and debugging.\n\nAs they both place bets it ends up with cross-talk warnings in the other framework's log log saying \"Strategy not available to create order\" and \"Order %s not present in blotter\". Was a bit worrying at first sight lol.\n\nPresume this is in part caused by both frameworks having the socket hostname as the customer order ref since this does not happen when running the two frameworks on separate machines.\n\nSuggestions: if the common hostname is the cause then extend the hostname with python PID (poss problems with multi proc) or an instance specific framework uuid property (logging does a short uuid for example) ?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1649848746.118169",
+        "client_msg_id": "d38fce0d-7a50-47fd-87d6-702d5d431c4d",
+        "text": "open to ideas, I use containers so get a unique id anyway, maybe {hostname}-{process_id} makes more sense",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "5TMjl",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "open to ideas, I use containers so get a unique id anyway, maybe {hostname}-{process_id} makes more sense"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01MPC0GUK1",
+        "type": "message",
+        "ts": "1649850638.004279",
+        "client_msg_id": "3574c453-a0df-4c74-a292-6004d2a04d71",
+        "text": "You can override the default by setting `config.customer_strategy_ref` to something else",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "3be8fa875ec4",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2021-02-15\/1752388211523_3be8fa875ec4866620ff_72.png",
+            "first_name": "Beeblebrox",
+            "real_name": "Beeblebrox",
+            "display_name": "Beeblebrox",
+            "team": "T4G9NBD2M",
+            "name": "arch4672",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "VKr",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "You can override the default by setting "
+                            },
+                            {
+                                "type": "text",
+                                "text": "config.customer_strategy_ref",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " to something else"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "U4H19D1D2",
+                    "U02RN7YDRQ9"
+                ],
+                "count": 2
+            }
+        ]
+    },
+    {
+        "user": "U032F6F7B5M",
+        "type": "message",
+        "ts": "1649859505.706819",
+        "client_msg_id": "43943a68-fed7-4111-ad8c-74b6f5eab06a",
+        "text": "Oh <@U4H19D1D2> good tip, thanks a lot!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "f1a6af0e57e6",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2022-04-20\/3417984726532_f1a6af0e57e6096efe9d_72.jpg",
+            "first_name": "Brøndby",
+            "real_name": "Brøndby IF",
+            "display_name": "Brøndby IF",
+            "team": "T4G9NBD2M",
+            "name": "frattosdj",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1649807918.427659",
+        "parent_user_id": "U032F6F7B5M",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "=Ow",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Oh "
+                            },
+                            {
+                                "type": "user",
+                                "user_id": "U4H19D1D2"
+                            },
+                            {
+                                "type": "text",
+                                "text": " good tip, thanks a lot!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U02RN7YDRQ9",
+        "type": "message",
+        "ts": "1649862225.727889",
+        "client_msg_id": "816f3db7-a749-4162-bd3c-9d37a89952f9",
+        "text": "That's simple <@U01MPC0GUK1> - thank you. Seems config.py limits length to 15 chars but BF api spec allows 32 - will play safe and limit to 15 just in case there is a hidden reason.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "ge46f1f8b708",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/e46f1f8b708a630e3191de7b2c42b1d1.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0023-72.png",
+            "first_name": "edblock",
+            "real_name": "edblock",
+            "display_name": "foxwood",
+            "team": "T4G9NBD2M",
+            "name": "eanb",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "VC\/S",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "That's simple "
+                            },
+                            {
+                                "type": "user",
+                                "user_id": "U01MPC0GUK1"
+                            },
+                            {
+                                "type": "text",
+                                "text": " - thank you. Seems config.py limits length to 15 chars but BF api spec allows 32 - will play safe and limit to 15 just in case there is a hidden reason."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01MPC0GUK1",
+        "type": "message",
+        "ts": "1649862489.813569",
+        "client_msg_id": "8ac6d142-6706-4032-8794-a03e639fd2c5",
+        "text": "I think customerRef or customerOrderRef can have 32 characters, customerStrategyRef is limited to 15.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "3be8fa875ec4",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2021-02-15\/1752388211523_3be8fa875ec4866620ff_72.png",
+            "first_name": "Beeblebrox",
+            "real_name": "Beeblebrox",
+            "display_name": "Beeblebrox",
+            "team": "T4G9NBD2M",
+            "name": "arch4672",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1649862489.813569",
+        "reply_count": 2,
+        "reply_users_count": 1,
+        "latest_reply": "1649957611.738139",
+        "reply_users": [
+            "U02RN7YDRQ9"
+        ],
+        "replies": [
+            {
+                "user": "U02RN7YDRQ9",
+                "ts": "1649864493.225059"
+            },
+            {
+                "user": "U02RN7YDRQ9",
+                "ts": "1649957611.738139"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": false,
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "A=VTp",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I think customerRef or customerOrderRef can have 32 characters, customerStrategyRef is limited to 15."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U032F6F7B5M",
+        "type": "message",
+        "ts": "1649863482.968099",
+        "edited": {
+            "user": "U032F6F7B5M",
+            "ts": "1649863781.000000"
+        },
+        "client_msg_id": "29bd36e0-4057-431c-9071-d4b118231e70",
+        "text": "I'm trying to find in the mapping how I can collect the value that shows me what was the last match update, because the free version of the Betfair API has a delay, correct?\n\nWhen trying to collect like this:\n`'DateTimeUpdate': [obj_evento._datetime_updated for obj_evento in soccer_events]`\n\nIt delivers the value of the moment I made the call, could someone tell me if there is a way to get the time of the last update of the match itself so I can follow how much is updated?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "f1a6af0e57e6",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2022-04-20\/3417984726532_f1a6af0e57e6096efe9d_72.jpg",
+            "first_name": "Brøndby",
+            "real_name": "Brøndby IF",
+            "display_name": "Brøndby IF",
+            "team": "T4G9NBD2M",
+            "name": "frattosdj",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "kA=Su",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I'm trying to find in the mapping how I can collect the value that shows me what was the last match update, because the free version of the Betfair API has a delay, correct?\n\nWhen trying to collect like this:\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "'DateTimeUpdate': [obj_evento._datetime_updated for obj_evento in soccer_events]",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n\nIt delivers the value of the moment I made the call, could someone tell me if there is a way to get the time of the last update of the match itself so I can follow how much is updated?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U032F6F7B5M",
+        "type": "message",
+        "ts": "1649863552.672619",
+        "client_msg_id": "fb47b18d-45a2-451e-ad10-a79daa4e9b19",
+        "text": "By the way, I want to say that I want to know what was the time of the update of the markets of the game itself, or is there no way to get this value and only from each specific market?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "f1a6af0e57e6",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2022-04-20\/3417984726532_f1a6af0e57e6096efe9d_72.jpg",
+            "first_name": "Brøndby",
+            "real_name": "Brøndby IF",
+            "display_name": "Brøndby IF",
+            "team": "T4G9NBD2M",
+            "name": "frattosdj",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "E+6C",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "By the way, I want to say that I want to know what was the time of the update of the markets of the game itself, or is there no way to get this value and only from each specific market?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U032F6F7B5M",
+        "type": "message",
+        "ts": "1649863648.771899",
+        "client_msg_id": "dfcbf404-870d-4898-acfb-3b54e6b7e635",
+        "text": "Let's say the API with delay gave me data from 2 hours ago of the game, so the value I'm looking for would be the time from 2 hours ago. Is there such a value to retrieve?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "f1a6af0e57e6",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2022-04-20\/3417984726532_f1a6af0e57e6096efe9d_72.jpg",
+            "first_name": "Brøndby",
+            "real_name": "Brøndby IF",
+            "display_name": "Brøndby IF",
+            "team": "T4G9NBD2M",
+            "name": "frattosdj",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "DiSf",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Let's say the API with delay gave me data from 2 hours ago of the game, so the value I'm looking for would be the time from 2 hours ago. Is there such a value to retrieve?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U02RN7YDRQ9",
+        "type": "message",
+        "ts": "1649864493.225059",
+        "client_msg_id": "a9f276c2-77f1-49ee-af7d-2c35aa417462",
+        "text": "My bad - thanks. Glad I opted for the 15 \"just in case\" :slightly_smiling_face:",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "ge46f1f8b708",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/e46f1f8b708a630e3191de7b2c42b1d1.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0023-72.png",
+            "first_name": "edblock",
+            "real_name": "edblock",
+            "display_name": "foxwood",
+            "team": "T4G9NBD2M",
+            "name": "eanb",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1649862489.813569",
+        "parent_user_id": "U01MPC0GUK1",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "sZP",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "My bad - thanks. Glad I opted for the 15 \"just in case\" "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "slightly_smiling_face",
+                                "unicode": "1f642"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

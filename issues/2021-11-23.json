@@ -1,0 +1,252 @@
+[
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1637658211.104900",
+        "client_msg_id": "295c2377-d40b-4195-b911-e228163bd267",
+        "text": "You need to handle multiple processes writing to a single file, best practice would be to have each process write to its own file and then combine once complete.\n\nI do this using the `os.process_id` as the file name and then a function that combines them all",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1637617054.102700",
+        "parent_user_id": "UNQGKT0CR",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "m+U",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "You need to handle multiple processes writing to a single file, best practice would be to have each process write to its own file and then combine once complete.\n\nI do this using the "
+                            },
+                            {
+                                "type": "text",
+                                "text": "os.process_id",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " as the file name and then a function that combines them all"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U0136FHM84T",
+        "type": "message",
+        "ts": "1637663611.107700",
+        "edited": {
+            "user": "U0136FHM84T",
+            "ts": "1637663626.000000"
+        },
+        "client_msg_id": "B46205E4-4210-4CBE-82AC-D190CB6EF506",
+        "text": "It is writing to files based on market id so I think it should be fine. One thing that I can see is not quite right is that you're not calling future.result() when iterating over the futures so the first couple will run and then you'll be blocked because you're not completing them",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g3832061243d",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/3832061243d1dce8e10cc84b6962c089.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0021-72.png",
+            "first_name": "",
+            "real_name": "Dermot",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "osullivan.d",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1637617054.102700",
+        "parent_user_id": "UNQGKT0CR",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "1KMG",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "It is writing to files based on market id so I think it should be fine. One thing that I can see is not quite right is that you're not calling future.result() when iterating over the futures so the first couple will run and then you'll be blocked because you're not completing them"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "U4H19D1D2",
+                    "UNQGKT0CR"
+                ],
+                "count": 2
+            }
+        ]
+    },
+    {
+        "user": "UNQGKT0CR",
+        "type": "message",
+        "ts": "1637699269.108700",
+        "edited": {
+            "user": "UNQGKT0CR",
+            "ts": "1637726803.000000"
+        },
+        "client_msg_id": "bac2cf73-305e-4a4f-976e-e5685b81f417",
+        "text": "If anyone is interested, changing this:\n\n```with futures.ProcessPoolExecutor(max_workers=48) as pool:\n        all_futures = [\n            pool.submit(\n                run_backtest,\n                market=market\n            )\n            for market in markets\n        ]\n\n    for i, future in enumerate(futures.as_completed(all_futures)):\n        try:\n            print('Future %i of %i completed' % (i + 1, len(all_futures)))\n        except:\n            print('Error %i of %i' % (i + 1, len(all_futures)))```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g51b5871ab46",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/51b5871ab46e5ef289d9e90376cacaab.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0001-72.png",
+            "first_name": "AP",
+            "real_name": "AP",
+            "display_name": "AP",
+            "team": "T4G9NBD2M",
+            "name": "ant.papa22",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "f20WF",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "If anyone is interested, changing this:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "with futures.ProcessPoolExecutor(max_workers=48) as pool:\n        all_futures = [\n            pool.submit(\n                run_backtest,\n                market=market\n            )\n            for market in markets\n        ]\n\n    for i, future in enumerate(futures.as_completed(all_futures)):\n        try:\n            print('Future %i of %i completed' % (i + 1, len(all_futures)))\n        except:\n            print('Error %i of %i' % (i + 1, len(all_futures)))"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UNQGKT0CR",
+        "type": "message",
+        "ts": "1637699292.109000",
+        "client_msg_id": "615f3665-3076-4a7c-baec-6f83fb00318f",
+        "text": "To this:\n```pool = mp.Pool(mp.cpu_count())\npool.map(run_backtest, markets)```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g51b5871ab46",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/51b5871ab46e5ef289d9e90376cacaab.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0001-72.png",
+            "first_name": "AP",
+            "real_name": "AP",
+            "display_name": "AP",
+            "team": "T4G9NBD2M",
+            "name": "ant.papa22",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "2zE",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "To this:\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "pool = mp.Pool(mp.cpu_count())\npool.map(run_backtest, markets)"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "raised_hands",
+                "users": [
+                    "U02QDLFCYHG"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "UNQGKT0CR",
+        "type": "message",
+        "ts": "1637699302.109300",
+        "client_msg_id": "3ebc5d54-12aa-487d-847d-9e5011c342b0",
+        "text": "Allows parallel processing to work in the above example",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g51b5871ab46",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/51b5871ab46e5ef289d9e90376cacaab.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0001-72.png",
+            "first_name": "AP",
+            "real_name": "AP",
+            "display_name": "AP",
+            "team": "T4G9NBD2M",
+            "name": "ant.papa22",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "DDHJ",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Allows parallel processing to work in the above example"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

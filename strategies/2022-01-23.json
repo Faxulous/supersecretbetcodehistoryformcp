@@ -1,0 +1,294 @@
+[
+    {
+        "subtype": "channel_join",
+        "user": "U02USNASPRD",
+        "text": "<@U02USNASPRD> has joined the channel",
+        "type": "message",
+        "ts": "1642946681.034600"
+    },
+    {
+        "subtype": "channel_join",
+        "user": "U02V70E0P26",
+        "text": "<@U02V70E0P26> has joined the channel",
+        "type": "message",
+        "ts": "1642966954.034700"
+    },
+    {
+        "user": "U02RN7YDRQ9",
+        "type": "message",
+        "ts": "1642979503.035200",
+        "client_msg_id": "a0e66dfe-6ae7-4d92-8f8d-8df952f4be3f",
+        "text": "I want to shift a backtest strategy to live - my first live flumine play. The strategy is based on the DataCollectWOM strategy example at <https:\/\/github.com\/liampauling\/flumine-strategy-development\/blob\/master\/main.py>\n\nObvious things I need to do is change the wrapper to use live client login, remove mock_patch and provide a bflw streaming market filter.\n\nThere are 2 possible gotchas in my strategy where I'm not sure if things exist in live ie will it crash if these references are left in:\na) market_catalogue is used to get the runner name - is this just a backtest feature and should this middleware be removed if a catalogue is constructed during live streaming ?\nb) in function process_closed_market the field \"order.simulated.profit\" is printed and logged - will that field exist or will this crash things if the reference is left in ?\n\nAny advice or thoughts about other things I might not think of first time more than welcome",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "ge46f1f8b708",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/e46f1f8b708a630e3191de7b2c42b1d1.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0023-72.png",
+            "first_name": "edblock",
+            "real_name": "edblock",
+            "display_name": "foxwood",
+            "team": "T4G9NBD2M",
+            "name": "eanb",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "attachments": [
+            {
+                "id": 1,
+                "footer_icon": "https:\/\/slack.github.com\/static\/img\/favicon-neutral.png",
+                "color": "24292f",
+                "bot_id": "B021ZJYSBMW",
+                "app_unfurl_url": "https:\/\/github.com\/liampauling\/flumine-strategy-development\/blob\/master\/main.py",
+                "is_app_unfurl": true,
+                "app_id": "A01BP7R4KNY",
+                "fallback": "<https:\/\/github.com\/liampauling\/flumine-strategy-development\/blob\/master\/main.py | main.py>",
+                "text": "```\nfrom os import listdir\nfrom os.path import isfile, join\nimport smart_open\nfrom unittest.mock import patch as mock_patch\nfrom flumine import FlumineBacktest, clients\nfrom strategies.datacollectwom import DataCollectWOM\n\nfrom utils import setup_logging\n\n\"\"\"\nWOM data collection script\nRestricted to final 300s before start of race\nData saved to context[\"filename\"]\nCollects data every 5s\n\n# todo multiprocessing to speed up processing\n\"\"\"\n\nsetup_logging(level=\"CRITICAL\")\n\nclient = clients.BacktestClient()\n\nframework = FlumineBacktest(client=client)\n\ndirectory = \"\/Users\/liampauling\/Desktop\/marketdata-day\"  # update to market data dir\nmarkets = [\n    join(directory, f)\n    for f in listdir(directory)\n    if isfile(join(directory, f)) and f.endswith(\".gz\")\n]\n\nwith mock_patch(\"builtins.open\", smart_open.open):\n    framework.add_strategy(\n        DataCollectWOM(\n            market_filter={\n                \"markets\": markets,\n                \"listener_kwargs\": {\"seconds_to_start\": 300},\n            },\n            context={\n                \"filename\": \"\/tmp\/datacollect-all.csv\",\n                \"update_seconds\": 5,  # seconds\n            },\n        )\n    )\n    framework.run()\n\n```",
+                "title": "<https:\/\/github.com\/liampauling\/flumine-strategy-development\/blob\/master\/main.py | main.py>",
+                "footer": "<https:\/\/github.com\/liampauling\/flumine-strategy-development|liampauling\/flumine-strategy-development>",
+                "mrkdwn_in": [
+                    "text"
+                ]
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "=SD",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I want to shift a backtest strategy to live - my first live flumine play. The strategy is based on the DataCollectWOM strategy example at "
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/liampauling\/flumine-strategy-development\/blob\/master\/main.py"
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n\nObvious things I need to do is change the wrapper to use live client login, remove mock_patch and provide a bflw streaming market filter.\n\nThere are 2 possible gotchas in my strategy where I'm not sure if things exist in live ie will it crash if these references are left in:\na) market_catalogue is used to get the runner name - is this just a backtest feature and should this middleware be removed if a catalogue is constructed during live streaming ?\nb) in function process_closed_market the field \"order.simulated.profit\" is printed and logged - will that field exist or will this crash things if the reference is left in ?\n\nAny advice or thoughts about other things I might not think of first time more than welcome"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1642983900.036000",
+        "client_msg_id": "f9259364-db34-41cb-8e20-547c69e96d64",
+        "text": "For live it's just order.profit and market.market_catalogue, so nice and easy!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "d8f3g",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "For live it's just order.profit and market.market_catalogue, so nice and easy!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "U02RN7YDRQ9"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1643003776.037000",
+        "edited": {
+            "user": "U4H19D1D2",
+            "ts": "1643101712.000000"
+        },
+        "client_msg_id": "9DAB6C72-A40E-4894-8550-C0D0A56F1859",
+        "text": "Use `client.paper_trade` when going live for the first time as your final integration test",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1643003776.037000",
+        "reply_count": 25,
+        "reply_users_count": 3,
+        "latest_reply": "1643140327.564329",
+        "reply_users": [
+            "U02RN7YDRQ9",
+            "U016TGY3676",
+            "U4H19D1D2"
+        ],
+        "replies": [
+            {
+                "user": "U02RN7YDRQ9",
+                "ts": "1643026104.037600"
+            },
+            {
+                "user": "U016TGY3676",
+                "ts": "1643057196.038300"
+            },
+            {
+                "user": "U02RN7YDRQ9",
+                "ts": "1643059322.038700"
+            },
+            {
+                "user": "U016TGY3676",
+                "ts": "1643060582.038900"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1643101764.039600"
+            },
+            {
+                "user": "U02RN7YDRQ9",
+                "ts": "1643103772.039800"
+            },
+            {
+                "user": "U02RN7YDRQ9",
+                "ts": "1643104468.040000"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1643104484.040200"
+            },
+            {
+                "user": "U02RN7YDRQ9",
+                "ts": "1643104892.040400"
+            },
+            {
+                "user": "U02RN7YDRQ9",
+                "ts": "1643127448.393999"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1643127502.158299"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1643127512.808899"
+            },
+            {
+                "user": "U02RN7YDRQ9",
+                "ts": "1643127938.939169"
+            },
+            {
+                "user": "U02RN7YDRQ9",
+                "ts": "1643128831.269819"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1643128966.031249"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1643129004.062359"
+            },
+            {
+                "user": "U02RN7YDRQ9",
+                "ts": "1643131889.677819"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1643132736.534619"
+            },
+            {
+                "user": "U016TGY3676",
+                "ts": "1643132916.241099"
+            },
+            {
+                "user": "U02RN7YDRQ9",
+                "ts": "1643135775.101939"
+            },
+            {
+                "user": "U02RN7YDRQ9",
+                "ts": "1643136303.892199"
+            },
+            {
+                "user": "U016TGY3676",
+                "ts": "1643137586.386139"
+            },
+            {
+                "user": "U02RN7YDRQ9",
+                "ts": "1643138054.289269"
+            },
+            {
+                "user": "U016TGY3676",
+                "ts": "1643138868.745029"
+            },
+            {
+                "user": "U02RN7YDRQ9",
+                "ts": "1643140327.564329"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": true,
+        "last_read": "1643140327.564329",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Vxq2",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Use "
+                            },
+                            {
+                                "type": "text",
+                                "text": "client.paper_trade",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " when going live for the first time as your final integration test"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

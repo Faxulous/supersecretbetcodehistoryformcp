@@ -1,0 +1,213 @@
+[
+    {
+        "user": "U010GM77S4W",
+        "type": "message",
+        "ts": "1638028217.192300",
+        "client_msg_id": "e50bc298-f5ed-4997-ac33-1da9bf0977de",
+        "text": "I am trying to open a new connection but keep getting \"MAX_CONNECTION_LIMIT_EXCEEDED\" errors. I only have two instances of flumine running and 1 connection via website. What could be causing this issue?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "66cae8f5399c",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-03-20\/1004508356769_66cae8f5399cf91a07ae_72.jpg",
+            "first_name": "",
+            "real_name": "mandelbot",
+            "display_name": "mandelbot",
+            "team": "T4G9NBD2M",
+            "name": "demhadbale",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "c2srL",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I am trying to open a new connection but keep getting \"MAX_CONNECTION_LIMIT_EXCEEDED\" errors. I only have two instances of flumine running and 1 connection via website. What could be causing this issue?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UUE6E1LA1",
+        "type": "message",
+        "ts": "1638031924.193300",
+        "edited": {
+            "user": "UUE6E1LA1",
+            "ts": "1638031952.000000"
+        },
+        "client_msg_id": "ba3b8de1-0703-44a2-b0e3-da66b4fabce6",
+        "text": "Don't use flumine so can't say for sure but when I  used to get this message it was because of multiple consecutive reconnection\/connection attempts without any throttling.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gf53cae45edd",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/f53cae45edd7f7b67bbe98819597612e.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0017-72.png",
+            "first_name": "",
+            "real_name": "D C",
+            "display_name": "D C",
+            "team": "T4G9NBD2M",
+            "name": "oddsvantage",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "ZUjJL",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Don't use flumine so can't say for sure but when I  used to get this message it was because of multiple consecutive reconnection\/connection attempts without any throttling."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U024TE5NPN1",
+        "type": "message",
+        "ts": "1638054941.198600",
+        "edited": {
+            "user": "U024TE5NPN1",
+            "ts": "1638056447.000000"
+        },
+        "client_msg_id": "9af14117-1bd0-4dc2-a1c3-6465295964ca",
+        "text": "How do I stream both order and market updates at the same time?\n\nI've tried to modify the example in <https:\/\/github.com\/liampauling\/betfair\/blob\/master\/examples\/examplestreamingerrhandling.py> but I'm too much of a novice to get it right... =(\n\nMy approach has been to create two separate Streaming classes like the one in the above example – one for markets and one for orders. These classes share the same output_queue.\n\nI then check if the output received is of instance MarketBook or CurrentOrders to separate the workflow.\n\n```# Getting market stream\nmarket_streamer = MyMarketStreamer(\n  client=self.connection.trading,\n  cm_queue=cm_queue,\n  market_filter=market_filter,\n  market_data_filter=market_data_filter,\n)\n\n# Getting order stream\norder_streamer = MyOrderStreamer(\n  client=self.connection.trading,\n  cm_queue=cm_queue,\n)\n\n# Starting the streams\nmarket_streamer.start()\norder_streamer.start()\n\n# Receiving the stream\nwhile True:\n   outputs = cm_queue.get()\n\n   for output in outputs:\n      if isinstance(output, MarketBook):\n         self.handle_market_changes(mcm=output.streaming_update)\n      elif isinstance(output, CurrentOrders):\n         self.handle_order_changes(ocm=output.streaming_update)```\nThis seems to be working just fine except for when it comes to the error handling: then it just stops without retrying.\n\nMaybe this should be done in a completely different manner?\n\nAny help would be greatly appreciated!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "50b3bc5083af",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2021-11-28\/2798460712608_50b3bc5083af24c2b867_72.jpg",
+            "first_name": "",
+            "real_name": "Martin Karlsson",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "martkarls",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "attachments": [
+            {
+                "text": "```\nimport logging\nimport queue\nimport threading\nfrom tenacity import retry, wait_exponential\n\nimport betfairlightweight\nfrom betfairlightweight import StreamListener\nfrom betfairlightweight import BetfairError\nfrom betfairlightweight.filters import (\n    streaming_market_filter,\n    streaming_market_data_filter,\n)\n\n\"\"\"\nStreaming example to handle timeouts or connection errors, \nwith reconnect.\n\nCode uses 'tenacity' library for retrying.\n\nStreaming class inherits threading module to simplify start\/\nstop.\n\"\"\"\n\n# setup logging\nlogging.basicConfig(level=<http:\/\/logging.INFO|logging.INFO>)  # change to DEBUG to see log all updates\nlogger = logging.getLogger(__name__)\n\n\nclass Streaming(threading.Thread):\n    def __init__(\n        self,\n        client: betfairlightweight.APIClient,\n        market_filter: dict,\n        market_data_filter: dict,\n        conflate_ms: int = None,\n        streaming_unique_id: int = 1000,\n    ):\n        threading.Thread.__init__(self, daemon=True, name=self.__class__.__name__)\n        self.client = client\n        self.market_filter = market_filter\n        self.market_data_filter = market_data_filter\n        self.conflate_ms = conflate_ms\n        self.streaming_unique_id = streaming_unique_id\n        self.stream = None\n        self.output_queue = queue.Queue()\n        self.listener = StreamListener(output_queue=self.output_queue)\n\n    @retry(wait=wait_exponential(multiplier=1, min=2, max=20))\n    def run(self) -&gt; None:\n        <http:\/\/logger.info|logger.info>(\"Starting MarketStreaming\")\n        self.client.login()\n        self.stream = self.client.streaming.create_stream(\n            unique_id=self.streaming_unique_id, listener=self.listener\n        )\n        try:\n            self.streaming_unique_id = self.stream.subscribe_to_markets(\n                market_filter=self.market_filter,\n                market_data_filter=self.market_data_filter,\n                conflate_ms=self.conflate_ms,\n                initial_clk=self.listener.initial_clk,  # supplying these two values allows a reconnect\n                clk=self.listener.clk,\n            )\n            self.stream.start()\n        except BetfairError:\n            logger.error(\"MarketStreaming run error\", exc_info=True)\n            raise\n        except Exception:\n            logger.critical(\"MarketStreaming run error\", exc_info=True)\n            raise\n        <http:\/\/logger.info|logger.info>(\"Stopped MarketStreaming {0}\".format(self.streaming_unique_id))\n\n    def stop(self) -&gt; None:\n        if self.stream:\n            self.stream.stop()\n\n\n# create trading instance (app key must be activated for streaming)\ntrading = betfairlightweight.APIClient(\"username\", \"password\", app_key=\"appKey\")\n\n# login\ntrading.login()\n\n# create filters (GB WIN racing)\nmarket_filter = streaming_market_filter(\n    event_type_ids=[\"7\"], country_codes=[\"GB\"], market_types=[\"WIN\"]\n)\nmarket_data_filter = streaming_market_data_filter(\n    fields=[\"EX_BEST_OFFERS\", \"EX_MARKET_DEF\"], ladder_levels=3\n)\n\n# create streaming object\nstreaming = Streaming(trading, market_filter, market_data_filter)\n\n# start streaming (runs in new thread and handles any errors)\nstreaming.start()\n\n# check for updates in output queue\nwhile True:\n    market_books = streaming.output_queue.get()\n    print(market_books)\n\n    for market_book in market_books:\n        print(\n            market_book,\n            market_book.streaming_unique_id,  # unique id of stream (returned from subscribe request)\n            market_book.streaming_update,  # json update received\n            market_book.market_definition,  # streaming definition, similar to catalogue request\n            market_book.publish_time,  # betfair publish time of update\n        )\n\n```",
+                "title": "<https:\/\/github.com\/liampauling\/betfair\/blob\/master\/examples\/examplestreamingerrhandling.py | examplestreamingerrhandling.py>",
+                "footer": "<https:\/\/github.com\/liampauling\/betfair|liampauling\/betfair>",
+                "id": 1,
+                "footer_icon": "https:\/\/slack.github.com\/static\/img\/favicon-neutral.png",
+                "color": "24292f",
+                "mrkdwn_in": [
+                    "text"
+                ],
+                "fallback": "<https:\/\/github.com\/liampauling\/betfair\/blob\/master\/examples\/examplestreamingerrhandling.py | examplestreamingerrhandling.py>",
+                "bot_id": "B021ZJYSBMW",
+                "app_unfurl_url": "https:\/\/github.com\/liampauling\/betfair\/blob\/master\/examples\/examplestreamingerrhandling.py",
+                "is_app_unfurl": true,
+                "app_id": "A01BP7R4KNY"
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "mZ0",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "How do I stream both order and market updates at the same time?\n\nI've tried to modify the example in "
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/liampauling\/betfair\/blob\/master\/examples\/examplestreamingerrhandling.py"
+                            },
+                            {
+                                "type": "text",
+                                "text": " but I'm too much of a novice to get it right... =(\n\nMy approach has been to create two separate Streaming classes like the one in the above example – one for markets and one for orders. These classes share the same output_queue.\n\nI then check if the output received is of instance MarketBook or CurrentOrders to separate the workflow.\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "# Getting market stream\nmarket_streamer = MyMarketStreamer(\n  client=self.connection.trading,\n  cm_queue=cm_queue,\n  market_filter=market_filter,\n  market_data_filter=market_data_filter,\n)\n\n# Getting order stream\norder_streamer = MyOrderStreamer(\n  client=self.connection.trading,\n  cm_queue=cm_queue,\n)\n\n# Starting the streams\nmarket_streamer.start()\norder_streamer.start()\n\n# Receiving the stream\nwhile True:\n   outputs = cm_queue.get()\n\n   for output in outputs:\n      if isinstance(output, MarketBook):\n         self.handle_market_changes(mcm=output.streaming_update)\n      elif isinstance(output, CurrentOrders):\n         self.handle_order_changes(ocm=output.streaming_update)"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\nThis seems to be working just fine except for when it comes to the error handling: then it just stops without retrying.\n\nMaybe this should be done in a completely different manner?\n\nAny help would be greatly appreciated!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "subtype": "channel_join",
+        "user": "U02NSQ5JH7D",
+        "text": "<@U02NSQ5JH7D> has joined the channel",
+        "type": "message",
+        "ts": "1638059686.199400"
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1638079360.200700",
+        "client_msg_id": "7CB781B4-C846-4092-8697-39F35D9FFB2E",
+        "text": "Code isn’t designed for this, need separate connections",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "gPqPZ",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Code isn’t designed for this, need separate connections"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

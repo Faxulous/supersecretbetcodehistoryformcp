@@ -1,0 +1,1112 @@
+[
+    {
+        "user": "U0155J92A7Q",
+        "type": "message",
+        "ts": "1604999359.424600",
+        "edited": {
+            "user": "U0155J92A7Q",
+            "ts": "1604999369.000000"
+        },
+        "client_msg_id": "9ce85cbe-3ac3-4c2e-b0cf-57d8919fc332",
+        "text": "Hi, is it possible to configure logging with a dictConfig, _logging.config.dictConfig(dict_log_config)_, when using betfairlightweight?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gde8c5d51af5",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/de8c5d51af54a5ac7b501f416ddb262c.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0016-72.png",
+            "first_name": "",
+            "real_name": "Jorge",
+            "display_name": "Jorge",
+            "team": "T4G9NBD2M",
+            "name": "jgarciam95",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "RZnT",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Hi, is it possible to configure logging with a dictConfig, "
+                            },
+                            {
+                                "type": "text",
+                                "text": "logging.config.dictConfig(dict_log_config)",
+                                "style": {
+                                    "italic": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": ", when using betfairlightweight?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1604999375.424900",
+        "client_msg_id": "1c2b40c0-ce79-4e44-a426-86297a737b01",
+        "text": "Yep",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "iEGQ",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Yep"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U0155J92A7Q",
+        "type": "message",
+        "ts": "1604999466.425800",
+        "client_msg_id": "bc51525b-e116-4cb7-9cc1-15e690e8550f",
+        "text": "I am running the error handling example: <https:\/\/github.com\/liampauling\/betfair\/blob\/master\/examples\/examplestreamingerrhandling.py>, it works with\n```logging.basicConfig(level=<http:\/\/logging.INFO|logging.INFO>)```\nbut it doesn't work for me when I change this line by _logging.config.dictConfig(dict_log_config)_",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gde8c5d51af5",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/de8c5d51af54a5ac7b501f416ddb262c.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0016-72.png",
+            "first_name": "",
+            "real_name": "Jorge",
+            "display_name": "Jorge",
+            "team": "T4G9NBD2M",
+            "name": "jgarciam95",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "attachments": [
+            {
+                "fallback": "[liampauling\/betfair] examples\/examplestreamingerrhandling.py",
+                "text": "```\nimport logging\nimport queue\nimport threading\nfrom tenacity import retry, wait_exponential\n\nimport betfairlightweight\nfrom betfairlightweight import StreamListener\nfrom betfairlightweight import BetfairError\nfrom betfairlightweight.filters import (\n    streaming_market_filter,\n    streaming_market_data_filter,\n)\n\n\"\"\"\nStreaming example to handle timeouts or connection errors, \nwith reconnect.\n\nCode uses 'tenacity' library for retrying.\n\nStreaming class inherits threading module to simplify start\/\nstop.\n\"\"\"\n\n# setup logging\nlogging.basicConfig(level=<http:\/\/logging.INFO|logging.INFO>)  # change to DEBUG to see log all updates\nlogger = logging.getLogger(__name__)\n\n\nclass Streaming(threading.Thread):\n    def __init__(\n        self,\n        client: betfairlightweight.APIClient,\n        market_filter: dict,\n        market_data_filter: dict,\n        conflate_ms: int = None,\n        streaming_unique_id: int = 1000,\n    ):\n        threading.Thread.__init__(self, daemon=True, name=self.__class__.__name__)\n        self.client = client\n        self.market_filter = market_filter\n        self.market_data_filter = market_data_filter\n        self.conflate_ms = conflate_ms\n        self.streaming_unique_id = streaming_unique_id\n        self.stream = None\n        self.output_queue = queue.Queue()\n        self.listener = StreamListener(output_queue=self.output_queue)\n\n    @retry(wait=wait_exponential(multiplier=1, min=2, max=20))\n    def run(self) -&gt; None:\n        <http:\/\/logger.info|logger.info>(\"Starting MarketStreaming\")\n        self.client.login()\n        self.stream = self.client.streaming.create_stream(\n            unique_id=self.streaming_unique_id, listener=self.listener\n        )\n        try:\n            self.streaming_unique_id = self.stream.subscribe_to_markets(\n                market_filter=self.market_filter,\n                market_data_filter=self.market_data_filter,\n                conflate_ms=self.conflate_ms,\n                initial_clk=self.listener.initial_clk,  # supplying these two values allows a reconnect\n                clk=self.listener.clk,\n            )\n            self.stream.start()\n        except BetfairError:\n            logger.error(\"MarketStreaming run error\", exc_info=True)\n            raise\n        except Exception:\n            logger.critical(\"MarketStreaming run error\", exc_info=True)\n            raise\n        <http:\/\/logger.info|logger.info>(\"Stopped MarketStreaming {0}\".format(self.streaming_unique_id))\n\n    def stop(self) -&gt; None:\n        if self.stream:\n            self.stream.stop()\n\n\n# create trading instance (app key must be activated for streaming)\ntrading = betfairlightweight.APIClient(\"username\", \"password\", app_key=\"appKey\")\n\n# login\ntrading.login()\n\n# create filters (GB WIN racing)\nmarket_filter = streaming_market_filter(\n    event_type_ids=[\"7\"], country_codes=[\"GB\"], market_types=[\"WIN\"]\n)\nmarket_data_filter = streaming_market_data_filter(\n    fields=[\"EX_BEST_OFFERS\", \"EX_MARKET_DEF\"], ladder_levels=3\n)\n\n# create streaming object\nstreaming = Streaming(trading, market_filter, market_data_filter)\n\n# start streaming (runs in new thread and handles any errors)\nstreaming.start()\n\n# check for updates in output queue\nwhile True:\n    market_books = streaming.output_queue.get()\n    print(market_books)\n\n    for market_book in market_books:\n        print(\n            market_book,\n            market_book.streaming_unique_id,  # unique id of stream (returned from subscribe request)\n            market_book.streaming_update,  # json update received\n            market_book.market_definition,  # streaming definition, similar to catalogue request\n            market_book.publish_time,  # betfair publish time of update\n        )\n\n```",
+                "title": "examples\/examplestreamingerrhandling.py",
+                "footer": "<https:\/\/github.com\/liampauling\/betfair|liampauling\/betfair>",
+                "id": 1,
+                "title_link": "https:\/\/github.com\/liampauling\/betfair\/blob\/master\/examples\/examplestreamingerrhandling.py",
+                "footer_icon": "https:\/\/github.githubassets.com\/favicon.ico",
+                "color": "24292f",
+                "mrkdwn_in": [
+                    "text"
+                ],
+                "bot_id": "B01144Z0734",
+                "app_unfurl_url": "https:\/\/github.com\/liampauling\/betfair\/blob\/master\/examples\/examplestreamingerrhandling.py",
+                "is_app_unfurl": true
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "vc\/F",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I am running the error handling example: "
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/liampauling\/betfair\/blob\/master\/examples\/examplestreamingerrhandling.py"
+                            },
+                            {
+                                "type": "text",
+                                "text": ", it works with\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "logging.basicConfig(level=logging.INFO)"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "but it doesn't work for me when I change this line by "
+                            },
+                            {
+                                "type": "text",
+                                "text": "logging.config.dictConfig(dict_log_config)",
+                                "style": {
+                                    "italic": true
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1604999525.426200",
+        "client_msg_id": "47335d74-273e-4bf7-a10d-e5a9d3cad76e",
+        "text": "what is _dict_log_config?_",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "7mv",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "what is "
+                            },
+                            {
+                                "type": "text",
+                                "text": "dict_log_config?",
+                                "style": {
+                                    "italic": true
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U0155J92A7Q",
+        "type": "message",
+        "ts": "1604999612.426800",
+        "client_msg_id": "8776ecba-5958-4717-8c0b-de8364c58784",
+        "text": "It's the dict I usually use to log my applications: contains 2 handlers\n```dict_log_config = {\n    \"version\": 1,\n    \"handlers\": {\n        \"consoleHandler\": {\n            \"level\": \"DEBUG\",\n            \"class\": \"logging.StreamHandler\",\n            \"formatter\": \"standard\",\n            \"stream\": '<ext:\/\/sys.stdout>',\n        },\n        \"fileHandler\": {\n            \"level\": \"DEBUG\",\n            \"class\": \"logging.FileHandler\",\n            \"formatter\": \"standard\",\n            \"filename\": log_path,\n        }\n    },\n    \"loggers\": {\n        \"\": {  # root logger\n            \"handlers\": [\"consoleHandler\", \"fileHandler\"],\n            \"level\": \"DEBUG\",\n        }\n    },\n    \"formatters\": {\n        \"standard\": {\n            \"format\": \"%(asctime)s | %(levelname)s | %(message)s\"\n        }\n    }\n}```\n",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gde8c5d51af5",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/de8c5d51af54a5ac7b501f416ddb262c.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0016-72.png",
+            "first_name": "",
+            "real_name": "Jorge",
+            "display_name": "Jorge",
+            "team": "T4G9NBD2M",
+            "name": "jgarciam95",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "0ca5",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "It's the dict I usually use to log my applications: contains 2 handlers\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "dict_log_config = {\n    \"version\": 1,\n    \"handlers\": {\n        \"consoleHandler\": {\n            \"level\": \"DEBUG\",\n            \"class\": \"logging.StreamHandler\",\n            \"formatter\": \"standard\",\n            \"stream\": 'ext:\/\/sys.stdout',\n        },\n        \"fileHandler\": {\n            \"level\": \"DEBUG\",\n            \"class\": \"logging.FileHandler\",\n            \"formatter\": \"standard\",\n            \"filename\": log_path,\n        }\n    },\n    \"loggers\": {\n        \"\": {  # root logger\n            \"handlers\": [\"consoleHandler\", \"fileHandler\"],\n            \"level\": \"DEBUG\",\n        }\n    },\n    \"formatters\": {\n        \"standard\": {\n            \"format\": \"%(asctime)s | %(levelname)s | %(message)s\"\n        }\n    }\n}"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": []
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1604999988.427200",
+        "client_msg_id": "156c2950-1a01-4d18-a447-989687a19155",
+        "text": "I added bflw to the loggers and it works fine",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "bTQ8n",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I added bflw to the loggers and it works fine"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "U0155J92A7Q"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1604999998.427500",
+        "client_msg_id": "a2146734-c6cf-488c-bbb3-79233fa79c22",
+        "text": "```        'betfairlightweight': {\n            'handlers': ['consoleHandler'],\n            'level': 'INFO',\n            'propagate': False\n        },```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "sQsmA",
+                "elements": [
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "        'betfairlightweight': {\n            'handlers': ['consoleHandler'],\n            'level': 'INFO',\n            'propagate': False\n        },"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U0155J92A7Q",
+        "type": "message",
+        "ts": "1605000409.428300",
+        "client_msg_id": "9222b8e4-0cfe-4a18-ba13-60fa977440ca",
+        "text": "Aha, I was missing that! Not used to use external libraries in Python myself. Thanks so much liam!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gde8c5d51af5",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/de8c5d51af54a5ac7b501f416ddb262c.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0016-72.png",
+            "first_name": "",
+            "real_name": "Jorge",
+            "display_name": "Jorge",
+            "team": "T4G9NBD2M",
+            "name": "jgarciam95",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "JQUDH",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Aha, I was missing that! Not used to use external libraries in Python myself. Thanks so much liam!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "U4H19D1D2"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "U0155J92A7Q",
+        "type": "message",
+        "ts": "1605010911.430400",
+        "client_msg_id": "b0ce2008-783d-4aaf-a313-404d4088eb55",
+        "text": "Hi again, what is the best way to change the streaming.stream.market_filter when the streaming is already running?\nRight now I am stopping the streaming, creating another Streaming object and starting it. Using the *<https:\/\/github.com\/liampauling\/betfair\/blob\/master\/examples\/examplestreamingerrhandling.py|examples\/examplestreamingerrhandling.py>* as base code.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gde8c5d51af5",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/de8c5d51af54a5ac7b501f416ddb262c.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0016-72.png",
+            "first_name": "",
+            "real_name": "Jorge",
+            "display_name": "Jorge",
+            "team": "T4G9NBD2M",
+            "name": "jgarciam95",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "attachments": [
+            {
+                "fallback": "[liampauling\/betfair] examples\/examplestreamingerrhandling.py",
+                "text": "```\nimport logging\nimport queue\nimport threading\nfrom tenacity import retry, wait_exponential\n\nimport betfairlightweight\nfrom betfairlightweight import StreamListener\nfrom betfairlightweight import BetfairError\nfrom betfairlightweight.filters import (\n    streaming_market_filter,\n    streaming_market_data_filter,\n)\n\n\"\"\"\nStreaming example to handle timeouts or connection errors, \nwith reconnect.\n\nCode uses 'tenacity' library for retrying.\n\nStreaming class inherits threading module to simplify start\/\nstop.\n\"\"\"\n\n# setup logging\nlogging.basicConfig(level=<http:\/\/logging.INFO|logging.INFO>)  # change to DEBUG to see log all updates\nlogger = logging.getLogger(__name__)\n\n\nclass Streaming(threading.Thread):\n    def __init__(\n        self,\n        client: betfairlightweight.APIClient,\n        market_filter: dict,\n        market_data_filter: dict,\n        conflate_ms: int = None,\n        streaming_unique_id: int = 1000,\n    ):\n        threading.Thread.__init__(self, daemon=True, name=self.__class__.__name__)\n        self.client = client\n        self.market_filter = market_filter\n        self.market_data_filter = market_data_filter\n        self.conflate_ms = conflate_ms\n        self.streaming_unique_id = streaming_unique_id\n        self.stream = None\n        self.output_queue = queue.Queue()\n        self.listener = StreamListener(output_queue=self.output_queue)\n\n    @retry(wait=wait_exponential(multiplier=1, min=2, max=20))\n    def run(self) -&gt; None:\n        <http:\/\/logger.info|logger.info>(\"Starting MarketStreaming\")\n        self.client.login()\n        self.stream = self.client.streaming.create_stream(\n            unique_id=self.streaming_unique_id, listener=self.listener\n        )\n        try:\n            self.streaming_unique_id = self.stream.subscribe_to_markets(\n                market_filter=self.market_filter,\n                market_data_filter=self.market_data_filter,\n                conflate_ms=self.conflate_ms,\n                initial_clk=self.listener.initial_clk,  # supplying these two values allows a reconnect\n                clk=self.listener.clk,\n            )\n            self.stream.start()\n        except BetfairError:\n            logger.error(\"MarketStreaming run error\", exc_info=True)\n            raise\n        except Exception:\n            logger.critical(\"MarketStreaming run error\", exc_info=True)\n            raise\n        <http:\/\/logger.info|logger.info>(\"Stopped MarketStreaming {0}\".format(self.streaming_unique_id))\n\n    def stop(self) -&gt; None:\n        if self.stream:\n            self.stream.stop()\n\n\n# create trading instance (app key must be activated for streaming)\ntrading = betfairlightweight.APIClient(\"username\", \"password\", app_key=\"appKey\")\n\n# login\ntrading.login()\n\n# create filters (GB WIN racing)\nmarket_filter = streaming_market_filter(\n    event_type_ids=[\"7\"], country_codes=[\"GB\"], market_types=[\"WIN\"]\n)\nmarket_data_filter = streaming_market_data_filter(\n    fields=[\"EX_BEST_OFFERS\", \"EX_MARKET_DEF\"], ladder_levels=3\n)\n\n# create streaming object\nstreaming = Streaming(trading, market_filter, market_data_filter)\n\n# start streaming (runs in new thread and handles any errors)\nstreaming.start()\n\n# check for updates in output queue\nwhile True:\n    market_books = streaming.output_queue.get()\n    print(market_books)\n\n    for market_book in market_books:\n        print(\n            market_book,\n            market_book.streaming_unique_id,  # unique id of stream (returned from subscribe request)\n            market_book.streaming_update,  # json update received\n            market_book.market_definition,  # streaming definition, similar to catalogue request\n            market_book.publish_time,  # betfair publish time of update\n        )\n\n```",
+                "title": "examples\/examplestreamingerrhandling.py",
+                "footer": "<https:\/\/github.com\/liampauling\/betfair|liampauling\/betfair>",
+                "id": 1,
+                "title_link": "https:\/\/github.com\/liampauling\/betfair\/blob\/master\/examples\/examplestreamingerrhandling.py",
+                "footer_icon": "https:\/\/github.githubassets.com\/favicon.ico",
+                "color": "24292f",
+                "mrkdwn_in": [
+                    "text"
+                ],
+                "bot_id": "B01144Z0734",
+                "app_unfurl_url": "https:\/\/github.com\/liampauling\/betfair\/blob\/master\/examples\/examplestreamingerrhandling.py",
+                "is_app_unfurl": true
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "CJ=",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Hi again, what is the best way to change the streaming.stream.market_filter when the streaming is already running?\nRight now I am stopping the streaming, creating another Streaming object and starting it. Using the "
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/liampauling\/betfair\/blob\/master\/examples\/examplestreamingerrhandling.py",
+                                "text": "examples\/examplestreamingerrhandling.py",
+                                "style": {
+                                    "bold": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " ",
+                                "style": {
+                                    "bold": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "as base code."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1605010948.430800",
+        "client_msg_id": "fd6d4957-7ef3-4e53-aba1-c6cadb0e326f",
+        "text": "the best way is don't",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "\/6Lo",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "the best way is don't"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "UBS7QANF3"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "U0155J92A7Q",
+        "type": "message",
+        "ts": "1605011062.432000",
+        "client_msg_id": "bc5e6b59-0859-4868-9cfa-a04592549c5a",
+        "text": "My use case is I want to subscribe for market_books of the market_ids I have bots in, and when I launch a new bot I want to add it to the streaming (and remove it from streaming when it stops running)",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gde8c5d51af5",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/de8c5d51af54a5ac7b501f416ddb262c.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0016-72.png",
+            "first_name": "",
+            "real_name": "Jorge",
+            "display_name": "Jorge",
+            "team": "T4G9NBD2M",
+            "name": "jgarciam95",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "JHy",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "My use case is I want to subscribe for market_books of the market_ids I have bots in, and when I launch a new bot I want to add it to the streaming (and remove it from streaming when it stops running)"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U0155J92A7Q",
+        "type": "message",
+        "ts": "1605011126.432400",
+        "client_msg_id": "dc98906a-f586-4826-8740-b4f4ac1595e8",
+        "text": "So how would you do it <@U4H19D1D2>?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gde8c5d51af5",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/de8c5d51af54a5ac7b501f416ddb262c.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0016-72.png",
+            "first_name": "",
+            "real_name": "Jorge",
+            "display_name": "Jorge",
+            "team": "T4G9NBD2M",
+            "name": "jgarciam95",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "lCjg",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "So how would you do it "
+                            },
+                            {
+                                "type": "user",
+                                "user_id": "U4H19D1D2"
+                            },
+                            {
+                                "type": "text",
+                                "text": "?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1605011401.433300",
+        "client_msg_id": "14169999-4A7C-4C17-B9C8-21673F1CB5DD",
+        "text": "Streaming is lightweight, subscribing is costly, ignore the markets you don’t want ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "MTd1h",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Streaming is lightweight, subscribing is costly, ignore the markets you don’t want "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "UBS7QANF3",
+                    "U0155J92A7Q"
+                ],
+                "count": 2
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1605011593.433800",
+        "edited": {
+            "user": "U4H19D1D2",
+            "ts": "1605011631.000000"
+        },
+        "client_msg_id": "047B2D84-4004-4222-A2EB-DF4E2A20E34E",
+        "text": "From the docs\n\nCoarse vs Fine Grain Subscriptions\n\nIt is preferable to use coarse grain subscriptions (subscribe to a super-set) rather than fine grain (specific market ids).\n\nIf you find yourself frequently changing subscriptions you probably want to find a wider super-set to subscribe to\n",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "FA53",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "From the docs\n\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "Coarse vs Fine Grain Subscriptions\n\nIt is preferable to use coarse grain subscriptions (subscribe to a super-set) rather than fine grain (specific market ids).\n\nIf you find yourself frequently changing subscriptions you probably want to find a wider super-set to subscribe to\n"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U0155J92A7Q",
+        "type": "message",
+        "ts": "1605012413.434400",
+        "client_msg_id": "7fc6153a-4059-45ea-ae1a-cfe472f715a8",
+        "text": "Great, understood, thank you!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gde8c5d51af5",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/de8c5d51af54a5ac7b501f416ddb262c.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0016-72.png",
+            "first_name": "",
+            "real_name": "Jorge",
+            "display_name": "Jorge",
+            "team": "T4G9NBD2M",
+            "name": "jgarciam95",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "yoI",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Great, understood, thank you!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U0155J92A7Q",
+        "type": "message",
+        "ts": "1605013804.437900",
+        "client_msg_id": "465ccbbd-29b4-4a98-8aff-5016eae6b1cf",
+        "text": "I'm reaching the limits with the set of \"Soccer\", \"MATCH_ODDS\" filters... I guess the only option to increase granularity on these is by using the country_codes, which I see they are None for International Games.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gde8c5d51af5",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/de8c5d51af54a5ac7b501f416ddb262c.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0016-72.png",
+            "first_name": "",
+            "real_name": "Jorge",
+            "display_name": "Jorge",
+            "team": "T4G9NBD2M",
+            "name": "jgarciam95",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "FEJg",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I'm reaching the limits with the set of \"Soccer\", \"MATCH_ODDS\" filters... I guess the only option to increase granularity on these is by using the country_codes, which I see they are None for International Games."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1605013850.438300",
+        "client_msg_id": "71D5CFB4-23CC-4A3C-877D-1B8843D26A35",
+        "text": "Easy option is to get your limit bumped ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "UFH",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Easy option is to get your limit bumped "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U0155J92A7Q",
+        "type": "message",
+        "ts": "1605013917.439100",
+        "client_msg_id": "fd003e4e-ee1f-4a33-bc05-3c7c07571efb",
+        "text": "I will send an email to <mailto:bdp@betfair.com|bdp@betfair.com> to get it bumped for sure! Just wondering for the times when the number of Soccer games is huge",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gde8c5d51af5",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/de8c5d51af54a5ac7b501f416ddb262c.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0016-72.png",
+            "first_name": "",
+            "real_name": "Jorge",
+            "display_name": "Jorge",
+            "team": "T4G9NBD2M",
+            "name": "jgarciam95",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "mwiv",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I will send an email to "
+                            },
+                            {
+                                "type": "link",
+                                "url": "mailto:bdp@betfair.com",
+                                "text": "bdp@betfair.com"
+                            },
+                            {
+                                "type": "text",
+                                "text": " to get it bumped for sure! Just wondering for the times when the number of Soccer games is huge"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01DCR5PXDY",
+        "type": "message",
+        "ts": "1605015284.439600",
+        "client_msg_id": "68972452-b608-43d0-a515-4f7dd4d0d4a2",
+        "text": "<@U4H19D1D2> Is it possible to get it bumped above 1,000?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "903bc20cd9db",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-10-26\/1448127317798_903bc20cd9dba9a758e0_72.png",
+            "first_name": "thambie1",
+            "real_name": "thambie1",
+            "display_name": "thambie1",
+            "team": "T4G9NBD2M",
+            "name": "thambie1",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "+Zi",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "user",
+                                "user_id": "U4H19D1D2"
+                            },
+                            {
+                                "type": "text",
+                                "text": " Is it possible to get it bumped above 1,000?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1605015390.440000",
+        "client_msg_id": "071A7296-FB63-4256-AF5E-475890AD6428",
+        "text": "It’s possible to have it be unlimited",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "c+3uO",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "It’s possible to have it be unlimited"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01DCR5PXDY",
+        "type": "message",
+        "ts": "1605017061.440400",
+        "client_msg_id": "f59e2338-267c-4a19-a8f6-1a8794dbb03b",
+        "text": "Oh awesome!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "903bc20cd9db",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-10-26\/1448127317798_903bc20cd9dba9a758e0_72.png",
+            "first_name": "thambie1",
+            "real_name": "thambie1",
+            "display_name": "thambie1",
+            "team": "T4G9NBD2M",
+            "name": "thambie1",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "JSHWh",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Oh awesome!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01C12ZEADQ",
+        "type": "message",
+        "ts": "1605032752.441300",
+        "client_msg_id": "a6b78038-f618-4884-a253-3eb7313a5f5a",
+        "text": "It's called the \"firehose mode\"",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "e3b7687b0ef8",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-10-06\/1432945617648_e3b7687b0ef86e4f28b8_72.png",
+            "first_name": "Alessio",
+            "real_name": "Alessio",
+            "display_name": "Alessio",
+            "team": "T4G9NBD2M",
+            "name": "alessio",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "VRY1Z",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "It's called the \"firehose mode\""
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01C12ZEADQ",
+        "type": "message",
+        "ts": "1605032761.441500",
+        "client_msg_id": "9cafc1aa-c992-4cce-9b23-8d6e0caaa9dd",
+        "text": "JUST GIVE ME THOSE BETS",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "e3b7687b0ef8",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-10-06\/1432945617648_e3b7687b0ef86e4f28b8_72.png",
+            "first_name": "Alessio",
+            "real_name": "Alessio",
+            "display_name": "Alessio",
+            "team": "T4G9NBD2M",
+            "name": "alessio",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "ljbc9",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "JUST GIVE ME THOSE BETS"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01DDBUL2MR",
+        "type": "message",
+        "ts": "1605041503.442600",
+        "client_msg_id": "17f3a08b-f0da-4772-ac9d-e69d5b442156",
+        "text": "Is there an amount of money you need to be betting before they will raise the limits?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gef68fcf22c2",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/ef68fcf22c2c3d73daa665d9167aaade.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0017-72.png",
+            "first_name": "",
+            "real_name": "John T",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "jat1963",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "EzsG",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Is there an amount of money you need to be betting before they will raise the limits?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "thinking_face",
+                "users": [
+                    "U01CTH7AWUB"
+                ],
+                "count": 1
+            }
+        ]
+    }
+]

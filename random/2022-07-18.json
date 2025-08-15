@@ -1,0 +1,832 @@
+[
+    {
+        "user": "UEA14GBRR",
+        "type": "message",
+        "ts": "1658152273.038989",
+        "client_msg_id": "5ec0b055-bd95-4317-8248-9864c8be8df8",
+        "text": "Confidence _interval_ will give you your confidence _limit_, from there it's confidence _level_.  Assuming a normal distribution in your sample.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "889680f46fe7",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-06\/6774538588752_889680f46fe773047cb9_72.jpg",
+            "first_name": "",
+            "real_name": "Shaun White",
+            "display_name": "ShaunW",
+            "team": "T4G9NBD2M",
+            "name": "shaunwhite",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1658081526.469489",
+        "parent_user_id": "U02RN7YDRQ9",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "XlUY",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Confidence "
+                            },
+                            {
+                                "type": "text",
+                                "text": "interval",
+                                "style": {
+                                    "italic": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " will give you your confidence "
+                            },
+                            {
+                                "type": "text",
+                                "text": "limit",
+                                "style": {
+                                    "italic": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": ", from there it's confidence "
+                            },
+                            {
+                                "type": "text",
+                                "text": "level",
+                                "style": {
+                                    "italic": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": ".  Assuming a normal distribution in your sample."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UQL0QDEKA",
+        "type": "message",
+        "ts": "1658153671.491339",
+        "client_msg_id": "3bfa12d8-c2a1-4b64-8444-28c29ff64a56",
+        "text": "Good Afternoon, Wow its cracking the flags in Manchester today! :hot_face:\n\nAlthough I have the market recorder running fine in windows, Im trying to get it running in Ubuntu and I can see it is failing due to the certs reference below.\n\nimport time\nimport logging\nimport betfairlightweight\nfrom pythonjsonlogger import jsonlogger\n\nfrom flumine import Flumine, clients\nfrom flumine.streams.datastream import DataStream\nfrom marketrecorder import MarketRecorder\n# from flumine import MarketRecorder\n\nlogger = logging.getLogger()\n\ncustom_format = \"%(asctime) %(levelname) %(message)\"\nlog_handler = logging.StreamHandler()\nformatter = jsonlogger.JsonFormatter(custom_format)\nformatter.converter = time.gmtime\nlog_handler.setFormatter(formatter)\nlogger.addHandler(log_handler)\nlogger.setLevel(<http:\/\/logging.INFO|logging.INFO>)\n\nmyacc = str(input(\"please enter account name: \"))\napp_key = str(input(\"Please enter key: \"))\nmypass = str(input(\"Please enter Password and 2FA: \"))\ntrading = betfairlightweight.APIClient(myacc,mypass, app_key, certs=r\"C:\\certs\")\n\n# client = clients.BetfairClient(trading) \/\/Changed 21st July\nclient = clients.BetfairClient(trading, order_stream=False)\n\nframework = Flumine(client=client)\n\nstrategy = MarketRecorder(\n    name=\"WIN\",\n    market_filter=betfairlightweight.filters.streaming_market_filter(\n        event_type_ids=[\"7\"],\n        country_codes=[\"GB\", \"IE\"],\n        market_types=[\"WIN\"],\n    ),\n    stream_class=DataStream,\n    context={\n        \"local_dir\": \"\/home\/ubuntu\/flumine\",\n        \"force_update\": False,\n        \"remove_file\": True,\n    },\n)\n\nframework.add_strategy(strategy)\n\nframework.run()\n\nQuestion Please: Can i copy over the certs I have in my windows systems and then reference them something like : -\ntrading = betfairlightweight.APIClient(myacc,mypass, app_key, certs=r\"\/home\/ubuntu\/certs\") I assume they are just a digital file and not specific to an OS?\nOr, more likely, am I going about this the wrong way. Thanks in advance\n(PS I will set the environment settings soon :grinning:)",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g444d10128c0",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/444d10128c0aaf094041a52a76796602.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0005-72.png",
+            "first_name": "Peter",
+            "real_name": "Peter Lenagh",
+            "display_name": "PeterLe",
+            "team": "T4G9NBD2M",
+            "name": "lenagh",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1658153671.491339",
+        "reply_count": 13,
+        "reply_users_count": 3,
+        "latest_reply": "1658162481.534249",
+        "reply_users": [
+            "UBS7QANF3",
+            "UQL0QDEKA",
+            "U4H19D1D2"
+        ],
+        "replies": [
+            {
+                "user": "UBS7QANF3",
+                "ts": "1658154148.918229"
+            },
+            {
+                "user": "UQL0QDEKA",
+                "ts": "1658154313.081569"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1658154362.899509"
+            },
+            {
+                "user": "UQL0QDEKA",
+                "ts": "1658154470.733699"
+            },
+            {
+                "user": "UQL0QDEKA",
+                "ts": "1658158054.117699"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1658159396.746479"
+            },
+            {
+                "user": "UQL0QDEKA",
+                "ts": "1658159475.944919"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1658159532.435639"
+            },
+            {
+                "user": "UQL0QDEKA",
+                "ts": "1658159663.906149"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1658159693.998559"
+            },
+            {
+                "user": "UQL0QDEKA",
+                "ts": "1658159764.199029"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1658160767.410129"
+            },
+            {
+                "user": "UQL0QDEKA",
+                "ts": "1658162481.534249"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": true,
+        "last_read": "1658162481.534249",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "VX4",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Good Afternoon, Wow its cracking the flags in Manchester today! "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "hot_face",
+                                "unicode": "1f975"
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n\nAlthough I have the market recorder running fine in windows, Im trying to get it running in Ubuntu and I can see it is failing due to the certs reference below.\n\nimport time\nimport logging\nimport betfairlightweight\nfrom pythonjsonlogger import jsonlogger\n\nfrom flumine import Flumine, clients\nfrom flumine.streams.datastream import DataStream\nfrom marketrecorder import MarketRecorder\n# from flumine import MarketRecorder\n\nlogger = logging.getLogger()\n\ncustom_format = \"%(asctime) %(levelname) %(message)\"\nlog_handler = logging.StreamHandler()\nformatter = jsonlogger.JsonFormatter(custom_format)\nformatter.converter = time.gmtime\nlog_handler.setFormatter(formatter)\nlogger.addHandler(log_handler)\nlogger.setLevel("
+                            },
+                            {
+                                "type": "link",
+                                "url": "http:\/\/logging.INFO",
+                                "text": "logging.INFO"
+                            },
+                            {
+                                "type": "text",
+                                "text": ")\n\nmyacc = str(input(\"please enter account name: \"))\napp_key = str(input(\"Please enter key: \"))\nmypass = str(input(\"Please enter Password and 2FA: \"))\ntrading = betfairlightweight.APIClient(myacc,mypass, app_key, certs=r\"C:\\certs\")\n\n# client = clients.BetfairClient(trading) \/\/Changed 21st July\nclient = clients.BetfairClient(trading, order_stream=False)\n\nframework = Flumine(client=client)\n\nstrategy = MarketRecorder(\n    name=\"WIN\",\n    market_filter=betfairlightweight.filters.streaming_market_filter(\n        event_type_ids=[\"7\"],\n        country_codes=[\"GB\", \"IE\"],\n        market_types=[\"WIN\"],\n    ),\n    stream_class=DataStream,\n    context={\n        \"local_dir\": \"\/home\/ubuntu\/flumine\",\n        \"force_update\": False,\n        \"remove_file\": True,\n    },\n)\n\nframework.add_strategy(strategy)\n\nframework.run()\n\nQuestion Please: Can i copy over the certs I have in my windows systems and then reference them something like : -\ntrading = betfairlightweight.APIClient(myacc,mypass, app_key, certs=r\"\/home\/ubuntu\/certs\") I assume they are just a digital file and not specific to an OS?\nOr, more likely, am I going about this the wrong way. Thanks in advance\n(PS I will set the environment settings soon "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "grinning",
+                                "unicode": "1f600"
+                            },
+                            {
+                                "type": "text",
+                                "text": ")"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1658154148.918229",
+        "client_msg_id": "691298b4-7224-4893-980d-b38092e42091",
+        "text": "Yes that should work fine",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1658153671.491339",
+        "parent_user_id": "UQL0QDEKA",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "yujXw",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Yes that should work fine"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UQL0QDEKA",
+        "type": "message",
+        "ts": "1658154313.081569",
+        "client_msg_id": "9663BD5D-1DF1-4EC5-B181-FCC04DB3D7FD",
+        "text": "Great thanks Mo, hope you got those filters vacuumed out by the way :sunglasses:",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g444d10128c0",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/444d10128c0aaf094041a52a76796602.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0005-72.png",
+            "first_name": "Peter",
+            "real_name": "Peter Lenagh",
+            "display_name": "PeterLe",
+            "team": "T4G9NBD2M",
+            "name": "lenagh",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1658153671.491339",
+        "parent_user_id": "UQL0QDEKA",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "9tSg",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Great thanks Mo, hope you got those filters vacuumed out by the way "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "sunglasses",
+                                "unicode": "1f60e"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1658154362.899509",
+        "client_msg_id": "9267f942-e0e7-42d6-8541-92cf04d6491e",
+        "text": "No still dusty AF in there but I have observed that regardless of the ambient temperature the core temperature doesn't exceed 95 C",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1658153671.491339",
+        "parent_user_id": "UQL0QDEKA",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "\/vc",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "No still dusty AF in there but I have observed that regardless of the ambient temperature the core temperature doesn't exceed 95 C"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UQL0QDEKA",
+        "type": "message",
+        "ts": "1658154470.733699",
+        "client_msg_id": "A8DF9781-CE79-4B50-B54B-DB256151C087",
+        "text": ":grinning: I though mine was running hot at about 60. Cheers for the reply",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g444d10128c0",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/444d10128c0aaf094041a52a76796602.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0005-72.png",
+            "first_name": "Peter",
+            "real_name": "Peter Lenagh",
+            "display_name": "PeterLe",
+            "team": "T4G9NBD2M",
+            "name": "lenagh",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1658153671.491339",
+        "parent_user_id": "UQL0QDEKA",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Zc2Uj",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "emoji",
+                                "name": "grinning",
+                                "unicode": "1f600"
+                            },
+                            {
+                                "type": "text",
+                                "text": " I though mine was running hot at about 60. Cheers for the reply"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UQL0QDEKA",
+        "type": "message",
+        "ts": "1658158054.117699",
+        "client_msg_id": "52065ACE-BF3C-402D-A46B-2AC99334B288",
+        "text": "Works perfectly thanks again ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g444d10128c0",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/444d10128c0aaf094041a52a76796602.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0005-72.png",
+            "first_name": "Peter",
+            "real_name": "Peter Lenagh",
+            "display_name": "PeterLe",
+            "team": "T4G9NBD2M",
+            "name": "lenagh",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1658153671.491339",
+        "parent_user_id": "UQL0QDEKA",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "W1YJv",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Works perfectly thanks again "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1658159396.746479",
+        "client_msg_id": "b35f670a-5558-4e0a-adf0-2fc056d8095b",
+        "text": "Off topic but are you using git Peter?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1658153671.491339",
+        "parent_user_id": "UQL0QDEKA",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "uSJ",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Off topic but are you using git Peter?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UQL0QDEKA",
+        "type": "message",
+        "ts": "1658159475.944919",
+        "client_msg_id": "21d0d9c1-c6f9-4200-b53e-ebc095504c27",
+        "text": "Ive used it to pull down flumine\/Betfairlightweight but no not using it as such (Scared of cocking something up!) Why?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g444d10128c0",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/444d10128c0aaf094041a52a76796602.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0005-72.png",
+            "first_name": "Peter",
+            "real_name": "Peter Lenagh",
+            "display_name": "PeterLe",
+            "team": "T4G9NBD2M",
+            "name": "lenagh",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1658153671.491339",
+        "parent_user_id": "UQL0QDEKA",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "vGw1",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Ive used it to pull down flumine\/Betfairlightweight but no not using it as such (Scared of cocking something up!) Why?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1658159532.435639",
+        "client_msg_id": "2904d0dd-9983-4370-acd8-f413d927e9cf",
+        "text": "I just noticed your code comments regarding changes, strongly recommend using it for your own stuff, takes a little time to get used to but its a game changer when writing code",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1658153671.491339",
+        "parent_user_id": "UQL0QDEKA",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "SY0",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I just noticed your code comments regarding changes, strongly recommend using it for your own stuff, takes a little time to get used to but its a game changer when writing code"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UQL0QDEKA",
+        "type": "message",
+        "ts": "1658159663.906149",
+        "client_msg_id": "71907a2d-3244-4ae6-a16a-cc92bb93db1d",
+        "text": "Oh Crap! There's nothing confidental in there like passwords\/keys etc is there?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g444d10128c0",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/444d10128c0aaf094041a52a76796602.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0005-72.png",
+            "first_name": "Peter",
+            "real_name": "Peter Lenagh",
+            "display_name": "PeterLe",
+            "team": "T4G9NBD2M",
+            "name": "lenagh",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1658153671.491339",
+        "parent_user_id": "UQL0QDEKA",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "+z7",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Oh Crap! There's nothing confidental in there like passwords\/keys etc is there?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1658159693.998559",
+        "client_msg_id": "1760adc5-a97e-49d4-b5bd-8241fd872f46",
+        "text": "sorry i just mean in the code you copied\/pasted above",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1658153671.491339",
+        "parent_user_id": "UQL0QDEKA",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "awY",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "sorry i just mean in the code you copied\/pasted above"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UQL0QDEKA",
+        "type": "message",
+        "ts": "1658159764.199029",
+        "client_msg_id": "e9c1aed0-a2f5-4e40-9917-9d55f4c0547d",
+        "text": ":grinning: Ok a bit slow today! Yea i will do eventually Liam",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g444d10128c0",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/444d10128c0aaf094041a52a76796602.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0005-72.png",
+            "first_name": "Peter",
+            "real_name": "Peter Lenagh",
+            "display_name": "PeterLe",
+            "team": "T4G9NBD2M",
+            "name": "lenagh",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1658153671.491339",
+        "parent_user_id": "UQL0QDEKA",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "pKHYN",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "emoji",
+                                "name": "grinning",
+                                "unicode": "1f600"
+                            },
+                            {
+                                "type": "text",
+                                "text": " Ok a bit slow today! Yea i will do eventually Liam"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1658160767.410129",
+        "client_msg_id": "3b0e6587-b989-4f7e-b51d-d0820ebb6318",
+        "text": "you wont regret it",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1658153671.491339",
+        "parent_user_id": "UQL0QDEKA",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "qt4Rv",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "you wont regret it"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UQL0QDEKA",
+        "type": "message",
+        "ts": "1658162481.534249",
+        "client_msg_id": "47B76AC6-6A0B-4047-9E09-B28C875625BF",
+        "text": ":+1: thanks Liam",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g444d10128c0",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/444d10128c0aaf094041a52a76796602.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0005-72.png",
+            "first_name": "Peter",
+            "real_name": "Peter Lenagh",
+            "display_name": "PeterLe",
+            "team": "T4G9NBD2M",
+            "name": "lenagh",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1658153671.491339",
+        "parent_user_id": "UQL0QDEKA",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "bnL",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "emoji",
+                                "name": "+1",
+                                "unicode": "1f44d"
+                            },
+                            {
+                                "type": "text",
+                                "text": " thanks Liam"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1658167268.857599",
+        "client_msg_id": "367e53b2-25ce-4363-baa4-0c4677e3793e",
+        "text": "With the Closed Market Logging control, should the following always produce an output, even if there are no settled orders (e.g. orders were placed, but 100% of orders were cancelled and market profit = 0)?\n\n```def _process_cleared_markets(self, event):\n        cleared_markets = event.event\n        for cleared_market in cleared_markets.orders:\n            <http:\/\/logger.info|logger.info>(\n                \"Cleared market\",\n                extra={\n                    \"market_id\": cleared_market.market_id,\n                    \"bet_count\": cleared_market.bet_count,\n                    \"profit\": cleared_market.profit,\n                    \"commission\": cleared_market.commission,\n                },\n            )```\nOr does the above only return an output when there are 1 or more settled orders (I assumed it was the former, but I don't seem to get any output if I only have cancelled orders and I'm not sure if that's because I'm doing something weird or if its expected behaviour)?\n\nI'm guessing I'm doing something weird as I output to a JSON and despite no error, I suspect something is going on there, but just wanted to check...",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1658167268.857599",
+        "reply_count": 4,
+        "reply_users_count": 2,
+        "latest_reply": "1658226675.768249",
+        "reply_users": [
+            "U4H19D1D2",
+            "UFTBRB3F1"
+        ],
+        "replies": [
+            {
+                "user": "U4H19D1D2",
+                "ts": "1658226151.392779"
+            },
+            {
+                "user": "UFTBRB3F1",
+                "ts": "1658226554.157859"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1658226589.187229"
+            },
+            {
+                "user": "UFTBRB3F1",
+                "ts": "1658226675.768249"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": true,
+        "last_read": "1658226675.768249",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "KAd",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "With the Closed Market Logging control, should the following always produce an output, even if there are no settled orders (e.g. orders were placed, but 100% of orders were cancelled and market profit = 0)?\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "def _process_cleared_markets(self, event):\n        cleared_markets = event.event\n        for cleared_market in cleared_markets.orders:\n            logger.info(\n                \"Cleared market\",\n                extra={\n                    \"market_id\": cleared_market.market_id,\n                    \"bet_count\": cleared_market.bet_count,\n                    \"profit\": cleared_market.profit,\n                    \"commission\": cleared_market.commission,\n                },\n            )"
+                            }
+                        ],
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\nOr does the above only return an output when there are 1 or more settled orders (I assumed it was the former, but I don't seem to get any output if I only have cancelled orders and I'm not sure if that's because I'm doing something weird or if its expected behaviour)?\n\nI'm guessing I'm doing something weird as I output to a JSON and despite no error, I suspect something is going on there, but just wanted to check..."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

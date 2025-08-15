@@ -1,0 +1,146 @@
+[
+    {
+        "subtype": "channel_join",
+        "user": "U02RN7YDRQ9",
+        "text": "<@U02RN7YDRQ9> has joined the channel",
+        "type": "message",
+        "ts": "1639851065.281500"
+    },
+    {
+        "user": "U01GT0A9PE2",
+        "type": "message",
+        "ts": "1639862091.282400",
+        "client_msg_id": "367f3943-4127-4a97-a9c1-06c7584a353f",
+        "text": "I is based in Essex, UK. I can surf the internet from my computer and can log into Betfair. Does this streaming technology use a port other than 80?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "e6183e84b27e",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-12-15\/1577954530867_e6183e84b27ed1c6349b_72.jpg",
+            "first_name": "Brad",
+            "real_name": "Brad",
+            "display_name": "Bradley",
+            "team": "T4G9NBD2M",
+            "name": "oliverluthorbrown",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "pZn",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I is based in Essex, UK. I can surf the internet from my computer and can log into Betfair. Does this streaming technology use a port other than 80?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U9JHLMZB4",
+        "type": "message",
+        "ts": "1639897134.284300",
+        "client_msg_id": "a3ae847d-b998-4563-b164-2412e62b6951",
+        "text": "Yes. Streaming via Betfairlightweight is done over port 443, the standard https port. That port will also be used when you log in to Betfair, confirming that it is available to you in Essex :wink:",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g951ddcb43e7",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/3951ddcb43e788a387d6daf330dad5ca.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0018-72.png",
+            "first_name": "",
+            "real_name": "Peter Coles",
+            "display_name": "Peter",
+            "team": "T4G9NBD2M",
+            "name": "peter",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "kvxCe",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Yes. Streaming via Betfairlightweight is done over port 443, the standard https port. That port will also be used when you log in to Betfair, confirming that it is available to you in Essex "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "wink",
+                                "unicode": "1f609"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U9JHLMZB4",
+        "type": "message",
+        "ts": "1639897139.284500",
+        "client_msg_id": "c6f829f5-895a-4c3d-aaf6-c417623906db",
+        "text": "<https:\/\/github.com\/liampauling\/betfair\/blob\/master\/betfairlightweight\/streaming\/betfairstream.py>",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g951ddcb43e7",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/3951ddcb43e788a387d6daf330dad5ca.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0018-72.png",
+            "first_name": "",
+            "real_name": "Peter Coles",
+            "display_name": "Peter",
+            "team": "T4G9NBD2M",
+            "name": "peter",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "attachments": [
+            {
+                "id": 1,
+                "footer_icon": "https:\/\/slack.github.com\/static\/img\/favicon-neutral.png",
+                "color": "24292f",
+                "bot_id": "B021ZJYSBMW",
+                "app_unfurl_url": "https:\/\/github.com\/liampauling\/betfair\/blob\/master\/betfairlightweight\/streaming\/betfairstream.py",
+                "is_app_unfurl": true,
+                "app_id": "A01BP7R4KNY",
+                "fallback": "<https:\/\/github.com\/liampauling\/betfair\/blob\/master\/betfairlightweight\/streaming\/betfairstream.py | betfairstream.py>",
+                "text": "```\nimport socket\nimport ssl\nimport logging\nimport datetime\nimport collections\nfrom typing import Optional\n\nfrom ..exceptions import SocketError, ListenerError\nfrom ..compat import json\nfrom .listener import BaseListener\n\nlogger = logging.getLogger(__name__)\n\n\nclass BetfairStream:\n    \"\"\"Socket holder, connects to betfair and\n    pushes any received data to listener\n    \"\"\"\n\n    __port = 443\n    __CRLF = \"\\r\\n\"\n    __encoding = \"utf-8\"\n\n    HOSTS = collections.defaultdict(\n        lambda: \"<http:\/\/stream-api.betfair.com|stream-api.betfair.com>\",\n        integration=\"<http:\/\/stream-api-integration.betfair.com|stream-api-integration.betfair.com>\",\n        race=\"<http:\/\/sports-data-stream-api.betfair.com|sports-data-stream-api.betfair.com>\",\n    )\n\n    def __init__(\n        self,\n        unique_id: int,\n        listener: BaseListener,\n        app_key: str,\n        session_token: str,\n        timeout: float,\n        buffer_size: int,\n        host: Optional[str],\n    ):\n        self._unique_id = unique_id\n        self.listener = listener\n        self.app_key = app_key\n        self.session_token = session_token\n        self.timeout = timeout\n        self.buffer_size = buffer_size\n        self.host = self.HOSTS[host]\n        self.receive_count = 0\n        self.datetime_last_received = None\n\n        self._socket = None\n        self._running = False\n\n    def start(self) -&gt; None:\n        \"\"\"Starts read loop, connects\/authenticates\n        if not already running.\n        \"\"\"\n        if not self._running:\n            self._connect()\n            self.authenticate()\n        self._read_loop()\n\n    def stop(self) -&gt; None:\n        \"\"\"Stops read loop and closes socket if it has been created.\"\"\"\n        self._running = False\n\n        if self._socket is None:\n            return\n        # attempt graceful shutdown\n        try:\n            self._socket.shutdown(socket.SHUT_RDWR)\n        except socket.error:\n            pass\n        # close socket\n        try:\n            self._socket.close()\n        except socket.error:\n            pass\n        self._socket = None\n\n    def authenticate(self) -&gt; int:\n        \"\"\"Authentication request.\"\"\"\n        unique_id = self.new_unique_id()\n        message = {\n            \"op\": \"authentication\",\n            \"id\": unique_id,\n            \"appKey\": self.app_key,\n            \"session\": self.session_token,\n        }\n        self._send(message)\n        return unique_id\n\n    def heartbeat(self) -&gt; int:\n        \"\"\"Heartbeat request to keep session alive.\"\"\"\n        unique_id = self.new_unique_id()\n        message = {\"op\": \"heartbeat\", \"id\": unique_id}\n        self._send(message)\n        return unique_id\n\n    def subscribe_to_markets(\n        self,\n        market_filter: dict,\n        market_data_filter: dict,\n        initial_clk: str = None,\n        clk: str = None,\n        conflate_ms: int = None,\n        heartbeat_ms: int = None,\n        segmentation_enabled: bool = True,\n    ) -&gt; int:\n        \"\"\"\n        Market subscription request.\n\n        :param dict market_filter: Market filter\n        :param dict market_data_filter: Market data filter\n        :param str initial_clk: Sequence token for reconnect\n        :param str clk: Sequence token for reconnect\n        :param int conflate_ms: conflation rate (bounds are 0 to 120000)\n        :param int heartbeat_ms: heartbeat rate (500 to 5000)\n        :param bool segmentation_enabled: allow the server to send large sets of data\n        in segments, instead of a single block\n        \"\"\"\n        unique_id = self.new_unique_id()\n        message = {\n            \"op\": \"marketSubscription\",\n            \"id\": unique_id,\n            \"marketFilter\": market_filter,\n            \"marketDataFilter\": market_data_filter,\n            \"initialClk\": initial_clk,\n            \"clk\": clk,\n            \"conflateMs\": conflate_ms,\n            \"heartbeatMs\": heartbeat_ms,\n            \"segmentationEnabled\": segmentation_enabled,\n        }\n        if initial_clk and clk:\n            # if resubscribe only update unique_id\n            self.listener.update_unique_id(unique_id)\n        else:\n            self.listener.register_stream(unique_id, \"marketSubscription\")\n        self._send(message)\n        return unique_id\n\n    def subscribe_to_orders(\n        self,\n        order_filter: dict = None,\n        initial_clk: str = None,\n        clk: str = None,\n        conflate_ms: int = None,\n        heartbeat_ms: int = None,\n        segmentation_enabled: bool = True,\n    ) -&gt; int:\n        \"\"\"\n        Order subscription request.\n\n        :param dict order_filter: Order filter to be applied\n        :param str initial_clk: Sequence token for reconnect\n        :param str clk: Sequence token for reconnect\n        :param int conflate_ms: conflation rate (bounds are 0 to 120000)\n        :param int heartbeat_ms: heartbeat rate (500 to 5000)\n        :param bool segmentation_enabled: allow the server to send large sets of data\n        in segments, instead of a single block\n        \"\"\"\n        unique_id = self.new_unique_id()\n        message = {\n            \"op\": \"orderSubscription\",\n            \"id\": unique_id,\n            \"orderFilter\": order_filter,\n            \"initialClk\": initial_clk,\n            \"clk\": clk,\n            \"conflateMs\": conflate_ms,\n            \"heartbeatMs\": heartbeat_ms,\n            \"segmentationEnabled\": segmentation_enabled,\n        }\n        if initial_clk and clk:\n            # if resubscribe only update unique_id\n            self.listener.update_unique_id(unique_id)\n        else:\n            self.listener.register_stream(unique_id, \"orderSubscription\")\n        self._send(message)\n        return unique_id\n\n    def subscribe_to_races(self) -&gt; int:\n        \"\"\"Race subscription request.\"\"\"\n        unique_id = self.new_unique_id()\n        message = {\"op\": \"raceSubscription\", \"id\": unique_id}\n        self.listener.register_stream(unique_id, \"raceSubscription\")\n        self._send(message)\n        return unique_id\n\n    def new_unique_id(self) -&gt; int:\n        self._unique_id += 1\n        return self._unique_id\n\n    def _connect(self) -&gt; None:\n        \"\"\"Creates socket and sets running to True.\"\"\"\n        self._socket = self._create_socket()\n        self._running = True\n\n    def _create_socket(self) -&gt; socket.socket:\n        \"\"\"Creates ssl socket, connects to stream api and\n        sets timeout.\n        \"\"\"\n        s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)\n        s = ssl.wrap_socket(s)\n        s.settimeout(self.timeout)\n        s.connect((self.host, self.__port))\n        return s\n\n    def _read_loop(self) -&gt; None:\n        \"\"\"Read loop, splits by CRLF and pushes received data\n        to _data.\n        \"\"\"\n        while self._running:\n            received_data_raw = self._receive_all()\n            if self._running:\n                self.receive_count += 1\n                self.datetime_last_received = datetime.datetime.utcnow()\n                received_data_split = received_data_raw.split(self.__CRLF)\n                for received_data in received_data_split:\n                    if received_data:\n                        self._data(received_data)\n\n    def _receive_all(self) -&gt; Optional[str]:\n        \"\"\"Whilst socket is running receives data from socket,\n        till CRLF is detected.\n        \"\"\"\n        (data, part) = (\"\", \"\")\n        crlf_bytes = bytes(self.__CRLF, encoding=self.__encoding)\n\n        while self._running and part[-2:] != crlf_bytes:\n            try:\n                part = self._socket.recv(self.buffer_size)\n            except (socket.timeout, socket.error) as e:\n                if self._running:\n                    self.stop()\n                    raise SocketError(\"[Connect: %s]: Socket %s\" % (self._unique_id, e))\n                else:\n                    return  # 133, prevents error if stop is called mid recv\n\n            # an empty string indicates the server shutdown the socket\n            if len(part) == 0:\n                if self._running:\n                    self.sto…",
+                "title": "<https:\/\/github.com\/liampauling\/betfair\/blob\/master\/betfairlightweight\/streaming\/betfairstream.py | betfairstream.py>",
+                "footer": "<https:\/\/github.com\/liampauling\/betfair|liampauling\/betfair>",
+                "mrkdwn_in": [
+                    "text"
+                ]
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "xv5",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/liampauling\/betfair\/blob\/master\/betfairlightweight\/streaming\/betfairstream.py"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

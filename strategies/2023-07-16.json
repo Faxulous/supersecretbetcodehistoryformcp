@@ -1,0 +1,81 @@
+[
+    {
+        "user": "U05C31YKZ1C",
+        "type": "message",
+        "ts": "1689497874.258559",
+        "client_msg_id": "21468b93-04a3-4cfb-80f7-95ff6cacb656",
+        "text": "I’m using a  modified version of the backtest logging control from here to log my results to a db on market closure <https:\/\/github.com\/betcode-org\/flumine\/blob\/master\/examples\/controls\/backtestloggingcontrol.py>\n\nIt\\s successfully pushing to the DB, but order.profit is always 0 for some reason. Has anyone run into this issue at all? The bets are placed and I can see different numbers for profit on the betfair site,  but for whatever reason its always coming as 0 on the order.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g8823a6686ca",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/8823a6686ca88a27d29ac5c4a2518126.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0023-72.png",
+            "first_name": "James",
+            "real_name": "James",
+            "display_name": "James",
+            "team": "T4G9NBD2M",
+            "name": "slack1995",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1689497874.258559",
+        "reply_count": 1,
+        "reply_users_count": 1,
+        "latest_reply": "1690308182.248649",
+        "reply_users": [
+            "U02GGCCLTKM"
+        ],
+        "replies": [
+            {
+                "user": "U02GGCCLTKM",
+                "ts": "1690308182.248649"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": false,
+        "attachments": [
+            {
+                "id": 1,
+                "footer_icon": "https:\/\/slack.github.com\/static\/img\/favicon-neutral.png",
+                "color": "24292f",
+                "bot_id": "B021ZJYSBMW",
+                "app_unfurl_url": "https:\/\/github.com\/betcode-org\/flumine\/blob\/master\/examples\/controls\/backtestloggingcontrol.py",
+                "is_app_unfurl": true,
+                "app_id": "A01BP7R4KNY",
+                "fallback": "<https:\/\/github.com\/betcode-org\/flumine\/blob\/master\/examples\/controls\/backtestloggingcontrol.py | backtestloggingcontrol.py>",
+                "text": "```\nimport csv\nimport logging\nfrom flumine.controls.loggingcontrols import LoggingControl\nfrom flumine.order.ordertype import OrderTypes\n\nlogger = logging.getLogger(__name__)\n\nFIELDNAMES = [\n    \"bet_id\",\n    \"strategy_name\",\n    \"market_id\",\n    \"selection_id\",\n    \"trade_id\",\n    \"date_time_placed\",\n    \"price\",\n    \"price_matched\",\n    \"size\",\n    \"size_matched\",\n    \"profit\",\n    \"side\",\n    \"elapsed_seconds_executable\",\n    \"order_status\",\n    \"market_note\",\n    \"trade_notes\",\n    \"order_notes\",\n]\n\n\nclass BacktestLoggingControl(LoggingControl):\n    NAME = \"BACKTEST_LOGGING_CONTROL\"\n\n    def __init__(self, *args, **kwargs):\n        super(BacktestLoggingControl, self).__init__(*args, **kwargs)\n        self._setup()\n\n    def _setup(self):\n        with open(\"orders.txt\", \"w\") as m:\n            csv_writer = csv.DictWriter(m, delimiter=\",\", fieldnames=FIELDNAMES)\n            csv_writer.writeheader()\n\n    def _process_cleared_orders_meta(self, event):\n        orders = event.event\n        with open(\"orders.txt\", \"a\") as m:\n            for order in orders:\n                if order.order_type.ORDER_TYPE == OrderTypes.LIMIT:\n                    size = order.order_type.size\n                else:\n                    size = order.order_type.liability\n                if order.order_type.ORDER_TYPE == OrderTypes.MARKET_ON_CLOSE:\n                    price = None\n                else:\n                    price = order.order_type.price\n                try:\n                    order_data = {\n                        \"bet_id\": order.bet_id,\n                        \"strategy_name\": order.trade.strategy,\n                        \"market_id\": order.market_id,\n                        \"selection_id\": order.selection_id,\n                        \"trade_id\": order.trade.id,\n                        \"date_time_placed\": order.responses.date_time_placed,\n                        \"price\": price,\n                        \"price_matched\": order.average_price_matched,\n                        \"size\": size,\n                        \"size_matched\": order.size_matched,\n                        \"profit\": order.profit,\n                        \"side\": order.side,\n                        \"elapsed_seconds_executable\": order.elapsed_seconds_executable,\n                        \"order_status\": order.status.value,\n                        \"market_note\": order.trade.market_notes,\n                        \"trade_notes\": order.trade.notes_str,\n                        \"order_notes\": order.notes_str,\n                    }\n                    csv_writer = csv.DictWriter(m, delimiter=\",\", fieldnames=FIELDNAMES)\n                    csv_writer.writerow(order_data)\n                except Exception as e:\n                    logger.error(\n                        \"_process_cleared_orders_meta: %s\" % e,\n                        extra={\"order\": order, \"error\": e},\n                    )\n\n        <http:\/\/logger.info|logger.info>(\"Orders updated\", extra={\"order_count\": len(orders)})\n\n    def _process_cleared_markets(self, event):\n        cleared_markets = event.event\n        for cleared_market in cleared_markets.orders:\n            <http:\/\/logger.info|logger.info>(\n                \"Cleared market\",\n                extra={\n                    \"market_id\": cleared_market.market_id,\n                    \"bet_count\": cleared_market.bet_count,\n                    \"profit\": cleared_market.profit,\n                    \"commission\": cleared_market.commission,\n                },\n            )\n\n```",
+                "title": "<https:\/\/github.com\/betcode-org\/flumine\/blob\/master\/examples\/controls\/backtestloggingcontrol.py | backtestloggingcontrol.py>",
+                "footer": "<https:\/\/github.com\/betcode-org\/flumine|betcode-org\/flumine>",
+                "mrkdwn_in": [
+                    "text"
+                ]
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "B1Fao",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I’m using a  modified version of the backtest logging control from here to log my results to a db on market closure "
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/betcode-org\/flumine\/blob\/master\/examples\/controls\/backtestloggingcontrol.py"
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n\nIt\\s successfully pushing to the DB, but order.profit is always 0 for some reason. Has anyone run into this issue at all? The bets are placed and I can see different numbers for profit on the betfair site,  but for whatever reason its always coming as 0 on the order."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

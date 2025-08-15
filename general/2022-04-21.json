@@ -1,0 +1,147 @@
+[
+    {
+        "user": "U01MCB3Q3FC",
+        "type": "message",
+        "ts": "1650536169.233339",
+        "client_msg_id": "d39bf3d3-22d3-432e-8874-abf84942aba9",
+        "text": "Hi all, I'm following some Flumine examples and have created a Python script that accepts a marketId as a parameter.\nThe strategy then uses that MarketId as part of the market filter, using this example\nmarket_filter=streaming_market_filter(\n        event_type_ids=[\"7\"],\n        country_codes=[\"GB\"],\n        market_types=[\"WIN\"],\n        market_ids=[marketToCheck]\n    )\n\nThis works fine but I notice more and more python processes remain open (using Windows Task Manager) as each new call is made to the script despite the market(s) in question being closed.\nShould I be adding something specific to stop the framework running, maybe at this point?\n\nframework.add_strategy(strategy)\nframework.run()",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gab9a215ba97",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/ab9a215ba979724227f16250eb9a28fc.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0018-72.png",
+            "first_name": "Jon",
+            "real_name": "Jon Kidd",
+            "display_name": "Jon K",
+            "team": "T4G9NBD2M",
+            "name": "jon.kidd",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "xarYT",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Hi all, I'm following some Flumine examples and have created a Python script that accepts a marketId as a parameter.\nThe strategy then uses that MarketId as part of the market filter, using this example\nmarket_filter=streaming_market_filter(\n        event_type_ids=[\"7\"],\n        country_codes=[\"GB\"],\n        market_types=[\"WIN\"],\n        market_ids=[marketToCheck]\n    )\n\nThis works fine but I notice more and more python processes remain open (using Windows Task Manager) as each new call is made to the script despite the market(s) in question being closed.\nShould I be adding something specific to stop the framework running, maybe at this point?\n\nframework.add_strategy(strategy)\nframework.run()"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1650536306.081839",
+        "edited": {
+            "user": "U4H19D1D2",
+            "ts": "1650536329.000000"
+        },
+        "client_msg_id": "afb33d00-01ea-4787-a9f5-72989176c4b4",
+        "text": "flumine isn't designed for this as it will keep running (as you have found out) Best practice is to take advantage of the stream and have a nice wide filter on your `market_filter` ie eventType+marketType and then filter in the strategy via `strategy.check_market_book`\n\nResulting in a single running process",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Nax",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "flumine isn't designed for this as it will keep running (as you have found out) Best practice is to take advantage of the stream and have a nice wide filter on your "
+                            },
+                            {
+                                "type": "text",
+                                "text": "market_filter",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " ie eventType+marketType and then filter in the strategy via "
+                            },
+                            {
+                                "type": "text",
+                                "text": "strategy.check_market_book",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n\nResulting in a single running process"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01MCB3Q3FC",
+        "type": "message",
+        "ts": "1650537000.483729",
+        "client_msg_id": "dc8359d0-01d4-435a-9983-ef16cdb32c74",
+        "text": "Ah ok, great thanks. I'll look at rewriting some of it :+1:",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gab9a215ba97",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/ab9a215ba979724227f16250eb9a28fc.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0018-72.png",
+            "first_name": "Jon",
+            "real_name": "Jon Kidd",
+            "display_name": "Jon K",
+            "team": "T4G9NBD2M",
+            "name": "jon.kidd",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "0KU",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Ah ok, great thanks. I'll look at rewriting some of it "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "+1",
+                                "unicode": "1f44d"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

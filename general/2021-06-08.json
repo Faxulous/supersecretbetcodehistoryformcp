@@ -1,0 +1,638 @@
+[
+    {
+        "subtype": "channel_join",
+        "user": "U023X4Q572T",
+        "text": "<@U023X4Q572T> has joined the channel",
+        "type": "message",
+        "ts": "1623149753.330900"
+    },
+    {
+        "user": "U023X4Q572T",
+        "type": "message",
+        "ts": "1623150085.334800",
+        "edited": {
+            "user": "U023X4Q572T",
+            "ts": "1623150365.000000"
+        },
+        "client_msg_id": "0b69c56a-780c-4fa8-afd5-f826cf7411bf",
+        "text": "Hi guys, looking for a little assistance (bear with me as I'm still pretty new to this :slightly_smiling_face:)... I'm using Liam's very helpful error handling example script (<https:\/\/github.com\/liampauling\/betfair\/blob\/master\/examples\/examplestreamingerrhandling.py>) but I seem to have a bit on an issue in that once the loop has gone through all of the market books and starts over, it doesn't seem to be picking up updated odds from that point, like it keeps going over the stream it initially created at that point in time. Maybe this is expected behavior and there's still something I'm missing, but if there is I'd really appreciate some help figuring out what it is. I tried to move the start of the loop higher to incorporate the creation of the stream... which does work... but creates way too many logins per hour which Betfair aren't happy about. Any assistance would be hugely appreciated!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gac54419714b",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/ac54419714b907b53effc306cda80864.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0002-72.png",
+            "first_name": "",
+            "real_name": "Brian",
+            "display_name": "Brian",
+            "team": "T4G9NBD2M",
+            "name": "mike.carter86",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1623150085.334800",
+        "reply_count": 1,
+        "reply_users_count": 1,
+        "latest_reply": "1623153042.336500",
+        "reply_users": [
+            "U4H19D1D2"
+        ],
+        "replies": [
+            {
+                "user": "U4H19D1D2",
+                "ts": "1623153042.336500"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": true,
+        "last_read": "1623153042.336500",
+        "attachments": [
+            {
+                "text": "```\nimport logging\nimport queue\nimport threading\nfrom tenacity import retry, wait_exponential\n\nimport betfairlightweight\nfrom betfairlightweight import StreamListener\nfrom betfairlightweight import BetfairError\nfrom betfairlightweight.filters import (\n    streaming_market_filter,\n    streaming_market_data_filter,\n)\n\n\"\"\"\nStreaming example to handle timeouts or connection errors, \nwith reconnect.\n\nCode uses 'tenacity' library for retrying.\n\nStreaming class inherits threading module to simplify start\/\nstop.\n\"\"\"\n\n# setup logging\nlogging.basicConfig(level=<http:\/\/logging.INFO|logging.INFO>)  # change to DEBUG to see log all updates\nlogger = logging.getLogger(__name__)\n\n\nclass Streaming(threading.Thread):\n    def __init__(\n        self,\n        client: betfairlightweight.APIClient,\n        market_filter: dict,\n        market_data_filter: dict,\n        conflate_ms: int = None,\n        streaming_unique_id: int = 1000,\n    ):\n        threading.Thread.__init__(self, daemon=True, name=self.__class__.__name__)\n        self.client = client\n        self.market_filter = market_filter\n        self.market_data_filter = market_data_filter\n        self.conflate_ms = conflate_ms\n        self.streaming_unique_id = streaming_unique_id\n        self.stream = None\n        self.output_queue = queue.Queue()\n        self.listener = StreamListener(output_queue=self.output_queue)\n\n    @retry(wait=wait_exponential(multiplier=1, min=2, max=20))\n    def run(self) -&gt; None:\n        <http:\/\/logger.info|logger.info>(\"Starting MarketStreaming\")\n        self.client.login()\n        self.stream = self.client.streaming.create_stream(\n            unique_id=self.streaming_unique_id, listener=self.listener\n        )\n        try:\n            self.streaming_unique_id = self.stream.subscribe_to_markets(\n                market_filter=self.market_filter,\n                market_data_filter=self.market_data_filter,\n                conflate_ms=self.conflate_ms,\n                initial_clk=self.listener.initial_clk,  # supplying these two values allows a reconnect\n                clk=self.listener.clk,\n            )\n            self.stream.start()\n        except BetfairError:\n            logger.error(\"MarketStreaming run error\", exc_info=True)\n            raise\n        except Exception:\n            logger.critical(\"MarketStreaming run error\", exc_info=True)\n            raise\n        <http:\/\/logger.info|logger.info>(\"Stopped MarketStreaming {0}\".format(self.streaming_unique_id))\n\n    def stop(self) -&gt; None:\n        if self.stream:\n            self.stream.stop()\n\n\n# create trading instance (app key must be activated for streaming)\ntrading = betfairlightweight.APIClient(\"username\", \"password\", app_key=\"appKey\")\n\n# login\ntrading.login()\n\n# create filters (GB WIN racing)\nmarket_filter = streaming_market_filter(\n    event_type_ids=[\"7\"], country_codes=[\"GB\"], market_types=[\"WIN\"]\n)\nmarket_data_filter = streaming_market_data_filter(\n    fields=[\"EX_BEST_OFFERS\", \"EX_MARKET_DEF\"], ladder_levels=3\n)\n\n# create streaming object\nstreaming = Streaming(trading, market_filter, market_data_filter)\n\n# start streaming (runs in new thread and handles any errors)\nstreaming.start()\n\n# check for updates in output queue\nwhile True:\n    market_books = streaming.output_queue.get()\n    print(market_books)\n\n    for market_book in market_books:\n        print(\n            market_book,\n            market_book.streaming_unique_id,  # unique id of stream (returned from subscribe request)\n            market_book.streaming_update,  # json update received\n            market_book.market_definition,  # streaming definition, similar to catalogue request\n            market_book.publish_time,  # betfair publish time of update\n        )\n\n```",
+                "title": "<https:\/\/github.com\/liampauling\/betfair\/blob\/master\/examples\/examplestreamingerrhandling.py | examplestreamingerrhandling.py>",
+                "footer": "<https:\/\/github.com\/liampauling\/betfair|liampauling\/betfair>",
+                "id": 1,
+                "footer_icon": "https:\/\/slack.github.com\/static\/img\/favicon-neutral.png",
+                "color": "24292f",
+                "mrkdwn_in": [
+                    "text"
+                ],
+                "fallback": "<https:\/\/github.com\/liampauling\/betfair\/blob\/master\/examples\/examplestreamingerrhandling.py | examplestreamingerrhandling.py>",
+                "bot_id": "B021ZJYSBMW",
+                "app_unfurl_url": "https:\/\/github.com\/liampauling\/betfair\/blob\/master\/examples\/examplestreamingerrhandling.py",
+                "is_app_unfurl": true
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "LJx67",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Hi guys, looking for a little assistance (bear with me as I'm still pretty new to this "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "slightly_smiling_face",
+                                "unicode": "1f642"
+                            },
+                            {
+                                "type": "text",
+                                "text": ")... I'm using Liam's very helpful error handling example script ("
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/liampauling\/betfair\/blob\/master\/examples\/examplestreamingerrhandling.py"
+                            },
+                            {
+                                "type": "text",
+                                "text": ") but I seem to have a bit on an issue in that once the loop has gone through all of the market books and starts over, it doesn't seem to be picking up updated odds from that point, like it keeps going over the stream it initially created at that point in time. Maybe this is expected behavior and there's still something I'm missing, but if there is I'd really appreciate some help figuring out what it is. I tried to move the start of the loop higher to incorporate the creation of the stream... which does work... but creates way too many logins per hour which Betfair aren't happy about. Any assistance would be hugely appreciated!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1623153042.336500",
+        "client_msg_id": "15702819-0404-4417-80DD-9DB9BEFF339F",
+        "text": "At a guess it’s erroring on startup, logs tell you anything? It’s likely the thread \/ restart is hiding the error so remove the retry or try and catch it ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1623150085.334800",
+        "parent_user_id": "U023X4Q572T",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "buSM6",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "At a guess it’s erroring on startup, logs tell you anything? It’s likely the thread \/ restart is hiding the error so remove the retry or try and catch it "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "subtype": "channel_join",
+        "user": "U0245BMB04E",
+        "text": "<@U0245BMB04E> has joined the channel",
+        "type": "message",
+        "ts": "1623154333.336900"
+    },
+    {
+        "user": "U01LD279D16",
+        "type": "message",
+        "ts": "1623165592.340300",
+        "client_msg_id": "1c9c90ee-43da-47d7-a510-af73862d8637",
+        "text": "I've got a quick question - Is it possible to add conflate_ms to a strategy based on the price recorder example so that I don't write every book update, or do I need to remove the unwanted rows from my file after I have written everything?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g5488a29f6fb",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/5488a29f6fbcfe8df23382d16a596068.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0008-72.png",
+            "first_name": "Peter",
+            "real_name": "Peter C",
+            "display_name": "Peter C",
+            "team": "T4G9NBD2M",
+            "name": "peter.carter304",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "zy1MG",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I've got a quick question - Is it possible to add conflate_ms to a strategy based on the price recorder example so that I don't write every book update, or do I need to remove the unwanted rows from my file after I have written everything?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1623171084.340800",
+        "client_msg_id": "DE98E366-1B36-47E6-B557-62DB6814DEAC",
+        "text": "strategy init var ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "+sz",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "strategy init var "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01LD279D16",
+        "type": "message",
+        "ts": "1623171316.341500",
+        "client_msg_id": "f078232d-89f7-4303-8e4f-dadb0a05b2b9",
+        "text": "I've tried adding conflate here but still get every book update which is what's confusing me",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g5488a29f6fb",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/5488a29f6fbcfe8df23382d16a596068.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0008-72.png",
+            "first_name": "Peter",
+            "real_name": "Peter C",
+            "display_name": "Peter C",
+            "team": "T4G9NBD2M",
+            "name": "peter.carter304",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "=PJaB",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I've tried adding conflate here but still get every book update which is what's confusing me"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1623174286.341600",
+        "client_msg_id": "607162ED-0A63-4FCD-8134-9E2878F46BA1",
+        "text": "What do the logs say on the subscription?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "IzfpU",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "What do the logs say on the subscription?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01LD279D16",
+        "type": "message",
+        "ts": "1623174782.342400",
+        "client_msg_id": "bb155fc0-c813-4a69-8679-2a96daf8c57e",
+        "text": "```{\"asctime\": \"2021-06-08 17:50:21,445\", \"levelname\": \"INFO\", \"message\": \"Adding strategy PriceRecorder\"}\n{\"asctime\": \"2021-06-08 17:50:21,449\", \"levelname\": \"INFO\", \"message\": \"Creating new HistoricalStream (1000) for strategy PriceRecorder\", \"strategy\": \"PriceRecorder\", \"stream_id\": 1000, \"market_filter\": \"\/recordings\/1.183683101\", \"event_id\": \"30546561\", \"event_processing\": false}\n{\"asctime\": \"2021-06-08 17:50:21,463\", \"levelname\": \"INFO\", \"message\": \"Starting flumine\", \"client\": {\"id\": \"926cb2e8\", \"exchange\": \"Simulated\", \"betting_client\": null, \"current_transaction_count_total\": 0, \"transaction_count_total\": 0, \"trading_controls\": [\"&lt;flumine.controls.clientcontrols.MaxTransactionCount object at 0x0000015AA2F2A130&gt;\"], \"order_stream\": true, \"best_price_execution\": true, \"paper_trade\": false}, \"markets\": {\"market_count\": 0, \"open_market_count\": 0}, \"streams\": [\"&lt;HistoricalStream(HistoricalStream, initial daemon)&gt;\"], \"logging_controls\": [], \"threads\": [\"&lt;_MainThread(MainThread, started 13600)&gt;\", \"&lt;WriterThread(pydevd.Writer, started daemon 10536)&gt;\", \"&lt;ReaderThread(pydevd.Reader, started daemon 4432)&gt;\", \"&lt;_TimeoutThread(Thread-4, started daemon 12796)&gt;\", \"&lt;PyDBCommandThread(pydevd.CommandThread, started daemon 12004)&gt;\", \"&lt;CheckAliveThread(pydevd.CheckAliveThread, started 4428)&gt;\"]}```\nI can't see any mention of it in there - maybe I'm not adding it correctly?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g5488a29f6fb",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/5488a29f6fbcfe8df23382d16a596068.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0008-72.png",
+            "first_name": "Peter",
+            "real_name": "Peter C",
+            "display_name": "Peter C",
+            "team": "T4G9NBD2M",
+            "name": "peter.carter304",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Puz6+",
+                "elements": [
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "{\"asctime\": \"2021-06-08 17:50:21,445\", \"levelname\": \"INFO\", \"message\": \"Adding strategy PriceRecorder\"}\n{\"asctime\": \"2021-06-08 17:50:21,449\", \"levelname\": \"INFO\", \"message\": \"Creating new HistoricalStream (1000) for strategy PriceRecorder\", \"strategy\": \"PriceRecorder\", \"stream_id\": 1000, \"market_filter\": \"\/recordings\/1.183683101\", \"event_id\": \"30546561\", \"event_processing\": false}\n{\"asctime\": \"2021-06-08 17:50:21,463\", \"levelname\": \"INFO\", \"message\": \"Starting flumine\", \"client\": {\"id\": \"926cb2e8\", \"exchange\": \"Simulated\", \"betting_client\": null, \"current_transaction_count_total\": 0, \"transaction_count_total\": 0, \"trading_controls\": [\"<flumine.controls.clientcontrols.MaxTransactionCount object at 0x0000015AA2F2A130>\"], \"order_stream\": true, \"best_price_execution\": true, \"paper_trade\": false}, \"markets\": {\"market_count\": 0, \"open_market_count\": 0}, \"streams\": [\"<HistoricalStream(HistoricalStream, initial daemon)>\"], \"logging_controls\": [], \"threads\": [\"<_MainThread(MainThread, started 13600)>\", \"<WriterThread(pydevd.Writer, started daemon 10536)>\", \"<ReaderThread(pydevd.Reader, started daemon 4432)>\", \"<_TimeoutThread(Thread-4, started daemon 12796)>\", \"<PyDBCommandThread(pydevd.CommandThread, started daemon 12004)>\", \"<CheckAliveThread(pydevd.CheckAliveThread, started 4428)>\"]}"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I can't see any mention of it in there - maybe I'm not adding it correctly?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1623174816.342500",
+        "client_msg_id": "976BFF5E-056C-4B15-8B98-D0C8AA475969",
+        "text": "You need bflw logs ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "6S6Nm",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "You need bflw logs "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1623174835.342600",
+        "client_msg_id": "0834928B-91B2-4C90-94D5-D1C0B783F0A2",
+        "text": "Probably included after what you have posted?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "oUP8",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Probably included after what you have posted?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01LD279D16",
+        "type": "message",
+        "ts": "1623174999.343400",
+        "client_msg_id": "f776e442-8ab6-4769-b0d2-aaa792140aaf",
+        "text": "Is this what I need to be looking at?\n```{\"asctime\": \"2021-06-08 17:54:42,433\", \"levelname\": \"INFO\", \"message\": \"Starting historical market '\/recordings\/1.183683101'\", \"market\": \"\/recordings\/1.183683101\"}\n{\"asctime\": \"2021-06-08 17:54:42,435\", \"levelname\": \"INFO\", \"message\": \"[Register: 1000]: marketSubscription\"}\n{\"asctime\": \"2021-06-08 17:54:42,438\", \"levelname\": \"INFO\", \"message\": \"[MarketStream: 1000]: \\\"MarketStream\\\" created\"}\n{\"asctime\": \"2021-06-08 17:54:42,440\", \"levelname\": \"INFO\", \"message\": \"[MarketStream: 1000]: 1.183683101 added, 1 markets in cache\"}\n{\"asctime\": \"2021-06-08 17:55:39,023\", \"levelname\": \"INFO\", \"message\": \"Market 1.183683101 closed\", \"market_id\": \"1.183683101\", \"event_id\": \"30546561\", \"event_type_id\": \"7\", \"event_name\": null, \"market_type\": \"WIN\", \"market_start_datetime\": \"2021-05-23 14:15:00\", \"country_code\": \"IE\", \n\"venue\": \"Curragh\", \"race_type\": \"Flat\", \"orders_cleared\": false, \"market_cleared\": false, \"closed\": true}\n{\"asctime\": \"2021-06-08 17:55:39,028\", \"levelname\": \"INFO\", \"message\": \"Market cleared\", \"market_id\": \"1.183683101\", \"order_count\": 0, \"client\": {\"id\": \"ac3d1f03\", \"exchange\": \"Simulated\", \"betting_client\": null, \"current_transaction_count_total\": 0, \"transaction_count_total\": 0, \"trading_controls\": [\"&lt;flumine.controls.clientcontrols.MaxTransactionCount object at 0x000001DC498CB130&gt;\"], \"order_stream\": true, \"best_price_execution\": true, \"paper_trade\": false}, \"markets\": {\"market_count\": 1, \"open_market_count\": 0}, \"streams\": [\"&lt;HistoricalStream(HistoricalStream, initial daemon)&gt;\"], \"logging_controls\": [], \"threads\": [\"&lt;_MainThread(MainThread, started 14988)&gt;\", \"&lt;WriterThread(pydevd.Writer, started daemon 14100)&gt;\", \"&lt;ReaderThread(pydevd.Reader, started daemon 13280)&gt;\", \"&lt;_TimeoutThread(Thread-4, started daemon 1112)&gt;\", \"&lt;PyDBCommandThread(pydevd.CommandThread, started daemon 1512)&gt;\", \"&lt;CheckAliveThread(pydevd.CheckAliveThread, started 11800)&gt;\"]}```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g5488a29f6fb",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/5488a29f6fbcfe8df23382d16a596068.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0008-72.png",
+            "first_name": "Peter",
+            "real_name": "Peter C",
+            "display_name": "Peter C",
+            "team": "T4G9NBD2M",
+            "name": "peter.carter304",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "TBa",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Is this what I need to be looking at?\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "{\"asctime\": \"2021-06-08 17:54:42,433\", \"levelname\": \"INFO\", \"message\": \"Starting historical market '\/recordings\/1.183683101'\", \"market\": \"\/recordings\/1.183683101\"}\n{\"asctime\": \"2021-06-08 17:54:42,435\", \"levelname\": \"INFO\", \"message\": \"[Register: 1000]: marketSubscription\"}\n{\"asctime\": \"2021-06-08 17:54:42,438\", \"levelname\": \"INFO\", \"message\": \"[MarketStream: 1000]: \\\"MarketStream\\\" created\"}\n{\"asctime\": \"2021-06-08 17:54:42,440\", \"levelname\": \"INFO\", \"message\": \"[MarketStream: 1000]: 1.183683101 added, 1 markets in cache\"}\n{\"asctime\": \"2021-06-08 17:55:39,023\", \"levelname\": \"INFO\", \"message\": \"Market 1.183683101 closed\", \"market_id\": \"1.183683101\", \"event_id\": \"30546561\", \"event_type_id\": \"7\", \"event_name\": null, \"market_type\": \"WIN\", \"market_start_datetime\": \"2021-05-23 14:15:00\", \"country_code\": \"IE\", \n\"venue\": \"Curragh\", \"race_type\": \"Flat\", \"orders_cleared\": false, \"market_cleared\": false, \"closed\": true}\n{\"asctime\": \"2021-06-08 17:55:39,028\", \"levelname\": \"INFO\", \"message\": \"Market cleared\", \"market_id\": \"1.183683101\", \"order_count\": 0, \"client\": {\"id\": \"ac3d1f03\", \"exchange\": \"Simulated\", \"betting_client\": null, \"current_transaction_count_total\": 0, \"transaction_count_total\": 0, \"trading_controls\": [\"<flumine.controls.clientcontrols.MaxTransactionCount object at 0x000001DC498CB130>\"], \"order_stream\": true, \"best_price_execution\": true, \"paper_trade\": false}, \"markets\": {\"market_count\": 1, \"open_market_count\": 0}, \"streams\": [\"<HistoricalStream(HistoricalStream, initial daemon)>\"], \"logging_controls\": [], \"threads\": [\"<_MainThread(MainThread, started 14988)>\", \"<WriterThread(pydevd.Writer, started daemon 14100)>\", \"<ReaderThread(pydevd.Reader, started daemon 13280)>\", \"<_TimeoutThread(Thread-4, started daemon 1112)>\", \"<PyDBCommandThread(pydevd.CommandThread, started daemon 1512)>\", \"<CheckAliveThread(pydevd.CheckAliveThread, started 11800)>\"]}"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1623175067.343800",
+        "client_msg_id": "ED283425-70A8-44CD-AF2A-66F6E1ABCD1D",
+        "text": "Wait a minute, this is backtesting?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "sSnk",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Wait a minute, this is backtesting?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01LD279D16",
+        "type": "message",
+        "ts": "1623175129.344500",
+        "client_msg_id": "333be72c-88f0-4903-9801-02c6a0f01387",
+        "text": "Yeah, sorry - I'm writing to csv from a recorded file using the price recorder example",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g5488a29f6fb",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/5488a29f6fbcfe8df23382d16a596068.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0008-72.png",
+            "first_name": "Peter",
+            "real_name": "Peter C",
+            "display_name": "Peter C",
+            "team": "T4G9NBD2M",
+            "name": "peter.carter304",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "shiv",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Yeah, sorry - I'm writing to csv from a recorded file using the price recorder example"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1623175197.344600",
+        "client_msg_id": "C899AB6B-C061-4D43-B2FB-961FE78F4437",
+        "text": "Conflation is from betfair when using the live stream, we don’t currently have any logic for conflating the raw stream from a file. You would need to do it yourself ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "5Ulq",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Conflation is from betfair when using the live stream, we don’t currently have any logic for conflating the raw stream from a file. You would need to do it yourself "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01LD279D16",
+        "type": "message",
+        "ts": "1623175253.345900",
+        "client_msg_id": "9b79acfc-8268-484c-a1c4-e14b9809ed8c",
+        "text": "OK thanks, I can sort that. Sorry for the confusion, thanks for you help - I didn't really realise how the conflate worked.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g5488a29f6fb",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/5488a29f6fbcfe8df23382d16a596068.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0008-72.png",
+            "first_name": "Peter",
+            "real_name": "Peter C",
+            "display_name": "Peter C",
+            "team": "T4G9NBD2M",
+            "name": "peter.carter304",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Ar92z",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "OK thanks, I can sort that. Sorry for the confusion, thanks for you help - I didn't really realise how the conflate worked."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "U4H19D1D2"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "subtype": "channel_join",
+        "user": "U024BRSPXGD",
+        "text": "<@U024BRSPXGD> has joined the channel",
+        "type": "message",
+        "ts": "1623191924.346200"
+    }
+]

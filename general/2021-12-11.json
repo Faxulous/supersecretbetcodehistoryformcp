@@ -1,0 +1,507 @@
+[
+    {
+        "user": "U02P76UDUPK",
+        "type": "message",
+        "ts": "1639210513.345700",
+        "client_msg_id": "3f7ad171-8a76-4ea6-bb1c-bfb045f014e8",
+        "text": "Thanks <@U4H19D1D2> have had more of a look.  Can log in ok with bflw, but not having much joy with the flumine example as per:\n<https:\/\/github.com\/liampauling\/flumine\/blob\/master\/examples\/example.py>",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gf730db9b97c",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/f730db9b97cd15ac5aa2981a9dc43d73.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0002-72.png",
+            "first_name": "Martin",
+            "real_name": "Martin Chambers",
+            "display_name": "Martin Chambers",
+            "team": "T4G9NBD2M",
+            "name": "martinpchambers",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1639200086.345400",
+        "parent_user_id": "U02P76UDUPK",
+        "attachments": [
+            {
+                "id": 1,
+                "footer_icon": "https:\/\/slack.github.com\/static\/img\/favicon-neutral.png",
+                "color": "24292f",
+                "bot_id": "B021ZJYSBMW",
+                "app_unfurl_url": "https:\/\/github.com\/liampauling\/flumine\/blob\/master\/examples\/example.py",
+                "is_app_unfurl": true,
+                "app_id": "A01BP7R4KNY",
+                "fallback": "<https:\/\/github.com\/liampauling\/flumine\/blob\/master\/examples\/example.py | example.py>",
+                "text": "```\nimport time\nimport logging\nimport betfairlightweight\nfrom betfairlightweight.filters import streaming_market_filter\nfrom pythonjsonlogger import jsonlogger\n\nfrom flumine import Flumine, clients, BaseStrategy\nfrom flumine.order.trade import Trade\nfrom flumine.order.ordertype import LimitOrder\nfrom flumine.order.order import OrderStatus\n\nlogger = logging.getLogger()\n\ncustom_format = \"%(asctime) %(levelname) %(message)\"\nlog_handler = logging.StreamHandler()\nformatter = jsonlogger.JsonFormatter(custom_format)\nformatter.converter = time.gmtime\nlog_handler.setFormatter(formatter)\nlogger.addHandler(log_handler)\nlogger.setLevel(<http:\/\/logging.INFO|logging.INFO>)\n\n\nclass ExampleStrategy(BaseStrategy):\n    def start(self):\n        # subscribe to streams\n        print(\"starting strategy 'ExampleStrategy'\")\n\n    def check_market_book(self, market, market_book):\n        # process_market_book only executed if this returns True\n        if market_book.status != \"CLOSED\":\n            return True\n\n    def process_market_book(self, market, market_book):\n        # process marketBook object\n        for runner in market_book.runners:\n            if (\n                runner.status == \"ACTIVE\"\n                and runner.last_price_traded\n                and runner.selection_id == 11982403\n            ):\n                trade = Trade(\n                    market_id=market_book.market_id,\n                    selection_id=runner.selection_id,\n                    handicap=runner.handicap,\n                    strategy=self,\n                )\n                order = trade.create_order(\n                    side=\"LAY\", order_type=LimitOrder(price=1.01, size=2.00)\n                )\n                market.place_order(order)\n\n    def process_orders(self, market, orders):\n        for order in orders:\n            if order.status == OrderStatus.EXECUTABLE:\n                if order.elapsed_seconds and order.elapsed_seconds &gt; 5:\n                    # print(order.bet_id, order.average_price_matched, order.size_matched)\n                    if order.size_remaining == 2.00:\n                        market.cancel_order(order, size_reduction=1.51)\n                # market.update_order(order, \"PERSIST\")\n                # if order.order_type.price == 1.01 and order.size_remaining == 0.49:\n                #     market.replace_order(order, 1.02)\n                # if order.order_type.price == 1.02:\n                #     market.replace_order(order, 1.03)\n                # if order.order_type.price == 1.03:\n                #     market.replace_order(order, 1.05)\n\n\ntrading = betfairlightweight.APIClient(\"username\")\nclient = clients.BetfairClient(trading)\n\nframework = Flumine(client=client)\n\nstrategy = ExampleStrategy(\n    market_filter=streaming_market_filter(market_ids=[\"1.170378175\"]),\n)\nframework.add_strategy(strategy)\n\nframework.run()\n\n```",
+                "title": "<https:\/\/github.com\/liampauling\/flumine\/blob\/master\/examples\/example.py | example.py>",
+                "footer": "<https:\/\/github.com\/liampauling\/flumine|liampauling\/flumine>",
+                "mrkdwn_in": [
+                    "text"
+                ]
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "W=VS",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Thanks "
+                            },
+                            {
+                                "type": "user",
+                                "user_id": "U4H19D1D2"
+                            },
+                            {
+                                "type": "text",
+                                "text": " have had more of a look.  Can log in ok with bflw, but not having much joy with the flumine example as per:\n"
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/liampauling\/flumine\/blob\/master\/examples\/example.py"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U02P76UDUPK",
+        "type": "message",
+        "ts": "1639210579.346000",
+        "client_msg_id": "e2f780dd-564b-45cc-8f31-840a09840e6e",
+        "text": "Can you advise what I do for login in that script? Appreciate the help.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gf730db9b97c",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/f730db9b97cd15ac5aa2981a9dc43d73.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0002-72.png",
+            "first_name": "Martin",
+            "real_name": "Martin Chambers",
+            "display_name": "Martin Chambers",
+            "team": "T4G9NBD2M",
+            "name": "martinpchambers",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1639200086.345400",
+        "parent_user_id": "U02P76UDUPK",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "cs8",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Can you advise what I do for login in that script? Appreciate the help."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1639211734.346200",
+        "client_msg_id": "323a3d42-9353-491f-9ae3-a4fe571f52e0",
+        "text": "Flumine will handle logging in for you",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1639200086.345400",
+        "parent_user_id": "U02P76UDUPK",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "mp+j",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Flumine will handle logging in for you"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U02P76UDUPK",
+        "type": "message",
+        "ts": "1639213672.346400",
+        "client_msg_id": "34515ba4-00c2-417b-a6e5-2bebf848e1c0",
+        "text": "Ok, thanks <@UBS7QANF3>.  Do you have an example of logging in through Flumine?  I am not using certificates at the moment.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gf730db9b97c",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/f730db9b97cd15ac5aa2981a9dc43d73.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0002-72.png",
+            "first_name": "Martin",
+            "real_name": "Martin Chambers",
+            "display_name": "Martin Chambers",
+            "team": "T4G9NBD2M",
+            "name": "martinpchambers",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1639200086.345400",
+        "parent_user_id": "U02P76UDUPK",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "vyi",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Ok, thanks "
+                            },
+                            {
+                                "type": "user",
+                                "user_id": "UBS7QANF3"
+                            },
+                            {
+                                "type": "text",
+                                "text": ".  Do you have an example of logging in through Flumine?  I am not using certificates at the moment."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1639213816.347300",
+        "client_msg_id": "1021E47A-4E84-48D4-8C9D-897627CB2F4C",
+        "text": "Set the client to interactive_login=True",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1639200086.345400",
+        "parent_user_id": "U02P76UDUPK",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Zxsp",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Set the client to interactive_login=True"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1639213833.348000",
+        "client_msg_id": "E115E8C8-F66A-434C-9D37-90BBD765ADD5",
+        "text": "Have a search on the docs (out at the moment) ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1639200086.345400",
+        "parent_user_id": "U02P76UDUPK",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "yjc",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Have a search on the docs (out at the moment) "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U02P76UDUPK",
+        "type": "message",
+        "ts": "1639214020.348200",
+        "client_msg_id": "63f18ffa-e8bd-4cf2-b84c-55d1fb8dce5e",
+        "text": "<@U4H19D1D2> all good mate... will keep investigating",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gf730db9b97c",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/f730db9b97cd15ac5aa2981a9dc43d73.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0002-72.png",
+            "first_name": "Martin",
+            "real_name": "Martin Chambers",
+            "display_name": "Martin Chambers",
+            "team": "T4G9NBD2M",
+            "name": "martinpchambers",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1639200086.345400",
+        "parent_user_id": "U02P76UDUPK",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Ean",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "user",
+                                "user_id": "U4H19D1D2"
+                            },
+                            {
+                                "type": "text",
+                                "text": " all good mate... will keep investigating"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "subtype": "channel_join",
+        "user": "U02QFFJ0S6Q",
+        "text": "<@U02QFFJ0S6Q> has joined the channel",
+        "type": "message",
+        "ts": "1639219450.348500"
+    },
+    {
+        "subtype": "channel_join",
+        "user": "U02QFK1PC84",
+        "text": "<@U02QFK1PC84> has joined the channel",
+        "type": "message",
+        "ts": "1639228320.348800"
+    },
+    {
+        "user": "U016TGY3676",
+        "type": "message",
+        "ts": "1639231973.348900",
+        "client_msg_id": "af735f33-65ee-4299-9d5d-7a8b37d87bdd",
+        "text": "<@U02P76UDUPK> I'd recommend getting the Flumine marketrecorder example running first as it's a useful exercise to get login working and saving market data will benefit you for backtesting and analysis at a later date.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6a681220e11",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6a681220e11c1a2ed3685375d658dadb.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0001-72.png",
+            "first_name": "",
+            "real_name": "birchy",
+            "display_name": "birchy",
+            "team": "T4G9NBD2M",
+            "name": "birchy",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1639200086.345400",
+        "parent_user_id": "U02P76UDUPK",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "alHM\/",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "user",
+                                "user_id": "U02P76UDUPK"
+                            },
+                            {
+                                "type": "text",
+                                "text": " I'd recommend getting the Flumine marketrecorder example running first as it's a useful exercise to get login working and saving market data will benefit you for backtesting and analysis at a later date."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "100",
+                "users": [
+                    "U9JHLMZB4"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "subtype": "channel_join",
+        "user": "U02QFPDNC3W",
+        "text": "<@U02QFPDNC3W> has joined the channel",
+        "type": "message",
+        "ts": "1639237361.349300"
+    },
+    {
+        "subtype": "channel_join",
+        "user": "U02QDJCK3NW",
+        "text": "<@U02QDJCK3NW> has joined the channel",
+        "type": "message",
+        "ts": "1639243425.349500"
+    },
+    {
+        "subtype": "channel_join",
+        "user": "U02QDLFCYHG",
+        "text": "<@U02QDLFCYHG> has joined the channel",
+        "type": "message",
+        "ts": "1639247734.349700"
+    },
+    {
+        "subtype": "channel_join",
+        "user": "U02Q78YLJK0",
+        "text": "<@U02Q78YLJK0> has joined the channel",
+        "type": "message",
+        "ts": "1639269475.349900"
+    },
+    {
+        "user": "U02P76UDUPK",
+        "type": "message",
+        "ts": "1639269724.350000",
+        "client_msg_id": "d0e0e4ff-8443-4ae7-ad82-c3a31992c4a0",
+        "text": "<@U016TGY3676> OK, thanks for that Birchy.  Having some success, but looks like I need to have certs installed (was trying to do it without it to get rolling.  The error message is: Exception: [WinError 3] The system cannot find the path specified: '\/certs\/'",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gf730db9b97c",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/f730db9b97cd15ac5aa2981a9dc43d73.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0002-72.png",
+            "first_name": "Martin",
+            "real_name": "Martin Chambers",
+            "display_name": "Martin Chambers",
+            "team": "T4G9NBD2M",
+            "name": "martinpchambers",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1639200086.345400",
+        "parent_user_id": "U02P76UDUPK",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "2Je9",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "user",
+                                "user_id": "U016TGY3676"
+                            },
+                            {
+                                "type": "text",
+                                "text": " OK, thanks for that Birchy.  Having some success, but looks like I need to have certs installed (was trying to do it without it to get rolling.  The error message is: Exception: [WinError 3] The system cannot find the path specified: '\/certs\/'"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1639292328.352100",
+        "edited": {
+            "user": "UBS7QANF3",
+            "ts": "1639292335.000000"
+        },
+        "client_msg_id": "7CBE7ECD-2406-4E32-A943-20F97E8935E8",
+        "text": "By default bflw will look in the \/certs directory for your certificate and private key files. If you want to change this then edit the line where you construct the APIClient",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1639200086.345400",
+        "parent_user_id": "U02P76UDUPK",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "CIBo2",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "By default bflw will look in the \/certs directory for your certificate and private key files. If you want to change this then edit the line where you construct the APIClient"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

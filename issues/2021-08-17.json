@@ -1,0 +1,898 @@
+[
+    {
+        "user": "U01SCPDTV5J",
+        "type": "message",
+        "ts": "1629199637.177500",
+        "client_msg_id": "4393d84e-7c65-4405-bc08-eb38a6243ebb",
+        "text": "Hi everyone, I hope that this is the right place for this question.\n\nI believe that my backtests are running much slower than they are supposed to after reading some of the posts here. <@U4H19D1D2> mentioned that Flumine is capable of running 1000's markets a minute out of the box, and I am getting something more like 1 market per second or worse.\n\nTo check what was is going on I am running a slightly modified flumine example `backtest.py` (added `\"listener_kwargs\"` and removed logging to speed things up).\n\n```import time\n\nfrom flumine import FlumineBacktest, clients\nfrom strategies.lowestlayer import LowestLayer\n\nclient = clients.BacktestClient()\n\nframework = FlumineBacktest(client=client)\nmarkets = ['data\/1.181018785', 'data\/1.181018790', 'data\/1.181018780', 'data\/1.181018795']\n\nstrategy = LowestLayer(\n    market_filter={\"markets\": markets,\n\t\"listener_kwargs\": {\"inplay\": False, \"seconds_to_start\": 600}},\n    max_order_exposure=1000,\n    max_selection_exposure=105,\n    context={\"stake\": 2},\n)\n\nframework.add_strategy(strategy)\n\nstart = time.process_time()\nframework.run()\nend = time.process_time()\n\nprint(\"time taken: \", end-start)```\nOutput:\n`time taken:  10.760373999999999`\n\nI have run this on two machines now, one is a 2017 Macbook Pro, the other is a pretty beefy Desktop rig with an intel 9600k CPU and 16GB of RAM. Both have similar results.\n\nAppreciate if anyone knows whether this is expected or if I am not set up correctly. Thanks!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "4db627cf9e3e",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2021-09-07\/2464604515811_4db627cf9e3ea5713217_72.jpg",
+            "first_name": "Jack",
+            "real_name": "Jack Rickards",
+            "display_name": "Jack",
+            "team": "T4G9NBD2M",
+            "name": "jack.rickards",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "mWjF",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Hi everyone, I hope that this is the right place for this question.\n\nI believe that my backtests are running much slower than they are supposed to after reading some of the posts here. "
+                            },
+                            {
+                                "type": "user",
+                                "user_id": "U4H19D1D2"
+                            },
+                            {
+                                "type": "text",
+                                "text": " mentioned that Flumine is capable of running 1000's markets a minute out of the box, and I am getting something more like 1 market per second or worse.\n\nTo check what was is going on I am running a slightly modified flumine example "
+                            },
+                            {
+                                "type": "text",
+                                "text": "backtest.py",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " (added "
+                            },
+                            {
+                                "type": "text",
+                                "text": "\"listener_kwargs\"",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " and removed logging to speed things up).\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "import time\n\nfrom flumine import FlumineBacktest, clients\nfrom strategies.lowestlayer import LowestLayer\n\nclient = clients.BacktestClient()\n\nframework = FlumineBacktest(client=client)\nmarkets = ['data\/1.181018785', 'data\/1.181018790', 'data\/1.181018780', 'data\/1.181018795']\n\nstrategy = LowestLayer(\n    market_filter={\"markets\": markets,\n\t\"listener_kwargs\": {\"inplay\": False, \"seconds_to_start\": 600}},\n    max_order_exposure=1000,\n    max_selection_exposure=105,\n    context={\"stake\": 2},\n)\n\nframework.add_strategy(strategy)\n\nstart = time.process_time()\nframework.run()\nend = time.process_time()\n\nprint(\"time taken: \", end-start)"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\nOutput:\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "time taken:  10.760373999999999",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n\nI have run this on two machines now, one is a 2017 Macbook Pro, the other is a pretty beefy Desktop rig with an intel 9600k CPU and 16GB of RAM. Both have similar results.\n\nAppreciate if anyone knows whether this is expected or if I am not set up correctly. Thanks!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1629199782.178100",
+        "client_msg_id": "e57d7463-f03c-4b4c-94c8-4d3f1cb80465",
+        "text": "1000 markets is about 10 minutes for me (UK inplay only) but this is with 8 cores",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "xgM14",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "1000 markets is about 10 minutes for me (UK inplay only) but this is with 8 cores"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01SCPDTV5J",
+        "type": "message",
+        "ts": "1629200835.181400",
+        "client_msg_id": "58bf4550-a932-48d2-bd75-f9986017d431",
+        "text": "Thanks <@U4H19D1D2> -  mine doesn’t seem too bad in that case. If you were on a single core then you would be averaging 4.8seconds per market which is closer to what I have been seeing.\nPanic over, thanks!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "4db627cf9e3e",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2021-09-07\/2464604515811_4db627cf9e3ea5713217_72.jpg",
+            "first_name": "Jack",
+            "real_name": "Jack Rickards",
+            "display_name": "Jack",
+            "team": "T4G9NBD2M",
+            "name": "jack.rickards",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "FQO2J",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Thanks "
+                            },
+                            {
+                                "type": "user",
+                                "user_id": "U4H19D1D2"
+                            },
+                            {
+                                "type": "text",
+                                "text": " -  mine doesn’t seem too bad in that case. If you were on a single core then you would be averaging 4.8seconds per market which is closer to what I have been seeing.\nPanic over, thanks!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01SCPDTV5J",
+        "type": "message",
+        "ts": "1629201155.185400",
+        "edited": {
+            "user": "U01SCPDTV5J",
+            "ts": "1629201188.000000"
+        },
+        "client_msg_id": "aa402de4-db79-45c8-be1c-f48a1ce552df",
+        "text": "On another note I did notice some odd behaviour when adding multiple strategies to one framework. If I run the below code and call `add_strategy()` twice, it seems to only run the first strategy that is added.\n```...\n# first strat should take longer\nstrategy = LowestLayer(\n    market_filter={\"markets\": markets},\n    max_order_exposure=1000,\n    max_selection_exposure=105,\n    context={\"stake\": 2},\n)\n# second strat should be faster\nstrategy2 = LowestLayer(\n    market_filter={\"markets\": markets,\n\t\"listener_kwargs\": {\"inplay\": False, \"seconds_to_start\": 600}},\n    max_order_exposure=1000,\n    max_selection_exposure=105,\n    context={\"stake\": 2},\n)\n\n# add both strats\nframework.add_strategy(strategy)\nframework.add_strategy(strategy2)\n\n# run framework\nstart = time.process_time()\nframework.run()\nend = time.process_time()\n...```\nwhen adding the strategies in this order it takes 20seconds (same time as only running ‘strategy’)\n```framework.add_strategy(strategy)\nframework.add_strategy(strategy2)```\nhowever in this order it takes 10seconds (same time as only running ‘strategy2’)\n```framework.add_strategy(strategy2)\nframework.add_strategy(strategy)```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "4db627cf9e3e",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2021-09-07\/2464604515811_4db627cf9e3ea5713217_72.jpg",
+            "first_name": "Jack",
+            "real_name": "Jack Rickards",
+            "display_name": "Jack",
+            "team": "T4G9NBD2M",
+            "name": "jack.rickards",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "gUmJ",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "On another note I did notice some odd behaviour when adding multiple strategies to one framework. If I run the below code and call "
+                            },
+                            {
+                                "type": "text",
+                                "text": "add_strategy()",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " twice, it seems to only run the first strategy that is added.\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "...\n# first strat should take longer\nstrategy = LowestLayer(\n    market_filter={\"markets\": markets},\n    max_order_exposure=1000,\n    max_selection_exposure=105,\n    context={\"stake\": 2},\n)\n# second strat should be faster\nstrategy2 = LowestLayer(\n    market_filter={\"markets\": markets,\n\t\"listener_kwargs\": {\"inplay\": False, \"seconds_to_start\": 600}},\n    max_order_exposure=1000,\n    max_selection_exposure=105,\n    context={\"stake\": 2},\n)\n\n# add both strats\nframework.add_strategy(strategy)\nframework.add_strategy(strategy2)\n\n# run framework\nstart = time.process_time()\nframework.run()\nend = time.process_time()\n..."
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\nwhen adding the strategies in this order it takes 20seconds (same time as only running ‘strategy’)\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "framework.add_strategy(strategy)\nframework.add_strategy(strategy2)"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "however in this order it takes 10seconds (same time as only running ‘strategy2’)\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "framework.add_strategy(strategy2)\nframework.add_strategy(strategy)"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UUCD6P13J",
+        "type": "message",
+        "ts": "1629201533.186800",
+        "client_msg_id": "be56bac3-9ed8-48ef-90a9-0a3d95c96f61",
+        "text": "I'm guessing that's probably something todo with the listener_kwargs from whichever strategy is first",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6898272ab81",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6898272ab810e419c2c9ca9af1e53da8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0012-72.png",
+            "first_name": "Lee",
+            "real_name": "Lee U",
+            "display_name": "Lee",
+            "team": "T4G9NBD2M",
+            "name": "lunswor",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "yNXE",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I'm guessing that's probably something todo with the listener_kwargs from whichever strategy is first"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "bulb",
+                "users": [
+                    "U01SCPDTV5J"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1629201570.187200",
+        "client_msg_id": "4202bfa0-4ed8-482e-a14f-da0f5270914b",
+        "text": "yep thats a bug, can you create an issue so it doesnt get lost?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "d8FRi",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "yep thats a bug, can you create an issue so it doesnt get lost?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01SCPDTV5J",
+        "type": "message",
+        "ts": "1629202166.187500",
+        "client_msg_id": "93769615-9613-4401-9ad6-59dc56d46298",
+        "text": "Sure thing",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "4db627cf9e3e",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2021-09-07\/2464604515811_4db627cf9e3ea5713217_72.jpg",
+            "first_name": "Jack",
+            "real_name": "Jack Rickards",
+            "display_name": "Jack",
+            "team": "T4G9NBD2M",
+            "name": "jack.rickards",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "PSRcB",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Sure thing"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01SCPDTV5J",
+        "type": "message",
+        "ts": "1629202379.187700",
+        "client_msg_id": "413ab186-336c-47ee-b187-97524011dadb",
+        "text": "<https:\/\/github.com\/liampauling\/flumine\/issues\/478>",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "4db627cf9e3e",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2021-09-07\/2464604515811_4db627cf9e3ea5713217_72.jpg",
+            "first_name": "Jack",
+            "real_name": "Jack Rickards",
+            "display_name": "Jack",
+            "team": "T4G9NBD2M",
+            "name": "jack.rickards",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "attachments": [
+            {
+                "text": "```\n# first strat should take longer\nstrategy = LowestLayer(\n    market_filter={\"markets\": markets},\n    max_order_exposure=1000,\n    max_selection_exposure=105,\n    context={\"stake\": 2},\n)\n# second strat should be faster\nstrategy2 = LowestLayer(\n    market_filter={\"markets\": markets,\n\t\"listener_kwargs\": {\"inplay\": False, \"seconds_to_start\": 600}},\n    max_order_exposure=1000,\n    max_selection_exposure=105,\n    context={\"stake\": 2},\n)\n\n# add both strats\nframework.add_strategy(strategy)\nframework.add_strategy(strategy2)\n\n# run framework\nstart = time.process_time()\nframework.run()\nend = time.process_time()\n```\n\nwhen adding the strategies in this order it takes 20seconds (same time as only running ‘strategy’)\n\n```\nframework.add_strategy(strategy)\nframework.add_strategy(strategy2)\n```\n\nhowever in this order it takes 10seconds (same time as only running ‘strategy2’)\n\n```\nframework.add_strategy(strategy2)\nframework.add_strategy(strategy)\n```\n\nPotentiall issue caused by setting of \"listener_kwargs\", not reset in the second strategy.",
+                "title": "<https:\/\/github.com\/liampauling\/flumine\/issues\/478|#478 Inconsistent behaviour when running framework with multiple added strategies>",
+                "footer": "<https:\/\/github.com\/liampauling\/flumine|liampauling\/flumine>",
+                "id": 1,
+                "footer_icon": "https:\/\/slack.github.com\/static\/img\/favicon-neutral.png",
+                "ts": 1629202361,
+                "color": "36a64f",
+                "mrkdwn_in": [
+                    "text"
+                ],
+                "fallback": "<https:\/\/github.com\/liampauling\/flumine\/issues\/478|#478 Inconsistent behaviour when running framework with multiple added strategies>",
+                "bot_id": "B021ZJYSBMW",
+                "app_unfurl_url": "https:\/\/github.com\/liampauling\/flumine\/issues\/478",
+                "is_app_unfurl": true
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Jjcx",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/liampauling\/flumine\/issues\/478"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "raised_hands",
+                "users": [
+                    "U4H19D1D2"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "U01LD279D16",
+        "type": "message",
+        "ts": "1629203048.191300",
+        "client_msg_id": "28a63478-967c-4bda-b825-8edda564526f",
+        "text": "I think it was <@UPMUFSGCR> who posted a backtesting file that implements threading. I use a modified version of this file which speeds backtesting up a lot. If you have a search I'm sure you'll find it if you haven't already seen it <@U01SCPDTV5J>",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g5488a29f6fb",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/5488a29f6fbcfe8df23382d16a596068.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0008-72.png",
+            "first_name": "Peter",
+            "real_name": "Peter C",
+            "display_name": "Peter C",
+            "team": "T4G9NBD2M",
+            "name": "peter.carter304",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1629203048.191300",
+        "reply_count": 6,
+        "reply_users_count": 4,
+        "latest_reply": "1629203741.192800",
+        "reply_users": [
+            "U4H19D1D2",
+            "U01LD279D16",
+            "U01SCPDTV5J",
+            "UPMUFSGCR"
+        ],
+        "replies": [
+            {
+                "user": "U4H19D1D2",
+                "ts": "1629203409.191800"
+            },
+            {
+                "user": "U01LD279D16",
+                "ts": "1629203480.192000"
+            },
+            {
+                "user": "U01SCPDTV5J",
+                "ts": "1629203613.192200"
+            },
+            {
+                "user": "U01LD279D16",
+                "ts": "1629203670.192400"
+            },
+            {
+                "user": "UPMUFSGCR",
+                "ts": "1629203677.192600"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1629203741.192800"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": true,
+        "last_read": "1629203741.192800",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "EmPt",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I think it was "
+                            },
+                            {
+                                "type": "user",
+                                "user_id": "UPMUFSGCR"
+                            },
+                            {
+                                "type": "text",
+                                "text": " who posted a backtesting file that implements threading. I use a modified version of this file which speeds backtesting up a lot. If you have a search I'm sure you'll find it if you haven't already seen it "
+                            },
+                            {
+                                "type": "user",
+                                "user_id": "U01SCPDTV5J"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "text": "Got it <@U01LD279D16> thanks - <https:\/\/betfairlightweight.slack.com\/files\/UPMUFSGCR\/F013J0H5F3M\/backtest_multi.py>",
+        "files": [
+            {
+                "id": "F013J0H5F3M",
+                "created": 1589315889,
+                "timestamp": 1589315889,
+                "name": "backtest_multi.py",
+                "title": "backtest_multi.py",
+                "mimetype": "text\/plain",
+                "filetype": "python",
+                "pretty_type": "Python",
+                "user": "UPMUFSGCR",
+                "user_team": "T4G9NBD2M",
+                "editable": true,
+                "size": 2553,
+                "mode": "snippet",
+                "is_external": false,
+                "external_type": "",
+                "is_public": true,
+                "public_url_shared": false,
+                "display_as_bot": false,
+                "username": "",
+                "url_private": "https:\/\/files.slack.com\/files-pri\/T4G9NBD2M-F013J0H5F3M\/backtest_multi.py?t=xoxe-152328387089-8357743338709-8373272928225-dfe8ebcd8ca3d2f633bcafeb95191840",
+                "url_private_download": "https:\/\/files.slack.com\/files-pri\/T4G9NBD2M-F013J0H5F3M\/download\/backtest_multi.py?t=xoxe-152328387089-8357743338709-8373272928225-dfe8ebcd8ca3d2f633bcafeb95191840",
+                "permalink": "https:\/\/betcode-org.slack.com\/files\/UPMUFSGCR\/F013J0H5F3M\/backtest_multi.py",
+                "permalink_public": "https:\/\/slack-files.com\/T4G9NBD2M-F013J0H5F3M-f520f6ee1a",
+                "edit_link": "https:\/\/betcode-org.slack.com\/files\/UPMUFSGCR\/F013J0H5F3M\/backtest_multi.py\/edit",
+                "is_starred": false,
+                "has_rich_preview": false,
+                "file_access": "visible"
+            }
+        ],
+        "upload": false,
+        "user": "U01SCPDTV5J",
+        "display_as_bot": false,
+        "x_files": [
+            "F013J0H5F3M"
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "va8",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Got it "
+                            },
+                            {
+                                "type": "user",
+                                "user_id": "U01LD279D16"
+                            },
+                            {
+                                "type": "text",
+                                "text": " thanks - "
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/betfairlightweight.slack.com\/files\/UPMUFSGCR\/F013J0H5F3M\/backtest_multi.py"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "type": "message",
+        "ts": "1629203258.191600",
+        "client_msg_id": "281c846d-1d13-4491-95e6-ef33430bef3d"
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1629203409.191800",
+        "client_msg_id": "f42ce739-1531-491d-a5be-92152b85734a",
+        "text": "*processing, the blocker is CPU\/GIL when it comes to processing the files, sadly threading won't speed this up",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1629203048.191300",
+        "parent_user_id": "U01LD279D16",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "0e7k",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "*processing, the blocker is CPU\/GIL when it comes to processing the files, sadly threading won't speed this up"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01LD279D16",
+        "type": "message",
+        "ts": "1629203480.192000",
+        "client_msg_id": "663a9d2d-1f92-467b-b45d-2dcf0a88b90e",
+        "text": "Sorry, lack of knowledge, thanks for clarifying. Tbh it's beyond me at the moment but faster file is faster file",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g5488a29f6fb",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/5488a29f6fbcfe8df23382d16a596068.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0008-72.png",
+            "first_name": "Peter",
+            "real_name": "Peter C",
+            "display_name": "Peter C",
+            "team": "T4G9NBD2M",
+            "name": "peter.carter304",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1629203048.191300",
+        "parent_user_id": "U01LD279D16",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "4b=9x",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Sorry, lack of knowledge, thanks for clarifying. Tbh it's beyond me at the moment but faster file is faster file"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01SCPDTV5J",
+        "type": "message",
+        "ts": "1629203613.192200",
+        "client_msg_id": "bdde0461-8055-4f7f-a8f5-599e9faa6a2c",
+        "text": "<@U01LD279D16> rule of thumb is:\nwhen CPU bound, use multi processing (this case)\nwhen IO bound, use multi threading (something like web-scraping waiting for http requests to come in)",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "4db627cf9e3e",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2021-09-07\/2464604515811_4db627cf9e3ea5713217_72.jpg",
+            "first_name": "Jack",
+            "real_name": "Jack Rickards",
+            "display_name": "Jack",
+            "team": "T4G9NBD2M",
+            "name": "jack.rickards",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1629203048.191300",
+        "parent_user_id": "U01LD279D16",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "wCJkU",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "user",
+                                "user_id": "U01LD279D16"
+                            },
+                            {
+                                "type": "text",
+                                "text": " rule of thumb is:\nwhen CPU bound, use multi processing (this case)\nwhen IO bound, use multi threading (something like web-scraping waiting for http requests to come in)"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "U025C059DA9"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "U01LD279D16",
+        "type": "message",
+        "ts": "1629203670.192400",
+        "client_msg_id": "a06d2cdc-6546-4cda-a6aa-268c6c1434a6",
+        "text": "Thanks <@U01SCPDTV5J> - I'm learning as I go so appreciate this",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g5488a29f6fb",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/5488a29f6fbcfe8df23382d16a596068.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0008-72.png",
+            "first_name": "Peter",
+            "real_name": "Peter C",
+            "display_name": "Peter C",
+            "team": "T4G9NBD2M",
+            "name": "peter.carter304",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1629203048.191300",
+        "parent_user_id": "U01LD279D16",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "emR",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Thanks "
+                            },
+                            {
+                                "type": "user",
+                                "user_id": "U01SCPDTV5J"
+                            },
+                            {
+                                "type": "text",
+                                "text": " - I'm learning as I go so appreciate this"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UPMUFSGCR",
+        "type": "message",
+        "ts": "1629203677.192600",
+        "client_msg_id": "6cccb75d-1b28-4531-ad61-e858cd04b98e",
+        "text": "I'm feeling a bit nervous at people using the multi-processing example I posted a few months ago. It's actually got a huge memory leak. Testing on a machine with 16 physical cores\/32 threads, 32GB RAM, it will run out of RAM if you try to backtest 3 months of horse racing data.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "31c0bb5a442c",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2019-10-28\/812386967189_31c0bb5a442c5b8d2c61_72.png",
+            "first_name": "Jon",
+            "real_name": "Jon Jon Jon Jon Jon Jon Jon Jon",
+            "display_name": "Jonjonjon",
+            "team": "T4G9NBD2M",
+            "name": "fcmisc",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1629203048.191300",
+        "parent_user_id": "U01LD279D16",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "g\/yj",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I'm feeling a bit nervous at people using the multi-processing example I posted a few months ago. It's actually got a huge memory leak. Testing on a machine with 16 physical cores\/32 threads, 32GB RAM, it will run out of RAM if you try to backtest 3 months of horse racing data."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1629203741.192800",
+        "client_msg_id": "818327da-cb67-4481-997e-fda3e715cd58",
+        "text": "yeah ideally split the number markets, i limit to 8 i think per run but then you need to handle the output",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1629203048.191300",
+        "parent_user_id": "U01LD279D16",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "mPc\/\/",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "yeah ideally split the number markets, i limit to 8 i think per run but then you need to handle the output"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "subtype": "channel_join",
+        "user": "U02BDQG2JLV",
+        "text": "<@U02BDQG2JLV> has joined the channel",
+        "type": "message",
+        "ts": "1629228412.193200"
+    }
+]

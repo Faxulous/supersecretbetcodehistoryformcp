@@ -1,0 +1,859 @@
+[
+    {
+        "user": "UQL0QDEKA",
+        "type": "message",
+        "ts": "1693218688.187959",
+        "client_msg_id": "02259d6c-a535-45ea-adbb-ab19e9d3ffa0",
+        "text": "Morning All,\nI asked ChatGPT this question :\n_I have a C# program that I run on a local PC._\n_Id like to run it on a virtual server (AWS)_\n_What's the easiest way to package the program and all its dependencies into a single bundle that I can easily deploy on a virtual server_\n_Can you make suggestions_\n\nit replied as follows :\n\nCertainly! Packaging a C# program along with its dependencies for deployment on a virtual server can be accomplished in a variety of ways. Here are some common methods:\n1. Publish as Self-Contained Deployment\nA self-contained deployment (SCD) includes everything needed to run your application: the .NET runtime, .NET libraries, and your application and its dependencies. This method is advantageous because it isolates your application from any .NET changes on the system.\nSteps:\n1. Open your project in Visual Studio or use the command line.\n2. Publish your project as a self-contained deployment.\nUsing Visual Studio:\n• Right-click the project -&gt; Publish -&gt; Choose \"Folder\" -&gt; Set Deployment Mode to \"Self-contained\" -&gt; Publish\nUsing Command Line:\n```bash\n\ndotnet publish -c Release -r &lt;RUNTIME_IDENTIFIER&gt; --self-contained true ```\nReplace `&lt;RUNTIME_IDENTIFIER&gt;` with the runtime identifier for your target system, like `win-x64` for a 64-bit Windows OS.\n2. Publish as Single File\n.NET 5 and .NET Core 3.1 introduced the option to package your application as a single file.\nSteps:\n1. Open your project in Visual Studio or use the command line.\n2. Publish your project as a single file.\nUsing Visual Studio:\n• Right-click the project -&gt; Publish -&gt; Choose \"Folder\" -&gt; Enable \"Produce Single File\" -&gt; Publish\nUsing Command Line:\n```bash\n\ndotnet publish -c Release -r &lt;RUNTIME_IDENTIFIER&gt; \/p:PublishSingleFile=true ```\n3. Use Docker\nIf your virtual server supports Docker, this could be another straightforward option. You can package your application as a Docker container, which would include everything needed to run it.\nDockerfile example:\n```Dockerfile\n\n# Use the official image as a parent image FROM <http:\/\/mcr.microsoft.com\/dotnet\/aspnet:5.0|mcr.microsoft.com\/dotnet\/aspnet:5.0> AS base WORKDIR \/app EXPOSE 80 # Use SDK image to build the app FROM <http:\/\/mcr.microsoft.com\/dotnet\/sdk:5.0|mcr.microsoft.com\/dotnet\/sdk:5.0> AS build WORKDIR \/src COPY [\"YourApp\/YourApp.csproj\", \"YourApp\/\"] RUN dotnet restore \"YourApp\/YourApp.csproj\" COPY . . WORKDIR \"\/src\/YourApp\" RUN dotnet build \"YourApp.csproj\" -c Release -o \/app\/build FROM build AS publish RUN dotnet publish \"YourApp.csproj\" -c Release -o \/app\/publish FROM base AS final WORKDIR \/app COPY --from=publish \/app\/publish . ENTRYPOINT [\"dotnet\", \"YourApp.dll\"] ```\nThen you can build and run the Docker image.\n```bash\n\ndocker build -t your-app . docker run -p 80:80 your-app```\nTo those of you who live and breath this stuff; which method would you recommend? I'll work it out myself if someone can give me a steer please. Thanks",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g444d10128c0",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/444d10128c0aaf094041a52a76796602.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0005-72.png",
+            "first_name": "Peter",
+            "real_name": "Peter Lenagh",
+            "display_name": "PeterLe",
+            "team": "T4G9NBD2M",
+            "name": "lenagh",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1693218688.187959",
+        "reply_count": 8,
+        "reply_users_count": 3,
+        "latest_reply": "1693220080.750429",
+        "reply_users": [
+            "UUE6E1LA1",
+            "UQL0QDEKA",
+            "U01D23DDMTQ"
+        ],
+        "replies": [
+            {
+                "user": "UUE6E1LA1",
+                "ts": "1693218829.471319"
+            },
+            {
+                "user": "UQL0QDEKA",
+                "ts": "1693219076.340579"
+            },
+            {
+                "user": "UUE6E1LA1",
+                "ts": "1693219282.177879"
+            },
+            {
+                "user": "U01D23DDMTQ",
+                "ts": "1693219557.835709"
+            },
+            {
+                "user": "UQL0QDEKA",
+                "ts": "1693219562.890749"
+            },
+            {
+                "user": "U01D23DDMTQ",
+                "ts": "1693219616.664919"
+            },
+            {
+                "user": "UQL0QDEKA",
+                "ts": "1693219689.379979"
+            },
+            {
+                "user": "U01D23DDMTQ",
+                "ts": "1693220080.750429"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": false,
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "yKb",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Morning All,\nI asked ChatGPT this question :\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "I have a C# program that I run on a local PC.",
+                                "style": {
+                                    "italic": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "Id like to run it on a virtual server (AWS)",
+                                "style": {
+                                    "italic": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "What's the easiest way to package the program and all its dependencies into a single bundle that I can easily deploy on a virtual server",
+                                "style": {
+                                    "italic": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "Can you make suggestions",
+                                "style": {
+                                    "italic": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n\nit replied as follows :\n\nCertainly! Packaging a C# program along with its dependencies for deployment on a virtual server can be accomplished in a variety of ways. Here are some common methods:\n1. Publish as Self-Contained Deployment\nA self-contained deployment (SCD) includes everything needed to run your application: the .NET runtime, .NET libraries, and your application and its dependencies. This method is advantageous because it isolates your application from any .NET changes on the system.\nSteps:\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_list",
+                        "elements": [
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "Open your project in Visual Studio or use the command line."
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "Publish your project as a self-contained deployment."
+                                    }
+                                ]
+                            }
+                        ],
+                        "style": "ordered",
+                        "indent": 0,
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Using Visual Studio:\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_list",
+                        "elements": [
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "Right-click the project -> Publish -> Choose \"Folder\" -> Set Deployment Mode to \"Self-contained\" -> Publish"
+                                    }
+                                ]
+                            }
+                        ],
+                        "style": "bullet",
+                        "indent": 0,
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Using Command Line:\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "bash\n\ndotnet publish -c Release -r <RUNTIME_IDENTIFIER> --self-contained true "
+                            }
+                        ],
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Replace "
+                            },
+                            {
+                                "type": "text",
+                                "text": "<RUNTIME_IDENTIFIER>",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " with the runtime identifier for your target system, like "
+                            },
+                            {
+                                "type": "text",
+                                "text": "win-x64",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " for a 64-bit Windows OS.\n2. Publish as Single File\n.NET 5 and .NET Core 3.1 introduced the option to package your application as a single file.\nSteps:\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_list",
+                        "elements": [
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "Open your project in Visual Studio or use the command line."
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "Publish your project as a single file."
+                                    }
+                                ]
+                            }
+                        ],
+                        "style": "ordered",
+                        "indent": 0,
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Using Visual Studio:\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_list",
+                        "elements": [
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "Right-click the project -> Publish -> Choose \"Folder\" -> Enable \"Produce Single File\" -> Publish"
+                                    }
+                                ]
+                            }
+                        ],
+                        "style": "bullet",
+                        "indent": 0,
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Using Command Line:\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "bash\n\ndotnet publish -c Release -r <RUNTIME_IDENTIFIER> \/p:PublishSingleFile=true "
+                            }
+                        ],
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "3. Use Docker\nIf your virtual server supports Docker, this could be another straightforward option. You can package your application as a Docker container, which would include everything needed to run it.\nDockerfile example:\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Dockerfile\n\n# Use the official image as a parent image FROM mcr.microsoft.com\/dotnet\/aspnet:5.0 AS base WORKDIR \/app EXPOSE 80 # Use SDK image to build the app FROM mcr.microsoft.com\/dotnet\/sdk:5.0 AS build WORKDIR \/src COPY [\"YourApp\/YourApp.csproj\", \"YourApp\/\"] RUN dotnet restore \"YourApp\/YourApp.csproj\" COPY . . WORKDIR \"\/src\/YourApp\" RUN dotnet build \"YourApp.csproj\" -c Release -o \/app\/build FROM build AS publish RUN dotnet publish \"YourApp.csproj\" -c Release -o \/app\/publish FROM base AS final WORKDIR \/app COPY --from=publish \/app\/publish . ENTRYPOINT [\"dotnet\", \"YourApp.dll\"] "
+                            }
+                        ],
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Then you can build and run the Docker image.\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "bash\n\ndocker build -t your-app . docker run -p 80:80 your-app"
+                            }
+                        ],
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\nTo those of you who live and breath this stuff; which method would you recommend? I'll work it out myself if someone can give me a steer please. Thanks"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UUE6E1LA1",
+        "type": "message",
+        "ts": "1693218829.471319",
+        "client_msg_id": "4cb6767a-9f80-4fc4-943c-2fb7b0c273fd",
+        "text": "Does C# not have the option to use static linkage ?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gf53cae45edd",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/f53cae45edd7f7b67bbe98819597612e.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0017-72.png",
+            "first_name": "",
+            "real_name": "D C",
+            "display_name": "D C",
+            "team": "T4G9NBD2M",
+            "name": "oddsvantage",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1693218688.187959",
+        "parent_user_id": "UQL0QDEKA",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "KgGCt",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Does C# not have the option to use static linkage ?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UQL0QDEKA",
+        "type": "message",
+        "ts": "1693219076.340579",
+        "client_msg_id": "f11d37fa-29d0-465a-a329-af5f08484ddf",
+        "text": "Thanks for the reply; I had to google that DC!:grinning: Sorry I dont know the answer.\nMaybe someone else may have some thoughts",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g444d10128c0",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/444d10128c0aaf094041a52a76796602.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0005-72.png",
+            "first_name": "Peter",
+            "real_name": "Peter Lenagh",
+            "display_name": "PeterLe",
+            "team": "T4G9NBD2M",
+            "name": "lenagh",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1693218688.187959",
+        "parent_user_id": "UQL0QDEKA",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "BrtJ",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Thanks for the reply; I had to google that DC!"
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "grinning",
+                                "unicode": "1f600"
+                            },
+                            {
+                                "type": "text",
+                                "text": " Sorry I dont know the answer.\nMaybe someone else may have some thoughts"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UUE6E1LA1",
+        "type": "message",
+        "ts": "1693219282.177879",
+        "client_msg_id": "d3783068-643c-42f1-b083-66baef09d2b8",
+        "text": "If you can build your application statically that should solve any issues you have as to dependencies on the target. You'll get a bloated executable size but these days people don't seem to much care about that. There are potential downsides of course (like when you need to include an update of a dependency) but everything has pros and cons. I don't know how similar C# is to C\/C++ at a build level though so might not be possible anyway.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gf53cae45edd",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/f53cae45edd7f7b67bbe98819597612e.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0017-72.png",
+            "first_name": "",
+            "real_name": "D C",
+            "display_name": "D C",
+            "team": "T4G9NBD2M",
+            "name": "oddsvantage",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1693218688.187959",
+        "parent_user_id": "UQL0QDEKA",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "fT4",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "If you can build your application statically that should solve any issues you have as to dependencies on the target. You'll get a bloated executable size but these days people don't seem to much care about that. There are potential downsides of course (like when you need to include an update of a dependency) but everything has pros and cons. I don't know how similar C# is to C\/C++ at a build level though so might not be possible anyway."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01D23DDMTQ",
+        "type": "message",
+        "ts": "1693219557.835709",
+        "client_msg_id": "327D128F-F362-4B5F-AB87-C3E4DA00241F",
+        "text": "C# ain’t C. No linkages. Not compiled. Try the Docker route. Should be plenty available about that.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "5d6a9e5a85c0",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2021-06-26\/2219792322468_5d6a9e5a85c01e3abc9e_72.png",
+            "first_name": "Andrew",
+            "real_name": "Andrew",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "agruskin",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1693218688.187959",
+        "parent_user_id": "UQL0QDEKA",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "\/3upo",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "C# "
+                            },
+                            {
+                                "type": "text",
+                                "text": "ain’t"
+                            },
+                            {
+                                "type": "text",
+                                "text": " C. No linkages. Not compiled. Try the Docker route. Should be plenty available about that."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UQL0QDEKA",
+        "type": "message",
+        "ts": "1693219562.890749",
+        "client_msg_id": "09bb2756-9848-4be6-ae61-ff636208a884",
+        "text": "Thanks DC\nThis is the answer I git back on that suggestoin ;\n\nYour colleague's suggestion of static compilation is more commonly associated with languages like C and C++, where the idea is to include all libraries directly in the executable. This results in a larger file size but removes dependencies on shared libraries.\nIn the C# and .NET ecosystem, the concept doesn't translate directly because .NET applications typically rely on a separate runtime to execute. However, the self-contained deployment option is somewhat similar. In a self-contained deployment, the .NET runtime and all dependencies are bundled with the application. This makes the application larger but ensures it can run on any system without requiring a separate runtime or dependencies.\nPros and Cons of Self-Contained Deployment\nPros:\n• No need to worry about runtime dependencies or versions on the target system.\n• Simplified deployment as everything needed to run the application is bundled together.\nCons:\n• Larger file size, as your colleague pointed out.\n• Updating dependencies or the runtime means redistributing the entire application.\nWhile C# doesn't offer static compilation in the same way that C\/C++ does, self-contained deployments achieve a similar objective of packaging an application and its dependencies into a single bundle. It's a good option when you want to isolate your application from system-wide changes or when you're not sure whether the target system has the necessary runtime and dependencies.\nIn summary, if you're looking for an approach in the C#\/.NET world that's akin to static compilation in C\/C++, self-contained deployments are your closest option.\n\nmaybe Docker?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g444d10128c0",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/444d10128c0aaf094041a52a76796602.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0005-72.png",
+            "first_name": "Peter",
+            "real_name": "Peter Lenagh",
+            "display_name": "PeterLe",
+            "team": "T4G9NBD2M",
+            "name": "lenagh",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1693218688.187959",
+        "parent_user_id": "UQL0QDEKA",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "\/wA",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Thanks DC\nThis is the answer I git back on that suggestoin ;\n\nYour colleague's suggestion of static compilation is more commonly associated with languages like C and C++, where the idea is to include all libraries directly in the executable. This results in a larger file size but removes dependencies on shared libraries.\nIn the C# and .NET ecosystem, the concept doesn't translate directly because .NET applications typically rely on a separate runtime to execute. However, the self-contained deployment option is somewhat similar. In a self-contained deployment, the .NET runtime and all dependencies are bundled with the application. This makes the application larger but ensures it can run on any system without requiring a separate runtime or dependencies.\nPros and Cons of Self-Contained Deployment\nPros:\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_list",
+                        "elements": [
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "No need to worry about runtime dependencies or versions on the target system."
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "Simplified deployment as everything needed to run the application is bundled together."
+                                    }
+                                ]
+                            }
+                        ],
+                        "style": "bullet",
+                        "indent": 0,
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Cons:\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_list",
+                        "elements": [
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "Larger file size, as your colleague pointed out."
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "Updating dependencies or the runtime means redistributing the entire application."
+                                    }
+                                ]
+                            }
+                        ],
+                        "style": "bullet",
+                        "indent": 0,
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "While C# doesn't offer static compilation in the same way that C\/C++ does, self-contained deployments achieve a similar objective of packaging an application and its dependencies into a single bundle. It's a good option when you want to isolate your application from system-wide changes or when you're not sure whether the target system has the necessary runtime and dependencies.\nIn summary, if you're looking for an approach in the C#\/.NET world that's akin to static compilation in C\/C++, self-contained deployments are your closest option.\n\nmaybe Docker?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01D23DDMTQ",
+        "type": "message",
+        "ts": "1693219616.664919",
+        "client_msg_id": "3F11AD52-15BE-4DA5-8375-377B7F19E4BA",
+        "text": "There’s a sample Docker example for .NET C# implementation of Hello, World!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "5d6a9e5a85c0",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2021-06-26\/2219792322468_5d6a9e5a85c01e3abc9e_72.png",
+            "first_name": "Andrew",
+            "real_name": "Andrew",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "agruskin",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1693218688.187959",
+        "parent_user_id": "UQL0QDEKA",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Rog",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "There’s"
+                            },
+                            {
+                                "type": "text",
+                                "text": " a sample Docker example for .NET"
+                            },
+                            {
+                                "type": "text",
+                                "text": " "
+                            },
+                            {
+                                "type": "text",
+                                "text": "C# implementation of Hello, World!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UQL0QDEKA",
+        "type": "message",
+        "ts": "1693219689.379979",
+        "client_msg_id": "3c0b7813-cd5f-4d9c-b7cb-83b3a3590986",
+        "text": "Thanks Andrew, Were just off out for the day, so ill check it out later tonight thanks again both",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g444d10128c0",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/444d10128c0aaf094041a52a76796602.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0005-72.png",
+            "first_name": "Peter",
+            "real_name": "Peter Lenagh",
+            "display_name": "PeterLe",
+            "team": "T4G9NBD2M",
+            "name": "lenagh",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1693218688.187959",
+        "parent_user_id": "UQL0QDEKA",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "ztj",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Thanks Andrew, Were just off out for the day, so ill check it out later tonight thanks again both"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01D23DDMTQ",
+        "type": "message",
+        "ts": "1693220080.750429",
+        "client_msg_id": "AB5C7CD2-0201-4DFD-A0BA-A98B9C05E4D2",
+        "text": "Before moving to Flumine I was using C#. Click-Once deployment works, or even use XCOPY or RSync over SSH to your host. .NET doesn’t need installing. Copying package files works fine.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "5d6a9e5a85c0",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2021-06-26\/2219792322468_5d6a9e5a85c01e3abc9e_72.png",
+            "first_name": "Andrew",
+            "real_name": "Andrew",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "agruskin",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1693218688.187959",
+        "parent_user_id": "UQL0QDEKA",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Oftd",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Before moving to Flumine I was using C#. Click-Once deployment works, or even use XCOPY or RSync over SSH to your host. .NET "
+                            },
+                            {
+                                "type": "text",
+                                "text": "doesn’t"
+                            },
+                            {
+                                "type": "text",
+                                "text": " need installing. Copying package files works fine."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "UQL0QDEKA"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "subtype": "thread_broadcast",
+        "user": "U0128E7BEHW",
+        "thread_ts": "1691585508.162649",
+        "root": {
+            "user": "UBS7QANF3",
+            "type": "message",
+            "ts": "1691585508.162649",
+            "client_msg_id": "ee449853-b53f-4ae6-bca7-cc8a41c62811",
+            "text": "I'm currently reading this book: <https:\/\/www.amazon.co.uk\/Cash-Rules-Reminiscences-secretive-professional-ebook\/dp\/B0C2VS3NN3> which might appeal to some of you. I've just seen it's free on Kindle today",
+            "team": "T4G9NBD2M",
+            "thread_ts": "1691585508.162649",
+            "reply_count": 1,
+            "reply_users_count": 1,
+            "latest_reply": "1693226628.853829",
+            "reply_users": [
+                "U0128E7BEHW"
+            ],
+            "replies": [
+                {
+                    "user": "U0128E7BEHW",
+                    "ts": "1693226628.853829"
+                }
+            ],
+            "is_locked": false,
+            "subscribed": false,
+            "blocks": [
+                {
+                    "type": "rich_text",
+                    "block_id": "kg84",
+                    "elements": [
+                        {
+                            "type": "rich_text_section",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "I'm currently reading this book: "
+                                },
+                                {
+                                    "type": "link",
+                                    "url": "https:\/\/www.amazon.co.uk\/Cash-Rules-Reminiscences-secretive-professional-ebook\/dp\/B0C2VS3NN3"
+                                },
+                                {
+                                    "type": "text",
+                                    "text": " which might appeal to some of you. I've just seen it's free on Kindle today"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        "type": "message",
+        "ts": "1693226628.853829",
+        "client_msg_id": "0cc2e85b-24da-4f37-af1f-d660f3a4c1ec",
+        "text": "Gave this a read, not sure what the make of it. I think if the author had more exposure to real quant trading then he certainly would have had more success - his heart generally seemed to be in the right place (i.e. finding +EV) but his career seemed to be hugely impacted by misconceptions that retail tends to hold ( e.g. 1) making a gross distinction between what he calls \"position taking\" and \"trading\" (both are the same really, just different forecast horizons), 2) using things such as hard exit points defined at the moment of entry, 3) praying to the trading gods far too much). He did admit to 3) tbh. IMO I'm surprised he didn't get  wiped out far quicker, luck certainly let him have a few more shots than the average Joe would get. It was interesting to see him discovering fundamental viewpoints though, and tbh props to him for constantly relating trading to finding mispricing\/value\/arbitrage etc. Though funnily enough, in practice he seems to often identify this not through a systematic\/quantitative approach, but just praying for it. E.g. on his point of IPOs surging in the first 10 seconds, I highly doubt he did any analysis of market data to see if this observation held consistently. Interesting points about auction trading though.",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "8Kw",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Gave this a read, not sure what the make of it. I think if the author had more exposure to real quant trading then he certainly would have had more success - his heart generally seemed to be in the right place (i.e. finding +EV) but his career seemed to be hugely impacted by misconceptions that retail tends to hold ( e.g. 1) making a gross distinction between what he calls \"position taking\" and \"trading\" (both are the same really, just different forecast horizons), 2) using things such as hard exit points defined at the moment of entry, 3) praying to the trading gods far too much). He did admit to 3) tbh. IMO I'm surprised he didn't get  wiped out far quicker, luck certainly let him have a few more shots than the average Joe would get. It was interesting to see him discovering fundamental viewpoints though, and tbh props to him for constantly relating trading to finding mispricing\/value\/arbitrage etc. Though funnily enough, in practice he seems to often identify this not through a systematic\/quantitative approach, but just praying for it. E.g. on his point of IPOs surging in the first 10 seconds, I highly doubt he did any analysis of market data to see if this observation held consistently. Interesting points about auction trading though."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

@@ -1,0 +1,978 @@
+[
+    {
+        "user": "U0160KZB6QP",
+        "type": "message",
+        "ts": "1601899716.196800",
+        "client_msg_id": "2e123584-8bda-416e-b311-70603133ea04",
+        "text": "I only begin to use Flumine, I want to do price recorder for Football MATCH_ODDS, OVER_UNDER_25 and more market type per match. I prefer to save each football match price data to separate txt file.\n\nMy question:\n1) If i want to record all premier League match today, what is the recommend way to do it, should i create new strategy for each match (e.g each strategy has different market filter and file name?)\n2) What is the max number of strategy i can add into framwork?\n3) What is the max number of instance i can run Flumine?\nthanks",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g4b10fa305fe",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/4b10fa305fee22d94246281f32cfef31.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0004-72.png",
+            "first_name": "",
+            "real_name": "ricky",
+            "display_name": "ricky",
+            "team": "T4G9NBD2M",
+            "name": "yuqianguk",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Ht08R",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I only begin to use Flumine, I want to do price recorder for Football MATCH_ODDS, OVER_UNDER_25 and more market type per match. I prefer to save each football match price data to separate txt file.\n\nMy question:\n1) If i want to record all premier League match today, what is the recommend way to do it, should i create new strategy for each match (e.g each strategy has different market filter and file name?)\n2) What is the max number of strategy i can add into framwork?\n3) What is the max number of instance i can run Flumine?\nthanks"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UUCD6P13J",
+        "type": "message",
+        "ts": "1601901246.208800",
+        "client_msg_id": "32328555-075a-4318-bca8-856351ea8175",
+        "text": "I'll answer based on how i use Flumine\n1. For recording I use the S3 market recorder from the examples and use the same recorder to record all sports. So for football i'd run it using something like below. This will record all GB football matches to individual files and upload to S3. I personally wouldn't restrict by date as the streaming will subscribe to new markets to the recorder as and when they become available.\n```framework.add_strategy(\n    S3MarketRecorder(\n        market_filter=streaming_market_filter(\n            event_type_ids=[1],\n            market_types=[\n                \"MATCH_ODDS\",\n                \"OVER_UNDER_25\",\n            ],\n            country_codes=[\"GB\"],\n        )\n        stream_class=datastream.DataStream,\n        context={\/\/add config here}\n    )\n)```\n2. There's no limit (afaik) in Flumine so just depends on what your strategies are doing and how long they take to process each update.\n3. There's also no limit on how many instances of Flumine you can run, you're only limited by betfair streaming connections which is 10.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6898272ab81",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6898272ab810e419c2c9ca9af1e53da8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0012-72.png",
+            "first_name": "Lee",
+            "real_name": "Lee U",
+            "display_name": "Lee",
+            "team": "T4G9NBD2M",
+            "name": "lunswor",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "5lD\/",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I'll answer based on how i use Flumine\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_list",
+                        "elements": [
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "For recording I use the S3 market recorder from the examples and use the same recorder to record all sports. So for football i'd run it using something like below. This will record all GB football matches to individual files and upload to S3. I personally wouldn't restrict by date as the streaming will subscribe to new markets to the recorder as and when they become available."
+                                    }
+                                ]
+                            }
+                        ],
+                        "style": "ordered",
+                        "indent": 0
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "framework.add_strategy(\n    S3MarketRecorder(\n        market_filter=streaming_market_filter(\n            event_type_ids=[1],\n            market_types=[\n                \"MATCH_ODDS\",\n                \"OVER_UNDER_25\",\n            ],\n            country_codes=[\"GB\"],\n        )\n        stream_class=datastream.DataStream,\n        context={\/\/add config here}\n    )\n)"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "2. There's no limit (afaik) in Flumine so just depends on what your strategies are doing and how long they take to process each update.\n3. There's also no limit on how many instances of Flumine you can run, you're only limited by betfair streaming connections which is 10."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "U4H19D1D2"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "U0160KZB6QP",
+        "type": "message",
+        "ts": "1601903998.209500",
+        "client_msg_id": "228f8dd6-58bd-439f-ac25-8aafbb7c344d",
+        "text": "<@UUCD6P13J> Thank you for your message, by default, everything save to one output.txt file? do you know how to configure each football matches save to individual files?\nHow you manage each files ( or market id) with corresponding event name?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g4b10fa305fe",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/4b10fa305fee22d94246281f32cfef31.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0004-72.png",
+            "first_name": "",
+            "real_name": "ricky",
+            "display_name": "ricky",
+            "team": "T4G9NBD2M",
+            "name": "yuqianguk",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "ur10",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "user",
+                                "user_id": "UUCD6P13J"
+                            },
+                            {
+                                "type": "text",
+                                "text": " Thank you for your message, by default, everything save to one output.txt file? do you know how to configure each football matches save to individual files?\nHow you manage each files ( or market id) with corresponding event name?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UUCD6P13J",
+        "type": "message",
+        "ts": "1601904056.210300",
+        "edited": {
+            "user": "UUCD6P13J",
+            "ts": "1601904094.000000"
+        },
+        "client_msg_id": "f3c95c16-6d57-48bb-9a57-d81a7586d582",
+        "text": "Using the example MarketRecorder it will split each market in to separate files with the market_id as the file name",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6898272ab81",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6898272ab810e419c2c9ca9af1e53da8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0012-72.png",
+            "first_name": "Lee",
+            "real_name": "Lee U",
+            "display_name": "Lee",
+            "team": "T4G9NBD2M",
+            "name": "lunswor",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "2h8q",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Using the example MarketRecorder it will split each market in to separate files with the market_id as the file name"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U0160KZB6QP",
+        "type": "message",
+        "ts": "1601907449.210700",
+        "client_msg_id": "f8dac810-ab65-4b13-90f2-d9e70bd90640",
+        "text": "Thanks for your information, i can see MarketRecorder class did save each markets in individual files.\nI have two more questions:\n1) I use data visualization tools to view the live price data per matches, is it any way to identity which group of market id (files) have the same event name?\n2) i can see there is background worker pulling list_market_catalogue every 60s, if i want to get event name from market_catalogues, how can i access market_catalogues data from class PriceRecorder? ( e.g maybe inside process_market_book)",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g4b10fa305fe",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/4b10fa305fee22d94246281f32cfef31.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0004-72.png",
+            "first_name": "",
+            "real_name": "ricky",
+            "display_name": "ricky",
+            "team": "T4G9NBD2M",
+            "name": "yuqianguk",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "pTeqq",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Thanks for your information, i can see MarketRecorder class did save each markets in individual files.\nI have two more questions:\n1) I use data visualization tools to view the live price data per matches, is it any way to identity which group of market id (files) have the same event name?\n2) i can see there is background worker pulling list_market_catalogue every 60s, if i want to get event name from market_catalogues, how can i access market_catalogues data from class PriceRecorder? ( e.g maybe inside process_market_book)"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "UPMUFSGCR"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "UUCD6P13J",
+        "type": "message",
+        "ts": "1601907757.211700",
+        "edited": {
+            "user": "UUCD6P13J",
+            "ts": "1601907956.000000"
+        },
+        "client_msg_id": "40974f69-9140-4512-9e0d-a51a065e7cca",
+        "text": "`market.market_catalogue`  would give you this in the PriceRecorder",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6898272ab81",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6898272ab810e419c2c9ca9af1e53da8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0012-72.png",
+            "first_name": "Lee",
+            "real_name": "Lee U",
+            "display_name": "Lee",
+            "team": "T4G9NBD2M",
+            "name": "lunswor",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "E\/1",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "market.market_catalogue",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "  would give you this in the PriceRecorder"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "U0160KZB6QP"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "U7R5CEDAL",
+        "type": "message",
+        "ts": "1601908773.216400",
+        "client_msg_id": "9AA66354-AB4A-4E1B-A45F-4BEB7FC1957A",
+        "text": "Hi all, quick question -I’ve had a scan of the BF api docs and would I be correct in thinking that the only the runnerId is available from the stream and to collect additional meta (e.g. runner name, trainer - for horse markets) the API-NG needs to be used?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g426bce8bd0b",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/3426bce8bd0b04d1d560bace1f1f04af.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0012-72.png",
+            "first_name": "",
+            "real_name": "Ian",
+            "display_name": "Ian",
+            "team": "T4G9NBD2M",
+            "name": "ian",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "UdKq",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Hi all, quick question -I’ve had a scan of the BF api docs and would I be correct in thinking that the only the runnerId is available from the stream and to collect additional meta (e.g. runner name, trainer - for horse markets) the API-NG needs to be used?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UUE6E1LA1",
+        "type": "message",
+        "ts": "1601908838.216800",
+        "client_msg_id": "fe8523c8-cc25-426b-860e-aa2c29ed4e0d",
+        "text": "Yeah listMarketCatalogue lists all the runner metadata",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gf53cae45edd",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/f53cae45edd7f7b67bbe98819597612e.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0017-72.png",
+            "first_name": "",
+            "real_name": "D C",
+            "display_name": "D C",
+            "team": "T4G9NBD2M",
+            "name": "oddsvantage",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "7sh8=",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Yeah listMarketCatalogue lists all the runner metadata"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UUE6E1LA1",
+        "type": "message",
+        "ts": "1601909063.217800",
+        "client_msg_id": "c93c904e-b716-48cd-b485-a5b2c26499f4",
+        "text": "But you need to specifically request it in your market projection though. And it impacts on the number of markets you can ask for in a single request from the weighting but you can probably see that already if you have been reading the docs",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gf53cae45edd",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/f53cae45edd7f7b67bbe98819597612e.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0017-72.png",
+            "first_name": "",
+            "real_name": "D C",
+            "display_name": "D C",
+            "team": "T4G9NBD2M",
+            "name": "oddsvantage",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "+nh",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "But you need to specifically request it in your market projection though. And it impacts on the number of markets you can ask for in a single request from the weighting but you can probably see that already if you have been reading the docs"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U7R5CEDAL",
+        "type": "message",
+        "ts": "1601909717.218100",
+        "client_msg_id": "EEFBB14F-C080-459C-9897-1CE655F5F9BF",
+        "text": "Ta <@UUE6E1LA1> ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g426bce8bd0b",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/3426bce8bd0b04d1d560bace1f1f04af.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0012-72.png",
+            "first_name": "",
+            "real_name": "Ian",
+            "display_name": "Ian",
+            "team": "T4G9NBD2M",
+            "name": "ian",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "3DeE",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Ta "
+                            },
+                            {
+                                "type": "user",
+                                "user_id": "UUE6E1LA1"
+                            },
+                            {
+                                "type": "text",
+                                "text": " "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U0160KZB6QP",
+        "type": "message",
+        "ts": "1601918372.219400",
+        "client_msg_id": "0e453c2b-b27e-4205-8e10-57d6749e4f02",
+        "text": "<@UUCD6P13J> \"market.market_catalogue\" i got error said undefined variable \"market\" inside in the PriceRecorder class.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g4b10fa305fe",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/4b10fa305fee22d94246281f32cfef31.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0004-72.png",
+            "first_name": "",
+            "real_name": "ricky",
+            "display_name": "ricky",
+            "team": "T4G9NBD2M",
+            "name": "yuqianguk",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "mrj",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "user",
+                                "user_id": "UUCD6P13J"
+                            },
+                            {
+                                "type": "text",
+                                "text": " \"market.market_catalogue\" i got error said undefined variable \"market\" inside in the PriceRecorder class."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UUCD6P13J",
+        "type": "message",
+        "ts": "1601918443.220100",
+        "edited": {
+            "user": "UUCD6P13J",
+            "ts": "1601918649.000000"
+        },
+        "client_msg_id": "4d91026e-1c0a-4ed7-b20e-4f67301354e2",
+        "text": "ah the example needs updating. change the method parameter to be\n`def process_market_book(self, market, market_book):`",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6898272ab81",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6898272ab810e419c2c9ca9af1e53da8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0012-72.png",
+            "first_name": "Lee",
+            "real_name": "Lee U",
+            "display_name": "Lee",
+            "team": "T4G9NBD2M",
+            "name": "lunswor",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "K3N",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "ah the example needs updating. change the method parameter to be\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "def process_market_book(self, market, market_book):",
+                                "style": {
+                                    "code": true
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1601919000.221000",
+        "client_msg_id": "dc849499-9608-435d-88be-83948f4dc96d",
+        "text": "good spot, I use `live_market` in my old framework",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "7nHXU",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "good spot, I use "
+                            },
+                            {
+                                "type": "text",
+                                "text": "live_market",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " in my old framework"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UUCD6P13J",
+        "type": "message",
+        "ts": "1601919021.221300",
+        "client_msg_id": "fefb5a71-aa80-4c6b-ac20-aeda5f763b6a",
+        "text": "i raised a quick PR to update",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6898272ab81",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6898272ab810e419c2c9ca9af1e53da8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0012-72.png",
+            "first_name": "Lee",
+            "real_name": "Lee U",
+            "display_name": "Lee",
+            "team": "T4G9NBD2M",
+            "name": "lunswor",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "J96M",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "i raised a quick PR to update"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1601919152.222600",
+        "client_msg_id": "9b502b10-dbca-4182-a17b-4a20a6bd21b8",
+        "text": "cheers, btw 1.13.0 released today, includes a <https:\/\/github.com\/liampauling\/flumine\/commit\/edd6735de54c46a9c91c76f96dcd6de8ca811b36|change> to backtesting that may have an impact on differences you were seeing between live as well as much improved <https:\/\/github.com\/liampauling\/flumine\/pull\/283|control> thanks to <@UPMUFSGCR>",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "attachments": [
+            {
+                "fallback": "[liampauling\/flumine] #283 Iss270 strategy improvements",
+                "title": "#283 Iss270 strategy improvements",
+                "footer": "<https:\/\/github.com\/liampauling\/flumine|liampauling\/flumine>",
+                "id": 1,
+                "title_link": "https:\/\/github.com\/liampauling\/flumine\/pull\/283",
+                "footer_icon": "https:\/\/github.githubassets.com\/favicon.ico",
+                "ts": 1601372538,
+                "color": "6f42c1",
+                "mrkdwn_in": [
+                    "text"
+                ],
+                "bot_id": "B01144Z0734",
+                "app_unfurl_url": "https:\/\/github.com\/liampauling\/flumine\/pull\/283",
+                "is_app_unfurl": true
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "4zv",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "cheers, btw 1.13.0 released today, includes a "
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/liampauling\/flumine\/commit\/edd6735de54c46a9c91c76f96dcd6de8ca811b36",
+                                "text": "change"
+                            },
+                            {
+                                "type": "text",
+                                "text": " to backtesting that may have an impact on differences you were seeing between live as well as much improved "
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/liampauling\/flumine\/pull\/283",
+                                "text": "control"
+                            },
+                            {
+                                "type": "text",
+                                "text": " thanks to "
+                            },
+                            {
+                                "type": "user",
+                                "user_id": "UPMUFSGCR"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "UPMUFSGCR",
+                    "U011VL3CA2Y",
+                    "UUCD6P13J"
+                ],
+                "count": 3
+            }
+        ]
+    },
+    {
+        "user": "UUCD6P13J",
+        "type": "message",
+        "ts": "1601919280.223500",
+        "client_msg_id": "80a1fb7f-6989-4330-a5c7-071ff127c7ab",
+        "text": "nice, cheers",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6898272ab81",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6898272ab810e419c2c9ca9af1e53da8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0012-72.png",
+            "first_name": "Lee",
+            "real_name": "Lee U",
+            "display_name": "Lee",
+            "team": "T4G9NBD2M",
+            "name": "lunswor",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "icl4",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "nice, cheers"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UUCD6P13J",
+        "type": "message",
+        "ts": "1601919311.224200",
+        "client_msg_id": "eabac564-bf47-4347-8253-8b45d756d0fd",
+        "text": "re the execution regression issue, what side effects would this have caused?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6898272ab81",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6898272ab810e419c2c9ca9af1e53da8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0012-72.png",
+            "first_name": "Lee",
+            "real_name": "Lee U",
+            "display_name": "Lee",
+            "team": "T4G9NBD2M",
+            "name": "lunswor",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "9qGU",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "re the execution regression issue, what side effects would this have caused?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1601919364.224500",
+        "client_msg_id": "baa867c9-c329-4d4b-9bed-7e2a889967aa",
+        "text": "replace orders not being added to the blotter or made executable",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "51zG",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "replace orders not being added to the blotter or made executable"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "UUCD6P13J"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "U0160KZB6QP",
+        "type": "message",
+        "ts": "1601930134.224900",
+        "client_msg_id": "cf97067c-356b-42e4-96bb-21788b967de2",
+        "text": "Cheers <@UUCD6P13J>",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g4b10fa305fe",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/4b10fa305fee22d94246281f32cfef31.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0004-72.png",
+            "first_name": "",
+            "real_name": "ricky",
+            "display_name": "ricky",
+            "team": "T4G9NBD2M",
+            "name": "yuqianguk",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Oni",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Cheers "
+                            },
+                            {
+                                "type": "user",
+                                "user_id": "UUCD6P13J"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U0160KZB6QP",
+        "type": "message",
+        "ts": "1601938106.226300",
+        "client_msg_id": "9d922c09-072d-42fa-b55f-ca069cdd2229",
+        "text": "I previous used lightweight steaming API, now switch to Flumine for price recording.\nI did a period of 90 mins ( football in-play) performance testing between these two, steaming API give me around 20000 data points, Flumine give around 25000 data point. For trade volume, i can see slight diffentence between these two.\nAny thought, which framework is more accurate in term of steaming?\n\nFlumin version: 1.12.1\nbetfairlightweight version 2.8.0",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g4b10fa305fe",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/4b10fa305fee22d94246281f32cfef31.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0004-72.png",
+            "first_name": "",
+            "real_name": "ricky",
+            "display_name": "ricky",
+            "team": "T4G9NBD2M",
+            "name": "yuqianguk",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "PqAF",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I previous used lightweight steaming API, now switch to Flumine for price recording.\nI did a period of 90 mins ( football in-play) performance testing between these two, steaming API give me around 20000 data points, Flumine give around 25000 data point. For trade volume, i can see slight diffentence between these two.\nAny thought, which framework is more accurate in term of steaming?\n\nFlumin version: 1.12.1\nbetfairlightweight version 2.8.0"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1601962248.227600",
+        "client_msg_id": "9EAE535F-0601-4F74-B56E-53A10F782E17",
+        "text": "Flumine uses bflw so should be the same but the amount of points \/ conflation is based on how quickly you can pull the data off the socket ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "i3TQ7",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Flumine uses bflw so should be the same but the amount of points \/ conflation is based on how quickly you can pull the data off the socket "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

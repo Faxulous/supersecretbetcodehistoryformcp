@@ -1,0 +1,839 @@
+[
+    {
+        "user": "U02K1MG7YCA",
+        "type": "message",
+        "ts": "1641803420.080200",
+        "client_msg_id": "c5b6a07c-24e4-4d89-879a-db943ab52815",
+        "text": "Ok, that's a pity. Thanks.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "e8092c11ea56",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2021-11-13\/2722432436690_e8092c11ea567d554909_72.png",
+            "first_name": "Jan",
+            "real_name": "Jan Volhejn",
+            "display_name": "jackofallspades",
+            "team": "T4G9NBD2M",
+            "name": "jan.volhejn",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1641736330.035500",
+        "parent_user_id": "U02K1MG7YCA",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "eRk",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Ok, that's a pity. Thanks."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "subtype": "channel_join",
+        "user": "U02TDEM5VFE",
+        "text": "<@U02TDEM5VFE> has joined the channel",
+        "type": "message",
+        "ts": "1641816987.080500"
+    },
+    {
+        "user": "U013MLED3V1",
+        "type": "message",
+        "ts": "1641827558.084400",
+        "client_msg_id": "c32833d6-aaf2-4ec7-99ec-f48ad98d4ee0",
+        "text": "<@UPMUFSGCR> My connection latency to betfair servers is around 120ms. I wrote my test code for 4 combination using rest api or streaming api, and placing 10 bets in one api call, or bet by bet in succession checking whether rest or order streaming api updated market bets.  Results are following:\n\n                            | RestApiInOneApiCall -&gt; 0.504 seconds\n                            | RestApiBetByBet -&gt; 3.134 s\n                            | StreamingApiInOneApiCall -&gt; 0.332 s\n                            | StreamingApiBetByBet -&gt; 2.308 s\n\n<https:\/\/github.com\/StefanBelo\/Bfexplorer-BOT-SDK\/blob\/master\/TestBetPlacementSuccession\/Program.fs>",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g76de2b0594d",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/76de2b0594d8598d76169231046f271a.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0001-72.png",
+            "first_name": "StefanBelo",
+            "real_name": "StefanBelo",
+            "display_name": "Stefan",
+            "team": "T4G9NBD2M",
+            "name": "stefanbelopotocan",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "attachments": [
+            {
+                "id": 1,
+                "footer_icon": "https:\/\/slack.github.com\/static\/img\/favicon-neutral.png",
+                "color": "24292f",
+                "bot_id": "B021ZJYSBMW",
+                "app_unfurl_url": "https:\/\/github.com\/StefanBelo\/Bfexplorer-BOT-SDK\/blob\/master\/TestBetPlacementSuccession\/Program.fs",
+                "is_app_unfurl": true,
+                "app_id": "A01BP7R4KNY",
+                "fallback": "<https:\/\/github.com\/StefanBelo\/Bfexplorer-BOT-SDK\/blob\/master\/TestBetPlacementSuccession\/Program.fs | Program.fs>",
+                "text": "```\n(*\n    Copyright © 2022, Stefan Belopotocan, <http:\/\/bfexplorer.net>\n*)\n\nnamespace TestBetPlacementSuccession\n\nopen BeloSoft.Data\nopen BeloSoft.Bfexplorer\nopen BeloSoft.Bfexplorer.Service\n\n\/\/\/ &lt;summary&gt;\n\/\/\/ PlaceBetTestType          \n\/\/\/ &lt;\/summary&gt;\ntype PlaceBetTestType =\n    | RestApiInOneApiCall\n    | RestApiBetByBet\n    | StreamingApiInOneApiCall\n    | StreamingApiBetByBet\n\n    member this.IsStreamingApiTest\n        with get() =\n            match this with\n            | StreamingApiInOneApiCall | StreamingApiBetByBet -&gt; true\n            | _ -&gt; false\n\nmodule Program =\n\n    \/\/\/ &lt;summary&gt;\n    \/\/\/ main\n    \/\/\/ &lt;\/summary&gt;\n    \/\/\/ &lt;param name=\"argv\"&gt;&lt;\/param&gt;\n    [&lt;EntryPoint&gt;]\n    let main argv =\n        match getBetfairCredentialsAndMarketId argv with\n        | Some (userName, password, marketId) -&gt;\n\n            let placeBetTestType = PlaceBetTestType.StreamingApiBetByBet\n\n            let bfexplorerService = BfexplorerService(initializeBotManager = false, UiApplication = BfexplorerHost())\n\n            async {\n                let! loginResult = bfexplorerService.Login(userName, password)\n\n                if loginResult.IsSuccessResult\n                then                   \n                    let useStreamingApiTest = placeBetTestType.IsStreamingApiTest\n\n                    if useStreamingApiTest\n                    then\n                        setStreamingApiDataContext()\n\n                    match! bfexplorerService.GetMarket(marketId) with\n                    | DataResult.Success market -&gt;\n\n                        let streamingApiTestService = StreamingApiTestService(bfexplorerService, market)\n\n                        if useStreamingApiTest\n                        then                            \n                            streamingApiTestService.Start() |&gt; Async.Start\n\n                            do! Async.Sleep(2000)    \n                        \n                        let doExecute =\n                            match placeBetTestType with\n                            | RestApiInOneApiCall -&gt; RestApiTest.ExecuteInOneApiCall\n                            | RestApiBetByBet -&gt; RestApiTest.Execute\n                            | StreamingApiInOneApiCall -&gt; StreamingApiTest.ExecuteInOneApiCall\n                            | StreamingApiBetByBet -&gt; StreamingApiTest.Execute\n\n                        match! bfexplorerService |&gt; doExecute market with\n                        | Result.Success -&gt; \n                               \n                            sprintf \"Placed bets:\\n\\n%s\" (\n                                market.Bets\n                                |&gt; Seq.map (fun bet -&gt; bet.ToString())\n                                |&gt; String.concat \"\\n\"\n                            )\n                            |&gt; report\n\n                            do! bfexplorerService.CancelBets(market) |&gt; Async.Ignore\n\n                        | Result.Failure errorMessage -&gt; report errorMessage\n\n                    | DataResult.Failure errorMessage -&gt; report errorMessage\n                \n                    do! bfexplorerService.Logout() |&gt; Async.Ignore\n            }\n            |&gt; Async.RunSynchronously\n\n        | None -&gt; failwith \"Please enter your betfair user name and password and a valid market id!\"\n\n        0 \/\/ return an integer exit code\n```",
+                "title": "<https:\/\/github.com\/StefanBelo\/Bfexplorer-BOT-SDK\/blob\/master\/TestBetPlacementSuccession\/Program.fs | Program.fs>",
+                "footer": "<https:\/\/github.com\/StefanBelo\/Bfexplorer-BOT-SDK|StefanBelo\/Bfexplorer-BOT-SDK>",
+                "mrkdwn_in": [
+                    "text"
+                ]
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "jk5",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "user",
+                                "user_id": "UPMUFSGCR"
+                            },
+                            {
+                                "type": "text",
+                                "text": " My connection latency to betfair servers is around 120ms. I wrote my test code for 4 combination using rest api or streaming api, and placing 10 bets in one api call, or bet by bet in succession checking whether rest or order streaming api updated market bets.  Results are following:\n\n                            | RestApiInOneApiCall -> 0.504 seconds\n                            | RestApiBetByBet -> 3.134 s\n                            | StreamingApiInOneApiCall -> 0.332 s\n                            | StreamingApiBetByBet -> 2.308 s\n\n"
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/StefanBelo\/Bfexplorer-BOT-SDK\/blob\/master\/TestBetPlacementSuccession\/Program.fs"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "rocket",
+                "users": [
+                    "UPMUFSGCR"
+                ],
+                "count": 1
+            },
+            {
+                "name": "+1",
+                "users": [
+                    "U025C059DA9"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "U013MLED3V1",
+        "type": "message",
+        "ts": "1641829047.087400",
+        "client_msg_id": "32c06e77-3269-4247-9862-abace8548ef1",
+        "text": "<@UPMUFSGCR> my code is able to deal with bet placing under minimal stake amount, so for instance when placing bets with stake amount of 1 Euro, that one api call is divided to parallel execution of 10 bets placing, comparing to rest api call then such bet placements of 10 bets with 1 Euro stake takes 4.408 seconds.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g76de2b0594d",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/76de2b0594d8598d76169231046f271a.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0001-72.png",
+            "first_name": "StefanBelo",
+            "real_name": "StefanBelo",
+            "display_name": "Stefan",
+            "team": "T4G9NBD2M",
+            "name": "stefanbelopotocan",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "ksk5f",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "user",
+                                "user_id": "UPMUFSGCR"
+                            },
+                            {
+                                "type": "text",
+                                "text": " my code is able to deal with bet placing under minimal stake amount, so for instance when placing bets with stake amount of 1 Euro, that one api call is divided to parallel execution of 10 bets placing, comparing to rest api call then such bet placements of 10 bets with 1 Euro stake takes 4.408 seconds."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "rocket",
+                "users": [
+                    "UPMUFSGCR"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "U011VL3CA2Y",
+        "type": "message",
+        "ts": "1641839103.088400",
+        "client_msg_id": "996ca48f-6f9c-44d4-ac75-3ccf8d4b14a9",
+        "text": "does the endpoint list_cleared_orders have a limit as to how far in time it goes? like 6 months, 1 year, etc...",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g1ec6e88d1e4",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/1ec6e88d1e4dd0bff349d83e9edba6bd.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0005-72.png",
+            "first_name": "Ruben",
+            "real_name": "Ruben",
+            "display_name": "Ruben",
+            "team": "T4G9NBD2M",
+            "name": "tduqruqtgtpiioibww",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "9wK",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "does the endpoint list_cleared_orders have a limit as to how far in time it goes? like 6 months, 1 year, etc..."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1641839223.088700",
+        "client_msg_id": "8c0adffa-18b4-425e-bbde-aeb2b5a4844a",
+        "text": "You're very optimistic. It's 90 days",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "HsO",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "You're very optimistic. It's 90 days"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U011VL3CA2Y",
+        "type": "message",
+        "ts": "1641839244.089000",
+        "client_msg_id": "385847ae-e6a6-4c0d-b1e8-84dd4fe4c7ce",
+        "text": "a man can dream...",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g1ec6e88d1e4",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/1ec6e88d1e4dd0bff349d83e9edba6bd.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0005-72.png",
+            "first_name": "Ruben",
+            "real_name": "Ruben",
+            "display_name": "Ruben",
+            "team": "T4G9NBD2M",
+            "name": "tduqruqtgtpiioibww",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "eCq",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "a man can dream..."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U011VL3CA2Y",
+        "type": "message",
+        "ts": "1641839262.089500",
+        "client_msg_id": "52bddf3f-6a46-4bea-9079-bad73607d83a",
+        "text": "does that mean that the bet history that you see on betfairs webpage will only go as far as 90 days as well?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g1ec6e88d1e4",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/1ec6e88d1e4dd0bff349d83e9edba6bd.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0005-72.png",
+            "first_name": "Ruben",
+            "real_name": "Ruben",
+            "display_name": "Ruben",
+            "team": "T4G9NBD2M",
+            "name": "tduqruqtgtpiioibww",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "E85sn",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "does that mean that the bet history that you see on betfairs webpage will only go as far as 90 days as well?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1641839362.089700",
+        "client_msg_id": "09a5b442-4145-4c9b-b61e-ca604867b552",
+        "text": "Indeed",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "qjW",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Indeed"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "disappointed",
+                "users": [
+                    "U011VL3CA2Y"
+                ],
+                "count": 1
+            },
+            {
+                "name": "+1",
+                "users": [
+                    "U011VL3CA2Y"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "UUE6E1LA1",
+        "type": "message",
+        "ts": "1641840688.091200",
+        "client_msg_id": "e3ecb629-ad5a-41c6-9ea8-9d79879d5a93",
+        "text": "It does go beyond 90 days for market level P&amp;L just not at the bet level. I can get stuff by strategy reference per market as far back as 2020. Depends on how specific you need the info.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gf53cae45edd",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/f53cae45edd7f7b67bbe98819597612e.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0017-72.png",
+            "first_name": "",
+            "real_name": "D C",
+            "display_name": "D C",
+            "team": "T4G9NBD2M",
+            "name": "oddsvantage",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "s+3p",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "It does go beyond 90 days for market level P&L just not at the bet level. I can get stuff by strategy reference per market as far back as 2020. Depends on how specific you need the info."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "U011VL3CA2Y"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "subtype": "channel_join",
+        "user": "U02TG3K70KW",
+        "text": "<@U02TG3K70KW> has joined the channel",
+        "type": "message",
+        "ts": "1641844074.091500"
+    },
+    {
+        "user": "UPMUFSGCR",
+        "type": "message",
+        "ts": "1641851178.092700",
+        "client_msg_id": "5ed1ae78-71c3-4852-a400-11e46de1bbf2",
+        "text": "Does one instance of Flumine use 2 connections? I keep hitting the 20 MAX connection limits. I'm wondering if I have a stale processs somewhere as I'm only running 6 instances of Flumine.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "31c0bb5a442c",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2019-10-28\/812386967189_31c0bb5a442c5b8d2c61_72.png",
+            "first_name": "Jon",
+            "real_name": "Jon Jon Jon Jon Jon Jon Jon Jon",
+            "display_name": "Jonjonjon",
+            "team": "T4G9NBD2M",
+            "name": "fcmisc",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "guOo",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Does one instance of Flumine use 2 connections? I keep hitting the 20 MAX connection limits. I'm wondering if I have a stale processs somewhere as I'm only running 6 instances of Flumine."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UPMUFSGCR",
+        "type": "message",
+        "ts": "1641852479.093400",
+        "client_msg_id": "6ef0888e-576a-414a-9ab5-92cf38e1d0d7",
+        "text": "Is there a way to check how many streaming connections each of my servers is using?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "31c0bb5a442c",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2019-10-28\/812386967189_31c0bb5a442c5b8d2c61_72.png",
+            "first_name": "Jon",
+            "real_name": "Jon Jon Jon Jon Jon Jon Jon Jon",
+            "display_name": "Jonjonjon",
+            "team": "T4G9NBD2M",
+            "name": "fcmisc",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "lJqvb",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Is there a way to check how many streaming connections each of my servers is using?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UPMUFSGCR",
+        "type": "message",
+        "ts": "1641853638.094600",
+        "client_msg_id": "f874c840-61cf-4bab-b12d-14f393778c32",
+        "text": "Running `netstat -np | grep python | grep ESTABLISHED` gives me 18 lines of output. I've blanked out the IP addresses as I'm not sure if they are safe to share or not. BUt the process numbers are my flumine instances on one machine:\n\n`netstat -np | grep python | grep ESTABLISHED`\n`(Not all processes could be identified, non-owned process info`\n`will not be shown, you would have to be root to see it all.)`\n`tcp 0 0 YYY:46208 XXX ESTABLISHED 21053\/python3`\n`tcp 0 0 YYY:41776 XXX ESTABLISHED 2144\/python3`\n`tcp 0 0 YYY:46202 XXX ESTABLISHED 539\/python3`\n`tcp 0 0 YYY:56134 XXX ESTABLISHED 21053\/python3`\n`tcp 0 0 YYY:41990 XXX ESTABLISHED 2144\/python3`\n`tcp 0 0 YYY:45264 XXX ESTABLISHED 546\/python3`\n`tcp 0 0 YYY:46204 XXX ESTABLISHED 21053\/python3`\n`tcp 0 0 YYY:58348 XXX ESTABLISHED 2144\/python3`\n`tcp 0 0 YYY:46206 XXX ESTABLISHED 2144\/python3`\n`tcp 0 0 YYY:54580 XXX ESTABLISHED 546\/python3`\n`tcp 0 0 YYY:45262 XXX ESTABLISHED 539\/python3`\n`tcp 0 0 YYY:46190 XXX ESTABLISHED 2144\/python3`\n`tcp 0 0 YYY:46188 XXX ESTABLISHED 2144\/python3`\n`tcp 0 0 YYY:46212 XXX ESTABLISHED 21053\/python3`\n`tcp 0 0 YYY:58346 XXX ESTABLISHED 21053\/python3`\n`tcp 0 0 YYY:58350 XXX ESTABLISHED 21053\/python3`\n`tcp 0 0 YYY:54572 XXX ESTABLISHED 539\/python3`\n`tcp 0 0 YYY:45268 XXX ESTABLISHED 539\/python3`",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "31c0bb5a442c",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2019-10-28\/812386967189_31c0bb5a442c5b8d2c61_72.png",
+            "first_name": "Jon",
+            "real_name": "Jon Jon Jon Jon Jon Jon Jon Jon",
+            "display_name": "Jonjonjon",
+            "team": "T4G9NBD2M",
+            "name": "fcmisc",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "aSwU",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Running "
+                            },
+                            {
+                                "type": "text",
+                                "text": "netstat -np | grep python | grep ESTABLISHED",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " gives me 18 lines of output. I've blanked out the IP addresses as I'm not sure if they are safe to share or not. BUt the process numbers are my flumine instances on one machine:\n\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "netstat -np | grep python | grep ESTABLISHED",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "(Not all processes could be identified, non-owned process info",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "will not be shown, you would have to be root to see it all.)",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "tcp 0 0 YYY:46208 XXX ESTABLISHED 21053\/python3",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "tcp 0 0 YYY:41776 XXX ESTABLISHED 2144\/python3",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "tcp 0 0 YYY:46202 XXX ESTABLISHED 539\/python3",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "tcp 0 0 YYY:56134 XXX ESTABLISHED 21053\/python3",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "tcp 0 0 YYY:41990 XXX ESTABLISHED 2144\/python3",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "tcp 0 0 YYY:45264 XXX ESTABLISHED 546\/python3",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "tcp 0 0 YYY:46204 XXX ESTABLISHED 21053\/python3",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "tcp 0 0 YYY:58348 XXX ESTABLISHED 2144\/python3",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "tcp 0 0 YYY:46206 XXX ESTABLISHED 2144\/python3",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "tcp 0 0 YYY:54580 XXX ESTABLISHED 546\/python3",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "tcp 0 0 YYY:45262 XXX ESTABLISHED 539\/python3",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "tcp 0 0 YYY:46190 XXX ESTABLISHED 2144\/python3",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "tcp 0 0 YYY:46188 XXX ESTABLISHED 2144\/python3",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "tcp 0 0 YYY:46212 XXX ESTABLISHED 21053\/python3",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "tcp 0 0 YYY:58346 XXX ESTABLISHED 21053\/python3",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "tcp 0 0 YYY:58350 XXX ESTABLISHED 21053\/python3",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "tcp 0 0 YYY:54572 XXX ESTABLISHED 539\/python3",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "tcp 0 0 YYY:45268 XXX ESTABLISHED 539\/python3",
+                                "style": {
+                                    "code": true
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1641885735.095400",
+        "client_msg_id": "B2496C00-125B-40AF-994A-911F6B2BB5E4",
+        "text": "It will use one for orders and one per market filter, so minimum of 2 per instance ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "OlT0c",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "It will use one for orders and one per market filter, so minimum of 2 per instance "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1::skin-tone-6",
+                "users": [
+                    "UPMUFSGCR"
+                ],
+                "count": 1
+            }
+        ]
+    }
+]

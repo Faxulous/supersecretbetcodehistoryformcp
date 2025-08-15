@@ -1,0 +1,84 @@
+[
+    {
+        "user": "U92CASP1B",
+        "type": "message",
+        "ts": "1587825162.158800",
+        "client_msg_id": "423b4e7c-b24d-4256-a1fd-ba0d91e73356",
+        "text": "Started to create benchmarks for the ones interested, might only be me though :joy:\n<https:\/\/github.com\/almenjonatan\/benchmark\/blob\/master\/betfairlightweight_benchmark.ipynb>\n\nAlthough I feel some of the numbers are on the low end. I might have ruined the library while patching it or something else.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g374352c822f",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a374352c822fa856c4cfdd782bbb8669.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0007-72.png",
+            "first_name": "Jonatan",
+            "real_name": "Jonatan",
+            "display_name": "Jonatan (skyw)",
+            "team": "T4G9NBD2M",
+            "name": "almen.jonatan",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "attachments": [
+            {
+                "fallback": "[almenjonatan\/benchmark] betfairlightweight_benchmark.ipynb",
+                "text": "```\n{\n \"cells\": [\n  {\n   \"cell_type\": \"markdown\",\n   \"metadata\": {},\n   \"source\": [\n    \"### Betfairlightweight benchmark\\n\",\n    \"\\n\",\n    \"#### Read in single event into memory. \"\n   ]\n  },\n  {\n   \"cell_type\": \"code\",\n   \"execution_count\": 1,\n   \"metadata\": {},\n   \"outputs\": [],\n   \"source\": [\n    \"import os\\n\",\n    \"import bz2\\n\",\n    \"import json\\n\",\n    \"from pathlib import Path\\n\",\n    \"from sys import getsizeof\\n\",\n    \"from betfairlightweight.streaming.stream import MarketStream\\n\",\n    \"from betfairstreamer.cache import MarketCache\"\n   ]\n  },\n  {\n   \"cell_type\": \"code\",\n   \"execution_count\": 2,\n   \"metadata\": {},\n   \"outputs\": [\n    {\n     \"name\": \"stdout\",\n     \"output_type\": \"stream\",\n     \"text\": [\n      \"total stream size (bytes):  116100390\\n\"\n     ]\n    }\n   ],\n   \"source\": [\n    \"def load_single_event(event_path: str):\\n\",\n    \"    event_path = Path(event_path)\\n\",\n    \"    stream_updates = b\\\"\\\"\\n\",\n    \"\\n\",\n    \"    for market_path in event_path.iterdir():\\n\",\n    \"        market_data = bz2.open(market_path).read()\\n\",\n    \"\\n\",\n    \"        stream_updates += market_data\\n\",\n    \"        # print(getsizeof(stream_updates))\\n\",\n    \"    \\n\",\n    \"    print(\\\"total stream size (bytes): \\\", getsizeof(stream_updates))\\n\",\n    \"    \\n\",\n    \"    return sorted(map(json.loads, stream_updates.splitlines(keepends=True)), key=lambda update: update[\\\"pt\\\"])\\n\",\n    \"        \\n\",\n    \"stream_updates = load_single_event(\\\"\/home\/jonatan\/Documents\/data\/PRO\/2019\/Dec\/1\/29577053\\\")\"\n   ]\n  },\n  {\n   \"cell_type\": \"markdown\",\n   \"metadata\": {},\n   \"source\": [\n    \"#### Patchbetfairlightweight\"\n   ]\n  },\n  {\n   \"cell_type\": \"code\",\n   \"execution_count\": 3,\n   \"metadata\": {},\n   \"outputs\": [],\n   \"source\": [\n    \"from betfairlightweight.streaming.betfairstream import BetfairStream\\n\",\n    \"from betfairlightweight.streaming.listener import StreamListener\\n\",\n    \"from betfairlightweight.streaming.stream import MarketStream\\n\",\n    \"\\n\",\n    \"def on_process(self, output):\\n\",\n    \"    pass\\n\",\n    \"#     for m in output:\\n\",\n    \"#         print(m.market_id, m.market_definition.market_type)\\n\",\n    \"#         time.sleep(0.01)\\n\",\n    \"#     if not hasattr(self, \\\"count\\\"):\\n\",\n    \"#         self.count = 1\\n\",\n    \"#     else:\\n\",\n    \"#         self.count += 1\\n\",\n    \"        \\n\",\n    \"#     if self.count % 10000 == 0:\\n\",\n    \"#         print(self.count)\\n\",\n    \"\\n\",\n    \"def start(self): \\n\",\n    \"    self._read_loop()\\n\",\n    \"\\n\",\n    \"def on_data(self, raw_data: str):\\n\",\n    \"    \\\"\\\"\\\"Called when raw data is received from connection.\\n\",\n    \"    Override this method if you wish to manually handle\\n\",\n    \"    the stream data\\n\",\n    \"    :param raw_data: Received raw data\\n\",\n    \"    :return: Return False to stop stream and close connection\\n\",\n    \"    \\\"\\\"\\\"\\n\",\n    \"\\n\",\n    \"    \\n\",\n    \"    try:\\n\",\n    \"        data = json.loads(raw_data)\\n\",\n    \"    except ValueError:\\n\",\n    \"        logger.error(\\\"value error: %s\\\" % raw_data)\\n\",\n    \"        return\\n\",\n    \"\\n\",\n    \"    unique_id = 1\\n\",\n    \"\\n\",\n    \"    if self._error_handler(data, unique_id):\\n\",\n    \"        return False\\n\",\n    \"\\n\",\n    \"    operation = data[\\\"op\\\"]\\n\",\n    \"    \\n\",\n    \"    if operation == \\\"connection\\\":\\n\",\n    \"        self._on_connection(data, unique_id)\\n\",\n    \"    elif operation == \\\"status\\\":\\n\",\n    \"        self._on_status(data, unique_id)\\n\",\n    \"    elif operation in [\\\"mcm\\\", \\\"ocm\\\"]:\\n\",\n    \"        self._on_change_message(data, unique_id)\\n\",\n    \"\\n\",\n    \"\\n\",\n    \"    \\n\",\n    \"BetfairStream.start = start\\n\",\n    \"StreamListener.on_data = on_data\\n\",\n    \"MarketStream.on_process = on_process\"\n   ]\n  },\n  {\n   \"cell_type\": \"markdown\",\n   \"metadata\": {},\n   \"source\": [\n    \"#### Create \\\"market stream\\\" without queue\"\n   ]\n  },\n  {\n   \"cell_type\": \"code\",\n   \"execution_count\": 4,\n   \"metadata\": {},\n   \"outputs\": [\n    {\n     \"name\": \"stdout\",\n     \"output_type\": \"stream\",\n     \"text\": [\n      \"2min 14s ± 2.31 s per loop (mean ± std. dev. of 7 runs, 1 loop each)\\n\"\n     ]\n    }\n   ],\n   \"source\": [\n    \"%%timeit\\n\",\n    \"market_stream = MarketStream(listener=StreamListener())\\n\",\n    \"for stream_update in stream_updates:\\n\",\n    \"    market_stream._process(stream_update.get(\\\"mc\\\", []), 1)\\n\"\n   ]\n  },\n  {\n   \"cell_type\": \"code\",\n   \"execution_count\": 10,\n   \"metadata\": {},\n   \"outputs\": [\n    {\n     \"name\": \"stdout\",\n     \"output_type\": \"stream\",\n     \"text\": [\n      \"~ 3650 updates\/s\\n\"\n     ]\n    }\n   ],\n   \"source\": [\n    \"print(f\\\"~ {round(len(stream_updates)\/134)} updates\/s\\\")\"\n   ]\n  }\n ],\n \"metadata\": {\n  \"kernelspec\": {\n   \"display_name\": \"Python 3\",\n   \"language\": \"python\",\n   \"name\": \"python3\"\n  },\n  \"language_info\": {\n   \"codemirror_mode\": {\n    \"name\": \"ipython\",\n    \"version\": 3\n   },\n   \"file_extension\": \".py\",\n   \"mimetype\": \"text\/x-python\",\n   \"name\": \"python\",\n   \"nbconvert_exporter\": \"python\",\n   \"pygments_lexer\": \"ipython3\",\n   \"version\": \"3.8.2\"\n  }\n },\n \"nbformat\": 4,\n \"nbformat_minor\": 4\n}\n\n```",
+                "title": "betfairlightweight_benchmark.ipynb",
+                "footer": "<https:\/\/github.com\/almenjonatan\/benchmark|almenjonatan\/benchmark>",
+                "id": 1,
+                "title_link": "https:\/\/github.com\/almenjonatan\/benchmark\/blob\/master\/betfairlightweight_benchmark.ipynb",
+                "footer_icon": "https:\/\/github.githubassets.com\/favicon.ico",
+                "color": "24292f",
+                "mrkdwn_in": [
+                    "text"
+                ],
+                "bot_id": "B01144Z0734",
+                "app_unfurl_url": "https:\/\/github.com\/almenjonatan\/benchmark\/blob\/master\/betfairlightweight_benchmark.ipynb",
+                "is_app_unfurl": true
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Rl6",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Started to create benchmarks for the ones interested, might only be me though "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "joy",
+                                "unicode": "1f602"
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/almenjonatan\/benchmark\/blob\/master\/betfairlightweight_benchmark.ipynb"
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n\nAlthough I feel some of the numbers are on the low end. I might have ruined the library while patching it or something else."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "UPMUFSGCR"
+                ],
+                "count": 1
+            }
+        ]
+    }
+]

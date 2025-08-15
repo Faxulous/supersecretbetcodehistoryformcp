@@ -1,0 +1,1244 @@
+[
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1597417058.098300",
+        "client_msg_id": "f7aedc86-6f79-4d65-89e0-b12bd266302c",
+        "text": "Just playing around with Flumine and I was testing placing live orders, but I can't seem to place multiple orders against the same runner, is that by design, or is there a parameter I'm missing?\n\n```import time\nimport logging\nimport betfairlightweight\nfrom betfairlightweight.filters import streaming_market_filter\nfrom pythonjsonlogger import jsonlogger\n\nfrom flumine import Flumine, clients, BaseStrategy\nfrom flumine.order.trade import Trade\nfrom flumine.order.ordertype import LimitOrder\nfrom flumine.order.order import OrderStatus\nimport account_info as ai\n\nlogger = logging.getLogger()\n\ncustom_format = \"%(asctime) %(levelname) %(message)\"\nlog_handler = logging.StreamHandler()\nformatter = jsonlogger.JsonFormatter(custom_format)\nformatter.converter = time.gmtime\nlog_handler.setFormatter(formatter)\nlogger.addHandler(log_handler)\nlogger.setLevel(<http:\/\/logging.INFO|logging.INFO>)\n\n\nclass ExampleStrategy(BaseStrategy):\n    def start(self):\n        # subscribe to streams\n        print(\"starting strategy 'ExampleStrategy'\")\n\n    def check_market_book(self, market, market_book):\n        # process_market_book only executed if this returns True\n        if market_book.status != \"CLOSED\":\n            return True\n\n    def process_market_book(self, market, market_book):\n        # process marketBook object\n        for runner in market_book.runners:\n            if (\n                runner.status == \"ACTIVE\"\n                #and runner.last_price_traded\n                and runner.selection_id == 5512138\n            ):\n                trade = Trade(\n                    market_id=market_book.market_id,\n                    selection_id=runner.selection_id,\n                    handicap=runner.handicap,\n                    strategy=self,\n                )\n                order = trade.create_order(\n                    side=\"BACK\", order_type=LimitOrder(price=1000, size=2.00)\n                )\n                # self.offset_orders= []\n                # self.customer_order_ref='t'\n                self.place_order(market, order)\n        print(market_book.publish_time)\n\n    def process_orders(self, market, orders):\n        for order in orders:\n            if order.status == OrderStatus.EXECUTABLE:\n                # if order.elapsed_seconds and order.elapsed_seconds &gt; 2:\n                #     self.cancel_order(market, order)\n                # if order.elapsed_seconds and order.elapsed_seconds &gt; 5:\n                #     # print(order.bet_id, order.average_price_matched, order.size_matched)\n                #     if order.size_remaining == 2.00:\n                #         self.cancel_order(market, order, size_reduction=0.01)\n                # self.update_order(market, order, \"PERSIST\")\n                # if order.order_type.price == 1.01 and order.size_remaining == 0.49:\n                #     self.replace_order(market, order, 1.02)\n                # if order.order_type.price == 1.02:\n                #     self.replace_order(market, order, 1.03)\n                # if order.order_type.price == 1.03:\n                #     self.replace_order(market, order, 1.05)\n                pass\n\n\ntrading = betfairlightweight.APIClient(ai.accname, ai.accpass, ai.acckey, certs=ai.path)\nclient = clients.BetfairClient(trading)\n\nframework = Flumine(client=client)\n\nstrategy = ExampleStrategy(\n    market_filter=streaming_market_filter(market_ids=[\"1.172039988\"]),\n    streaming_timeout=2,\n    # max_selection_exposure=5000,\n    # max_order_exposure=2000\n)\nframework.add_strategy(strategy)\nframework.run()```\nI can place, cancel, update etc successfully, but I assumed the above would try to fire off multiple orders, but it only ever seems to place one (obviously there's not a real world use for this script, I was just trying to play around to place multiple orders). Have I missed something, or is this intended behaviour?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "xj0ij",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Just playing around with Flumine and I was testing placing live orders, but I can't seem to place multiple orders against the same runner, is that by design, or is there a parameter I'm missing?\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "import time\nimport logging\nimport betfairlightweight\nfrom betfairlightweight.filters import streaming_market_filter\nfrom pythonjsonlogger import jsonlogger\n\nfrom flumine import Flumine, clients, BaseStrategy\nfrom flumine.order.trade import Trade\nfrom flumine.order.ordertype import LimitOrder\nfrom flumine.order.order import OrderStatus\nimport account_info as ai\n\nlogger = logging.getLogger()\n\ncustom_format = \"%(asctime) %(levelname) %(message)\"\nlog_handler = logging.StreamHandler()\nformatter = jsonlogger.JsonFormatter(custom_format)\nformatter.converter = time.gmtime\nlog_handler.setFormatter(formatter)\nlogger.addHandler(log_handler)\nlogger.setLevel(logging.INFO)\n\n\nclass ExampleStrategy(BaseStrategy):\n    def start(self):\n        # subscribe to streams\n        print(\"starting strategy 'ExampleStrategy'\")\n\n    def check_market_book(self, market, market_book):\n        # process_market_book only executed if this returns True\n        if market_book.status != \"CLOSED\":\n            return True\n\n    def process_market_book(self, market, market_book):\n        # process marketBook object\n        for runner in market_book.runners:\n            if (\n                runner.status == \"ACTIVE\"\n                #and runner.last_price_traded\n                and runner.selection_id == 5512138\n            ):\n                trade = Trade(\n                    market_id=market_book.market_id,\n                    selection_id=runner.selection_id,\n                    handicap=runner.handicap,\n                    strategy=self,\n                )\n                order = trade.create_order(\n                    side=\"BACK\", order_type=LimitOrder(price=1000, size=2.00)\n                )\n                # self.offset_orders= []\n                # self.customer_order_ref='t'\n                self.place_order(market, order)\n        print(market_book.publish_time)\n\n    def process_orders(self, market, orders):\n        for order in orders:\n            if order.status == OrderStatus.EXECUTABLE:\n                # if order.elapsed_seconds and order.elapsed_seconds > 2:\n                #     self.cancel_order(market, order)\n                # if order.elapsed_seconds and order.elapsed_seconds > 5:\n                #     # print(order.bet_id, order.average_price_matched, order.size_matched)\n                #     if order.size_remaining == 2.00:\n                #         self.cancel_order(market, order, size_reduction=0.01)\n                # self.update_order(market, order, \"PERSIST\")\n                # if order.order_type.price == 1.01 and order.size_remaining == 0.49:\n                #     self.replace_order(market, order, 1.02)\n                # if order.order_type.price == 1.02:\n                #     self.replace_order(market, order, 1.03)\n                # if order.order_type.price == 1.03:\n                #     self.replace_order(market, order, 1.05)\n                pass\n\n\ntrading = betfairlightweight.APIClient(ai.accname, ai.accpass, ai.acckey, certs=ai.path)\nclient = clients.BetfairClient(trading)\n\nframework = Flumine(client=client)\n\nstrategy = ExampleStrategy(\n    market_filter=streaming_market_filter(market_ids=[\"1.172039988\"]),\n    streaming_timeout=2,\n    # max_selection_exposure=5000,\n    # max_order_exposure=2000\n)\nframework.add_strategy(strategy)\nframework.run()"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\nI can place, cancel, update etc successfully, but I assumed the above would try to fire off multiple orders, but it only ever seems to place one (obviously there's not a real world use for this script, I was just trying to play around to place multiple orders). Have I missed something, or is this intended behaviour?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "subtype": "channel_join",
+        "user": "U0198BFR9GR",
+        "text": "<@U0198BFR9GR> has joined the channel",
+        "type": "message",
+        "ts": "1597418159.098600"
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1597419754.099800",
+        "edited": {
+            "user": "U4H19D1D2",
+            "ts": "1597420032.000000"
+        },
+        "client_msg_id": "f7830df6-d85e-4581-8a79-bb566b059628",
+        "text": "By default it will look to see if the runner already has live\/pending orders for that strategy aka <https:\/\/github.com\/liampauling\/flumine\/blob\/master\/flumine\/strategy\/strategy.py#L121|invested>, if you want to prevent this logic just override the `def validate_order` function to return True.\n\nStrongly recommend testing this via the backtester or paper trading as it will fire in a lot of orders very quickly!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "attachments": [
+            {
+                "fallback": "[liampauling\/flumine] flumine\/strategy\/strategy.py:121",
+                "text": "```\n    def validate_order(self, runner_context: RunnerContext, order) -&gt; bool:\n```",
+                "title": "flumine\/strategy\/strategy.py:121",
+                "footer": "<https:\/\/github.com\/liampauling\/flumine|liampauling\/flumine>",
+                "id": 1,
+                "title_link": "https:\/\/github.com\/liampauling\/flumine\/blob\/master\/flumine\/strategy\/strategy.py#L121",
+                "footer_icon": "https:\/\/github.githubassets.com\/favicon.ico",
+                "color": "24292f",
+                "mrkdwn_in": [
+                    "text"
+                ],
+                "bot_id": "B01144Z0734",
+                "app_unfurl_url": "https:\/\/github.com\/liampauling\/flumine\/blob\/master\/flumine\/strategy\/strategy.py#L121",
+                "is_app_unfurl": true
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "\/z\/m",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "By default it will look to see if the runner already has live\/pending orders for that strategy aka "
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/liampauling\/flumine\/blob\/master\/flumine\/strategy\/strategy.py#L121",
+                                "text": "invested"
+                            },
+                            {
+                                "type": "text",
+                                "text": ", if you want to prevent this logic just override the "
+                            },
+                            {
+                                "type": "text",
+                                "text": "def validate_order",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " function to return True.\n\nStrongly recommend testing this via the backtester or paper trading as it will fire in a lot of orders very quickly!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "U0160E9HS2G"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1597420069.100800",
+        "client_msg_id": "b8cb480f-4865-453a-ae14-f63654120841",
+        "text": "Cool thanks, yes actually I will switch to paper trading (I did of course only run the above for 10 seconds just to test, but fair point, paper is far more sensible)!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "+tl5G",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Cool thanks, yes actually I will switch to paper trading (I did of course only run the above for 10 seconds just to test, but fair point, paper is far more sensible)!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UUCD6P13J",
+        "type": "message",
+        "ts": "1597420794.104100",
+        "client_msg_id": "3548cc3c-860d-4f78-8cdc-a32fbfd8150a",
+        "text": "I saw this topic mentioned previous but I have a different outcome. When i run the code above with the same process_market_book (with an updated selection_id) i manage to get £32 matched on the same runner.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6898272ab81",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6898272ab810e419c2c9ca9af1e53da8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0012-72.png",
+            "first_name": "Lee",
+            "real_name": "Lee U",
+            "display_name": "Lee",
+            "team": "T4G9NBD2M",
+            "name": "lunswor",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "0oEW",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I saw this topic mentioned previous but I have a different outcome. When i run the code above with the same process_market_book (with an updated selection_id) i manage to get £32 matched on the same runner."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UUCD6P13J",
+        "type": "message",
+        "ts": "1597420895.105500",
+        "edited": {
+            "user": "UUCD6P13J",
+            "ts": "1597420922.000000"
+        },
+        "client_msg_id": "5a392979-b179-43c1-ba8f-4bc49d02ff34",
+        "text": "could this just be orders were triggered before any matched leaving multiple unmatched orders in the market so invested was not true?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6898272ab81",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6898272ab810e419c2c9ca9af1e53da8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0012-72.png",
+            "first_name": "Lee",
+            "real_name": "Lee U",
+            "display_name": "Lee",
+            "team": "T4G9NBD2M",
+            "name": "lunswor",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "qOwS",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "could this just be orders were triggered before any matched leaving multiple unmatched orders in the market so invested was not true?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1597420979.105900",
+        "client_msg_id": "d14e208c-b75e-4b6f-b6c6-4c1f4a221c95",
+        "text": "should not be possible, exactly the same code?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Ua5f",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "should not be possible, exactly the same code?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UUCD6P13J",
+        "type": "message",
+        "ts": "1597421024.106600",
+        "client_msg_id": "fb940ea5-86e8-46f8-8cac-7c0a3412273e",
+        "text": "i'll try and get a reproducible example this evening",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6898272ab81",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6898272ab810e419c2c9ca9af1e53da8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0012-72.png",
+            "first_name": "Lee",
+            "real_name": "Lee U",
+            "display_name": "Lee",
+            "team": "T4G9NBD2M",
+            "name": "lunswor",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "vwd",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "i'll try and get a reproducible example this evening"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1597421112.107900",
+        "client_msg_id": "73b2a47a-c75e-441e-9ea0-8ba4e1ed441e",
+        "text": "lets say that runner was trading at 1000 (back[0] == 1000), then an order would be placed (live order), order would be matched (live order now execution complete), new order placed",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "1fsC",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "lets say that runner was trading at 1000 (back[0] == 1000), then an order would be placed (live order), order would be matched (live order now execution complete), new order placed"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1597421142.108500",
+        "client_msg_id": "ee1519a1-81db-478b-939a-7dbe4f13ca4f",
+        "text": "I think maybe `invested` is a confusing word to use",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "J2z",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I think maybe "
+                            },
+                            {
+                                "type": "text",
+                                "text": "invested",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " is a confusing word to use"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UUCD6P13J",
+        "type": "message",
+        "ts": "1597421214.109400",
+        "client_msg_id": "3e9b4937-f988-4705-b2e7-d6dacc00f7db",
+        "text": "what about runner was trading at 10 and then an order was placed, order would not be matched, should it place another order before that one was matched or cancelled?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6898272ab81",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6898272ab810e419c2c9ca9af1e53da8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0012-72.png",
+            "first_name": "Lee",
+            "real_name": "Lee U",
+            "display_name": "Lee",
+            "team": "T4G9NBD2M",
+            "name": "lunswor",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "pGmL",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "what about runner was trading at 10 and then an order was placed, order would not be matched, should it place another order before that one was matched or cancelled?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1597421231.109600",
+        "client_msg_id": "13478504-10b1-40b8-ad82-09272a29e1c6",
+        "text": "no",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "+Uj",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "no"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UUCD6P13J",
+        "type": "message",
+        "ts": "1597421266.110200",
+        "client_msg_id": "c07aacad-7bbf-4052-8bfb-716510bed7c7",
+        "text": "that's what i think i'm seeing. i'll put together a reproducible example after work",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6898272ab81",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6898272ab810e419c2c9ca9af1e53da8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0012-72.png",
+            "first_name": "Lee",
+            "real_name": "Lee U",
+            "display_name": "Lee",
+            "team": "T4G9NBD2M",
+            "name": "lunswor",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "3Jz",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "that's what i think i'm seeing. i'll put together a reproducible example after work"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UUCD6P13J",
+        "type": "message",
+        "ts": "1597421281.110600",
+        "client_msg_id": "df6576d9-fe07-40dd-9006-d655f7a2ab41",
+        "text": "hopefully it's just something i'm doing wrong",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6898272ab81",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6898272ab810e419c2c9ca9af1e53da8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0012-72.png",
+            "first_name": "Lee",
+            "real_name": "Lee U",
+            "display_name": "Lee",
+            "team": "T4G9NBD2M",
+            "name": "lunswor",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "uVN",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "hopefully it's just something i'm doing wrong"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1597421390.111200",
+        "client_msg_id": "2723b05f-9f1e-4421-bb6c-2d62b014cb1f",
+        "text": "yeah would be interested in that as I can't see any edge cases unless the validate order function has been changed",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "lqS4",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "yeah would be interested in that as I can't see any edge cases unless the validate order function has been changed"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UUCD6P13J",
+        "type": "message",
+        "ts": "1597421519.111500",
+        "client_msg_id": "4642dd5d-b7fb-4a0e-80f3-a05333a1be4d",
+        "text": "```from flumine import BaseStrategy\nfrom flumine.order.ordertype import LimitOrder\nfrom flumine.order.trade import Trade\n\n\nclass ExampleMultipleOrders(BaseStrategy):\n    def check_market_book(self, market, market_book):\n        if market_book.status != \"CLOSED\":\n            return True\n\n    def process_market_book(self, market, market_book):\n        for runner in market_book.runners:\n            if runner.status == \"ACTIVE\" and runner.selection_id == 35527773:\n                trade = Trade(\n                    market_id=market_book.market_id,\n                    selection_id=runner.selection_id,\n                    handicap=runner.handicap,\n                    strategy=self,\n                )\n                order = trade.create_order(\n                    side=\"BACK\", order_type=LimitOrder(price=1000, size=2.00)\n                )\n                self.place_order(market, order)```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6898272ab81",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6898272ab810e419c2c9ca9af1e53da8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0012-72.png",
+            "first_name": "Lee",
+            "real_name": "Lee U",
+            "display_name": "Lee",
+            "team": "T4G9NBD2M",
+            "name": "lunswor",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Nuda",
+                "elements": [
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "from flumine import BaseStrategy\nfrom flumine.order.ordertype import LimitOrder\nfrom flumine.order.trade import Trade\n\n\nclass ExampleMultipleOrders(BaseStrategy):\n    def check_market_book(self, market, market_book):\n        if market_book.status != \"CLOSED\":\n            return True\n\n    def process_market_book(self, market, market_book):\n        for runner in market_book.runners:\n            if runner.status == \"ACTIVE\" and runner.selection_id == 35527773:\n                trade = Trade(\n                    market_id=market_book.market_id,\n                    selection_id=runner.selection_id,\n                    handicap=runner.handicap,\n                    strategy=self,\n                )\n                order = trade.create_order(\n                    side=\"BACK\", order_type=LimitOrder(price=1000, size=2.00)\n                )\n                self.place_order(market, order)"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "text": "market file too",
+        "files": [
+            {
+                "id": "F019KMXMV4G",
+                "mode": "hidden_by_limit"
+            }
+        ],
+        "upload": false,
+        "user": "UUCD6P13J",
+        "display_as_bot": false,
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "kRBW",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "market file too"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "type": "message",
+        "ts": "1597421553.111700"
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1597421722.112300",
+        "client_msg_id": "518fd820-2b39-4eda-9afc-db3542e1666f",
+        "text": "i see no issue",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "MVbCp",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "i see no issue"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1597421723.112400",
+        "client_msg_id": "c5708518-fcdc-4ae6-979c-82a4cee871d1",
+        "text": "order gets placed",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Q0Z",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "order gets placed"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1597421726.112800",
+        "client_msg_id": "f7873571-131e-4054-a78d-5de696046490",
+        "text": "sits there for a while",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "c2k",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "sits there for a while"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1597421732.113000",
+        "client_msg_id": "8e7bdc34-f812-40f8-a1c1-3e3d198349a1",
+        "text": "gets matched and then a new one goes in",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "7yuGa",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "gets matched and then a new one goes in"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UUCD6P13J",
+        "type": "message",
+        "ts": "1597421824.113300",
+        "client_msg_id": "88dccc1f-e796-4832-b611-3e9e6469103b",
+        "text": "i got £32 matched on that runner",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6898272ab81",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6898272ab810e419c2c9ca9af1e53da8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0012-72.png",
+            "first_name": "Lee",
+            "real_name": "Lee U",
+            "display_name": "Lee",
+            "team": "T4G9NBD2M",
+            "name": "lunswor",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "qSu",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "i got £32 matched on that runner"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UUCD6P13J",
+        "type": "message",
+        "ts": "1597421833.113500",
+        "client_msg_id": "f1c63a85-45ef-4cc5-8a98-e582af1050ab",
+        "text": "oh",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6898272ab81",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6898272ab810e419c2c9ca9af1e53da8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0012-72.png",
+            "first_name": "Lee",
+            "real_name": "Lee U",
+            "display_name": "Lee",
+            "team": "T4G9NBD2M",
+            "name": "lunswor",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "tNwUM",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "oh"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1597421835.113700",
+        "client_msg_id": "453a6c95-e8fa-4958-9f70-95fdbe71d22a",
+        "text": "yep",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "sXBk",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "yep"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UUCD6P13J",
+        "type": "message",
+        "ts": "1597421852.114100",
+        "client_msg_id": "f070927a-bddb-4edb-8e9b-ec90b3d9477b",
+        "text": "so invested only stops an order going in until the first one matches",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6898272ab81",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6898272ab810e419c2c9ca9af1e53da8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0012-72.png",
+            "first_name": "Lee",
+            "real_name": "Lee U",
+            "display_name": "Lee",
+            "team": "T4G9NBD2M",
+            "name": "lunswor",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "i1K",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "so invested only stops an order going in until the first one matches"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1597421858.114300",
+        "client_msg_id": "661f363e-fb82-46b3-a74f-7011328c74c8",
+        "text": "yeah",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Fh=QR",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "yeah"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UUCD6P13J",
+        "type": "message",
+        "ts": "1597421865.114600",
+        "client_msg_id": "d3f8214e-6c0b-46d2-ae2f-b2fe4e5edab3",
+        "text": "i see, my mistake. thanks",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6898272ab81",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6898272ab810e419c2c9ca9af1e53da8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0012-72.png",
+            "first_name": "Lee",
+            "real_name": "Lee U",
+            "display_name": "Lee",
+            "team": "T4G9NBD2M",
+            "name": "lunswor",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "uP8Q2",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "i see, my mistake. thanks"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1597421942.114800",
+        "client_msg_id": "e815de13-72f2-4d19-95e4-503250dbcb59",
+        "text": "i assume the damage happens once inplay",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "8RE2",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "i assume the damage happens once inplay"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U847PLYN6",
+        "type": "message",
+        "ts": "1597441041.118100",
+        "client_msg_id": "9302f25b-b37f-42bb-93c2-47719dfeaf96",
+        "text": "Hey, Random thing to ask here. I'd love to know if any was recording data on the outright markets. Which is highly improbable anyway but out of curiosity I'd love to know how much was matched and how much the price fell on Bayern Munich to win the champions league whilst they got raped 2-8!!  Inplay and after. :joy::joy:",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "ga58efe77b66",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/0a58efe77b6653b9d62b909203366db6.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0008-72.png",
+            "first_name": "",
+            "real_name": "Tom",
+            "display_name": "Tom",
+            "team": "T4G9NBD2M",
+            "name": "tomirl2008",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "jKcA",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Hey, Random thing to ask here. I'd love to know if any was recording data on the outright markets. Which is highly improbable anyway but out of curiosity I'd love to know how much was matched and how much the price fell on Bayern Munich to win the champions league whilst they got raped 2-8!!  Inplay and after. "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "joy",
+                                "unicode": "1f602"
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "joy",
+                                "unicode": "1f602"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "text": "Just look at the price plot in Betfair: <https:\/\/www.betfair.com\/exchange\/plus\/football\/market\/1.159493870>\n\n2.53 on Bayern although they still have to beat (likely) Man City and then Leipzig\/PSG. In my super biased opinion, I would lay that odds..",
+        "files": [
+            {
+                "id": "F018PRZ9FUN",
+                "mode": "hidden_by_limit"
+            }
+        ],
+        "upload": false,
+        "user": "UF3AYKZMW",
+        "display_as_bot": false,
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "h7A",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Just look at the price plot in Betfair: "
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/www.betfair.com\/exchange\/plus\/football\/market\/1.159493870"
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n\n2.53 on Bayern although they still have to beat (likely) Man City and then Leipzig\/PSG. In my super biased opinion, I would lay that odds.."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "type": "message",
+        "ts": "1597443640.121000"
+    },
+    {
+        "user": "U847PLYN6",
+        "type": "message",
+        "ts": "1597448334.122800",
+        "client_msg_id": "c01f4db5-8490-4887-a281-4d91c4761b88",
+        "text": "@*mlpanda I'd like to see the odds fluctuations of how they became fave from third fave and volume. Munchen are clearly fave after all the destruction the caused tonight!!*",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "ga58efe77b66",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/0a58efe77b6653b9d62b909203366db6.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0008-72.png",
+            "first_name": "",
+            "real_name": "Tom",
+            "display_name": "Tom",
+            "team": "T4G9NBD2M",
+            "name": "tomirl2008",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "wUs0",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "@"
+                            },
+                            {
+                                "type": "text",
+                                "text": "mlpanda I'd like to see the odds fluctuations of how they became fave from third fave and volume. Munchen are clearly fave after all the destruction the caused tonight!!",
+                                "style": {
+                                    "bold": true
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

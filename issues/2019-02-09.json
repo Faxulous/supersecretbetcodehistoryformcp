@@ -1,0 +1,1052 @@
+[
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1549732960.102100",
+        "client_msg_id": "31cfc613-4fc7-4924-b7e2-ef3944a0ffaa",
+        "text": "Okay, sorry I'm back again and really confused!\n\nThis appears to connect, but doesn't seem to emit any messages:\n\n```\nimport os\nimport logging\nimport queue\n\nfrom flask import Flask, render_template\nfrom flask_socketio import SocketIO\n\nimport betfairlightweight\nfrom betfairlightweight.filters import (\n    streaming_market_filter,\n    streaming_market_data_filter,\n)\n\napp = Flask(__name__)\napp.config['SECRET_KEY'] = secretkey\nsocketio = SocketIO(app)\n\n@app.route('\/')\ndef sessions():\n    return render_template('index.html')\n\n# setup logging\nlogging.basicConfig(level=<http:\/\/logging.INFO|logging.INFO>)  # change to DEBUG to see log all updates\n\n# create trading instance (app key must be activated for streaming)\nusername = os.environ.get('username')\ntrading = betfairlightweight.APIClient(user_name,password,appkey,certs=cert_path)\ntrading.login()\n\n# create queue\noutput_queue = queue.Queue()\n\n# create stream listener\nlistener = betfairlightweight.StreamListener(\n    output_queue=output_queue,\n)\n\n# create stream\nstream = trading.streaming.create_stream(\n    listener=listener,\n)\n\n# create filters (GB WIN racing)\nmarket_filter = streaming_market_filter(\n#    event_type_ids=['7'],\n#    country_codes=['GB'],\n#    market_types=['WIN'],\n    market_ids=['1.130856098'],\n)\nmarket_data_filter = streaming_market_data_filter(\n    fields=['EX_BEST_OFFERS', 'EX_MARKET_DEF'],\n    ladder_levels=3,\n)\n\n# subscribe\nstreaming_unique_id = stream.subscribe_to_markets(\n    market_filter=market_filter,\n    market_data_filter=market_data_filter,\n    conflate_ms=1000,  # send update every 1000ms\n)\n\n#start stream\nstream.start(_async=True)\n\n\n\"\"\"while True:\n    market_books = output_queue.get()\n    print(market_books)\n\n    for market_book in market_books:\n        print(\n            market_book,\n            market_book.streaming_unique_id,  # unique id of stream (returned from subscribe request)\n            market_book.streaming_update,  # json update received\n            market_book.market_definition,  # streaming definition, similar to catalogue request\n            market_book.publish_time  # betfair publish time of update\n        )\"\"\"\n\n@socketio.on('ping')\ndef handle_message(_message):\n    market_books = output_queue.get()\n    print(market_books)\n\n    for market_book in market_books:\n        emit(\n            'market_book',\n            f'{market_book} '\n            f'{market_book.streaming_unique_id} '\n            f'{market_book.streaming_update}, '\n            f'{market_book.market_definition}, '\n            f'{market_book.publish_time} '\n        )\n\nif __name__ == '__main__':\n    socketio.run(app, debug=True)\n```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "cYFn",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Okay, sorry I'm back again and really confused!\n\nThis appears to connect, but doesn't seem to emit any messages:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "import os\nimport logging\nimport queue\n\nfrom flask import Flask, render_template\nfrom flask_socketio import SocketIO\n\nimport betfairlightweight\nfrom betfairlightweight.filters import (\n    streaming_market_filter,\n    streaming_market_data_filter,\n)\n\napp = Flask(__name__)\napp.config['SECRET_KEY'] = secretkey\nsocketio = SocketIO(app)\n\n@app.route('\/')\ndef sessions():\n    return render_template('index.html')\n\n# setup logging\nlogging.basicConfig(level="
+                            },
+                            {
+                                "type": "link",
+                                "url": "http:\/\/logging.INFO",
+                                "text": "logging.INFO"
+                            },
+                            {
+                                "type": "text",
+                                "text": ")  # change to DEBUG to see log all updates\n\n# create trading instance (app key must be activated for streaming)\nusername = os.environ.get('username')\ntrading = betfairlightweight.APIClient(user_name,password,appkey,certs=cert_path)\ntrading.login()\n\n# create queue\noutput_queue = queue.Queue()\n\n# create stream listener\nlistener = betfairlightweight.StreamListener(\n    output_queue=output_queue,\n)\n\n# create stream\nstream = trading.streaming.create_stream(\n    listener=listener,\n)\n\n# create filters (GB WIN racing)\nmarket_filter = streaming_market_filter(\n#    event_type_ids=['7'],\n#    country_codes=['GB'],\n#    market_types=['WIN'],\n    market_ids=['1.130856098'],\n)\nmarket_data_filter = streaming_market_data_filter(\n    fields=['EX_BEST_OFFERS', 'EX_MARKET_DEF'],\n    ladder_levels=3,\n)\n\n# subscribe\nstreaming_unique_id = stream.subscribe_to_markets(\n    market_filter=market_filter,\n    market_data_filter=market_data_filter,\n    conflate_ms=1000,  # send update every 1000ms\n)\n\n#start stream\nstream.start(_async=True)\n\n\n\"\"\"while True:\n    market_books = output_queue.get()\n    print(market_books)\n\n    for market_book in market_books:\n        print(\n            market_book,\n            market_book.streaming_unique_id,  # unique id of stream (returned from subscribe request)\n            market_book.streaming_update,  # json update received\n            market_book.market_definition,  # streaming definition, similar to catalogue request\n            market_book.publish_time  # betfair publish time of update\n        )\"\"\"\n\n@socketio.on('ping')\ndef handle_message(_message):\n    market_books = output_queue.get()\n    print(market_books)\n\n    for market_book in market_books:\n        emit(\n            'market_book',\n            f'{market_book} '\n            f'{market_book.streaming_unique_id} '\n            f'{market_book.streaming_update}, '\n            f'{market_book.market_definition}, '\n            f'{market_book.publish_time} '\n        )\n\nif __name__ == '__main__':\n    socketio.run(app, debug=True)\n"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1549732986.102400",
+        "client_msg_id": "eb811635-e3bc-45aa-9932-357edcbd548b",
+        "text": "The javascript is:\n\n```\n  &lt;!DOCTYPE html&gt;\n  &lt;html lang=\"en\"&gt;\n  &lt;head&gt;\n    &lt;title&gt;Flask_Chat_App&lt;\/title&gt;\n  &lt;\/head&gt;\n  &lt;body&gt;\n\n    &lt;h3 style='color: #ccc;font-size: 30px;'&gt;No message yet..&lt;\/h3&gt;\n    &lt;div class=\"message_holder\"&gt;&lt;\/div&gt;\n\n    &lt;!-- jQuery (necessary for Bootstrap's JavaScript plugins) --&gt;\n    &lt;script src=\"<https:\/\/ajax.googleapis.com\/ajax\/libs\/jquery\/1.12.4\/jquery.min.js>\"&gt;&lt;\/script&gt;\n    &lt;script src=\"<https:\/\/cdnjs.cloudflare.com\/ajax\/libs\/socket.io\/1.7.3\/socket.io.min.js>\"&gt;&lt;\/script&gt;\n&lt;script type=\"text\/javascript\" charset=\"utf-8\"&gt;\n    \nvar socket = io.connect('<http:\/\/127.0.0.1:5000\/>');\n    \nsocket.on('connect', function() {\n        \nconsole.log('connected');\n\n        \nsocket.emit('ping', '');\n    \n});\n    \nsocket.on('market_book', function() {\n      \n  console.log('message', arguments);\n    \n});\n\n&lt;\/script&gt;\n\n  &lt;\/body&gt;\n  &lt;\/html&gt;\n```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "RZ\/wU",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "The javascript is:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "  <!DOCTYPE html>\n  <html lang=\"en\">\n  <head>\n    <title>Flask_Chat_App<\/title>\n  <\/head>\n  <body>\n\n    <h3 style='color: #ccc;font-size: 30px;'>No message yet..<\/h3>\n    <div class=\"message_holder\"><\/div>\n\n    <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->\n    <script src=\""
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/ajax.googleapis.com\/ajax\/libs\/jquery\/1.12.4\/jquery.min.js"
+                            },
+                            {
+                                "type": "text",
+                                "text": "\"><\/script>\n    <script src=\""
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/cdnjs.cloudflare.com\/ajax\/libs\/socket.io\/1.7.3\/socket.io.min.js"
+                            },
+                            {
+                                "type": "text",
+                                "text": "\"><\/script>\n<script type=\"text\/javascript\" charset=\"utf-8\">\n    \nvar socket = io.connect('"
+                            },
+                            {
+                                "type": "link",
+                                "url": "http:\/\/127.0.0.1:5000\/"
+                            },
+                            {
+                                "type": "text",
+                                "text": "');\n    \nsocket.on('connect', function() {\n        \nconsole.log('connected');\n\n        \nsocket.emit('ping', '');\n    \n});\n    \nsocket.on('market_book', function() {\n      \n  console.log('message', arguments);\n    \n});\n\n<\/script>\n\n  <\/body>\n  <\/html>\n"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1549733031.102900",
+        "client_msg_id": "f39516b0-cd10-4515-8ae2-45c31d569150",
+        "text": "I do get a 'connected' message in console.log in the browser, so that is a positive step",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "2o8h",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I do get a 'connected' message in console.log in the browser, so that is a positive step"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1549733034.103200",
+        "client_msg_id": "751006f9-6ee3-416d-a26f-0d115dc07b92",
+        "text": "but thats about i t!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "u1F",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "but thats about i t!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1549733047.103500",
+        "client_msg_id": "b2965d6b-e896-4c57-98ed-2d4b48fba450",
+        "text": "the command line console also reports no errors",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "x0N",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "the command line console also reports no errors"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U5D4ZBEAG",
+        "type": "message",
+        "ts": "1549739619.103700",
+        "client_msg_id": "26662c9f-73a6-424c-bd8e-8fbb02936255",
+        "text": "<https:\/\/betfairlightweight.slack.com\/archives\/C4H05ML2E\/p1549565443098800>",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g147ed91a398",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/7147ed91a39866d363a9cfa66ef64cb8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0015-72.png",
+            "first_name": "",
+            "real_name": "seaders",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "seaders",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "attachments": [
+            {
+                "from_url": "https:\/\/betfairlightweight.slack.com\/archives\/C4H05ML2E\/p1549565443098800",
+                "fallback": "[February 7th, 2019 10:50 AM] seaders: have you a debugger working correctly? have you tried stepping through your code?",
+                "ts": "1549565443.098800",
+                "author_id": "U5D4ZBEAG",
+                "author_subname": "seaders",
+                "channel_id": "C4H05ML2E",
+                "is_msg_unfurl": true,
+                "text": "have you a debugger working correctly? have you tried stepping through your code?",
+                "author_name": "seaders",
+                "author_link": "https:\/\/betfairlightweight.slack.com\/team\/U5D4ZBEAG",
+                "author_icon": "https:\/\/secure.gravatar.com\/avatar\/7147ed91a39866d363a9cfa66ef64cb8.jpg?s=48&d=https%3A%2F%2Fa.slack-edge.com%2F00b63%2Fimg%2Favatars%2Fava_0015-48.png",
+                "mrkdwn_in": [
+                    "text"
+                ],
+                "id": 1,
+                "original_url": "https:\/\/betfairlightweight.slack.com\/archives\/C4H05ML2E\/p1549565443098800",
+                "footer": "Slack conversation"
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "l2J",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "link",
+                                "url": "https:\/\/betfairlightweight.slack.com\/archives\/C4H05ML2E\/p1549565443098800"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1549740648.107500",
+        "client_msg_id": "aecb5819-03a2-4ba3-b8fd-21677a5de5ae",
+        "text": "I'm just using the standard Idle, which doesn't work as it doesn't seem to understand the defs at the top (which aren't shown here), i.e. certs, password etc. So debugging doesn't work (or doesn't seem to) as it thinks they are executed simultaneously and gives a syntax error (of course in reality this isn't an issue and that piece of code is fine).\n\nBut...that aside, the above doesn't produce any errors, the connection is good as I get the connected message in the browser and can see activity on the command line console.\n\nSo, short of downloading an alternative debugger (happy to listen to ideas), I'm just using your suggested code really, which at face value appears to be correct, its just that the ping and emit for whatever reason are not triggering...",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "k=U4n",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I'm just using the standard Idle, which doesn't work as it doesn't seem to understand the defs at the top (which aren't shown here), i.e. certs, password etc. So debugging doesn't work (or doesn't seem to) as it thinks they are executed simultaneously and gives a syntax error (of course in reality this isn't an issue and that piece of code is fine).\n\nBut...that aside, the above doesn't produce any errors, the connection is good as I get the connected message in the browser and can see activity on the command line console.\n\nSo, short of downloading an alternative debugger (happy to listen to ideas), I'm just using your suggested code really, which at face value appears to be correct, its just that the ping and emit for whatever reason are not triggering..."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U5D4ZBEAG",
+        "type": "message",
+        "ts": "1549740685.107900",
+        "client_msg_id": "ec5c1e51-92f6-4e19-8e9d-e71c63daaf1c",
+        "text": "if you don't have a working debugger, and can't step through your code, you're working blind",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g147ed91a398",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/7147ed91a39866d363a9cfa66ef64cb8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0015-72.png",
+            "first_name": "",
+            "real_name": "seaders",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "seaders",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "ML9r",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "if you don't have a working debugger, and can't step through your code, you're working blind"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1549741106.108100",
+        "client_msg_id": "0eb8ef60-7248-4386-9e94-9ecaefe055da",
+        "text": "That I am :slightly_smiling_face:",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "HRz",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "That I am "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "slightly_smiling_face",
+                                "unicode": "1f642"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1549741142.108700",
+        "client_msg_id": "9c3e3abc-920e-4629-8c27-defbf79071b5",
+        "text": "I normally just use notepad for php \/ javascript!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Ttz5K",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I normally just use notepad for php \/ javascript!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U5D4ZBEAG",
+        "type": "message",
+        "ts": "1549741561.109000",
+        "client_msg_id": "5417a265-5352-4ff3-91c9-1a204556906e",
+        "text": "That's nothing to be proud of, IMO",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g147ed91a398",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/7147ed91a39866d363a9cfa66ef64cb8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0015-72.png",
+            "first_name": "",
+            "real_name": "seaders",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "seaders",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "F\/OX",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "That's nothing to be proud of, IMO"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U5D4ZBEAG",
+        "type": "message",
+        "ts": "1549741573.109300",
+        "client_msg_id": "9e90438e-9ec7-45c6-a00f-7e032562c3cc",
+        "text": "can you debug any side of what you're programming at all?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g147ed91a398",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/7147ed91a39866d363a9cfa66ef64cb8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0015-72.png",
+            "first_name": "",
+            "real_name": "seaders",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "seaders",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "n+aZq",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "can you debug any side of what you're programming at all?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U5D4ZBEAG",
+        "type": "message",
+        "ts": "1549741608.110200",
+        "client_msg_id": "6787a92c-652b-4041-814b-2ead9d2ac085",
+        "text": "It's kind of saying something like \"I never use any mirrors while driving!\"",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g147ed91a398",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/7147ed91a39866d363a9cfa66ef64cb8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0015-72.png",
+            "first_name": "",
+            "real_name": "seaders",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "seaders",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "I1UV",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "It's kind of saying something like \"I never use any mirrors while driving!\""
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1549741687.111700",
+        "client_msg_id": "455bc1cf-8a88-4bc7-b3da-aa083ccd3699",
+        "text": "I've just never actually had a debugging tool tbh (I'm not a professional coder...although I'm guessing that much is obvious)!!! So have never really thought to go down the debugging tool. With php (which is what I'm far more familiar with), I've never really had an issue with notepad and a browser window. That aside, I'm downloading visual studio as we speak, which will help on the debugging front",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "2QL1J",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I've just never actually had a debugging tool tbh (I'm not a professional coder...although I'm guessing that much is obvious)!!! So have never really thought to go down the debugging tool. With php (which is what I'm far more familiar with), I've never really had an issue with notepad and a browser window. That aside, I'm downloading visual studio as we speak, which will help on the debugging front"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1549744382.116200",
+        "client_msg_id": "d936d06c-358c-443f-a122-f5751711bf2f",
+        "text": "appreciate you've already helped out a lot, however even with Visual Studio there are no errors thrown up by the debugger....it appears the code is functioning correctly...except of course its not. The issue is around the ping or emit, one or the other (or both) are not behaving as I would expect, but are not throwing up any errors (the debugger just shows the connections to the betfair streaming data as expected).\n\nIf I refresh the browser window (which I assume pings the server), the command line console refreshes, so somehow the emit part of the code is not firing. I'm guessing (but it is a guess), its to do with this section:\n\n```\n@socketio.on('ping')\ndef handle_message(_message):\n    market_books = output_queue.get()\n    print(market_books)\n```\n\nBut as no error is thrown, I'm not really sure where to go from here!\n\nApologies again for the dumb questions, 'pure' scripting languages (e.g. Node.js \/ Python) are new to me and clearly I'm struggling with the logic a bit it would seem!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "=zy",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "appreciate you've already helped out a lot, however even with Visual Studio there are no errors thrown up by the debugger....it appears the code is functioning correctly...except of course its not. The issue is around the ping or emit, one or the other (or both) are not behaving as I would expect, but are not throwing up any errors (the debugger just shows the connections to the betfair streaming data as expected).\n\nIf I refresh the browser window (which I assume pings the server), the command line console refreshes, so somehow the emit part of the code is not firing. I'm guessing (but it is a guess), its to do with this section:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "@socketio.on('ping')\ndef handle_message(_message):\n    market_books = output_queue.get()\n    print(market_books)\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\n\nBut as no error is thrown, I'm not really sure where to go from here!\n\nApologies again for the dumb questions, 'pure' scripting languages (e.g. Node.js \/ Python) are new to me and clearly I'm struggling with the logic a bit it would seem!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U5D4ZBEAG",
+        "type": "message",
+        "ts": "1549744416.116600",
+        "client_msg_id": "08b31550-e58d-4438-9c70-b6c429cb0104",
+        "text": "swap that to ```\n@socketio.on('ping')\ndef handle_message(*_args, **_kwargs): ...```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g147ed91a398",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/7147ed91a39866d363a9cfa66ef64cb8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0015-72.png",
+            "first_name": "",
+            "real_name": "seaders",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "seaders",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "iBx+6",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "swap that to "
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "@socketio.on('ping')\ndef handle_message(*_args, **_kwargs): ..."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U5D4ZBEAG",
+        "type": "message",
+        "ts": "1549744440.117100",
+        "client_msg_id": "71971ad6-3a70-46c4-9cda-ea02cce0d864",
+        "text": "and in js ```\n    socket.on('connect', function() {\n        console.log('connected');\n\n        setInterval(function() {\n            socket.emit('ping');\n        }, 1);\n    });``` works better than the single ping",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g147ed91a398",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/7147ed91a39866d363a9cfa66ef64cb8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0015-72.png",
+            "first_name": "",
+            "real_name": "seaders",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "seaders",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "3\/D",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "and in js "
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "    socket.on('connect', function() {\n        console.log('connected');\n\n        setInterval(function() {\n            socket.emit('ping');\n        }, 1);\n    });"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": " works better than the single ping"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1549744807.117900",
+        "client_msg_id": "2c72adbb-2a7a-43cc-a5c2-e9c540716da0",
+        "text": "cool thanks, that actually may help as now I'm getting a ton of errors (which counter intuitively I think is good, as whatever wasn't firing presumably now is and was probably structured incorrectly)!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "8EP7k",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "cool thanks, that actually may help as now I'm getting a ton of errors (which counter intuitively I think is good, as whatever wasn't firing presumably now is and was probably structured incorrectly)!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1549744944.118500",
+        "client_msg_id": "c72939e2-995d-44d1-aed1-3e629b5e8f7c",
+        "text": "oh actually no, I'd just messed up an indent...that was causing the error, still just chugs along as if nothing was wrong :disappointed:",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "65C3i",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "oh actually no, I'd just messed up an indent...that was causing the error, still just chugs along as if nothing was wrong "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "disappointed",
+                                "unicode": "1f61e"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U5D4ZBEAG",
+        "type": "message",
+        "ts": "1549748245.119100",
+        "client_msg_id": "b184f664-1d76-4e07-8245-6aae6a85980a",
+        "text": "it seems to me like you really, really don't have a good dev environment at all, and you're kinda wasting your time a little",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g147ed91a398",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/7147ed91a39866d363a9cfa66ef64cb8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0015-72.png",
+            "first_name": "",
+            "real_name": "seaders",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "seaders",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "UYeY",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "it seems to me like you really, really don't have a good dev environment at all, and you're kinda wasting your time a little"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U5D4ZBEAG",
+        "type": "message",
+        "ts": "1549748266.119600",
+        "client_msg_id": "7b60221b-dc05-4063-94ad-c00ece1d9007",
+        "text": "I'd recommend doing one of the many free Python tutorials online",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g147ed91a398",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/7147ed91a39866d363a9cfa66ef64cb8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0015-72.png",
+            "first_name": "",
+            "real_name": "seaders",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "seaders",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "24aj+",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I'd recommend doing one of the many free Python tutorials online"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U5D4ZBEAG",
+        "type": "message",
+        "ts": "1549748303.120400",
+        "client_msg_id": "d1d57b3f-04da-45b7-bb35-a131e0d2be9f",
+        "text": "and while Visual Studio is okay, I'd probably recommend PyCharm over it, nothing should be running *at all* if you've an indent error",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g147ed91a398",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/7147ed91a39866d363a9cfa66ef64cb8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0015-72.png",
+            "first_name": "",
+            "real_name": "seaders",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "seaders",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "\/KE",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "and while Visual Studio is okay, I'd probably recommend PyCharm over it, nothing should be running "
+                            },
+                            {
+                                "type": "text",
+                                "text": "at all",
+                                "style": {
+                                    "bold": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " if you've an indent error"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1549754637.127600",
+        "client_msg_id": "0e737a1a-72be-4f4f-ac99-a2a9482ef860",
+        "text": "yep, it didn't, that was the only time I actually had an error....which is the whole confusing thing about python (to me)!\n\nI am trying to rush things of course....but equally, this must be something that everyone on here faces surely when using the wrapper (unless no one else has ever tried to connect to to browser), so if people with far more experience than me can't spot any obvious errors, I suspect you're right I am wasting my time a bit with Python, as a beginner course isn't going to help with websockets and I'm not going to figure this out unless I randomly stumble across a similar example.\n\nThat said I'll give PyCharm a go and see if it helps and report back if I make any progress.\n\nThank you for your help so far though, it has actually been very useful in understanding where the error might be, even if I haven't quite got there yet. From your advice, I can at least work out where the error probably is occurring, so that is much appreciated.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "jI7",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "yep, it didn't, that was the only time I actually had an error....which is the whole confusing thing about python (to me)!\n\nI am trying to rush things of course....but equally, this must be something that everyone on here faces surely when using the wrapper (unless no one else has ever tried to connect to to browser), so if people with far more experience than me can't spot any obvious errors, I suspect you're right I am wasting my time a bit with Python, as a beginner course isn't going to help with websockets and I'm not going to figure this out unless I randomly stumble across a similar example.\n\nThat said I'll give PyCharm a go and see if it helps and report back if I make any progress.\n\nThank you for your help so far though, it has actually been very useful in understanding where the error might be, even if I haven't quite got there yet. From your advice, I can at least work out where the error probably is occurring, so that is much appreciated."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1549755128.128800",
+        "client_msg_id": "3f234ab5-1628-4de8-8ae9-d0fe1e135681",
+        "text": "Sorry if that reads as sarcastic btw (re-reading was worried it might be interpreted that way), I genuinely meant I am grateful for the pointers you have given me and I'll post the code sample, if I am able to finally crack it.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Ue8Mi",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Sorry if that reads as sarcastic btw (re-reading was worried it might be interpreted that way), I genuinely meant I am grateful for the pointers you have given me and I'll post the code sample, if I am able to finally crack it."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

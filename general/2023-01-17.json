@@ -1,0 +1,1067 @@
+[
+    {
+        "user": "U0155J92A7Q",
+        "type": "message",
+        "ts": "1673943486.488699",
+        "client_msg_id": "ba0738ea-3636-424e-a0e6-68e1c9b54b69",
+        "text": "I'm working in a function to save the EV of my flumine orders, this function is part of the `BaseStrategy` class. Right now, I just call the function on every `process_market_book` iteration, and save the best back and lay prices for every order with EXECUTION_COMPLETE status.\n\nI'm wondering if it is possible to improve it in order to save the partially matched orders as well.\n\n```def register_ev_completed_orders(self, market, selection_id, best_back_price, best_lay_price):\n    for order in market.blotter._orders.values():\n        if order.status == OrderStatus.EXECUTION_COMPLETE:\n            if order.selection_id == selection_id:\n                if order.size_matched &gt; 0:\n                    if order.date_time_execution_complete:\n                        seconds_since_matched = (datetime.datetime.utcnow() - order.date_time_execution_complete).total_seconds()\n                        if 10 &lt; seconds_since_matched &lt; 30:\n                            if order.bet_id in self.completed_bets_dict:\n                                self.completed_bets_dict[order.bet_id]['seconds_since_matched'].append(seconds_since_matched)\n                                self.completed_bets_dict[order.bet_id]['ref_prices'].append((best_back_price, best_lay_price))\n                            else:\n                                self.completed_bets_dict[order.bet_id] = {\n                                    'market_id': market.market_id,\n                                    'selection_id': selection_id,\n                                    'seconds_since_matched': [seconds_since_matched],\n                                    'side': order.side,\n                                    'ref_prices': [(best_back_price, best_lay_price)],\n                                    'size_matched': order.size_matched,\n                                    'average_price_matched': order.average_price_matched}```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gde8c5d51af5",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/de8c5d51af54a5ac7b501f416ddb262c.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0016-72.png",
+            "first_name": "",
+            "real_name": "Jorge",
+            "display_name": "Jorge",
+            "team": "T4G9NBD2M",
+            "name": "jgarciam95",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "vN+",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I'm working in a function to save the EV of my flumine orders, this function is part of the "
+                            },
+                            {
+                                "type": "text",
+                                "text": "BaseStrategy",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " class. Right now, I just call the function on every "
+                            },
+                            {
+                                "type": "text",
+                                "text": "process_market_book",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " iteration, and save the best back and lay prices for every order with EXECUTION_COMPLETE status.\n\nI'm wondering if it is possible to improve it in order to save the partially matched orders as well.\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "def register_ev_completed_orders(self, market, selection_id, best_back_price, best_lay_price):\n    for order in market.blotter._orders.values():\n        if order.status == OrderStatus.EXECUTION_COMPLETE:\n            if order.selection_id == selection_id:\n                if order.size_matched > 0:\n                    if order.date_time_execution_complete:\n                        seconds_since_matched = (datetime.datetime.utcnow() - order.date_time_execution_complete).total_seconds()\n                        if 10 < seconds_since_matched < 30:\n                            if order.bet_id in self.completed_bets_dict:\n                                self.completed_bets_dict[order.bet_id]['seconds_since_matched'].append(seconds_since_matched)\n                                self.completed_bets_dict[order.bet_id]['ref_prices'].append((best_back_price, best_lay_price))\n                            else:\n                                self.completed_bets_dict[order.bet_id] = {\n                                    'market_id': market.market_id,\n                                    'selection_id': selection_id,\n                                    'seconds_since_matched': [seconds_since_matched],\n                                    'side': order.side,\n                                    'ref_prices': [(best_back_price, best_lay_price)],\n                                    'size_matched': order.size_matched,\n                                    'average_price_matched': order.average_price_matched}"
+                            }
+                        ],
+                        "border": 0
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1673943890.531849",
+        "client_msg_id": "413b1fa4-d227-4981-be7b-75e51eaabfd5",
+        "text": "Any reason you aren't using the `order.context`?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1673943890.531849",
+        "reply_count": 17,
+        "reply_users_count": 2,
+        "latest_reply": "1673962936.182179",
+        "reply_users": [
+            "U0155J92A7Q",
+            "U4H19D1D2"
+        ],
+        "replies": [
+            {
+                "user": "U0155J92A7Q",
+                "ts": "1673944198.624009"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1673944382.485299"
+            },
+            {
+                "user": "U0155J92A7Q",
+                "ts": "1673944513.444219"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1673944847.878139"
+            },
+            {
+                "user": "U0155J92A7Q",
+                "ts": "1673945052.679079"
+            },
+            {
+                "user": "U0155J92A7Q",
+                "ts": "1673945111.948029"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1673945154.351599"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1673945162.460709"
+            },
+            {
+                "user": "U0155J92A7Q",
+                "ts": "1673945207.163469"
+            },
+            {
+                "user": "U0155J92A7Q",
+                "ts": "1673945227.025429"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1673945419.492069"
+            },
+            {
+                "user": "U0155J92A7Q",
+                "ts": "1673946454.716179"
+            },
+            {
+                "user": "U0155J92A7Q",
+                "ts": "1673946522.063029"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1673946545.808629"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1673946639.988689"
+            },
+            {
+                "user": "U0155J92A7Q",
+                "ts": "1673946659.860369"
+            },
+            {
+                "user": "U0155J92A7Q",
+                "ts": "1673962936.182179"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": true,
+        "last_read": "1673962936.182179",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "V8T",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Any reason you aren't using the "
+                            },
+                            {
+                                "type": "text",
+                                "text": "order.context",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U0155J92A7Q",
+        "type": "message",
+        "ts": "1673944198.624009",
+        "client_msg_id": "8cb547d3-01a9-4a6f-adc8-cb82f930fb09",
+        "text": "It's designed to store info and retrieve it later, right? I just thought it's simpler to record the info of all orders in my own dict",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gde8c5d51af5",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/de8c5d51af54a5ac7b501f416ddb262c.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0016-72.png",
+            "first_name": "",
+            "real_name": "Jorge",
+            "display_name": "Jorge",
+            "team": "T4G9NBD2M",
+            "name": "jgarciam95",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1673943890.531849",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "EsCM",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "It's designed to store info and retrieve it later, right? I just thought it's simpler to record the info of all orders in my own dict"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1673944382.485299",
+        "edited": {
+            "user": "U4H19D1D2",
+            "ts": "1673944400.000000"
+        },
+        "client_msg_id": "35ef98aa-05a7-4f68-8cb4-4cdb7d824bb4",
+        "text": "I would say its *much* simpler to do it the 'flumine' <https:\/\/github.com\/betcode-org\/flumine\/blob\/04d607e1d749a2dbaa8297bbf74c062990867a6b\/examples\/strategies\/lowestlayer.py#L60|way>\n\n```# create order\norder = trade.create_order(\n    side=\"LAY\",\n    order_type=LimitOrder(lay, stake),\n    notes=OrderedDict(\n        best_back_price=best_back_price,\n        best_lay_price=best_lay_price\n    )\n)```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1673943890.531849",
+        "parent_user_id": "U4H19D1D2",
+        "attachments": [
+            {
+                "id": 1,
+                "footer_icon": "https:\/\/slack.github.com\/static\/img\/favicon-neutral.png",
+                "color": "24292f",
+                "bot_id": "B021ZJYSBMW",
+                "app_unfurl_url": "https:\/\/github.com\/betcode-org\/flumine\/blob\/04d607e1d749a2dbaa8297bbf74c062990867a6b\/examples\/strategies\/lowestlayer.py#L60",
+                "is_app_unfurl": true,
+                "app_id": "A01BP7R4KNY",
+                "fallback": "<https:\/\/github.com\/betcode-org\/flumine\/blob\/04d607e1d749a2dbaa8297bbf74c062990867a6b\/examples\/strategies\/lowestlayer.py | lowestlayer.py>",
+                "text": "```\n                        notes=OrderedDict(underround=round(underround, 4)),\n```",
+                "title": "<https:\/\/github.com\/betcode-org\/flumine\/blob\/04d607e1d749a2dbaa8297bbf74c062990867a6b\/examples\/strategies\/lowestlayer.py | lowestlayer.py>",
+                "footer": "<https:\/\/github.com\/betcode-org\/flumine|betcode-org\/flumine>",
+                "mrkdwn_in": [
+                    "text"
+                ]
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "CovG",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I would say its "
+                            },
+                            {
+                                "type": "text",
+                                "text": "much",
+                                "style": {
+                                    "bold": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " simpler to do it the 'flumine' "
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/betcode-org\/flumine\/blob\/04d607e1d749a2dbaa8297bbf74c062990867a6b\/examples\/strategies\/lowestlayer.py#L60",
+                                "text": "way"
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "# create order\norder = trade.create_order(\n    side=\"LAY\",\n    order_type=LimitOrder(lay, stake),\n    notes=OrderedDict(\n        best_back_price=best_back_price,\n        best_lay_price=best_lay_price\n    )\n)"
+                            }
+                        ],
+                        "border": 0
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U0155J92A7Q",
+        "type": "message",
+        "ts": "1673944513.444219",
+        "client_msg_id": "17d6087e-5f62-44ac-8a3d-32024eef5e53",
+        "text": "Okay, but this adds the notes when the order is created. My goal is to add the notes after the bet has been partially matched, to record the best_back and best_lay and calculate EV",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gde8c5d51af5",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/de8c5d51af54a5ac7b501f416ddb262c.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0016-72.png",
+            "first_name": "",
+            "real_name": "Jorge",
+            "display_name": "Jorge",
+            "team": "T4G9NBD2M",
+            "name": "jgarciam95",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1673943890.531849",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "mlL",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Okay, but this adds the notes when the order is created. My goal is to add the notes after the bet has been partially matched, to record the best_back and best_lay and calculate EV"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1673944847.878139",
+        "edited": {
+            "user": "U4H19D1D2",
+            "ts": "1673944940.000000"
+        },
+        "client_msg_id": "2ebca949-d4e6-4efc-a6d0-08fac105b530",
+        "text": "`order.context[\"yadadyaydyady\"] = \"yadyadydyad\"`",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1673943890.531849",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "c6cGp",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "order.context[\"yadadyaydyady\"] = \"yadyadydyad\"",
+                                "style": {
+                                    "code": true
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U0155J92A7Q",
+        "type": "message",
+        "ts": "1673945052.679079",
+        "client_msg_id": "89487e54-1ed3-4857-84ab-e8116182011b",
+        "text": "I see, and then for ex. I could use `_process_cleared_orders_meta`  to get the results",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gde8c5d51af5",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/de8c5d51af54a5ac7b501f416ddb262c.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0016-72.png",
+            "first_name": "",
+            "real_name": "Jorge",
+            "display_name": "Jorge",
+            "team": "T4G9NBD2M",
+            "name": "jgarciam95",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1673943890.531849",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "\/87\/",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I see, and then for ex. I could use "
+                            },
+                            {
+                                "type": "text",
+                                "text": "_process_cleared_orders_meta",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "  to get the results"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "U4H19D1D2"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "U0155J92A7Q",
+        "type": "message",
+        "ts": "1673945111.948029",
+        "client_msg_id": "8c3717a7-2484-4739-9d77-4c39304b2792",
+        "text": "I can update my function to use `order.context`  but this still does not solve my issue of saving the prices for partially matched orders... Right now I am only checking EXECUTION_COMPLETE orders",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gde8c5d51af5",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/de8c5d51af54a5ac7b501f416ddb262c.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0016-72.png",
+            "first_name": "",
+            "real_name": "Jorge",
+            "display_name": "Jorge",
+            "team": "T4G9NBD2M",
+            "name": "jgarciam95",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1673943890.531849",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "GPin",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I can update my function to use "
+                            },
+                            {
+                                "type": "text",
+                                "text": "order.context",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "  but this still does not solve my issue of saving the prices for partially matched orders... Right now I am only checking EXECUTION_COMPLETE orders"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1673945154.351599",
+        "client_msg_id": "9bc48cbe-fcbe-4556-8063-e16fa090753b",
+        "text": "At what point do you want to save the price of the partially matched orders?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1673943890.531849",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "+Re",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "At what point do you want to save the price of the partially matched orders?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1673945162.460709",
+        "client_msg_id": "135c6a4e-234a-4443-8a96-04d493a624fa",
+        "text": "When partially matched?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1673943890.531849",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "wHyz",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "When partially matched?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U0155J92A7Q",
+        "type": "message",
+        "ts": "1673945207.163469",
+        "client_msg_id": "f838d1b1-fb19-451e-a912-6371d653e73d",
+        "text": "Ideally, 10-30 seconds after partially matched, as shown in the code, and save them multiple times",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gde8c5d51af5",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/de8c5d51af54a5ac7b501f416ddb262c.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0016-72.png",
+            "first_name": "",
+            "real_name": "Jorge",
+            "display_name": "Jorge",
+            "team": "T4G9NBD2M",
+            "name": "jgarciam95",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1673943890.531849",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Is6e1",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Ideally, 10-30 seconds after partially matched, as shown in the code, and save them multiple times"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U0155J92A7Q",
+        "type": "message",
+        "ts": "1673945227.025429",
+        "client_msg_id": "db8f4bc3-a6c9-43b7-81fa-b388fffaddc2",
+        "text": "But if it's too complex, I can live with saving them once",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gde8c5d51af5",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/de8c5d51af54a5ac7b501f416ddb262c.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0016-72.png",
+            "first_name": "",
+            "real_name": "Jorge",
+            "display_name": "Jorge",
+            "team": "T4G9NBD2M",
+            "name": "jgarciam95",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1673943890.531849",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "9rZe6",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "But if it's too complex, I can live with saving them once"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1673945419.492069",
+        "client_msg_id": "db4055c0-a281-4a68-bc99-b98d8fd1b409",
+        "text": "Something like this not work?\n\n```    def process_orders(self, market, orders):\n        pt = market.market_book.publish_time_epoch\n        for order in orders:\n            if order.status == OrderStatus.EXECUTABLE and order.size_matched &gt; 0:\n                # live orders \/ partially matched\n                last_record_time = order.context.get(\"last_record_time\")\n                if last_record_time is None or (pt - last_record_time) &gt; 30:\n                    # record price\n                    # update last_record_time\n                    order.context[\"last_record_time\"] = pt```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1673943890.531849",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "5QQ7D",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Something like this not work?\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "    def process_orders(self, market, orders):\n        pt = market.market_book.publish_time_epoch\n        for order in orders:\n            if order.status == OrderStatus.EXECUTABLE and order.size_matched > 0:\n                # live orders \/ partially matched\n                last_record_time = order.context.get(\"last_record_time\")\n                if last_record_time is None or (pt - last_record_time) > 30:\n                    # record price\n                    # update last_record_time\n                    order.context[\"last_record_time\"] = pt"
+                            }
+                        ],
+                        "border": 0
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U0155J92A7Q",
+        "type": "message",
+        "ts": "1673946454.716179",
+        "client_msg_id": "19761f46-3f90-4481-9819-a3c920899842",
+        "text": "This is nice, I always forget about `process_orders` :smile:",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gde8c5d51af5",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/de8c5d51af54a5ac7b501f416ddb262c.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0016-72.png",
+            "first_name": "",
+            "real_name": "Jorge",
+            "display_name": "Jorge",
+            "team": "T4G9NBD2M",
+            "name": "jgarciam95",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1673943890.531849",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "R\/Pa\/",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "This is nice, I always forget about "
+                            },
+                            {
+                                "type": "text",
+                                "text": "process_orders",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "smile",
+                                "unicode": "1f604"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U0155J92A7Q",
+        "type": "message",
+        "ts": "1673946522.063029",
+        "client_msg_id": "853e832c-7831-4a08-945f-53194d0a7834",
+        "text": "And in order to know and what time it was partially matched? I see there is an attribute `order.simulated.matched`  where I can get the 'pt'",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gde8c5d51af5",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/de8c5d51af54a5ac7b501f416ddb262c.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0016-72.png",
+            "first_name": "",
+            "real_name": "Jorge",
+            "display_name": "Jorge",
+            "team": "T4G9NBD2M",
+            "name": "jgarciam95",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1673943890.531849",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "FmV2",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "And in order to know and what time it was partially matched? I see there is an attribute "
+                            },
+                            {
+                                "type": "text",
+                                "text": "order.simulated.matched",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "  where I can get the 'pt'"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1673946545.808629",
+        "client_msg_id": "9ea8cb91-9966-4fa1-82e9-13c522179afe",
+        "text": "That will only work when simulating",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1673943890.531849",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "ljt",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "That will only work when simulating"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1673946639.988689",
+        "client_msg_id": "bd3ce256-aadf-4c99-9373-1a66de82a4b7",
+        "text": "For live you can use `order.responses.current_order` which might have the last match date? Or just log it yourself when it changes",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1673943890.531849",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "7C7wu",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "For live you can use "
+                            },
+                            {
+                                "type": "text",
+                                "text": "order.responses.current_order",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " which might have the last match date? Or just log it yourself when it changes"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U0155J92A7Q",
+        "type": "message",
+        "ts": "1673946659.860369",
+        "client_msg_id": "879fd7aa-8288-4c5b-a695-54f389ea27a5",
+        "text": "Yeah, the pt after the order.size_matched &gt; 0 should be close enough to the matched time",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gde8c5d51af5",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/de8c5d51af54a5ac7b501f416ddb262c.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0016-72.png",
+            "first_name": "",
+            "real_name": "Jorge",
+            "display_name": "Jorge",
+            "team": "T4G9NBD2M",
+            "name": "jgarciam95",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1673943890.531849",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "U1Ne",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Yeah, the pt after the order.size_matched > 0 should be close enough to the matched time"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U0155J92A7Q",
+        "type": "message",
+        "ts": "1673962936.182179",
+        "client_msg_id": "9016e1cf-c533-494e-a283-beea6ed88878",
+        "text": "thanks liam!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gde8c5d51af5",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/de8c5d51af54a5ac7b501f416ddb262c.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0016-72.png",
+            "first_name": "",
+            "real_name": "Jorge",
+            "display_name": "Jorge",
+            "team": "T4G9NBD2M",
+            "name": "jgarciam95",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1673943890.531849",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "fKg",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "thanks liam!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "U4H19D1D2"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "U0155J92A7Q",
+        "type": "message",
+        "ts": "1673963863.118999",
+        "client_msg_id": "66dba658-4352-405a-817c-29d09d7bb56f",
+        "text": "I realized it is simpler to calculate the EV after the order goes to EXECUTION_COMPLETE status and just compare with average_price_matched. Trying to calculate the EV of every partial match is too complex (specially if there is more than 1 partial matched) and not worth it for me",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gde8c5d51af5",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/de8c5d51af54a5ac7b501f416ddb262c.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0016-72.png",
+            "first_name": "",
+            "real_name": "Jorge",
+            "display_name": "Jorge",
+            "team": "T4G9NBD2M",
+            "name": "jgarciam95",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "vhhjG",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I realized it is simpler to calculate the EV after the order goes to EXECUTION_COMPLETE status and just compare with average_price_matched. Trying to calculate the EV of every partial match is too complex (specially if there is more than 1 partial matched) and not worth it for me"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

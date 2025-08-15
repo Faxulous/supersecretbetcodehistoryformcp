@@ -1,0 +1,367 @@
+[
+    {
+        "text": "I keep getting a BET_TAKEN_OR_LAPSED error when cancelling, my cancel logic is as follows:\n```orders = [order for order in market.blotter.strategy_orders(self) if\n        (order.selection_id, order.handicap) == (runner.selection_id,runner.handicap)]```\n```for order in orders:\n    runner_exposure = get_runner_exposure(self, market, selected_runner=order)\n    if order.status == OrderStatus.EXECUTABLE:\n        if order.side == 'BACK':\n            if positive_runner_exposure &lt; runner_exposure['if_win']:\n                logging.info('Cancelling {0} due to positive exposure breach, runner exposure is: {1} and limit is: {2}.'.format(order.bet_id, runner_exposure, negative_runner_exposure))\n                market.cancel_order(order)\n            elif validate_current_order(order, time_to_cancel_orders) is True:\n                logging.info('Cancelling {0} as order has been live for {1} seconds.'.format(order.bet_id, time_to_cancel_orders))\n                market.cancel_order(order)\n        else:\n            if negative_runner_exposure &gt; runner_exposure['if_win']:\n                <http:\/\/logging.info|logging.info>('Cancelling {0} due to negative exposure breach, runner exposure is: {1} and limit is: {2}.'.format(order.bet_id, runner_exposure, negative_runner_exposure))\n                market.cancel_order(order)\n            elif validate_current_order(order, time_to_cancel_orders) is True:\n                <http:\/\/logging.info|logging.info>('Cancelling {0} as order has been live for {1} seconds.'.format(order.bet_id, time_to_cancel_orders))\n                market.cancel_order(order)```\nI don't understand how this error could (repeatedly) happen when I check to ensure the order is EXECUTABLE before cancelling (logs for one example attached, I have had multiple instances of this today)?\n\n(I do appreciate it will be an error on my side, I'm just completely stumped as to what it could be), so any clues would be greatly appreciated!",
+        "files": [
+            {
+                "id": "F03C83WS92B",
+                "created": 1650725809,
+                "timestamp": 1650725809,
+                "name": "order_cancel_failure.txt",
+                "title": "order_cancel_failure.txt",
+                "mimetype": "text\/plain",
+                "filetype": "text",
+                "pretty_type": "Plain Text",
+                "user": "UFTBRB3F1",
+                "user_team": "T4G9NBD2M",
+                "editable": false,
+                "size": 24049376,
+                "mode": "hosted",
+                "is_external": false,
+                "external_type": "",
+                "is_public": true,
+                "public_url_shared": false,
+                "display_as_bot": false,
+                "username": "",
+                "url_private": "https:\/\/files.slack.com\/files-pri\/T4G9NBD2M-F03C83WS92B\/order_cancel_failure.txt?t=xoxe-152328387089-8357743338709-8373272928225-dfe8ebcd8ca3d2f633bcafeb95191840",
+                "url_private_download": "https:\/\/files.slack.com\/files-pri\/T4G9NBD2M-F03C83WS92B\/download\/order_cancel_failure.txt?t=xoxe-152328387089-8357743338709-8373272928225-dfe8ebcd8ca3d2f633bcafeb95191840",
+                "media_display_type": "unknown",
+                "permalink": "https:\/\/betcode-org.slack.com\/files\/UFTBRB3F1\/F03C83WS92B\/order_cancel_failure.txt",
+                "permalink_public": "https:\/\/slack-files.com\/T4G9NBD2M-F03C83WS92B-7db1979b26",
+                "is_starred": false,
+                "has_rich_preview": false,
+                "file_access": "visible"
+            }
+        ],
+        "upload": false,
+        "user": "UFTBRB3F1",
+        "display_as_bot": false,
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "7ByBv",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I keep getting a BET_TAKEN_OR_LAPSED error when cancelling, my cancel logic is as follows:\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "orders = [order for order in market.blotter.strategy_orders(self) if\n        (order.selection_id, order.handicap) == (runner.selection_id,runner.handicap)]"
+                            }
+                        ],
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "for order in orders:\n    runner_exposure = get_runner_exposure(self, market, selected_runner=order)\n    if order.status == OrderStatus.EXECUTABLE:\n        if order.side == 'BACK':\n            if positive_runner_exposure < runner_exposure['if_win']:\n                logging.info('Cancelling {0} due to positive exposure breach, runner exposure is: {1} and limit is: {2}.'.format(order.bet_id, runner_exposure, negative_runner_exposure))\n                market.cancel_order(order)\n            elif validate_current_order(order, time_to_cancel_orders) is True:\n                logging.info('Cancelling {0} as order has been live for {1} seconds.'.format(order.bet_id, time_to_cancel_orders))\n                market.cancel_order(order)\n        else:\n            if negative_runner_exposure > runner_exposure['if_win']:\n                logging.info('Cancelling {0} due to negative exposure breach, runner exposure is: {1} and limit is: {2}.'.format(order.bet_id, runner_exposure, negative_runner_exposure))\n                market.cancel_order(order)\n            elif validate_current_order(order, time_to_cancel_orders) is True:\n                logging.info('Cancelling {0} as order has been live for {1} seconds.'.format(order.bet_id, time_to_cancel_orders))\n                market.cancel_order(order)"
+                            }
+                        ],
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\nI don't understand how this error could (repeatedly) happen when I check to ensure the order is EXECUTABLE before cancelling (logs for one example attached, I have had multiple instances of this today)?\n\n(I do appreciate it will be an error on my side, I'm just completely stumped as to what it could be), so any clues would be greatly appreciated!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "type": "message",
+        "ts": "1650725880.977539",
+        "client_msg_id": "2e1881af-a1a7-4eb6-b22f-fbac03ac5385"
+    },
+    {
+        "user": "U011VL3CA2Y",
+        "type": "message",
+        "ts": "1650726006.453519",
+        "edited": {
+            "user": "U011VL3CA2Y",
+            "ts": "1650726016.000000"
+        },
+        "client_msg_id": "384f71ab-c472-468d-966f-61deb37a0a15",
+        "text": "one reason this could happen is that the order gets matched, and you try to cancel the order before the update to tell you that it is no longer executable reaches you, so you keep seeing it as executable",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g1ec6e88d1e4",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/1ec6e88d1e4dd0bff349d83e9edba6bd.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0005-72.png",
+            "first_name": "Ruben",
+            "real_name": "Ruben",
+            "display_name": "Ruben",
+            "team": "T4G9NBD2M",
+            "name": "tduqruqtgtpiioibww",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "xHZ7",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "one reason this could happen is that the order gets matched, and you try to cancel the order before the update to tell you that it is no longer executable reaches you, so you keep seeing it as executable"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1650726091.707859",
+        "client_msg_id": "08caac38-c506-432f-8b3f-1cf3729ae319",
+        "text": "Absolutely, but would that not correct within a few seconds, once Flumine receives the order update?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "uOJQC",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Absolutely, but would that not correct within a few seconds, once Flumine receives the order update?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1650726136.656619",
+        "client_msg_id": "a422a3cc-c04e-4fb7-ae66-cb1ab9bf169c",
+        "text": "What you describe is what is happening, but it somehow appears Flumine never acknowledges the order status has changed and seems to get stuck in a perpetual loop trying to cancel an order that has already been matched.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Rxh",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "What you describe is what is happening, but it somehow appears Flumine never acknowledges the order status has changed and seems to get stuck in a perpetual loop trying to cancel an order that has already been matched."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U011VL3CA2Y",
+        "type": "message",
+        "ts": "1650726232.242569",
+        "client_msg_id": "03aac901-2959-4fb1-a5dc-ec2af27ed74c",
+        "text": "okay, but if you have already sent the cancellation, you will receive the error \"BET_TAKEN_OR_LAPSED\" because the order is no longer there; eventually as you say flumine should receive the corresponding update and no longer see it as executable",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g1ec6e88d1e4",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/1ec6e88d1e4dd0bff349d83e9edba6bd.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0005-72.png",
+            "first_name": "Ruben",
+            "real_name": "Ruben",
+            "display_name": "Ruben",
+            "team": "T4G9NBD2M",
+            "name": "tduqruqtgtpiioibww",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "OU8K",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "okay, but if you have already sent the cancellation, you will receive the error \"BET_TAKEN_OR_LAPSED\" because the order is no longer there; eventually as you say flumine should receive the corresponding update and no longer see it as executable"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U011VL3CA2Y",
+        "type": "message",
+        "ts": "1650726249.630519",
+        "client_msg_id": "33c80140-00b9-4d6e-a30f-d9187f9bccca",
+        "text": "so I wouldn't know why it never ceases to be executable",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g1ec6e88d1e4",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/1ec6e88d1e4dd0bff349d83e9edba6bd.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0005-72.png",
+            "first_name": "Ruben",
+            "real_name": "Ruben",
+            "display_name": "Ruben",
+            "team": "T4G9NBD2M",
+            "name": "tduqruqtgtpiioibww",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "uIT",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "so I wouldn't know why it never ceases to be executable"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1650726274.480549",
+        "client_msg_id": "9d3e87fb-1214-4408-8e17-1be486ca2033",
+        "text": "Yes thats my confusion too, I completely appreciate why this happens occasionally before the next order update",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "qrY",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Yes thats my confusion too, I completely appreciate why this happens occasionally before the next order update"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1650726290.947819",
+        "client_msg_id": "7d338d64-2170-437e-ae5c-eb0b2ff53626",
+        "text": "But that can't be the case here as it (seems to) go on forever",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "o\/K",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "But that can't be the case here as it (seems to) go on forever"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

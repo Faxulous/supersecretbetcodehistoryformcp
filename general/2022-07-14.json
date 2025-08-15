@@ -1,0 +1,940 @@
+[
+    {
+        "user": "UG03WDCHH",
+        "type": "message",
+        "ts": "1657782634.721639",
+        "edited": {
+            "user": "UG03WDCHH",
+            "ts": "1657782637.000000"
+        },
+        "client_msg_id": "1087c677-76c5-468f-941d-de9ea29f66c6",
+        "text": "any ideas?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g03ce37265ba",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/803ce37265ba7d4f1be4d779100eaa60.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0023-72.png",
+            "first_name": "Rudeger",
+            "real_name": "Rudeger Jamison",
+            "display_name": "Rudeger Jamison",
+            "team": "T4G9NBD2M",
+            "name": "ben.k.muller",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1657765235.971179",
+        "parent_user_id": "UG03WDCHH",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Y2LHO",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "any ideas?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1657785493.512139",
+        "client_msg_id": "2449ac40-93e1-409f-b333-d5bd115153f3",
+        "text": "What is wrong with something like this:\n\n```class MyStream(BaseStream):\n\n    @retry(wait=RETRY_WAIT)\n    def run(self) -&gt; None:\n        while True:\n            markets_to_poll = []\n            for market in self.flumine.markets:\n                if market.seconds_to_start &lt; 600:\n                    markets_to_poll.append(market.market_id)\n            \n            # make API request with marketIds\n            \n            time.sleep(5)\n\n\nframework.streams.add_custom_stream(\n    MyStream(framework, custom=True)\n)```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1657765235.971179",
+        "parent_user_id": "UG03WDCHH",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "14E+",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "What is wrong with something like this:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "class MyStream(BaseStream):\n\n    @retry(wait=RETRY_WAIT)\n    def run(self) -> None:\n        while True:\n            markets_to_poll = []\n            for market in self.flumine.markets:\n                if market.seconds_to_start < 600:\n                    markets_to_poll.append(market.market_id)\n            \n            # make API request with marketIds\n            \n            time.sleep(5)\n\n\nframework.streams.add_custom_stream(\n    MyStream(framework, custom=True)\n)"
+                            }
+                        ],
+                        "border": 0
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UG03WDCHH",
+        "type": "message",
+        "ts": "1657785725.824119",
+        "client_msg_id": "840f3267-d730-4487-b706-07fd49707dcd",
+        "text": "ahh ok, I am doing things differently.\n\nMy current implementation is\n\n```class DatabaseStream(BaseStream):\n    \"\"\"\n    This stream reads from a database and updates the context with the data required\n    \"\"\"\n\n    def __init__(self, sql_path: str, context_key: str, table_name: str, strategy_name_filter: str, *args, **kwargs):\n        BaseStream.__init__(self, *args, **kwargs)\n        self.sql_path = sql_path\n        self.context_key = context_key\n        self.table_name = table_name\n        self.strategy_name_filter = strategy_name_filter\n\n    def run(self) -&gt; None:\n        logger.warning(\n            \"Starting Stream: {0}\".format(self.__class__.__name__),\n            extra={\"update_interval\": self.streaming_timeout, \"context_key\": self.context_key, \"sql_path\": self.sql_path},\n        )\n\n        while self.is_alive():\n            response = self.get_sql(sql_path=self.sql_path, table_name=self.table_name)\n\n            def callback(framework, event):\n                for strategy in framework.strategies:\n                    if self.strategy_name_filter in strategy._name:\n                        if strategy.context:\n                            strategy.context.update({self.context_key: event.event})\n                        else:\n                            strategy.context = {self.context_key: event.event}\n\n            event = CustomEvent(response, callback)\n            self.flumine.handler_queue.put(event)\n            time.sleep(self.streaming_timeout)  # this is the time to check again```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g03ce37265ba",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/803ce37265ba7d4f1be4d779100eaa60.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0023-72.png",
+            "first_name": "Rudeger",
+            "real_name": "Rudeger Jamison",
+            "display_name": "Rudeger Jamison",
+            "team": "T4G9NBD2M",
+            "name": "ben.k.muller",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1657765235.971179",
+        "parent_user_id": "UG03WDCHH",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "kNeZ",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "ahh ok, I am doing things differently.\n\nMy current implementation is\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "class DatabaseStream(BaseStream):\n    \"\"\"\n    This stream reads from a database and updates the context with the data required\n    \"\"\"\n\n    def __init__(self, sql_path: str, context_key: str, table_name: str, strategy_name_filter: str, *args, **kwargs):\n        BaseStream.__init__(self, *args, **kwargs)\n        self.sql_path = sql_path\n        self.context_key = context_key\n        self.table_name = table_name\n        self.strategy_name_filter = strategy_name_filter\n\n    def run(self) -> None:\n        logger.warning(\n            \"Starting Stream: {0}\".format(self.__class__.__name__),\n            extra={\"update_interval\": self.streaming_timeout, \"context_key\": self.context_key, \"sql_path\": self.sql_path},\n        )\n\n        while self.is_alive():\n            response = self.get_sql(sql_path=self.sql_path, table_name=self.table_name)\n\n            def callback(framework, event):\n                for strategy in framework.strategies:\n                    if self.strategy_name_filter in strategy._name:\n                        if strategy.context:\n                            strategy.context.update({self.context_key: event.event})\n                        else:\n                            strategy.context = {self.context_key: event.event}\n\n            event = CustomEvent(response, callback)\n            self.flumine.handler_queue.put(event)\n            time.sleep(self.streaming_timeout)  # this is the time to check again"
+                            }
+                        ],
+                        "border": 0
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UG03WDCHH",
+        "type": "message",
+        "ts": "1657785772.551529",
+        "client_msg_id": "d7f6b6cb-4fe0-400c-83cf-6aa19dd674c4",
+        "text": "I guess I could loop over the markets in `self.flumine.markets` to determine if I need to make the api call first?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g03ce37265ba",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/803ce37265ba7d4f1be4d779100eaa60.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0023-72.png",
+            "first_name": "Rudeger",
+            "real_name": "Rudeger Jamison",
+            "display_name": "Rudeger Jamison",
+            "team": "T4G9NBD2M",
+            "name": "ben.k.muller",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1657765235.971179",
+        "parent_user_id": "UG03WDCHH",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "RdND",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I guess I could loop over the markets in "
+                            },
+                            {
+                                "type": "text",
+                                "text": "self.flumine.markets",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " to determine if I need to make the api call first?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UG03WDCHH",
+        "type": "message",
+        "ts": "1657785789.827019",
+        "client_msg_id": "ab64c5cc-9f08-41a8-830e-e1f858578957",
+        "text": "what is in that markets list?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g03ce37265ba",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/803ce37265ba7d4f1be4d779100eaa60.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0023-72.png",
+            "first_name": "Rudeger",
+            "real_name": "Rudeger Jamison",
+            "display_name": "Rudeger Jamison",
+            "team": "T4G9NBD2M",
+            "name": "ben.k.muller",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1657765235.971179",
+        "parent_user_id": "UG03WDCHH",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "g6tT=",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "what is in that markets list?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UG03WDCHH",
+        "type": "message",
+        "ts": "1657785798.579919",
+        "client_msg_id": "dcd7706b-159f-4d65-811a-782cd5553960",
+        "text": "is it everything for the next 24 hours?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g03ce37265ba",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/803ce37265ba7d4f1be4d779100eaa60.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0023-72.png",
+            "first_name": "Rudeger",
+            "real_name": "Rudeger Jamison",
+            "display_name": "Rudeger Jamison",
+            "team": "T4G9NBD2M",
+            "name": "ben.k.muller",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1657765235.971179",
+        "parent_user_id": "UG03WDCHH",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "gj7b",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "is it everything for the next 24 hours?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1657785808.417699",
+        "client_msg_id": "edf4c19d-50e4-488f-bbca-61a1f821f347",
+        "text": "yep, its all your Market objects",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1657765235.971179",
+        "parent_user_id": "UG03WDCHH",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "6Qjn",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "yep, its all your Market objects"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UG03WDCHH",
+        "type": "message",
+        "ts": "1657785837.724389",
+        "client_msg_id": "3185a9ce-9060-41c8-88b4-817dd9f62d2d",
+        "text": "so I guess I could look for the largest `seconds_to_start` and decide off of that, thanks mate",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g03ce37265ba",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/803ce37265ba7d4f1be4d779100eaa60.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0023-72.png",
+            "first_name": "Rudeger",
+            "real_name": "Rudeger Jamison",
+            "display_name": "Rudeger Jamison",
+            "team": "T4G9NBD2M",
+            "name": "ben.k.muller",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1657765235.971179",
+        "parent_user_id": "UG03WDCHH",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "fqST",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "so I guess I could look for the largest "
+                            },
+                            {
+                                "type": "text",
+                                "text": "seconds_to_start",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " and decide off of that, thanks mate"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UG03WDCHH",
+        "type": "message",
+        "ts": "1657786493.520579",
+        "client_msg_id": "9ee728a2-2a1e-4ff4-9407-bb13400e920e",
+        "text": "```            next_race_start = min([market.seconds_to_start for market in self.flumine.markets] or [900])```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g03ce37265ba",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/803ce37265ba7d4f1be4d779100eaa60.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0023-72.png",
+            "first_name": "Rudeger",
+            "real_name": "Rudeger Jamison",
+            "display_name": "Rudeger Jamison",
+            "team": "T4G9NBD2M",
+            "name": "ben.k.muller",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1657765235.971179",
+        "parent_user_id": "UG03WDCHH",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "0G6K",
+                "elements": [
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "            next_race_start = min([market.seconds_to_start for market in self.flumine.markets] or [900])"
+                            }
+                        ],
+                        "border": 0
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "U4H19D1D2"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "UG03WDCHH",
+        "type": "message",
+        "ts": "1657786503.294799",
+        "client_msg_id": "f6132fb9-6940-401f-95fd-7909ad67683c",
+        "text": "this does it nicely",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g03ce37265ba",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/803ce37265ba7d4f1be4d779100eaa60.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0023-72.png",
+            "first_name": "Rudeger",
+            "real_name": "Rudeger Jamison",
+            "display_name": "Rudeger Jamison",
+            "team": "T4G9NBD2M",
+            "name": "ben.k.muller",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1657765235.971179",
+        "parent_user_id": "UG03WDCHH",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "IL47",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "this does it nicely"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1657787813.298699",
+        "client_msg_id": "10d0657f-9be4-4162-b6ad-c3e7393913c0",
+        "text": "<https:\/\/github.com\/betcode-org\/flumine\/blob\/master\/HISTORY.rst#221-2022-07-14|flumine 2.2.1> released, few bug fixes but also added `SimulatedSportsDataMiddleware` this allows the ability to process betfair sports data (cricket or race) chronologically through the simulation engine with a single line:\n\n```framework.add_market_middleware(\n    SimulatedSportsDataMiddleware(\"cricketSubscription\", \"res\/sportsdata\")\n)```\nThe <https:\/\/github.com\/betcode-org\/flumine\/blob\/master\/flumine\/markets\/middleware.py#L287|middleware> will pick up the file on the marketId and create a generator that is then called based on the publishTime of the market, this could easily be modified to simulate other historic events football\/tennis\/scores\/custom events etc\n\nFull example strategy <https:\/\/github.com\/betcode-org\/flumine\/blob\/master\/examples\/simulate-sportsdata.py#L22|here> that places a back bet on the bowling team on a wicket :moneybag:",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1657787813.298699",
+        "reply_count": 1,
+        "reply_users_count": 1,
+        "latest_reply": "1657792974.117749",
+        "reply_users": [
+            "U010GM77S4W"
+        ],
+        "replies": [
+            {
+                "user": "U010GM77S4W",
+                "ts": "1657792974.117749"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": true,
+        "last_read": "1657792974.117749",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Ykny9",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/betcode-org\/flumine\/blob\/master\/HISTORY.rst#221-2022-07-14",
+                                "text": "flumine 2.2.1"
+                            },
+                            {
+                                "type": "text",
+                                "text": " released, few bug fixes but also added "
+                            },
+                            {
+                                "type": "text",
+                                "text": "SimulatedSportsDataMiddleware",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " this allows the ability to process betfair sports data (cricket or race) chronologically through the simulation engine with a single line:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "framework.add_market_middleware(\n    SimulatedSportsDataMiddleware(\"cricketSubscription\", \"res\/sportsdata\")\n)"
+                            }
+                        ],
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\nThe "
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/betcode-org\/flumine\/blob\/master\/flumine\/markets\/middleware.py#L287",
+                                "text": "middleware"
+                            },
+                            {
+                                "type": "text",
+                                "text": " will pick up the file on the marketId and create a generator that is then called based on the publishTime of the market, this could easily be modified to simulate other historic events football\/tennis\/scores\/custom events etc\n\nFull example strategy "
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/betcode-org\/flumine\/blob\/master\/examples\/simulate-sportsdata.py#L22",
+                                "text": "here"
+                            },
+                            {
+                                "type": "text",
+                                "text": " that places a back bet on the bowling team on a wicket "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "moneybag",
+                                "unicode": "1f4b0"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "rocket",
+                "users": [
+                    "UBS7QANF3",
+                    "URMM9463X",
+                    "U033HM6Q8BU",
+                    "U010GM77S4W",
+                    "UPMUFSGCR",
+                    "U80AMMRKP"
+                ],
+                "count": 6
+            }
+        ]
+    },
+    {
+        "user": "U010GM77S4W",
+        "type": "message",
+        "ts": "1657792974.117749",
+        "client_msg_id": "f60a2066-f114-4b59-9b45-3206102cace1",
+        "text": "Awesome! Been waiting for this",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "66cae8f5399c",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-03-20\/1004508356769_66cae8f5399cf91a07ae_72.jpg",
+            "first_name": "",
+            "real_name": "mandelbot",
+            "display_name": "mandelbot",
+            "team": "T4G9NBD2M",
+            "name": "demhadbale",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1657787813.298699",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "f+Bg",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Awesome! Been waiting for this"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UCQB6S222",
+        "type": "message",
+        "ts": "1657813851.623119",
+        "client_msg_id": "11b8990c-7f83-46fb-b419-825e6accef8c",
+        "text": "I've noticed that the flumine simulator doesn't work if you try to feed in a zipped market file. This appears to be because the function `get_file_md` , in flumine.utils, contains an `open` function.\nIs this deliberate?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g953ffd5e3b7",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/5813be539113b05ece8212c2a06d006a.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "George",
+            "real_name": "George",
+            "display_name": "George",
+            "team": "T4G9NBD2M",
+            "name": "gd",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "rvHj2",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I've noticed that the flumine simulator doesn't work if you try to feed in a zipped market file. This appears to be because the function "
+                            },
+                            {
+                                "type": "text",
+                                "text": "get_file_md",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " , in flumine.utils, contains an "
+                            },
+                            {
+                                "type": "text",
+                                "text": "open",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " function.\nIs this deliberate?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1657813887.730539",
+        "client_msg_id": "2188CAEC-95FF-4898-A99C-8A499DDABCF9",
+        "text": "Just wrap it all in smart-open and it will ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Q1CH",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Just"
+                            },
+                            {
+                                "type": "text",
+                                "text": " "
+                            },
+                            {
+                                "type": "text",
+                                "text": "wrap"
+                            },
+                            {
+                                "type": "text",
+                                "text": " it "
+                            },
+                            {
+                                "type": "text",
+                                "text": "all"
+                            },
+                            {
+                                "type": "text",
+                                "text": " "
+                            },
+                            {
+                                "type": "text",
+                                "text": "in"
+                            },
+                            {
+                                "type": "text",
+                                "text": " "
+                            },
+                            {
+                                "type": "text",
+                                "text": "smart-open"
+                            },
+                            {
+                                "type": "text",
+                                "text": " "
+                            },
+                            {
+                                "type": "text",
+                                "text": "and"
+                            },
+                            {
+                                "type": "text",
+                                "text": " "
+                            },
+                            {
+                                "type": "text",
+                                "text": "it"
+                            },
+                            {
+                                "type": "text",
+                                "text": " "
+                            },
+                            {
+                                "type": "text",
+                                "text": "will"
+                            },
+                            {
+                                "type": "text",
+                                "text": " "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UCQB6S222",
+        "type": "message",
+        "ts": "1657814353.497339",
+        "client_msg_id": "8e27cb3a-c9c3-4ab2-a0ad-1985ae5273f9",
+        "text": "OK, I guess you mean a mock.patch context thing?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g953ffd5e3b7",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/5813be539113b05ece8212c2a06d006a.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "George",
+            "real_name": "George",
+            "display_name": "George",
+            "team": "T4G9NBD2M",
+            "name": "gd",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "oqkh",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "OK, I guess you mean a mock.patch context thing?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1657814478.695689",
+        "client_msg_id": "B3D188D2-72FC-4A3E-BF40-A885128EB9D1",
+        "text": "Yeah you either need to patch or unzip before, it won't do it automatically ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "tVX4",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Yeah"
+                            },
+                            {
+                                "type": "text",
+                                "text": " you either need to patch "
+                            },
+                            {
+                                "type": "text",
+                                "text": "or"
+                            },
+                            {
+                                "type": "text",
+                                "text": " unzip "
+                            },
+                            {
+                                "type": "text",
+                                "text": "before,"
+                            },
+                            {
+                                "type": "text",
+                                "text": " "
+                            },
+                            {
+                                "type": "text",
+                                "text": "it"
+                            },
+                            {
+                                "type": "text",
+                                "text": " won't "
+                            },
+                            {
+                                "type": "text",
+                                "text": "do"
+                            },
+                            {
+                                "type": "text",
+                                "text": " "
+                            },
+                            {
+                                "type": "text",
+                                "text": "it"
+                            },
+                            {
+                                "type": "text",
+                                "text": " automatically "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UCQB6S222",
+        "type": "message",
+        "ts": "1657814710.016439",
+        "client_msg_id": "5745c8ca-11a1-45d5-9314-ae8f4da530ad",
+        "text": "thanks!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g953ffd5e3b7",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/5813be539113b05ece8212c2a06d006a.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "George",
+            "real_name": "George",
+            "display_name": "George",
+            "team": "T4G9NBD2M",
+            "name": "gd",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "rUSt4",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "thanks!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

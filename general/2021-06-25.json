@@ -1,0 +1,1025 @@
+[
+    {
+        "user": "U019WR00X3R",
+        "type": "message",
+        "ts": "1624612629.099900",
+        "client_msg_id": "e35ee5f5-cd2b-4ebd-aa6e-ff448e550b5d",
+        "text": "I noticed that the flumine stream implementation uses two threads per stream:\n1. The stream itself (MarketStream or OrderStream), since it subclasses threading.Thread\n2. The output_thread within the stream, which pipes the updates into the flumine handler_queue\nI am trying to understand the reasons for this design decision. Are there any benefits e.g. regarding error handling I am not seeing?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6f3e15fc39e",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6f3e15fc39e27486c5e74252b876a21f.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0023-72.png",
+            "first_name": "",
+            "real_name": "flxbe",
+            "display_name": "flxbe",
+            "team": "T4G9NBD2M",
+            "name": "felix.bernhardt",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "hOqti",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I noticed that the flumine stream implementation uses two threads per stream:\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_list",
+                        "elements": [
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "The stream itself (MarketStream or OrderStream), since it subclasses threading.Thread"
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "The output_thread within the stream, which pipes the updates into the flumine handler_queue"
+                                    }
+                                ]
+                            }
+                        ],
+                        "style": "ordered",
+                        "indent": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I am trying to understand the reasons for this design decision. Are there any benefits e.g. regarding error handling I am not seeing?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1624615114.100900",
+        "client_msg_id": "62292E13-80FA-4EF2-8310-91FE785E013A",
+        "text": "It’s the logic to trigger a snap, handy on stale\/low liquidity markets <https:\/\/github.com\/liampauling\/flumine\/blob\/6d7ed2eed5a1a111949d0feb4ffe11f9be28efec\/flumine\/streams\/marketstream.py#L65|https:\/\/github.com\/liampauling\/flumine\/blob\/6d7ed2eed5a1a111949d0feb4ffe11f9be28efec\/flumine\/streams\/marketstream.py#L65>",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "attachments": [
+            {
+                "text": "```\n                market_books = self._listener.snap(\n```",
+                "title": "<https:\/\/github.com\/liampauling\/flumine\/blob\/6d7ed2eed5a1a111949d0feb4ffe11f9be28efec\/flumine\/streams\/marketstream.py | marketstream.py>",
+                "footer": "<https:\/\/github.com\/liampauling\/flumine|liampauling\/flumine>",
+                "id": 1,
+                "footer_icon": "https:\/\/slack.github.com\/static\/img\/favicon-neutral.png",
+                "color": "24292f",
+                "mrkdwn_in": [
+                    "text"
+                ],
+                "fallback": "<https:\/\/github.com\/liampauling\/flumine\/blob\/6d7ed2eed5a1a111949d0feb4ffe11f9be28efec\/flumine\/streams\/marketstream.py | marketstream.py>",
+                "bot_id": "B021ZJYSBMW",
+                "app_unfurl_url": "https:\/\/github.com\/liampauling\/flumine\/blob\/6d7ed2eed5a1a111949d0feb4ffe11f9be28efec\/flumine\/streams\/marketstream.py#L65",
+                "is_app_unfurl": true
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "9wdM",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "It’s the logic to trigger a snap, handy on stale\/low liquidity markets "
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/liampauling\/flumine\/blob\/6d7ed2eed5a1a111949d0feb4ffe11f9be28efec\/flumine\/streams\/marketstream.py#L65",
+                                "text": "https:\/\/github.com\/liampauling\/flumine\/blob\/6d7ed2eed5a1a111949d0feb4ffe11f9be28efec\/flumine\/streams\/marketstream.py#L65"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "subtype": "channel_join",
+        "user": "U026A3LU7TN",
+        "text": "<@U026A3LU7TN> has joined the channel",
+        "type": "message",
+        "ts": "1624615905.101100"
+    },
+    {
+        "user": "U019WR00X3R",
+        "type": "message",
+        "ts": "1624616294.101300",
+        "client_msg_id": "0285dc84-bcb0-46fc-b2ff-28e242337bc2",
+        "text": "Thanks!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6f3e15fc39e",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6f3e15fc39e27486c5e74252b876a21f.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0023-72.png",
+            "first_name": "",
+            "real_name": "flxbe",
+            "display_name": "flxbe",
+            "team": "T4G9NBD2M",
+            "name": "felix.bernhardt",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "TI8",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Thanks!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U025GAD181E",
+        "type": "message",
+        "ts": "1624623160.103300",
+        "client_msg_id": "8b1d883b-cc95-436c-bae2-5086156da638",
+        "text": "Is it possible to add\/remove markets from a strategy in flumine whilst it is running? I want to be able to manually enable\/disable specific markets but not sure how to do it",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g69e5f06f436",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/69e5f06f436aa416030f39b7bfd4025e.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0009-72.png",
+            "first_name": "",
+            "real_name": "Joe",
+            "display_name": "Joe",
+            "team": "T4G9NBD2M",
+            "name": "jhansard96",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "plL",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Is it possible to add\/remove markets from a strategy in flumine whilst it is running? I want to be able to manually enable\/disable specific markets but not sure how to do it"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1624623239.103500",
+        "client_msg_id": "5BD36396-AF78-4FCF-B4CC-3389680E4A5B",
+        "text": "<https:\/\/github.com\/liampauling\/flumine\/blob\/6d7ed2eed5a1a111949d0feb4ffe11f9be28efec\/flumine\/strategy\/strategy.py#L108|https:\/\/github.com\/liampauling\/flumine\/blob\/6d7ed2eed5a1a111949d0feb4ffe11f9be28efec\/flumine\/strategy\/strategy.py#L108>",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "attachments": [
+            {
+                "text": "```\n        # process_market_book only executed if this returns True\n```",
+                "title": "<https:\/\/github.com\/liampauling\/flumine\/blob\/6d7ed2eed5a1a111949d0feb4ffe11f9be28efec\/flumine\/strategy\/strategy.py | strategy.py>",
+                "footer": "<https:\/\/github.com\/liampauling\/flumine|liampauling\/flumine>",
+                "id": 1,
+                "footer_icon": "https:\/\/slack.github.com\/static\/img\/favicon-neutral.png",
+                "color": "24292f",
+                "mrkdwn_in": [
+                    "text"
+                ],
+                "fallback": "<https:\/\/github.com\/liampauling\/flumine\/blob\/6d7ed2eed5a1a111949d0feb4ffe11f9be28efec\/flumine\/strategy\/strategy.py | strategy.py>",
+                "bot_id": "B021ZJYSBMW",
+                "app_unfurl_url": "https:\/\/github.com\/liampauling\/flumine\/blob\/6d7ed2eed5a1a111949d0feb4ffe11f9be28efec\/flumine\/strategy\/strategy.py#L108",
+                "is_app_unfurl": true
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "ciGj",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/liampauling\/flumine\/blob\/6d7ed2eed5a1a111949d0feb4ffe11f9be28efec\/flumine\/strategy\/strategy.py#L108",
+                                "text": "https:\/\/github.com\/liampauling\/flumine\/blob\/6d7ed2eed5a1a111949d0feb4ffe11f9be28efec\/flumine\/strategy\/strategy.py#L108"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1624623257.104200",
+        "client_msg_id": "A6A47C06-FD82-41D9-8183-F911C7EC2CEC",
+        "text": "Just return False and process doesn’t get called on the strategy ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "wGR",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Just return False and process doesn’t get called on the strategy "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U025GAD181E",
+        "type": "message",
+        "ts": "1624623315.104800",
+        "client_msg_id": "61f03de6-b5ec-4357-9f5f-e595422129bd",
+        "text": "Nice, will see if I can get that to work",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g69e5f06f436",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/69e5f06f436aa416030f39b7bfd4025e.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0009-72.png",
+            "first_name": "",
+            "real_name": "Joe",
+            "display_name": "Joe",
+            "team": "T4G9NBD2M",
+            "name": "jhansard96",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Z5E=v",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Nice, will see if I can get that to work"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "subtype": "channel_join",
+        "user": "U026WRD7SHE",
+        "text": "<@U026WRD7SHE> has joined the channel",
+        "type": "message",
+        "ts": "1624624246.106900"
+    },
+    {
+        "user": "U025GAD181E",
+        "type": "message",
+        "ts": "1624624328.108500",
+        "client_msg_id": "7f4d9e81-c00e-4cf5-bf74-b924f562d166",
+        "text": "That works for a small number of markets but I still run into the 200 market subscription cap, is there a way to update the markets it subscribes to instead?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g69e5f06f436",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/69e5f06f436aa416030f39b7bfd4025e.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0009-72.png",
+            "first_name": "",
+            "real_name": "Joe",
+            "display_name": "Joe",
+            "team": "T4G9NBD2M",
+            "name": "jhansard96",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "fmL",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "That works for a small number of markets but I still run into the 200 market subscription cap, is there a way to update the markets it subscribes to instead?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U026WRD7SHE",
+        "type": "message",
+        "ts": "1624624544.109900",
+        "client_msg_id": "faadb347-0908-44a1-ada9-32eb7875ab29",
+        "text": "Hello everyone! I am a London based full time gambler trying to develop Betfair strategies. I just found out about this group and not even sure if I should say hello here but hopefully will understand how everything works soon.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "3c4e10ed518c",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2021-10-12\/2597120880820_3c4e10ed518c393d1372_72.jpg",
+            "first_name": "",
+            "real_name": "Javier Martín Pérez",
+            "display_name": "Javier Martín Pérez",
+            "team": "T4G9NBD2M",
+            "name": "jmartinperez416",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1624624544.109900",
+        "reply_count": 3,
+        "reply_users_count": 3,
+        "latest_reply": "1624664069.122100",
+        "reply_users": [
+            "U01HPRM31G8",
+            "UBS7QANF3",
+            "U026WRD7SHE"
+        ],
+        "replies": [
+            {
+                "user": "U01HPRM31G8",
+                "ts": "1624624883.111800"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1624628381.113600"
+            },
+            {
+                "user": "U026WRD7SHE",
+                "ts": "1624664069.122100"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": false,
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "McI",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Hello everyone! I am a London based full time gambler trying to develop Betfair strategies. I just found out about this group and not even sure if I should say hello here but hopefully will understand how everything works soon."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "wave",
+                "users": [
+                    "U4H19D1D2",
+                    "U010GM77S4W",
+                    "U01DCR5PXDY",
+                    "UBS7QANF3",
+                    "U025C059DA9",
+                    "U0155J92A7Q",
+                    "U01DVUAE2G1"
+                ],
+                "count": 7
+            }
+        ]
+    },
+    {
+        "user": "U01HPRM31G8",
+        "type": "message",
+        "ts": "1624624883.111800",
+        "client_msg_id": "32B9E16F-8F1E-43B3-8EBB-E4744BC74C66",
+        "text": "Are you a software developer? What areas do you gamble in, Horse racing, football?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "ga1c31a17334",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a1c31a1733448fccbcf8a01fe21b89c3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0007-72.png",
+            "first_name": "John",
+            "real_name": "John A",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "adamjohnson1872",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1624624544.109900",
+        "parent_user_id": "U026WRD7SHE",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "nUi2i",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Are you a software developer? What areas do you gamble in, Horse racing, football?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1624626504.112600",
+        "client_msg_id": "9E8993E3-ABDA-4D69-A9F1-2D03E1411993",
+        "text": "<@U025GAD181E> send an email to BDP asking for a bump ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "d3tAH",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "user",
+                                "user_id": "U025GAD181E"
+                            },
+                            {
+                                "type": "text",
+                                "text": " send an email to BDP asking for a bump "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "U025GAD181E"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1624628381.113600",
+        "client_msg_id": "9A3E98A4-5061-483D-9750-52DF528E2048",
+        "text": "Welcome!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1624624544.109900",
+        "parent_user_id": "U026WRD7SHE",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "13L5i",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Welcome!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U013KB5R3T8",
+        "type": "message",
+        "ts": "1624635983.116200",
+        "client_msg_id": "7b7202b9-3423-4649-9fc5-733bc7baa163",
+        "text": "Heya guys! It's been ages since I messaged on here, but I've been doing lots of work with betfairlightweight lately and learning a lot. Thanks Liam! So I have a case where I want to look deep in a market book, but according to the API documentation ladderLevels can only be 1-10. That is, the way I'm currently subscribing to my market is:",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g1886eb1420c",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/1886eb1420c6a6756bad7f0c2c3a7124.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Will Morrison",
+            "display_name": "Will Morrison",
+            "team": "T4G9NBD2M",
+            "name": "wam32008",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "=nP",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Heya guys! It's been ages since I messaged on here, but I've been doing lots of work with betfairlightweight lately and learning a lot. Thanks Liam! So I have a case where I want to look deep in a market book, but according to the API documentation ladderLevels can only be 1-10. That is, the way I'm currently subscribing to my market is:"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U013KB5R3T8",
+        "type": "message",
+        "ts": "1624636045.117300",
+        "client_msg_id": "d462f39f-3581-4477-800d-b65284279c6f",
+        "text": "market_data_filter = streaming_market_data_filter(\n        fields=[\"EX_MARKET_DEF\", \"EX_BEST_OFFERS\", \"EX_TRADED\", \"EX_TRADED_VOL\", \"EX_LTP\"], ladder_levels=x\n    )\nwhere if I make x greater than 10, I still only get ten ladder levels in the market_book it creates. Is there a way for me to get deeper information?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g1886eb1420c",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/1886eb1420c6a6756bad7f0c2c3a7124.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Will Morrison",
+            "display_name": "Will Morrison",
+            "team": "T4G9NBD2M",
+            "name": "wam32008",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "tUnu",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "market_data_filter = streaming_market_data_filter(\n        fields=[\"EX_MARKET_DEF\", \"EX_BEST_OFFERS\", \"EX_TRADED\", \"EX_TRADED_VOL\", \"EX_LTP\"], ladder_levels=x\n    )\nwhere if I make x greater than 10, I still only get ten ladder levels in the market_book it creates. Is there a way for me to get deeper information?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1624636066.117800",
+        "client_msg_id": "7C561778-D5B9-44A5-82D5-228DDFF889CF",
+        "text": "Use EX_ALL_OFFERS",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "QyS",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Use EX_ALL_OFFERS"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U013KB5R3T8",
+        "type": "message",
+        "ts": "1624636080.118100",
+        "client_msg_id": "0500a748-e091-4fae-90fa-2dd682b7ab67",
+        "text": "Ah perfect, thanks Mo!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g1886eb1420c",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/1886eb1420c6a6756bad7f0c2c3a7124.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Will Morrison",
+            "display_name": "Will Morrison",
+            "team": "T4G9NBD2M",
+            "name": "wam32008",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "lrOsR",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Ah perfect, thanks Mo!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1624636092.118500",
+        "client_msg_id": "4C46B340-8FF1-4510-B3B7-C33AD919E5F3",
+        "text": "That will give you the full order book",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "VATG",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "That will give you the full order book"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U013KB5R3T8",
+        "type": "message",
+        "ts": "1624636538.119200",
+        "client_msg_id": "6130a0e5-1df6-436f-afdb-f532f6e18d66",
+        "text": "Yep, that sorted me out. Thanks! Huge lifesaver, I just spent like 20 minutes thinking about difficult workarounds if I couldn't get that deeper data.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g1886eb1420c",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/1886eb1420c6a6756bad7f0c2c3a7124.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Will Morrison",
+            "display_name": "Will Morrison",
+            "team": "T4G9NBD2M",
+            "name": "wam32008",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "QbJ",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Yep, that sorted me out. Thanks! Huge lifesaver, I just spent like 20 minutes thinking about difficult workarounds if I couldn't get that deeper data."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1624636659.119400",
+        "client_msg_id": "1A25679B-155E-431D-A02E-14642EEDDA3B",
+        "text": ":+1:",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "A8T",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "emoji",
+                                "name": "+1",
+                                "unicode": "1f44d"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "subtype": "channel_join",
+        "user": "U026XNA7A8G",
+        "text": "<@U026XNA7A8G> has joined the channel",
+        "type": "message",
+        "ts": "1624637041.119700",
+        "reactions": [
+            {
+                "name": "wave",
+                "users": [
+                    "ULDAVFDRP",
+                    "UUCD6P13J",
+                    "U01HPRM31G8",
+                    "U01DVUAE2G1",
+                    "U01TXCYTCSF"
+                ],
+                "count": 5
+            }
+        ]
+    },
+    {
+        "user": "U01B8031PM1",
+        "type": "message",
+        "ts": "1624637081.120000",
+        "client_msg_id": "87a05ae4-457d-4730-8493-97c952a07d95",
+        "text": "Welcome <@U026XNA7A8G> good to see you here",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6e482a0e41b",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6e482a0e41b232f48d801454006dfa56.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0016-72.png",
+            "first_name": "river_shah",
+            "real_name": "river_shah",
+            "display_name": "river_shah",
+            "team": "T4G9NBD2M",
+            "name": "ansar.sa",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "oR\/",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Welcome "
+                            },
+                            {
+                                "type": "user",
+                                "user_id": "U026XNA7A8G"
+                            },
+                            {
+                                "type": "text",
+                                "text": " good to see you here"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UPMUFSGCR",
+        "type": "message",
+        "ts": "1624637245.120300",
+        "client_msg_id": "a3a9a855-2d10-4bed-9e78-5195480870f3",
+        "text": "Hello <@U026XNA7A8G>",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "31c0bb5a442c",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2019-10-28\/812386967189_31c0bb5a442c5b8d2c61_72.png",
+            "first_name": "Jon",
+            "real_name": "Jon Jon Jon Jon Jon Jon Jon Jon",
+            "display_name": "Jonjonjon",
+            "team": "T4G9NBD2M",
+            "name": "fcmisc",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "LwDE",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Hello "
+                            },
+                            {
+                                "type": "user",
+                                "user_id": "U026XNA7A8G"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "subtype": "channel_join",
+        "user": "U0266A8579B",
+        "text": "<@U0266A8579B> has joined the channel",
+        "type": "message",
+        "ts": "1624662678.122000"
+    },
+    {
+        "user": "U026WRD7SHE",
+        "type": "message",
+        "ts": "1624664069.122100",
+        "client_msg_id": "3c500e6b-9e23-40ae-86c7-248c18381c7e",
+        "text": "Thanks! I have worked in several bookmakers as an odds compiler and now I am learning coding with python to try to automate some strategies. As an odds compiler I was doing football but to try to trade football on Betfair looks a bit complicated without paying for a Runningball feed so I am giving a go to greyhound trading at the moment.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "3c4e10ed518c",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2021-10-12\/2597120880820_3c4e10ed518c393d1372_72.jpg",
+            "first_name": "",
+            "real_name": "Javier Martín Pérez",
+            "display_name": "Javier Martín Pérez",
+            "team": "T4G9NBD2M",
+            "name": "jmartinperez416",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1624624544.109900",
+        "parent_user_id": "U026WRD7SHE",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "He\/I",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Thanks! I have worked in several bookmakers as an odds compiler and now I am learning coding with python to try to automate some strategies. As an odds compiler I was doing football but to try to trade football on Betfair looks a bit complicated without paying for a Runningball feed so I am giving a go to greyhound trading at the moment."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

@@ -1,0 +1,337 @@
+[
+    {
+        "user": "UQL0QDEKA",
+        "type": "message",
+        "ts": "1718527239.698059",
+        "client_msg_id": "14d0997d-6569-43e8-92d7-3b4472c7bf12",
+        "text": "No probs. Losing is very much part of the equation unfortunately. Anyway good luck :+1:",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g444d10128c0",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/444d10128c0aaf094041a52a76796602.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0005-72.png",
+            "first_name": "Peter",
+            "real_name": "Peter Lenagh",
+            "display_name": "PeterLe",
+            "team": "T4G9NBD2M",
+            "name": "lenagh",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1718360392.981999",
+        "parent_user_id": "U053KV09FKP",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "mFc0h",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "No probs. Losing is very much part of the equation unfortunately. Anyway good luck "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "+1",
+                                "unicode": "1f44d"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "text": "hey <@U053KV09FKP>, wrote this a while ago but don't use it anymore as I learned pretty quickly that hedging was costing me EV :slightly_smiling_face: so it could probably be done a better way in terms of efficiency etc. its not great\/quite hacky. but hopefully might be of some help to you",
+        "files": [
+            {
+                "id": "F077X32B1KR",
+                "created": 1718547570,
+                "timestamp": 1718547570,
+                "name": "cashout.py",
+                "title": "cashout.py",
+                "mimetype": "text\/plain",
+                "filetype": "python",
+                "pretty_type": "Python",
+                "user": "U02GGCCLTKM",
+                "user_team": "T4G9NBD2M",
+                "editable": true,
+                "size": 3137,
+                "mode": "snippet",
+                "is_external": false,
+                "external_type": "",
+                "is_public": true,
+                "public_url_shared": false,
+                "display_as_bot": false,
+                "username": "",
+                "url_private": "https:\/\/files.slack.com\/files-pri\/T4G9NBD2M-F077X32B1KR\/cashout.py?t=xoxe-152328387089-8357743338709-8373272928225-dfe8ebcd8ca3d2f633bcafeb95191840",
+                "url_private_download": "https:\/\/files.slack.com\/files-pri\/T4G9NBD2M-F077X32B1KR\/download\/cashout.py?t=xoxe-152328387089-8357743338709-8373272928225-dfe8ebcd8ca3d2f633bcafeb95191840",
+                "permalink": "https:\/\/betcode-org.slack.com\/files\/U02GGCCLTKM\/F077X32B1KR\/cashout.py",
+                "permalink_public": "https:\/\/slack-files.com\/T4G9NBD2M-F077X32B1KR-100c5f004b",
+                "edit_link": "https:\/\/betcode-org.slack.com\/files\/U02GGCCLTKM\/F077X32B1KR\/cashout.py\/edit",
+                "is_starred": false,
+                "has_rich_preview": false,
+                "file_access": "visible"
+            }
+        ],
+        "upload": false,
+        "user": "U02GGCCLTKM",
+        "display_as_bot": false,
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "noolm",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "hey "
+                            },
+                            {
+                                "type": "user",
+                                "user_id": "U053KV09FKP"
+                            },
+                            {
+                                "type": "text",
+                                "text": ", wrote this a while ago but don't use it anymore as I learned pretty quickly that hedging was costing me EV "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "slightly_smiling_face",
+                                "unicode": "1f642"
+                            },
+                            {
+                                "type": "text",
+                                "text": " so it could probably be done a better way in terms of efficiency etc. its not great\/quite hacky. but hopefully might be of some help to you"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "type": "message",
+        "ts": "1718547593.934169",
+        "client_msg_id": "7c9f17a9-962d-43d3-af6e-b7b77d92adec",
+        "thread_ts": "1718360392.981999",
+        "parent_user_id": "U053KV09FKP"
+    },
+    {
+        "user": "UC70576CB",
+        "type": "message",
+        "ts": "1718548978.445169",
+        "client_msg_id": "e997bc5b-3e88-4bcc-954b-26bef9053c08",
+        "text": "In terms of the process I coded up, it's effectively:\n\n1. Get all matched orders on the market (and check there are no unmatched orders left)\n2. If the back\/lay amount for each selection are not even, record the size of the discrepancy (at this point, match price isn't important)\n    a. for example, if you've backed runner A for £100 and layed for £90, record a £10 lay bet against this runner\n3.  Get your current P&amp;L per runner via `list_market_profit_and_loss` , simulate the effect of adding the bets above to the result at the current prices, and, and get the current prices for the market\n4. For runners where you're in profit, record that you want to lay with size `current_profit \/ current_lp` \n5. For runners where you're losing, record that you want to back with size `( current_loss) \/ current_bp` \n6. Add the greening bets from steps 4 and 5 to the bets from step 2, and place them at the current back\/lay prices and you should have a greened book\nThe only other complexities are around bet sizes - if you're betting relatively small amounts and include longer odds runners you will be below the minimum bet size. You can place a £1 bet far away from the current prices and then reduce the size, then the price.\n\nAt some point you can't do this as you run in to errors from betfair around what's allowed, but at that stage, the amounts of money are small enough not worry about greening",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g3b214cb6303",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/83b214cb63031e2a2ae3958016f7bf23.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0015-72.png",
+            "first_name": "",
+            "real_name": "Rob",
+            "display_name": "Rob",
+            "team": "T4G9NBD2M",
+            "name": "rnobleeddy",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1718360392.981999",
+        "parent_user_id": "U053KV09FKP",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "bzG72",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "In terms of the process I coded up, it's effectively:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_list",
+                        "elements": [
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "Get all matched orders on the market (and check there are no unmatched orders left)"
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "If the back\/lay amount for each selection are not even, record the size of the discrepancy (at this point, match price isn't important)"
+                                    }
+                                ]
+                            }
+                        ],
+                        "style": "ordered",
+                        "indent": 0,
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_list",
+                        "elements": [
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "for example, if you've backed runner A for £100 and layed for £90, record a £10 lay bet against this runner"
+                                    }
+                                ]
+                            }
+                        ],
+                        "style": "ordered",
+                        "indent": 1,
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_list",
+                        "elements": [
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": " Get your current P&L per runner via "
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": "list_market_profit_and_loss",
+                                        "style": {
+                                            "code": true
+                                        }
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": " , simulate the effect of adding the bets above to the result at the current prices, and, and get the current prices for the market"
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "For runners where you're in profit, record that you want to lay with size "
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": "current_profit \/ current_lp",
+                                        "style": {
+                                            "code": true
+                                        }
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": " "
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "For runners where you're losing, record that you want to back with size "
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": "( current_loss) \/ current_bp",
+                                        "style": {
+                                            "code": true
+                                        }
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": " "
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "Add the greening bets from steps 4 and 5 to the bets from step 2, and place them at the current back\/lay prices and you should have a greened book"
+                                    }
+                                ]
+                            }
+                        ],
+                        "style": "ordered",
+                        "indent": 0,
+                        "offset": 2,
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\nThe only other complexities are around bet sizes - if you're betting relatively small amounts and include longer odds runners you will be below the minimum bet size. You can place a £1 bet far away from the current prices and then reduce the size, then the price.\n\nAt some point you can't do this as you run in to errors from betfair around what's allowed, but at that stage, the amounts of money are small enough not worry about greening"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UC70576CB",
+        "type": "message",
+        "ts": "1718549137.473519",
+        "edited": {
+            "user": "UC70576CB",
+            "ts": "1718549194.000000"
+        },
+        "client_msg_id": "1ef123ad-b40c-4f72-aee2-e8d618099013",
+        "text": "This may seem contrived, but the step around evening up bet sizes means we don't need to worry about the runner we never bet on.  I got lost when I tried to do some linear programming, specifically because I don't want to have to place very small bets on very long odds runners to green up.\n\nI only run this just before a race starts (and for the UK), so the overround should be as close to 100% as it gets. It would be a much worse idea as the gaps between bp and lp increase",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g3b214cb6303",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/83b214cb63031e2a2ae3958016f7bf23.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0015-72.png",
+            "first_name": "",
+            "real_name": "Rob",
+            "display_name": "Rob",
+            "team": "T4G9NBD2M",
+            "name": "rnobleeddy",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1718360392.981999",
+        "parent_user_id": "U053KV09FKP",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "1nwhn",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "This may seem contrived, but the step around evening up bet sizes means we don't need to worry about the runner we never bet on.  I got lost when I tried to do some linear programming, specifically because I don't want to have to place very small bets on very long odds runners to green up.\n\nI only run this just before a race starts (and for the UK), so the overround should be as close to 100% as it gets. It would be a much worse idea as the gaps between bp and lp increase"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

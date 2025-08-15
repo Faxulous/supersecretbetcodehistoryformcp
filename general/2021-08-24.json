@@ -1,0 +1,1668 @@
+[
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1629789384.337800",
+        "client_msg_id": "829d29c0-9ec8-4bb1-b52e-d429b3d61c7c",
+        "text": "So if you look at the code for `LoggingControl` you can see its just a base class (it doesn't do anything) you need to write your own, here is a simple example that uses one of the callbacks <https:\/\/github.com\/liampauling\/flumine\/blob\/master\/examples\/controls\/backtestloggingcontrol.py>",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1629785989.335800",
+        "parent_user_id": "U4H19D1D2",
+        "attachments": [
+            {
+                "text": "```\nimport csv\nimport logging\nfrom flumine.controls.loggingcontrols import LoggingControl\n\nlogger = logging.getLogger(__name__)\n\nFIELDNAMES = [\n    \"bet_id\",\n    \"strategy_name\",\n    \"market_id\",\n    \"selection_id\",\n    \"trade_id\",\n    \"date_time_placed\",\n    \"price\",\n    \"price_matched\",\n    \"size\",\n    \"size_matched\",\n    \"profit\",\n    \"side\",\n    \"elapsed_seconds_executable\",\n    \"order_status\",\n    \"market_note\",\n    \"notes\",\n]\n\n\nclass BacktestLoggingControl(LoggingControl):\n    NAME = \"BACKTEST_LOGGING_CONTROL\"\n\n    def __init__(self, *args, **kwargs):\n        super(BacktestLoggingControl, self).__init__(*args, **kwargs)\n        self._setup()\n\n    def _setup(self):\n        with open(\"orders.txt\", \"w\") as m:\n            csv_writer = csv.DictWriter(m, delimiter=\",\", fieldnames=FIELDNAMES)\n            csv_writer.writeheader()\n\n    def _process_cleared_orders_meta(self, event):\n        orders = event.event\n        with open(\"orders.txt\", \"a\") as m:\n            for order in orders:\n                try:\n                    order_data = {\n                        \"bet_id\": order.bet_id,\n                        \"strategy_name\": order.trade.strategy,\n                        \"market_id\": order.market_id,\n                        \"selection_id\": order.selection_id,\n                        \"trade_id\": order.trade.id,\n                        \"date_time_placed\": order.responses.date_time_placed,\n                        \"price\": order.order_type.price,\n                        \"price_matched\": order.average_price_matched,\n                        \"size\": order.order_type.size,\n                        \"size_matched\": order.size_matched,\n                        \"profit\": order.simulated.profit,\n                        \"side\": order.side,\n                        \"elapsed_seconds_executable\": order.elapsed_seconds_executable,\n                        \"order_status\": order.status.value,\n                        \"market_note\": order.trade.market_notes,\n                        \"notes\": order.trade.notes_str,\n                    }\n                    csv_writer = csv.DictWriter(m, delimiter=\",\", fieldnames=FIELDNAMES)\n                    csv_writer.writerow(order_data)\n                except Exception as e:\n                    logger.error(\n                        \"_process_cleared_orders_meta: %s\" % e,\n                        extra={\"order\": order, \"error\": e},\n                    )\n\n        <http:\/\/logger.info|logger.info>(\"Orders updated\", extra={\"order_count\": len(orders)})\n\n```",
+                "title": "<https:\/\/github.com\/liampauling\/flumine\/blob\/master\/examples\/controls\/backtestloggingcontrol.py | backtestloggingcontrol.py>",
+                "footer": "<https:\/\/github.com\/liampauling\/flumine|liampauling\/flumine>",
+                "id": 1,
+                "footer_icon": "https:\/\/slack.github.com\/static\/img\/favicon-neutral.png",
+                "color": "24292f",
+                "mrkdwn_in": [
+                    "text"
+                ],
+                "fallback": "<https:\/\/github.com\/liampauling\/flumine\/blob\/master\/examples\/controls\/backtestloggingcontrol.py | backtestloggingcontrol.py>",
+                "bot_id": "B021ZJYSBMW",
+                "app_unfurl_url": "https:\/\/github.com\/liampauling\/flumine\/blob\/master\/examples\/controls\/backtestloggingcontrol.py",
+                "is_app_unfurl": true
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Wjm",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "So if you look at the code for "
+                            },
+                            {
+                                "type": "text",
+                                "text": "LoggingControl",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " you can see its just a base class (it doesn't do anything) you need to write your own, here is a simple example that uses one of the callbacks "
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/liampauling\/flumine\/blob\/master\/examples\/controls\/backtestloggingcontrol.py"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1629789404.338100",
+        "client_msg_id": "e429c731-3c75-4383-9dc3-68743b864a7c",
+        "text": "Don't use jupyter?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1629728088.328500",
+        "parent_user_id": "UTP7UTQHK",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "sf8",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Don't use jupyter?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1629789453.338300",
+        "client_msg_id": "54542353-9d89-49d4-82d5-94fd0078a36e",
+        "text": "For market data it will be your network or maxing out CPU, bet placement flumine tries to keep a few sessions active to reduce latency, the logic could be improved",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1629455883.302400",
+        "parent_user_id": "UCQB6S222",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Ikz=p",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "For market data it will be your network or maxing out CPU, bet placement flumine tries to keep a few sessions active to reduce latency, the logic could be improved"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "U016TGY3676"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "U01S1VB9X9P",
+        "type": "message",
+        "ts": "1629790308.338500",
+        "client_msg_id": "43bab912-b325-4857-b6c6-49409ba5c936",
+        "text": "i still don't understand. i've imported this example but how do i make it record the profit?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gedbe1c0faac",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/da19bb58fa64d5c88c2a156c73a2ccf3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0018-72.png",
+            "first_name": "Adrian",
+            "real_name": "Adrian",
+            "display_name": "Adrian",
+            "team": "T4G9NBD2M",
+            "name": "adrianwf",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1629785989.335800",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Mnv",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "i still don't understand. i've imported this example but how do i make it record the profit?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UTP7UTQHK",
+        "type": "message",
+        "ts": "1629790351.338700",
+        "client_msg_id": "59788d33-d21f-45f1-90fd-f9782afee2f0",
+        "text": "lmao. correct advice",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g03753fb84ce",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/03753fb84ce45a184d8d1622be400be3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0000-72.png",
+            "first_name": "JK",
+            "real_name": "JK",
+            "display_name": "JK",
+            "team": "T4G9NBD2M",
+            "name": "jhgward94",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1629728088.328500",
+        "parent_user_id": "UTP7UTQHK",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "QyO9Q",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "lmao. correct advice"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1629790380.338900",
+        "client_msg_id": "64159ef2-e9b5-481e-ad1b-8dda3115a124",
+        "text": "which part don't you understand? It is just recording all that data to a csv on market closure",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1629785989.335800",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "rplG",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "which part don't you understand? It is just recording all that data to a csv on market closure"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01S1VB9X9P",
+        "type": "message",
+        "ts": "1629790678.339100",
+        "client_msg_id": "988a24c8-185a-434a-beeb-d918a854d473",
+        "text": "the part where i get\n`for market in framework.markets:`\n    `print(\"Profit: {0:.2f}\".format(sum([o.simulated.profit for o in market.blotter])))`\n    `for order in market.blotter:`\n        `print(`\n            `order.selection_id,`\n            `order.responses.date_time_placed,`\n            `order.status,`\n            `order.order_type.price,`\n            `order.average_price_matched,`\n            `order.size_matched,`\n            `order.simulated.profit,`\n        `)`\nsent to the logging control so that it saves to disk",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gedbe1c0faac",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/da19bb58fa64d5c88c2a156c73a2ccf3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0018-72.png",
+            "first_name": "Adrian",
+            "real_name": "Adrian",
+            "display_name": "Adrian",
+            "team": "T4G9NBD2M",
+            "name": "adrianwf",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1629785989.335800",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "TteAX",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "the part where i get\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "for market in framework.markets:",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "    print(\"Profit: {0:.2f}\".format(sum([o.simulated.profit for o in market.blotter])))",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "    for order in market.blotter:",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "        print(",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "            order.selection_id,",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "            order.responses.date_time_placed,",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "            order.status,",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "            order.order_type.price,",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "            order.average_price_matched,",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "            order.size_matched,",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "            order.simulated.profit,",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "        )",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\nsent to the logging control so that it saves to disk"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1629791169.339300",
+        "client_msg_id": "a869b4e5-367c-41f1-bf50-9fa9cebea7e5",
+        "text": "That is the backtest example, have you clicked on my link?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1629785989.335800",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "SX0oo",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "That is the backtest example, have you clicked on my link?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01S1VB9X9P",
+        "type": "message",
+        "ts": "1629792881.339500",
+        "edited": {
+            "user": "U01S1VB9X9P",
+            "ts": "1629792969.000000"
+        },
+        "client_msg_id": "aff89986-ec2b-4431-99a0-889186204c4e",
+        "text": "Yes thanks. I just had an idea to put\n`BacktestLoggingControl = backtestloggingcontrol.BacktestLoggingControl`\n`control = BacktestLoggingControl()`\n`framework.add_logging_control(control)`\nand it created the output.txt file i need.\nthere's probably a neater way to do it? but that's the step i was missing. how to call it from flumine\npreviously i just had control = LoggingControl()",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gedbe1c0faac",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/da19bb58fa64d5c88c2a156c73a2ccf3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0018-72.png",
+            "first_name": "Adrian",
+            "real_name": "Adrian",
+            "display_name": "Adrian",
+            "team": "T4G9NBD2M",
+            "name": "adrianwf",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1629785989.335800",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "yn4",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Yes thanks. I just had an idea to put\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "BacktestLoggingControl = backtestloggingcontrol.BacktestLoggingControl",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "control = BacktestLoggingControl()",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "framework.add_logging_control(control)",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\nand it created the output.txt file i need.\nthere's probably a neater way to do it? but that's the step i was missing. how to call it from flumine\npreviously i just had control = LoggingControl()"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01S1VB9X9P",
+        "type": "message",
+        "ts": "1629793150.339800",
+        "client_msg_id": "b241e7be-c4e2-4f08-9985-7c477521176d",
+        "text": "i see it can be done with just one line of code:\n`framework.add_logging_control(backtestloggingcontrol.BacktestLoggingControl())`",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gedbe1c0faac",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/da19bb58fa64d5c88c2a156c73a2ccf3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0018-72.png",
+            "first_name": "Adrian",
+            "real_name": "Adrian",
+            "display_name": "Adrian",
+            "team": "T4G9NBD2M",
+            "name": "adrianwf",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1629785989.335800",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "1Me1",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "i see it can be done with just one line of code:\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "framework.add_logging_control(backtestloggingcontrol.BacktestLoggingControl())",
+                                "style": {
+                                    "code": true
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01S1VB9X9P",
+        "type": "message",
+        "ts": "1629793672.340000",
+        "edited": {
+            "user": "U01S1VB9X9P",
+            "ts": "1629793748.000000"
+        },
+        "client_msg_id": "666888f5-aca7-4e36-988e-21643e76b951",
+        "text": "I think where my brain disconnected is where you have in the Flumine docs  `import LoggingControl` but that doesn't do anything. only `backtestloggingcontrol.BacktestLoggingControl()` does something. I don't even need to import LoggingControl",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gedbe1c0faac",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/da19bb58fa64d5c88c2a156c73a2ccf3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0018-72.png",
+            "first_name": "Adrian",
+            "real_name": "Adrian",
+            "display_name": "Adrian",
+            "team": "T4G9NBD2M",
+            "name": "adrianwf",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1629785989.335800",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "hRh6",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I think where my brain disconnected is where you have in the Flumine docs  "
+                            },
+                            {
+                                "type": "text",
+                                "text": "import LoggingControl",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " but that doesn't do anything. only "
+                            },
+                            {
+                                "type": "text",
+                                "text": "backtestloggingcontrol.BacktestLoggingControl()",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " does something. I don't even need to import LoggingControl"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1629793779.340300",
+        "client_msg_id": "c290e883-ad93-44f3-bb9e-8d291027aa14",
+        "text": "Yep exactly, its just a base class showing you all the functions where you can use inheritance to override the functions",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1629785989.335800",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "ySnz",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Yep exactly, its just a base class showing you all the functions where you can use inheritance to override the functions"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01S1VB9X9P",
+        "type": "message",
+        "ts": "1629794201.340600",
+        "client_msg_id": "a76419df-6925-40dd-98b7-566e20795b7f",
+        "text": "I see... so when you say it's a base class, it's still being used by the BacktestLoggingControl? And does that mean base strategy is also the same, it gets used when certain parts of a strategy call it?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gedbe1c0faac",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/da19bb58fa64d5c88c2a156c73a2ccf3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0018-72.png",
+            "first_name": "Adrian",
+            "real_name": "Adrian",
+            "display_name": "Adrian",
+            "team": "T4G9NBD2M",
+            "name": "adrianwf",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1629785989.335800",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "m0g",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I see... so when you say it's a base class, it's still being used by the BacktestLoggingControl? And does that mean base strategy is also the same, it gets used when certain parts of a strategy call it?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1629794373.340800",
+        "client_msg_id": "fb91d8df-adb9-47ce-8bae-6339720f4eb4",
+        "text": "look up python inheritance",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1629785989.335800",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "lis",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "look up python inheritance"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "sweat_drops",
+                "users": [
+                    "U01S1VB9X9P"
+                ],
+                "count": 1
+            },
+            {
+                "name": "100",
+                "users": [
+                    "U01S1VB9X9P"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "U01S1VB9X9P",
+        "type": "message",
+        "ts": "1629794449.341200",
+        "client_msg_id": "ae97db6f-eb55-4b59-8e63-2134529fc6c2",
+        "text": "hell yeah, now i'm getting somewhere",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gedbe1c0faac",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/da19bb58fa64d5c88c2a156c73a2ccf3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0018-72.png",
+            "first_name": "Adrian",
+            "real_name": "Adrian",
+            "display_name": "Adrian",
+            "team": "T4G9NBD2M",
+            "name": "adrianwf",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1629785989.335800",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "49I6",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "hell yeah, now i'm getting somewhere"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01S1VB9X9P",
+        "type": "message",
+        "ts": "1629794906.341400",
+        "client_msg_id": "80fc6b3f-bf8e-4a6f-b63d-f98b0b85e7ea",
+        "text": "ok i get it",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gedbe1c0faac",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/da19bb58fa64d5c88c2a156c73a2ccf3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0018-72.png",
+            "first_name": "Adrian",
+            "real_name": "Adrian",
+            "display_name": "Adrian",
+            "team": "T4G9NBD2M",
+            "name": "adrianwf",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1629785989.335800",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "vnHPt",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "ok i get it"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "U4H19D1D2"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "U01S1VB9X9P",
+        "type": "message",
+        "ts": "1629794926.341700",
+        "client_msg_id": "c53d850a-1fe4-443f-8e4a-85b83b53be86",
+        "text": "clever man",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gedbe1c0faac",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/da19bb58fa64d5c88c2a156c73a2ccf3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0018-72.png",
+            "first_name": "Adrian",
+            "real_name": "Adrian",
+            "display_name": "Adrian",
+            "team": "T4G9NBD2M",
+            "name": "adrianwf",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1629785989.335800",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "AMrq",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "clever man"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1629795033.341900",
+        "client_msg_id": "2949299c-5a5f-410a-98f7-a1a91e01e73a",
+        "text": "On my production code I have an API logging control which sends new markets\/trades\/orders to an API so that I can analyse later in the db, the control is just an abstraction for exactly this with the framework itself making the calls when required",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1629785989.335800",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "qDO",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "On my production code I have an API logging control which sends new markets\/trades\/orders to an API so that I can analyse later in the db, the control is just an abstraction for exactly this with the framework itself making the calls when required"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01S1VB9X9P",
+        "type": "message",
+        "ts": "1629795134.342100",
+        "client_msg_id": "8052e482-dac6-4806-bfdc-dc2af99ec6f7",
+        "text": "i'll pretend like I understand what you're talking about :sweat_smile:",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gedbe1c0faac",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/da19bb58fa64d5c88c2a156c73a2ccf3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0018-72.png",
+            "first_name": "Adrian",
+            "real_name": "Adrian",
+            "display_name": "Adrian",
+            "team": "T4G9NBD2M",
+            "name": "adrianwf",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1629785989.335800",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "vPB1x",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "i'll pretend like I understand what you're talking about "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "sweat_smile",
+                                "unicode": "1f605"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01S1VB9X9P",
+        "type": "message",
+        "ts": "1629795654.342300",
+        "edited": {
+            "user": "U01S1VB9X9P",
+            "ts": "1629795679.000000"
+        },
+        "client_msg_id": "473db1ab-d515-41fe-bf3f-1e9a85b39d30",
+        "text": "Actually i kind of get it. You have a custom API instead of the logging control",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gedbe1c0faac",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/da19bb58fa64d5c88c2a156c73a2ccf3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0018-72.png",
+            "first_name": "Adrian",
+            "real_name": "Adrian",
+            "display_name": "Adrian",
+            "team": "T4G9NBD2M",
+            "name": "adrianwf",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1629785989.335800",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "eqq",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Actually i kind of get it. You have a custom API instead of the logging control"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1629795733.342600",
+        "client_msg_id": "d5adcf62-5e5d-4ef8-9f99-023837e10e87",
+        "text": "the logging control sends requests to my api",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1629785989.335800",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "qxF",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "the logging control sends requests to my api"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01S1VB9X9P",
+        "type": "message",
+        "ts": "1629795883.342800",
+        "client_msg_id": "8c04bb90-9df2-49fc-be44-7a54417c386c",
+        "text": "ah yes. ok, i think this is what Mo was talking about. Rather than just saving to csv or whatever. he suggested postgresql",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gedbe1c0faac",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/da19bb58fa64d5c88c2a156c73a2ccf3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0018-72.png",
+            "first_name": "Adrian",
+            "real_name": "Adrian",
+            "display_name": "Adrian",
+            "team": "T4G9NBD2M",
+            "name": "adrianwf",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1629785989.335800",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "apwV",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "ah yes. ok, i think this is what Mo was talking about. Rather than just saving to csv or whatever. he suggested postgresql"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U0154JA98TH",
+        "type": "message",
+        "ts": "1629819849.355300",
+        "client_msg_id": "8f42d1ab-9757-45b6-acb5-d73fc629c032",
+        "text": "hey everyone ive got a strategy built out in flumine that ive got to a stage where i'd like to increase the number of markets i place on to really test it out. So far ive kept it at one market for testing as this is my first flumine strat and very much needed to take the time to familiarise myself with the basics. I was wondering the following after recently attempting to place on two markets:\n\nDoes the process_orders function run independently for each market_id placed on or does it just run whenever there is an update on any executable order across all markets? I am looping through the \"orders\" list in this func currently and have been assuming only orders in the same market correlating to the update are being included with no check of my own. Will this be an issue if i dont include my own market_id check going forward inside process_orders?\n\nSecondly i currently have the \"max_live_trade_count\" set to 1 and was assuming this would allow for 1 executable order per runner per market as suggested in the docs but im running into a problem that suggests im going over this from time to time. Am i wrong and does this variable actually apply across the whole strategy or should it function as i initially described?\n\nLastly, should the limits set up through \"max_order_exposure= \", \"max_live_trade_count=\", \"max_selection_exposure=\" ... actually stop the placing of orders or cancel bets if their set values are exceeded?\n\nThanks for any help with the above its greatly appreciated! :grin:",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g04d857ee3ad",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/04d857ee3ad168a8451932c84c7d0d6d.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0007-72.png",
+            "first_name": "Jonathan",
+            "real_name": "Jonathan Wadsworth",
+            "display_name": "Jono",
+            "team": "T4G9NBD2M",
+            "name": "jonowads",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1629819849.355300",
+        "reply_count": 3,
+        "reply_users_count": 2,
+        "latest_reply": "1629886555.374900",
+        "reply_users": [
+            "U4H19D1D2",
+            "U0154JA98TH"
+        ],
+        "replies": [
+            {
+                "user": "U4H19D1D2",
+                "ts": "1629883145.374100"
+            },
+            {
+                "user": "U0154JA98TH",
+                "ts": "1629886477.374700"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1629886555.374900"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": true,
+        "last_read": "1629886555.374900",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "y\/XwT",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "hey everyone ive got a strategy built out in flumine that ive got to a stage where i'd like to increase the number of markets i place on to really test it out. So far ive kept it at one market for testing as this is my first flumine strat and very much needed to take the time to familiarise myself with the basics. I was wondering the following after recently attempting to place on two markets:\n\nDoes the process_orders function run independently for each market_id placed on or does it just run whenever there is an update on any executable order across all markets? I am looping through the \"orders\" list in this func currently and have been assuming only orders in the same market correlating to the update are being included with no check of my own. Will this be an issue if i dont include my own market_id check going forward inside process_orders?\n\nSecondly i currently have the \"max_live_trade_count\" set to 1 and was assuming this would allow for 1 executable order per runner per market as suggested in the docs but im running into a problem that suggests im going over this from time to time. Am i wrong and does this variable actually apply across the whole strategy or should it function as i initially described?\n\nLastly, should the limits set up through \"max_order_exposure= \", \"max_live_trade_count=\", \"max_selection_exposure=\" ... actually stop the placing of orders or cancel bets if their set values are exceeded?\n\nThanks for any help with the above its greatly appreciated! "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "grin",
+                                "unicode": "1f601"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U0122TPQABW",
+        "type": "message",
+        "ts": "1629829328.366600",
+        "client_msg_id": "eed2c3c8-4a01-4fcf-8e0c-4cb09ad2e7f5",
+        "text": "hey guys. testing the flumine market recorder on greyhounds. getting quite a few messages come through after more than an hour after market initially closed. seems to be mostly on FORECAST markets. I've investigated a few manually. Examples messages for one market below. If you have some editor like VS code to compare the two messages, you'll see that the only difference is the \"pt\" timestamp and that the latter message has \"img\": true attached to it. Everything else is the same. Any idea why this might be happing? there is of course the \"force_update\" field for this sort of thing, but seems that too many of these update are just the same initial closure. (no issue on the Flumine side, rather why Betfair might be doing this? and how are people setting the \"force_update\" and \"market_expiration\" parameters to tackle these sort of things?\n\n```Initial closure message\n{\"op\": \"mcm\", \"clk\": null, \"pt\": 1629820207534, \"mc\": [{\"id\": \"1.186741004\", \"marketDefinition\": {\"bspMarket\": false, \"turnInPlayEnabled\": false, \"persistenceEnabled\": false, \"marketBaseRate\": 5, \"eventId\": \"30826229\", \"eventTypeId\": \"4339\", \"numberOfWinners\": 1, \"bettingType\": \"ODDS\", \"marketType\": \"FORECAST\", \"marketTime\": \"2021-08-24T15:48:00.000Z\", \"suspendTime\": \"2021-08-24T15:48:00.000Z\", \"bspReconciled\": false, \"complete\": true, \"inPlay\": false, \"crossMatching\": false, \"runnersVoidable\": false, \"numberOfActiveRunners\": 0, \"betDelay\": 0, \"status\": \"CLOSED\", \"settledTime\": \"2021-08-24T15:50:02.000Z\", \"runners\": [{\"status\": \"LOSER\", \"sortPriority\": 1, \"id\": 38255840}, {\"status\": \"LOSER\", \"sortPriority\": 2, \"id\": 38255841}, {\"status\": \"LOSER\", \"sortPriority\": 3, \"id\": 38255842}, {\"status\": \"LOSER\", \"sortPriority\": 4, \"id\": 38255843}, {\"status\": \"LOSER\", \"sortPriority\": 5, \"id\": 38255844}, {\"status\": \"LOSER\", \"sortPriority\": 6, \"id\": 38255846}, {\"status\": \"LOSER\", \"sortPriority\": 7, \"id\": 38255847}, {\"status\": \"LOSER\", \"sortPriority\": 8, \"id\": 38255848}, {\"status\": \"LOSER\", \"sortPriority\": 9, \"id\": 38255849}, {\"status\": \"LOSER\", \"sortPriority\": 10, \"id\": 38255850}, {\"status\": \"LOSER\", \"sortPriority\": 11, \"id\": 38255852}, {\"status\": \"LOSER\", \"sortPriority\": 12, \"id\": 38255853}, {\"status\": \"LOSER\", \"sortPriority\": 13, \"id\": 38255854}, {\"status\": \"LOSER\", \"sortPriority\": 14, \"id\": 38255855}, {\"status\": \"LOSER\", \"sortPriority\": 15, \"id\": 38255856}, {\"status\": \"LOSER\", \"sortPriority\": 16, \"id\": 38255858}, {\"status\": \"LOSER\", \"sortPriority\": 17, \"id\": 38255859}, {\"status\": \"LOSER\", \"sortPriority\": 18, \"id\": 38255860}, {\"status\": \"LOSER\", \"sortPriority\": 19, \"id\": 38255861}, {\"status\": \"LOSER\", \"sortPriority\": 20, \"id\": 38255862}, {\"status\": \"LOSER\", \"sortPriority\": 21, \"id\": 38255864}, {\"status\": \"LOSER\", \"sortPriority\": 22, \"id\": 38255865}, {\"status\": \"LOSER\", \"sortPriority\": 23, \"id\": 38255866}, {\"status\": \"WINNER\", \"sortPriority\": 24, \"id\": 38255867}, {\"status\": \"LOSER\", \"sortPriority\": 25, \"id\": 38255868}, {\"status\": \"LOSER\", \"sortPriority\": 26, \"id\": 38255870}, {\"status\": \"LOSER\", \"sortPriority\": 27, \"id\": 38255871}, {\"status\": \"LOSER\", \"sortPriority\": 28, \"id\": 38255872}, {\"status\": \"LOSER\", \"sortPriority\": 29, \"id\": 38255873}, {\"status\": \"LOSER\", \"sortPriority\": 30, \"id\": 38255874}], \"regulators\": [\"MR_INT\"], \"venue\": \"Hove\", \"countryCode\": \"GB\", \"discountAllowed\": true, \"timezone\": \"Europe\/London\", \"openDate\": \"2021-08-24T12:57:00.000Z\", \"version\": 3988988530, \"priceLadderDefinition\": {\"type\": \"CLASSIC\"}}, \"_stream_id\": 2001}]}\n\nAnother message after more than an hour after closure\n{\"op\": \"mcm\", \"clk\": null, \"pt\": 1629825468969, \"mc\": [{\"id\": \"1.186741004\", \"marketDefinition\": {\"bspMarket\": false, \"turnInPlayEnabled\": false, \"persistenceEnabled\": false, \"marketBaseRate\": 5, \"eventId\": \"30826229\", \"eventTypeId\": \"4339\", \"numberOfWinners\": 1, \"bettingType\": \"ODDS\", \"marketType\": \"FORECAST\", \"marketTime\": \"2021-08-24T15:48:00.000Z\", \"suspendTime\": \"2021-08-24T15:48:00.000Z\", \"bspReconciled\": false, \"complete\": true, \"inPlay\": false, \"crossMatching\": false, \"runnersVoidable\": false, \"numberOfActiveRunners\": 0, \"betDelay\": 0, \"status\": \"CLOSED\", \"settledTime\": \"2021-08-24T15:50:02.000Z\", \"runners\": [{\"status\": \"LOSER\", \"sortPriority\": 1, \"id\": 38255840}, {\"status\": \"LOSER\", \"sortPriority\": 2, \"id\": 38255841}, {\"status\": \"LOSER\", \"sortPriority\": 3, \"id\": 38255842}, {\"status\": \"LOSER\", \"sortPriority\": 4, \"id\": 38255843}, {\"status\": \"LOSER\", \"sortPriority\": 5, \"id\": 38255844}, {\"status\": \"LOSER\", \"sortPriority\": 6, \"id\": 38255846}, {\"status\": \"LOSER\", \"sortPriority\": 7, \"id\": 38255847}, {\"status\": \"LOSER\", \"sortPriority\": 8, \"id\": 38255848}, {\"status\": \"LOSER\", \"sortPriority\": 9, \"id\": 38255849}, {\"status\": \"LOSER\", \"sortPriority\": 10, \"id\": 38255850}, {\"status\": \"LOSER\", \"sortPriority\": 11, \"id\": 38255852}, {\"status\": \"LOSER\", \"sortPriority\": 12, \"id\": 38255853}, {\"status\": \"LOSER\", \"sortPriority\": 13, \"id\": 38255854}, {\"status\": \"LOSER\", \"sortPriority\": 14, \"id\": 38255855}, {\"status\": \"LOSER\", \"sortPriority\": 15, \"id\": 38255856}, {\"status\": \"LOSER\", \"sortPriority\": 16, \"id\": 38255858}, {\"status\": \"LOSER\", \"sortPriority\": 17, \"id\": 38255859}, {\"status\": \"LOSER\", \"sortPriority\": 18, \"id\": 38255860}, {\"status\": \"LOSER\", \"sortPriority\": 19, \"id\": 38255861}, {\"status\": \"LOSER\", \"sortPriority\": 20, \"id\": 38255862}, {\"status\": \"LOSER\", \"sortPriority\": 21, \"id\": 38255864}, {\"status\": \"LOSER\", \"sortPriority\": 22, \"id\": 38255865}, {\"status\": \"LOSER\", \"sortPriority\": 23, \"id\": 38255866}, {\"status\": \"WINNER\", \"sortPriority\": 24, \"id\": 38255867}, {\"status\": \"LOSER\", \"sortPriority\": 25, \"id\": 38255868}, {\"status\": \"LOSER\", \"sortPriority\": 26, \"id\": 38255870}, {\"status\": \"LOSER\", \"sortPriority\": 27, \"id\": 38255871}, {\"status\": \"LOSER\", \"sortPriority\": 28, \"id\": 38255872}, {\"status\": \"LOSER\", \"sortPriority\": 29, \"id\": 38255873}, {\"status\": \"LOSER\", \"sortPriority\": 30, \"id\": 38255874}], \"regulators\": [\"MR_INT\"], \"venue\": \"Hove\", \"countryCode\": \"GB\", \"discountAllowed\": true, \"timezone\": \"Europe\/London\", \"openDate\": \"2021-08-24T12:57:00.000Z\", \"version\": 3988988530, \"priceLadderDefinition\": {\"type\": \"CLASSIC\"}}, \"img\": true, \"_stream_id\": 2001}]}```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gf7370a7c65b",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/f7370a7c65b7f05be427ac5194491686.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0015-72.png",
+            "first_name": "azevedo",
+            "real_name": "azevedo",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vladvyuzhanin",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1629829328.366600",
+        "reply_count": 11,
+        "reply_users_count": 3,
+        "latest_reply": "1629969787.034300",
+        "reply_users": [
+            "U0122TPQABW",
+            "U9JHLMZB4",
+            "U4H19D1D2"
+        ],
+        "replies": [
+            {
+                "user": "U0122TPQABW",
+                "ts": "1629830505.366700"
+            },
+            {
+                "user": "U9JHLMZB4",
+                "ts": "1629835977.367600"
+            },
+            {
+                "user": "U0122TPQABW",
+                "ts": "1629836111.368200"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1629883302.374400"
+            },
+            {
+                "user": "U9JHLMZB4",
+                "ts": "1629909159.382100"
+            },
+            {
+                "user": "U9JHLMZB4",
+                "ts": "1629909294.382300"
+            },
+            {
+                "user": "U0122TPQABW",
+                "ts": "1629913675.382500"
+            },
+            {
+                "user": "U0122TPQABW",
+                "ts": "1629913850.382700"
+            },
+            {
+                "user": "U0122TPQABW",
+                "ts": "1629914008.382900"
+            },
+            {
+                "user": "U9JHLMZB4",
+                "ts": "1629960811.000100"
+            },
+            {
+                "user": "U0122TPQABW",
+                "ts": "1629969787.034300"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": true,
+        "last_read": "1629969787.034300",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Sd7",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "hey guys. testing the flumine market recorder on greyhounds. getting quite a few messages come through after more than an hour after market initially closed. seems to be mostly on FORECAST markets. I've investigated a few manually. Examples messages for one market below. If you have some editor like VS code to compare the two messages, you'll see that the only difference is the \"pt\" timestamp and that the latter message has \"img\": true attached to it. Everything else is the same. Any idea why this might be happing? there is of course the \"force_update\" field for this sort of thing, but seems that too many of these update are just the same initial closure. (no issue on the Flumine side, rather why Betfair might be doing this? and how are people setting the \"force_update\" and \"market_expiration\" parameters to tackle these sort of things?\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Initial closure message\n{\"op\": \"mcm\", \"clk\": null, \"pt\": 1629820207534, \"mc\": [{\"id\": \"1.186741004\", \"marketDefinition\": {\"bspMarket\": false, \"turnInPlayEnabled\": false, \"persistenceEnabled\": false, \"marketBaseRate\": 5, \"eventId\": \"30826229\", \"eventTypeId\": \"4339\", \"numberOfWinners\": 1, \"bettingType\": \"ODDS\", \"marketType\": \"FORECAST\", \"marketTime\": \"2021-08-24T15:48:00.000Z\", \"suspendTime\": \"2021-08-24T15:48:00.000Z\", \"bspReconciled\": false, \"complete\": true, \"inPlay\": false, \"crossMatching\": false, \"runnersVoidable\": false, \"numberOfActiveRunners\": 0, \"betDelay\": 0, \"status\": \"CLOSED\", \"settledTime\": \"2021-08-24T15:50:02.000Z\", \"runners\": [{\"status\": \"LOSER\", \"sortPriority\": 1, \"id\": 38255840}, {\"status\": \"LOSER\", \"sortPriority\": 2, \"id\": 38255841}, {\"status\": \"LOSER\", \"sortPriority\": 3, \"id\": 38255842}, {\"status\": \"LOSER\", \"sortPriority\": 4, \"id\": 38255843}, {\"status\": \"LOSER\", \"sortPriority\": 5, \"id\": 38255844}, {\"status\": \"LOSER\", \"sortPriority\": 6, \"id\": 38255846}, {\"status\": \"LOSER\", \"sortPriority\": 7, \"id\": 38255847}, {\"status\": \"LOSER\", \"sortPriority\": 8, \"id\": 38255848}, {\"status\": \"LOSER\", \"sortPriority\": 9, \"id\": 38255849}, {\"status\": \"LOSER\", \"sortPriority\": 10, \"id\": 38255850}, {\"status\": \"LOSER\", \"sortPriority\": 11, \"id\": 38255852}, {\"status\": \"LOSER\", \"sortPriority\": 12, \"id\": 38255853}, {\"status\": \"LOSER\", \"sortPriority\": 13, \"id\": 38255854}, {\"status\": \"LOSER\", \"sortPriority\": 14, \"id\": 38255855}, {\"status\": \"LOSER\", \"sortPriority\": 15, \"id\": 38255856}, {\"status\": \"LOSER\", \"sortPriority\": 16, \"id\": 38255858}, {\"status\": \"LOSER\", \"sortPriority\": 17, \"id\": 38255859}, {\"status\": \"LOSER\", \"sortPriority\": 18, \"id\": 38255860}, {\"status\": \"LOSER\", \"sortPriority\": 19, \"id\": 38255861}, {\"status\": \"LOSER\", \"sortPriority\": 20, \"id\": 38255862}, {\"status\": \"LOSER\", \"sortPriority\": 21, \"id\": 38255864}, {\"status\": \"LOSER\", \"sortPriority\": 22, \"id\": 38255865}, {\"status\": \"LOSER\", \"sortPriority\": 23, \"id\": 38255866}, {\"status\": \"WINNER\", \"sortPriority\": 24, \"id\": 38255867}, {\"status\": \"LOSER\", \"sortPriority\": 25, \"id\": 38255868}, {\"status\": \"LOSER\", \"sortPriority\": 26, \"id\": 38255870}, {\"status\": \"LOSER\", \"sortPriority\": 27, \"id\": 38255871}, {\"status\": \"LOSER\", \"sortPriority\": 28, \"id\": 38255872}, {\"status\": \"LOSER\", \"sortPriority\": 29, \"id\": 38255873}, {\"status\": \"LOSER\", \"sortPriority\": 30, \"id\": 38255874}], \"regulators\": [\"MR_INT\"], \"venue\": \"Hove\", \"countryCode\": \"GB\", \"discountAllowed\": true, \"timezone\": \"Europe\/London\", \"openDate\": \"2021-08-24T12:57:00.000Z\", \"version\": 3988988530, \"priceLadderDefinition\": {\"type\": \"CLASSIC\"}}, \"_stream_id\": 2001}]}\n\nAnother message after more than an hour after closure\n{\"op\": \"mcm\", \"clk\": null, \"pt\": 1629825468969, \"mc\": [{\"id\": \"1.186741004\", \"marketDefinition\": {\"bspMarket\": false, \"turnInPlayEnabled\": false, \"persistenceEnabled\": false, \"marketBaseRate\": 5, \"eventId\": \"30826229\", \"eventTypeId\": \"4339\", \"numberOfWinners\": 1, \"bettingType\": \"ODDS\", \"marketType\": \"FORECAST\", \"marketTime\": \"2021-08-24T15:48:00.000Z\", \"suspendTime\": \"2021-08-24T15:48:00.000Z\", \"bspReconciled\": false, \"complete\": true, \"inPlay\": false, \"crossMatching\": false, \"runnersVoidable\": false, \"numberOfActiveRunners\": 0, \"betDelay\": 0, \"status\": \"CLOSED\", \"settledTime\": \"2021-08-24T15:50:02.000Z\", \"runners\": [{\"status\": \"LOSER\", \"sortPriority\": 1, \"id\": 38255840}, {\"status\": \"LOSER\", \"sortPriority\": 2, \"id\": 38255841}, {\"status\": \"LOSER\", \"sortPriority\": 3, \"id\": 38255842}, {\"status\": \"LOSER\", \"sortPriority\": 4, \"id\": 38255843}, {\"status\": \"LOSER\", \"sortPriority\": 5, \"id\": 38255844}, {\"status\": \"LOSER\", \"sortPriority\": 6, \"id\": 38255846}, {\"status\": \"LOSER\", \"sortPriority\": 7, \"id\": 38255847}, {\"status\": \"LOSER\", \"sortPriority\": 8, \"id\": 38255848}, {\"status\": \"LOSER\", \"sortPriority\": 9, \"id\": 38255849}, {\"status\": \"LOSER\", \"sortPriority\": 10, \"id\": 38255850}, {\"status\": \"LOSER\", \"sortPriority\": 11, \"id\": 38255852}, {\"status\": \"LOSER\", \"sortPriority\": 12, \"id\": 38255853}, {\"status\": \"LOSER\", \"sortPriority\": 13, \"id\": 38255854}, {\"status\": \"LOSER\", \"sortPriority\": 14, \"id\": 38255855}, {\"status\": \"LOSER\", \"sortPriority\": 15, \"id\": 38255856}, {\"status\": \"LOSER\", \"sortPriority\": 16, \"id\": 38255858}, {\"status\": \"LOSER\", \"sortPriority\": 17, \"id\": 38255859}, {\"status\": \"LOSER\", \"sortPriority\": 18, \"id\": 38255860}, {\"status\": \"LOSER\", \"sortPriority\": 19, \"id\": 38255861}, {\"status\": \"LOSER\", \"sortPriority\": 20, \"id\": 38255862}, {\"status\": \"LOSER\", \"sortPriority\": 21, \"id\": 38255864}, {\"status\": \"LOSER\", \"sortPriority\": 22, \"id\": 38255865}, {\"status\": \"LOSER\", \"sortPriority\": 23, \"id\": 38255866}, {\"status\": \"WINNER\", \"sortPriority\": 24, \"id\": 38255867}, {\"status\": \"LOSER\", \"sortPriority\": 25, \"id\": 38255868}, {\"status\": \"LOSER\", \"sortPriority\": 26, \"id\": 38255870}, {\"status\": \"LOSER\", \"sortPriority\": 27, \"id\": 38255871}, {\"status\": \"LOSER\", \"sortPriority\": 28, \"id\": 38255872}, {\"status\": \"LOSER\", \"sortPriority\": 29, \"id\": 38255873}, {\"status\": \"LOSER\", \"sortPriority\": 30, \"id\": 38255874}], \"regulators\": [\"MR_INT\"], \"venue\": \"Hove\", \"countryCode\": \"GB\", \"discountAllowed\": true, \"timezone\": \"Europe\/London\", \"openDate\": \"2021-08-24T12:57:00.000Z\", \"version\": 3988988530, \"priceLadderDefinition\": {\"type\": \"CLASSIC\"}}, \"img\": true, \"_stream_id\": 2001}]}"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U0122TPQABW",
+        "type": "message",
+        "ts": "1629830505.366700",
+        "client_msg_id": "9c7464b7-db19-4486-ae67-c7a046758f4a",
+        "text": "Checking a few more now, still haven't found a market where there would be something actually different sent after initial closure. Also happening on Win and Place markets too",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gf7370a7c65b",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/f7370a7c65b7f05be427ac5194491686.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0015-72.png",
+            "first_name": "azevedo",
+            "real_name": "azevedo",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vladvyuzhanin",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1629829328.366600",
+        "parent_user_id": "U0122TPQABW",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "YA4D3",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Checking a few more now, still haven't found a market where there would be something actually different sent after initial closure. Also happening on Win and Place markets too"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U9JHLMZB4",
+        "type": "message",
+        "ts": "1629835977.367600",
+        "client_msg_id": "cb9cd1ad-c130-470b-92de-902fe605289f",
+        "text": "Live key or delayed key?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g951ddcb43e7",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/3951ddcb43e788a387d6daf330dad5ca.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0018-72.png",
+            "first_name": "",
+            "real_name": "Peter Coles",
+            "display_name": "Peter",
+            "team": "T4G9NBD2M",
+            "name": "peter",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1629829328.366600",
+        "parent_user_id": "U0122TPQABW",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "R1d",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Live key or delayed key?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U0122TPQABW",
+        "type": "message",
+        "ts": "1629836111.368200",
+        "client_msg_id": "1713F2EF-6FD0-4A46-968F-59BB5EE44897",
+        "text": "live ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gf7370a7c65b",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/f7370a7c65b7f05be427ac5194491686.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0015-72.png",
+            "first_name": "azevedo",
+            "real_name": "azevedo",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vladvyuzhanin",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1629829328.366600",
+        "parent_user_id": "U0122TPQABW",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "G0Ts",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "live "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UPMUFSGCR",
+        "type": "message",
+        "ts": "1629843897.370200",
+        "client_msg_id": "955b7e24-51df-45fe-99fe-216bc9403768",
+        "text": "Suppose I call `replace_order`, to update an orders's price. Under the hood, the current order will be deleted, and a new one created.\n\nHow can I work out which new order replaces which cancelled order?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "31c0bb5a442c",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2019-10-28\/812386967189_31c0bb5a442c5b8d2c61_72.png",
+            "first_name": "Jon",
+            "real_name": "Jon Jon Jon Jon Jon Jon Jon Jon",
+            "display_name": "Jonjonjon",
+            "team": "T4G9NBD2M",
+            "name": "fcmisc",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "B3H6",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Suppose I call "
+                            },
+                            {
+                                "type": "text",
+                                "text": "replace_order",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": ", to update an orders's price. Under the hood, the current order will be deleted, and a new one created.\n\nHow can I work out which new order replaces which cancelled order?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UT6593JBH",
+        "type": "message",
+        "ts": "1629849081.370300",
+        "client_msg_id": "add4e0f5-91b0-4749-868b-b2d0cc365b05",
+        "text": "Don't use github - and hard to replaicate because you actually have to sync up a cancellation request with a matching of the bet on the exchange. I guess you could fire off a back for $5 at 1.01 and a split second later a cancellation request. When you are in Australia it's common place to get these overlaps due to the 2 second internet lag.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gcc4ebad3a58",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/cc4ebad3a580698a264d16101dc48253.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0025-72.png",
+            "first_name": "",
+            "real_name": "Steve",
+            "display_name": "Steve",
+            "team": "T4G9NBD2M",
+            "name": "flegg.stephen",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1629550441.317500",
+        "parent_user_id": "UT6593JBH",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Iek5",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Don't use github - and hard to replaicate because you actually have to sync up a cancellation request with a matching of the bet on the exchange. I guess you could fire off a back for $5 at 1.01 and a split second later a cancellation request. When you are in Australia it's common place to get these overlaps due to the 2 second internet lag."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01S1VB9X9P",
+        "type": "message",
+        "ts": "1629874347.371800",
+        "edited": {
+            "user": "U01S1VB9X9P",
+            "ts": "1629874494.000000"
+        },
+        "client_msg_id": "424576e4-4003-485f-bf18-9b6a6e59357c",
+        "text": "How do I call `_process_cleared_markets` from within the logging control? I need to log the the commission paid. I have tried this:\n `def _process_cleared_markets(self, event):`\n        `for cleared_market in event.event:`\n            `print(cleared_market.profit, cleared_market.commission)`\nbut it's not running at all",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gedbe1c0faac",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/da19bb58fa64d5c88c2a156c73a2ccf3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0018-72.png",
+            "first_name": "Adrian",
+            "real_name": "Adrian",
+            "display_name": "Adrian",
+            "team": "T4G9NBD2M",
+            "name": "adrianwf",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1629874347.371800",
+        "reply_count": 7,
+        "reply_users_count": 2,
+        "latest_reply": "1629975585.034800",
+        "reply_users": [
+            "U4H19D1D2",
+            "U01S1VB9X9P"
+        ],
+        "replies": [
+            {
+                "user": "U4H19D1D2",
+                "ts": "1629874965.372000"
+            },
+            {
+                "user": "U01S1VB9X9P",
+                "ts": "1629879088.372200"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1629880220.372700"
+            },
+            {
+                "user": "U01S1VB9X9P",
+                "ts": "1629881084.373400"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1629881363.373700"
+            },
+            {
+                "user": "U01S1VB9X9P",
+                "ts": "1629881757.373900"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1629975585.034800"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": true,
+        "last_read": "1629975585.034800",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "COF",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "How do I call "
+                            },
+                            {
+                                "type": "text",
+                                "text": "_process_cleared_markets",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " from within the logging control? I need to log the the commission paid. I have tried this:\n "
+                            },
+                            {
+                                "type": "text",
+                                "text": "def _process_cleared_markets(self, event):",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "        for cleared_market in event.event:",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "            print(cleared_market.profit, cleared_market.commission)",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\nbut it's not running at all"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

@@ -1,0 +1,237 @@
+[
+    {
+        "user": "U02RN7YDRQ9",
+        "type": "message",
+        "ts": "1651944143.063569",
+        "client_msg_id": "e52d152a-efab-49ca-95e1-e03ca856f8b5",
+        "text": "I have a derived base strategy which does all sorts of parameter driven grunt work and provides helpers for various tasks. Deriving from this makes it easy to create and modify strategies quickly but each strategy ends up with it's own stream as part of the flumine BaseStrategy  construction.\n\nWhen different strategies have identical market filter requirements is there any way to share a single stream to save on sockets and duplicate processing ? I could use lots of if\/elif code but that quickly becomes a maintenance \/ debug 'mare.\n\nOne solution I'm considering is introducing another layer that feeds an array of child strategies in some way - just seems a bit messy compared to having a shared common feeder stream. Any ideas \/ Python tricks \/ alternative design patterns welcome :)",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "ge46f1f8b708",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/e46f1f8b708a630e3191de7b2c42b1d1.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0023-72.png",
+            "first_name": "edblock",
+            "real_name": "edblock",
+            "display_name": "foxwood",
+            "team": "T4G9NBD2M",
+            "name": "eanb",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "\/V4c",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I have a derived base strategy which does all sorts of parameter driven grunt work and provides helpers for various tasks. Deriving from this makes it easy to create and modify strategies quickly but each strategy ends up with it's own stream as part of the flumine BaseStrategy  construction.\n\nWhen different strategies have identical market filter requirements is there any way to share a single stream to save on sockets and duplicate processing ? I could use lots of if\/elif code but that quickly becomes a maintenance \/ debug 'mare.\n\nOne solution I'm considering is introducing another layer that feeds an array of child strategies in some way - just seems a bit messy compared to having a shared common feeder stream. Any ideas \/ Python tricks \/ alternative design patterns welcome :)"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1651944266.888959",
+        "client_msg_id": "2E1EDCED-5382-4F8F-8E46-4B15AF06771B",
+        "text": "Flumine does this by default, why do you think it doesn't? ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1651944266.888959",
+        "reply_count": 3,
+        "reply_users_count": 2,
+        "latest_reply": "1651950965.317039",
+        "reply_users": [
+            "U02RN7YDRQ9",
+            "U4H19D1D2"
+        ],
+        "replies": [
+            {
+                "user": "U02RN7YDRQ9",
+                "ts": "1651947285.960269"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1651949251.161489"
+            },
+            {
+                "user": "U02RN7YDRQ9",
+                "ts": "1651950965.317039"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": true,
+        "last_read": "1651950965.317039",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "TF=",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Flumine does this by default, why do you think it doesn't? "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U02RN7YDRQ9",
+        "type": "message",
+        "ts": "1651947285.960269",
+        "client_msg_id": "5b523671-37ca-44e6-b682-2a29651f65ae",
+        "text": "Might be a doh moment then - I've not tried just assuming !\neg I derive mystrat from BaseStrategy and add it to the framework - since (from logs) that takes 2 sockets I presumed that's the way things worked - I've never added more than 1 strategy to framework ie I'm running one strategy per top module - maybe that's the bit I should study ?!\n\nSo are you saying the framework will recognize identical streaming_market_filters across all strategies added to it ?\n```framework.add_strategy(\n    mystrat(\n        name=mystrat.__class__.__name__,\n        market_filter = betfairlightweight.filters.streaming_market_filter(\n            event_type_ids=[\"4339\"],\n            country_codes=[\"GB\"],\n            market_types=[\"WIN\"],\n            ),\n        market_data_filter = streaming_market_data_filter( fields=[\n            \"EX_ALL_OFFERS\", \"EX_TRADED\", \"EX_TRADED_VOL\", \"EX_LTP\",\n            \"EX_MARKET_DEF\", \"SP_TRADED\",\"SP_PROJECTED\",]\n            ),\n        context = { \"stratparms\": mystratParms, \"client\": client, },\n    )\n)```\n",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "ge46f1f8b708",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/e46f1f8b708a630e3191de7b2c42b1d1.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0023-72.png",
+            "first_name": "edblock",
+            "real_name": "edblock",
+            "display_name": "foxwood",
+            "team": "T4G9NBD2M",
+            "name": "eanb",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1651944266.888959",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "y4YgK",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Might be a doh moment then - I've not tried just assuming !\neg I derive mystrat from BaseStrategy and add it to the framework - since (from logs) that takes 2 sockets I presumed that's the way things worked - I've never added more than 1 strategy to framework ie I'm running one strategy per top module - maybe that's the bit I should study ?!\n\nSo are you saying the framework will recognize identical streaming_market_filters across all strategies added to it ?\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "framework.add_strategy(\n    mystrat(\n        name=mystrat.__class__.__name__,\n        market_filter = betfairlightweight.filters.streaming_market_filter(\n            event_type_ids=[\"4339\"],\n            country_codes=[\"GB\"],\n            market_types=[\"WIN\"],\n            ),\n        market_data_filter = streaming_market_data_filter( fields=[\n            \"EX_ALL_OFFERS\", \"EX_TRADED\", \"EX_TRADED_VOL\", \"EX_LTP\",\n            \"EX_MARKET_DEF\", \"SP_TRADED\",\"SP_PROJECTED\",]\n            ),\n        context = { \"stratparms\": mystratParms, \"client\": client, },\n    )\n)"
+                            }
+                        ],
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": []
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1651949251.161489",
+        "client_msg_id": "F851A50A-73EA-41A7-9175-E0B874880C56",
+        "text": "Yep",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1651944266.888959",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "sudAz",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Yep"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U02RN7YDRQ9",
+        "type": "message",
+        "ts": "1651950965.317039",
+        "client_msg_id": "03769e3f-863a-4c0d-a083-51abc4f985e0",
+        "text": "Many thanks - found the code in add_stream() - not thinking straight or checking - does demonstrate  your design is robust though :)",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "ge46f1f8b708",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/e46f1f8b708a630e3191de7b2c42b1d1.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0023-72.png",
+            "first_name": "edblock",
+            "real_name": "edblock",
+            "display_name": "foxwood",
+            "team": "T4G9NBD2M",
+            "name": "eanb",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1651944266.888959",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "8F6",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Many thanks - found the code in add_stream() - not thinking straight or checking - does demonstrate  your design is robust though :)"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

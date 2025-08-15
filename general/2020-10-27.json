@@ -1,0 +1,1857 @@
+[
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1603784701.132500",
+        "client_msg_id": "5e3c2f76-4a19-4b67-9529-423c77e2d72d",
+        "text": "Ah the issues is that you are logging the order state just after the order has been created, at this point the market has not been closed and the orders are still executable. `_process_order` should only be used to log the initial order object, you need to wait till after the market has closed to log `price_matched` \/ `size_matched`\n\nWhen live you can use `_process_cleared_orders` or `_process_cleared_orders_meta` but we currently don't have these hooked up for backtesting #todo",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1603784701.132500",
+        "reply_count": 2,
+        "reply_users_count": 2,
+        "latest_reply": "1604911193.348900",
+        "reply_users": [
+            "U01BBMTK6R3",
+            "U4H19D1D2"
+        ],
+        "replies": [
+            {
+                "user": "U01BBMTK6R3",
+                "ts": "1604765045.338800"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1604911193.348900"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": true,
+        "last_read": "1604911193.348900",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "aXdZt",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Ah the issues is that you are logging the order state just after the order has been created, at this point the market has not been closed and the orders are still executable. "
+                            },
+                            {
+                                "type": "text",
+                                "text": "_process_order",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " should only be used to log the initial order object, you need to wait till after the market has closed to log "
+                            },
+                            {
+                                "type": "text",
+                                "text": "price_matched",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " \/ "
+                            },
+                            {
+                                "type": "text",
+                                "text": "size_matched",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n\nWhen live you can use "
+                            },
+                            {
+                                "type": "text",
+                                "text": "_process_cleared_orders",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " or "
+                            },
+                            {
+                                "type": "text",
+                                "text": "_process_cleared_orders_meta",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " but we currently don't have these hooked up for backtesting #todo"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01BBMTK6R3",
+        "type": "message",
+        "ts": "1603800986.132900",
+        "client_msg_id": "64c4ea6c-35fa-4c75-892e-a05adf918006",
+        "text": "<@U4H19D1D2> thank you very much.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gc439db68a96",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/c439db68a965588cbce0ffd6101791df.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0020-72.png",
+            "first_name": "danzhou2002",
+            "real_name": "danzhou2002",
+            "display_name": "dan2002",
+            "team": "T4G9NBD2M",
+            "name": "danzhou2002",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "0I7",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "user",
+                                "user_id": "U4H19D1D2"
+                            },
+                            {
+                                "type": "text",
+                                "text": " thank you very much."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U016TGY3676",
+        "type": "message",
+        "ts": "1603803934.139100",
+        "client_msg_id": "b90c2a8a-0448-414a-8d66-c9eb01f82d7c",
+        "text": "While on the subject of backtesting, I've noticed that my self-grabbed data never triggers the market status CLOSED flag. As a workaround, I just keep track of the market id and act accordingly when it changes to a new market. Is that a fault? Looking at the MarketRecorder code, I assume it's correct behaviour because status CLOSED triggers the transfer to S3?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6a681220e11",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6a681220e11c1a2ed3685375d658dadb.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0001-72.png",
+            "first_name": "",
+            "real_name": "birchy",
+            "display_name": "birchy",
+            "team": "T4G9NBD2M",
+            "name": "birchy",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "pvR",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "While on the subject of backtesting, I've noticed that my self-grabbed data never triggers the market status CLOSED flag. As a workaround, I just keep track of the market id and act accordingly when it changes to a new market. Is that a fault? Looking at the MarketRecorder code, I assume it's correct behaviour because status CLOSED triggers the transfer to S3?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1603804661.140400",
+        "edited": {
+            "user": "U4H19D1D2",
+            "ts": "1603804679.000000"
+        },
+        "client_msg_id": "5A576BD4-B95C-4118-87F0-652419F602D0",
+        "text": "It’s probably because we don’t process the marketBook once the market is closed when backtesting instead the process_closed_market is called however we could look to change that so both are still called ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1603804661.140400",
+        "reply_count": 2,
+        "reply_users_count": 2,
+        "latest_reply": "1603813680.146300",
+        "reply_users": [
+            "U016TGY3676",
+            "U4H19D1D2"
+        ],
+        "replies": [
+            {
+                "user": "U016TGY3676",
+                "ts": "1603813571.145900"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1603813680.146300"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": true,
+        "last_read": "1603813680.146300",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Q==af",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "It’s probably because we don’t process the marketBook once the market is closed when backtesting instead the process_closed_market is called however we could look to change that so both are still called "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U0154JA98TH",
+        "type": "message",
+        "ts": "1603810720.142900",
+        "client_msg_id": "7ebf541b-9839-4c1c-90b0-e16e82b8f416",
+        "text": "is there a attribute to in the runner class that lets you know if its listed in the home or away slot for markets where that applies like football, rugby etc? If not not is there a convenient way of determining this? Im looking through basic historical handicap data and am trying to determine the selection in question is the home or away team, cheers",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g04d857ee3ad",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/04d857ee3ad168a8451932c84c7d0d6d.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0007-72.png",
+            "first_name": "Jonathan",
+            "real_name": "Jonathan Wadsworth",
+            "display_name": "Jono",
+            "team": "T4G9NBD2M",
+            "name": "jonowads",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "fX3v",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "is there a attribute to in the runner class that lets you know if its listed in the home or away slot for markets where that applies like football, rugby etc? If not not is there a convenient way of determining this? Im looking through basic historical handicap data and am trying to determine the selection in question is the home or away team, cheers"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1603810762.143100",
+        "client_msg_id": "eb7113e7-bc5a-4085-b03b-d190a8977a29",
+        "text": "sort_priority",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "0Ivb",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "sort_priority"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "U4H19D1D2"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "U0154JA98TH",
+        "type": "message",
+        "ts": "1603810807.144000",
+        "client_msg_id": "fde00ee4-da5a-4ade-b32e-cf9cda941c4b",
+        "text": "thanks a lot!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g04d857ee3ad",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/04d857ee3ad168a8451932c84c7d0d6d.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0007-72.png",
+            "first_name": "Jonathan",
+            "real_name": "Jonathan Wadsworth",
+            "display_name": "Jono",
+            "team": "T4G9NBD2M",
+            "name": "jonowads",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "\/Y6R",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "thanks a lot!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1603810813.144200",
+        "client_msg_id": "a81b8ef0-b353-4906-aea4-45ce0b333124",
+        "text": "That is the website display ordering; should be fine to use it for something like football but don't expect it to be static for something like horse racing",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "qkVG",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "That is the website display ordering; should be fine to use it for something like football but don't expect it to be static for something like horse racing"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U0154JA98TH",
+        "type": "message",
+        "ts": "1603811044.145800",
+        "client_msg_id": "0c1e94b8-0c9c-46cf-8475-511ba20a500e",
+        "text": "will bear that in mind for more nuanced sports and markets. Is that \"sort_priority\" appropriate for runner data accessed in the basic data plan? or just live info",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g04d857ee3ad",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/04d857ee3ad168a8451932c84c7d0d6d.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0007-72.png",
+            "first_name": "Jonathan",
+            "real_name": "Jonathan Wadsworth",
+            "display_name": "Jono",
+            "team": "T4G9NBD2M",
+            "name": "jonowads",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1603811044.145800",
+        "reply_count": 33,
+        "reply_users_count": 2,
+        "latest_reply": "1604598007.319300",
+        "reply_users": [
+            "UBS7QANF3",
+            "U0154JA98TH"
+        ],
+        "replies": [
+            {
+                "user": "UBS7QANF3",
+                "ts": "1603816273.149100"
+            },
+            {
+                "user": "U0154JA98TH",
+                "ts": "1603818568.162500"
+            },
+            {
+                "user": "U0154JA98TH",
+                "ts": "1603818591.162700"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1603819214.163300"
+            },
+            {
+                "user": "U0154JA98TH",
+                "ts": "1603820235.163700"
+            },
+            {
+                "user": "U0154JA98TH",
+                "ts": "1604588609.309300"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1604588989.310400"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1604589051.311300"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1604589059.311800"
+            },
+            {
+                "user": "U0154JA98TH",
+                "ts": "1604589874.312000"
+            },
+            {
+                "user": "U0154JA98TH",
+                "ts": "1604589922.312300"
+            },
+            {
+                "user": "U0154JA98TH",
+                "ts": "1604589950.312500"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1604590051.313200"
+            },
+            {
+                "user": "U0154JA98TH",
+                "ts": "1604590163.313400"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1604590248.313800"
+            },
+            {
+                "user": "U0154JA98TH",
+                "ts": "1604590308.314000"
+            },
+            {
+                "user": "U0154JA98TH",
+                "ts": "1604590453.314200"
+            },
+            {
+                "user": "U0154JA98TH",
+                "ts": "1604590524.315300"
+            },
+            {
+                "user": "U0154JA98TH",
+                "ts": "1604590578.315500"
+            },
+            {
+                "user": "U0154JA98TH",
+                "ts": "1604595270.315700"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1604595306.316500"
+            },
+            {
+                "user": "U0154JA98TH",
+                "ts": "1604595391.316700"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1604595988.316900"
+            },
+            {
+                "user": "U0154JA98TH",
+                "ts": "1604597155.317100"
+            },
+            {
+                "user": "U0154JA98TH",
+                "ts": "1604597248.317300"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1604597324.317500"
+            },
+            {
+                "user": "U0154JA98TH",
+                "ts": "1604597588.318000"
+            },
+            {
+                "user": "U0154JA98TH",
+                "ts": "1604597637.318200"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1604597673.318500"
+            },
+            {
+                "user": "U0154JA98TH",
+                "ts": "1604597919.318700"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1604597971.318900"
+            },
+            {
+                "user": "U0154JA98TH",
+                "ts": "1604597986.319100"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1604598007.319300"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": false,
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "CqRO4",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "will bear that in mind for more nuanced sports and markets. Is that \"sort_priority\" appropriate for runner data accessed in the basic data plan? or just live info"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U016TGY3676",
+        "type": "message",
+        "ts": "1603813571.145900",
+        "client_msg_id": "966ffc7f-9cba-41ea-b47a-b59b36689201",
+        "text": "Consistency across backtesting\/live would be beneficial. I like to run clean-up procedures on market closure.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6a681220e11",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6a681220e11c1a2ed3685375d658dadb.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0001-72.png",
+            "first_name": "",
+            "real_name": "birchy",
+            "display_name": "birchy",
+            "team": "T4G9NBD2M",
+            "name": "birchy",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1603804661.140400",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "s0\/As",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Consistency across backtesting\/live would be beneficial. I like to run clean-up procedures on market closure."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1603813680.146300",
+        "client_msg_id": "05A3A887-CE9D-470E-A000-21026B161DDC",
+        "text": "PR’s open ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1603804661.140400",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "wOR",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "PR’s open "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "U016TGY3676"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "U01CJBZS893",
+        "type": "message",
+        "ts": "1603815746.148000",
+        "client_msg_id": "30383ff7-5e1e-4983-a6b3-11abed3fc55f",
+        "text": "Does anyone know when \/ how Betfair sends trd updates that are just currency fluctuations? I know it's close to the hour change but how can you be certain that the trd update is only a currency fluctuation?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g9e2b051c4dd",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/9e2b051c4ddd4a04b5e500b40bb55c09.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0013-72.png",
+            "first_name": "",
+            "real_name": "Seabass",
+            "display_name": "Seabass",
+            "team": "T4G9NBD2M",
+            "name": "sebastian.lindskog",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "d\/9+",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Does anyone know when \/ how Betfair sends trd updates that are just currency fluctuations? I know it's close to the hour change but how can you be certain that the trd update is only a currency fluctuation?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1603815801.148300",
+        "client_msg_id": "B2B3469F-9B53-4D16-BD19-10E92C48E592",
+        "text": "Have you asked Neil?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "m7TmM",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Have you asked Neil?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1603816148.148900",
+        "client_msg_id": "DBCF8EE5-E53F-4B84-AE69-0406C28569F1",
+        "text": "Cross reference with changes in atb\/atl?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1603816148.148900",
+        "reply_count": 4,
+        "reply_users_count": 2,
+        "latest_reply": "1603818072.159300",
+        "reply_users": [
+            "U01CJBZS893",
+            "UBS7QANF3"
+        ],
+        "replies": [
+            {
+                "user": "U01CJBZS893",
+                "ts": "1603817712.153600"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1603817838.155600"
+            },
+            {
+                "user": "U01CJBZS893",
+                "ts": "1603818023.158900"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1603818072.159300"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": false,
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "HkFZa",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Cross reference with changes in atb\/atl?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1603816273.149100",
+        "client_msg_id": "35460413-2B71-4ECE-A4BE-3FA88BC2B19C",
+        "text": "Both",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1603811044.145800",
+        "parent_user_id": "U0154JA98TH",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "w2l",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Both"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01CJBZS893",
+        "type": "message",
+        "ts": "1603816857.150700",
+        "client_msg_id": "51a27a84-a9b7-447b-b504-d3956b744de8",
+        "text": "No, but I saw he had answered a similar question on Betfair's FAQ, I will send him a message. Thanks!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g9e2b051c4dd",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/9e2b051c4ddd4a04b5e500b40bb55c09.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0013-72.png",
+            "first_name": "",
+            "real_name": "Seabass",
+            "display_name": "Seabass",
+            "team": "T4G9NBD2M",
+            "name": "sebastian.lindskog",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "fL82",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "No, but I saw he had answered a similar question on Betfair's FAQ, I will send him a message. Thanks!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UE72WCRR8",
+        "type": "message",
+        "ts": "1603816992.151400",
+        "edited": {
+            "user": "UE72WCRR8",
+            "ts": "1603817004.000000"
+        },
+        "client_msg_id": "fa14ec00-6f33-4bf1-b99f-1eb999b27b0f",
+        "text": "I can not find the changelog, is there one?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "7872271afbd5",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2019-09-18\/751973528338_7872271afbd5e88918d9_72.jpg",
+            "first_name": "",
+            "real_name": "John",
+            "display_name": "jhaa",
+            "team": "T4G9NBD2M",
+            "name": "jhaa",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "1GH",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I can not find the changelog, is there one?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UE72WCRR8",
+        "type": "message",
+        "ts": "1603817044.152000",
+        "client_msg_id": "b080dd54-b6e2-483b-b9a5-df901e8b5788",
+        "text": "will anything break if I update from 2.8 to 2.9.2?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "7872271afbd5",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2019-09-18\/751973528338_7872271afbd5e88918d9_72.jpg",
+            "first_name": "",
+            "real_name": "John",
+            "display_name": "jhaa",
+            "team": "T4G9NBD2M",
+            "name": "jhaa",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "gvG",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "will anything break if I update from 2.8 to 2.9.2?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1603817056.152200",
+        "client_msg_id": "B8515A6F-438F-4CF2-908E-0C1FC433150C",
+        "text": "<https:\/\/github.com\/liampauling\/betfair\/blob\/master\/HISTORY.rst|https:\/\/github.com\/liampauling\/betfair\/blob\/master\/HISTORY.rst>",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "attachments": [
+            {
+                "fallback": "[liampauling\/betfair] HISTORY.rst",
+                "text": "```\n.. :changelog:\n\nRelease History\n---------------\n\n2.9.2 (2020-10-26)\n+++++++++++++++++++\n\n**Improvements**\n\n- Fix broken build from source due to missing requirements-speed.txt file (@synapticarbors)\n\n2.9.1 (2020-10-26)\n+++++++++++++++++++\n\n**Improvements**\n\n- #345: Improve Historic.download_file (@mberk)\n\n**Dependencies**\n\n- orjson and ciso8601 moved to optional requirement using `pip install betfairlightweight[speed]`\n\n2.9.0 (2020-10-12)\n+++++++++++++++++++\n\n**Improvements**\n\n- Fix types for list_race_details (synapticarbors)\n- #340 cache removal added on old markets (8 hours closed)\n- Streaming snap added to resources\n\n**Bug Fixes**\n\n- PR added to actions\n\n**Dependencies**\n\n- py3.9 added to tests\n- orjson updated to 3.4.0\n\n2.8.0 (2020-09-14)\n+++++++++++++++++++\n\n**Improvements**\n\n- Transaction count updated to 5000\n- Minor codebase cleanup\n\n**Dependencies**\n\n- #328 ujson migrated to orjson\n- black updated to 20.8b1\n\n2.7.2 (2020-08-03)\n+++++++++++++++++++\n\n**Improvements**\n\n- Historical streaming cleanup (operation)\n\n2.7.1 (2020-08-03)\n+++++++++++++++++++\n\n**Improvements**\n\n- #325 listener.status property added\n\n**Dependencies**\n\n- ujson bumped to 3.1.0\n\n2.7.0 (2020-07-27)\n+++++++++++++++++++\n\n**Improvements**\n\n- #308 remove directory warnings \/ handling (breaking change)\n- #318 include streaming_update in generator\n\n**Bug Fixes**\n\n- #320 generator reuse fix\n\n2.6.0 (2020-07-09)\n+++++++++++++++++++\n\n**Improvements**\n\n- Response (_response) removed from BaseResources due to potential memory leaks\n\n**Bug Fixes**\n\n- marketType bug fix (politics markets)\n\n2.5.0 (2020-06-22)\n+++++++++++++++++++\n\n**Improvements**\n\n- #308 rename directory to file_path\n\n**Bug Fixes**\n\n- #301 uncaught Error in list_market_book\n\n**Dependencies**\n\n- requests bumped to &lt; 2.25.0\n\n2.4.0 (2020-06-09)\n+++++++++++++++++++\n\n**Improvements**\n\n- Github actions added\n\n**Bug Fixes**\n\n- #304 missing regulator auth code\n\n**Dependencies**\n\n- ujson upgraded from 2.0.3 to 3.0.0\n\n2.3.1 (2020-05-12)\n+++++++++++++++++++\n\n**Improvements**\n\n- LRUCache added to strip datetime\n- NemID docs added\n\n2.3.0 (2020-04-06)\n+++++++++++++++++++\n\n**Dependencies**\n\n- ujson upgraded to 2.0.3\n- c based libraries restricted to darwin and linux platforms only\n\n2.2.0 (2020-03-09)\n+++++++++++++++++++\n\n**Improvements**\n\n- #283 max_latency can now be set to None\n\n**Dependencies**\n\n- requests upgraded from 2.22.0 to 2.23.0\n- ujson upgraded from 1.35 to 2.0.1 (updates to compat.py)\n\n2.1.0 (2020-03-02)\n+++++++++++++++++++\n\n**Improvements**\n\n- datetime handling added to time_range filter (@trigvi)\n- connectionsAvailable handling added\n\n**Bug Fixes**\n\n- #273 error handling added for markets without marketDefinition\n- #233 sendall used instead of send so that all data is sent (bug present since 2016!)\n\n2.0.1 (2020-02-17)\n+++++++++++++++++++\n\n**Improvements**\n\n- Listener.add_stream cleanup\n\n**Bug Fixes**\n\n- #268 CPU bug when using response.text\n\n2.0.0 (2020-02-10)\n+++++++++++++++++++\n\n**Improvements**\n\n- *Breaking* async removed from streaming (force user to handle thread)\n- *Breaking* Description removed from 'create_stream'\n- Black formatting on all files\n- python 'Typing' added\n- locale added to Navigation\n- Certificate error messages improved\n- Logging added to socket send\n- __version__ file added and refactor to setup.py\n- __version__ added to user agent\n- raw requests Response added to objects\n- elapsed_time now uses time() rather than datetime\n- session can be passed to client\n- streaming example with error handling and retry added\n- mkdocs used for documentation\n\n**Bug Fixes**\n\n- #217 correct usage of ujson (refactor)\n- Australia login interactive domain fixed\n- Correct session timeout added for int and italy exchange\n\n**Dependencies**\n\n- ciso8601 upgraded from 2.0.1 to 2.1.3\n- python 3 only\n- python 3.8 testing added\n\n1.10.4 (2019-10-28)\n+++++++++++++++++++\n\n**Bug Fixes**\n\n- handicap added to LegacyData\n\n1.10.3 (2019-09-30)\n+++++++++++++++++++\n\n**Improvements**\n\n- Remove py3.4 support\n\n**Bug Fixes**\n\n- #232 RuntimeError fixed on serialize_orders\n- avgPriceRaw added to LegacyData (@d3alek)\n\n**Dependencies**\n\n- requests upgraded \/ unpinned from exact version\n\n1.10.2 (2019-09-02)\n+++++++++++++++++++\n\n**Improvements**\n\n- OrderCache \/ UnmatchedOrder logic improved\n- streaming_update and streaming_unique_id added to lightweight response\n\n**Bug Fixes**\n\n- handicap bugfix on OrderCache\n- Missing closed logic added to OrderCache\n\n1.10.1 (2019-08-12)\n+++++++++++++++++++\n\n**Improvements**\n\n- RaceCard get_race_result function added (used by mobile app)\n- Streaming generator listener now defaults to StreamListener\n\n**Bug Fixes**\n\n- #221 inplayservice subdomain updated (ips)\n- #215 marketCatalogue no ERO data\n\n1.10.0 (2019-05-26)\n+++++++++++++++++++\n\n**Improvements**\n\n- #163 Historical stream generator added (no threads)\n\n**Bug Fixes**\n\n- #165 error handling added to closed connection\n- #175 locals.copy() used to prevent OverflowError in VSCode\n\n1.9.1 (2019-04-04)\n+++++++++++++++++++\n\n**Improvements**\n\n- #54 listRunnerBook added to .betting\n\n1.9.0 (2019-04-04)\n+++++++++++++++++++\n\n**Bug Fixes**\n\n- #206 _async renamed to async_ due to camel case bug\n\n1.8.3 (2019-02-02)\n+++++++++++++++++++\n\n**Improvements**\n\n- Cert endpoints updated.\n- License update.\n- Readme update.\n\n**Bug Fixes**\n\n- Travis now builds py3.7!\n\n1.8.2 (2018-11-23)\n+++++++++++++++++++\n\n**Improvements**\n\n- Certificate url for login updated.\n- publish_time_epoch added to MarketBook.\n- marketDefinition added to serialise so that lightweight has it returned.\n\n1.8.1 (2018-10-12)\n+++++++++++++++++++\n\n**Improvements**\n\n- Str representation added to PriceSize object.\n\n**Bug Fixes**\n\n- RaceCard resource bug fix.\n\n**Dependencies**\n\n- Upgrade to requests 2.20.1 (security fix)\n\n1.8.0 (2018-10-08)\n+++++++++++++++++++\n\n**Improvements**\n\n- LoginInteractive endpoint added.\n- User-Agent added to request headers.\n\n**Bug Fixes**\n\n- Error handling added to RaceCard.login()\n\n1.7.2 (2018-08-06)\n+++++++++++++++++++\n\n**Bug Fixes**\n\n- requirements.txt added to MANIFEST\n\n1.7.1 (2018-08-06)\n+++++++++++++++++++\n\n**Improvements**\n\n- Now working on py3.7!\n- setup.py updated to use requirements only.\n- py3.7 added to appveyor but pending travis to get their act together.\n- Travis and appveyor yml cleanup.\n\n**Bug Fixes**\n\n- async renamed to _async in betting endpoint for py3.7\n\n1.7.0 (2018-07-23)\n+++++++++++++++++++\n\n**Improvements**\n\n- Better logging when market added to cache and initial socket responses.\n\n**Bug Fixes**\n\n- Refactor of the use of update_cache to prevent duplicate RunnerBook objects #180.\n- Spanish URL updated, closes #164.\n\n**Breaking Changes**\n\n- async renamed to _async due to it being a reserved word in py3.7.\n\n1.6.4 (2018-06-22)\n+++++++++++++++++++\n\n**Improvements**\n\n- Build.sh and HISTORY.rst added\n\n**Dependencies**\n\n- Upgrade to ciso8601 2.0.1\n- Upgrade to requests 2.19.1\n\n```",
+                "title": "HISTORY.rst",
+                "footer": "<https:\/\/github.com\/liampauling\/betfair|liampauling\/betfair>",
+                "id": 1,
+                "title_link": "https:\/\/github.com\/liampauling\/betfair\/blob\/master\/HISTORY.rst",
+                "footer_icon": "https:\/\/github.githubassets.com\/favicon.ico",
+                "color": "24292f",
+                "mrkdwn_in": [
+                    "text"
+                ],
+                "bot_id": "B01144Z0734",
+                "app_unfurl_url": "https:\/\/github.com\/liampauling\/betfair\/blob\/master\/HISTORY.rst",
+                "is_app_unfurl": true
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Ct1",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/liampauling\/betfair\/blob\/master\/HISTORY.rst",
+                                "text": "https:\/\/github.com\/liampauling\/betfair\/blob\/master\/HISTORY.rst"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UE72WCRR8",
+        "type": "message",
+        "ts": "1603817076.152600",
+        "client_msg_id": "f979ea8d-0ce1-4539-bb37-bf9751d56fba",
+        "text": "thanks mo, that is what i could not find",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "7872271afbd5",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2019-09-18\/751973528338_7872271afbd5e88918d9_72.jpg",
+            "first_name": "",
+            "real_name": "John",
+            "display_name": "jhaa",
+            "team": "T4G9NBD2M",
+            "name": "jhaa",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Kz6",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "thanks mo, that is what i could not find"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1603817584.153200",
+        "client_msg_id": "9D5978C8-19AD-459D-B9A6-B3FBA7338F9F",
+        "text": "Yeah took me a while to find it last time I needed it :sweat_smile:",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "V\/=",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Yeah took me a while to find it last time I needed it "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "sweat_smile",
+                                "unicode": "1f605"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01CJBZS893",
+        "type": "message",
+        "ts": "1603817712.153600",
+        "client_msg_id": "56c14e7c-7fe7-42a6-9822-4b8969ffb7bf",
+        "text": "I am not quite sure I follow. In a trd update that I suspect is because of currency fluctuations I should try to see how much the atb\/atl quantities have changed?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g9e2b051c4dd",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/9e2b051c4ddd4a04b5e500b40bb55c09.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0013-72.png",
+            "first_name": "",
+            "real_name": "Seabass",
+            "display_name": "Seabass",
+            "team": "T4G9NBD2M",
+            "name": "sebastian.lindskog",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1603816148.148900",
+        "parent_user_id": "UBS7QANF3",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "In+9o",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I am not quite sure I follow. In a trd update that I suspect is because of currency fluctuations I should try to see how much the atb\/atl quantities have changed?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UE72WCRR8",
+        "type": "message",
+        "ts": "1603817743.154300",
+        "client_msg_id": "1af30b3e-052b-4d44-80a4-cf5b05afba52",
+        "text": "do you just do pip install betfairlightweight -U on the live system or is there anything that will break?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "7872271afbd5",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2019-09-18\/751973528338_7872271afbd5e88918d9_72.jpg",
+            "first_name": "",
+            "real_name": "John",
+            "display_name": "jhaa",
+            "team": "T4G9NBD2M",
+            "name": "jhaa",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "3TWw",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "do you just do pip install betfairlightweight -U on the live system or is there anything that will break?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1603817813.154800",
+        "client_msg_id": "73CCFDB4-8166-4496-AAAA-244339538FE7",
+        "text": "Once all your unit and integration tests pass ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "M2s",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Once all your unit and integration tests pass "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1603817838.155600",
+        "client_msg_id": "4768D355-ACB1-4C0E-B909-03BF0702BEC6",
+        "text": "Correct. Look for changes in trd that are inconsistent with changes in atb\/atl",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1603816148.148900",
+        "parent_user_id": "UBS7QANF3",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "gxJ1",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Correct. Look for changes in trd that are inconsistent with changes in atb\/atl"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UE72WCRR8",
+        "type": "message",
+        "ts": "1603817845.156000",
+        "client_msg_id": "20008573-bd78-4c53-93f1-8a39466046ad",
+        "text": "haha good answer",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "7872271afbd5",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2019-09-18\/751973528338_7872271afbd5e88918d9_72.jpg",
+            "first_name": "",
+            "real_name": "John",
+            "display_name": "jhaa",
+            "team": "T4G9NBD2M",
+            "name": "jhaa",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "IIqs",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "haha good answer"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1603817855.156600",
+        "client_msg_id": "46D6FB21-911B-439F-841D-FBCB448CA0EE",
+        "text": ":grin:",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "+wcDj",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "emoji",
+                                "name": "grin",
+                                "unicode": "1f601"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UE72WCRR8",
+        "type": "message",
+        "ts": "1603817858.156900",
+        "client_msg_id": "dc834910-a911-418a-8130-7f7ae44d35d1",
+        "text": "none is going to fail",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "7872271afbd5",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2019-09-18\/751973528338_7872271afbd5e88918d9_72.jpg",
+            "first_name": "",
+            "real_name": "John",
+            "display_name": "jhaa",
+            "team": "T4G9NBD2M",
+            "name": "jhaa",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "ihI",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "none is going to fail"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1603817866.157100",
+        "client_msg_id": "73CF6D29-EC82-4908-86E2-53A2EC97E550",
+        "text": "Removing orjson is the big change ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "UytI",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Removing orjson is the big change "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1603817887.157800",
+        "client_msg_id": "DFB3D127-FB21-45FA-85E8-897F6DA58464",
+        "text": "I have been running 2.9.0 since release with no issues ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "x9o",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I have been running 2.9.0 since release with no issues "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UE72WCRR8",
+        "type": "message",
+        "ts": "1603817922.158300",
+        "client_msg_id": "36ce2c85-a05b-4629-b911-50caca5a53e7",
+        "text": "do you run it with orjson?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "7872271afbd5",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2019-09-18\/751973528338_7872271afbd5e88918d9_72.jpg",
+            "first_name": "",
+            "real_name": "John",
+            "display_name": "jhaa",
+            "team": "T4G9NBD2M",
+            "name": "jhaa",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "AlMVa",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "do you run it with orjson?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UE72WCRR8",
+        "type": "message",
+        "ts": "1603817941.158800",
+        "client_msg_id": "008a650d-2413-4856-99aa-cd55e2e9488f",
+        "text": "why would one use something elseand what would that be?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "7872271afbd5",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2019-09-18\/751973528338_7872271afbd5e88918d9_72.jpg",
+            "first_name": "",
+            "real_name": "John",
+            "display_name": "jhaa",
+            "team": "T4G9NBD2M",
+            "name": "jhaa",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "xn0tm",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "why would one use something elseand what would that be?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01CJBZS893",
+        "type": "message",
+        "ts": "1603818023.158900",
+        "client_msg_id": "3e4bb924-762f-4ba1-8c26-70c6cb7f3ef0",
+        "text": "Got it, that it makes it really inefficient to process the data though. It would be really helpful if Betfair had a field indicating if it was just a currency update. I will give your suggestion a try though, thanks!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g9e2b051c4dd",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/9e2b051c4ddd4a04b5e500b40bb55c09.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0013-72.png",
+            "first_name": "",
+            "real_name": "Seabass",
+            "display_name": "Seabass",
+            "team": "T4G9NBD2M",
+            "name": "sebastian.lindskog",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1603816148.148900",
+        "parent_user_id": "UBS7QANF3",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "eP=x",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Got it, that it makes it really inefficient to process the data though. It would be really helpful if Betfair had a field indicating if it was just a currency update. I will give your suggestion a try though, thanks!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1603818072.159300",
+        "client_msg_id": "718B4607-6DEC-4465-8266-C376685E110F",
+        "text": "I agree but don’t hold your breath",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1603816148.148900",
+        "parent_user_id": "UBS7QANF3",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "wwt69",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I agree but don’t hold your breath"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1603818445.162400",
+        "client_msg_id": "7B6A95E8-5FCF-4DB0-9146-D88C46F70B62",
+        "text": "Originally used ujson as it is quicker than the standard library however it has become very unstable with the new maintainers. Moved to orjson as it was all the rage but that can be tricky to install and the latest release has issues with some versions of python. So it is now setup to use orjson if installed and fall back on the standard library ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "qfW",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Originally used ujson as it is quicker than the standard library however it has become very unstable with the new maintainers. Moved to orjson as it was all the rage but that can be tricky to install and the latest release has issues with some versions of python. So it is now setup to use orjson if installed and fall back on the standard library "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "UE72WCRR8",
+                    "U016TGY3676",
+                    "U0128E7BEHW"
+                ],
+                "count": 3
+            }
+        ]
+    },
+    {
+        "user": "U0154JA98TH",
+        "type": "message",
+        "ts": "1603818568.162500",
+        "client_msg_id": "8b77289b-9932-493d-bc84-238491dc91be",
+        "text": "hey sorry to keep at this but in the properties i can see on each runner there is no sort_priority option, so i cant just do runner.sort_priority                                These are all the attributes i can see `['selection_id', 'status', 'total_matched', 'adjustment_factor', 'handicap', 'last_price_traded', 'removal_date', 'sp', 'ex', 'orders', 'matches', 'matches_by_strategy', '__module__', '__doc__', '__init__', '__str__', '__repr__', '__dict__', '__weakref__', '__hash__', '__getattribute__', '__setattr__', '__delattr__', '__lt__', '__le__', '__eq__', '__ne__', '__gt__', '__ge__', '__new__', '__reduce_ex__', '__reduce__', '__subclasshook__', '__init_subclass__', '__format__', '__sizeof__', '__dir__', '__class__']`",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g04d857ee3ad",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/04d857ee3ad168a8451932c84c7d0d6d.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0007-72.png",
+            "first_name": "Jonathan",
+            "real_name": "Jonathan Wadsworth",
+            "display_name": "Jono",
+            "team": "T4G9NBD2M",
+            "name": "jonowads",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1603811044.145800",
+        "parent_user_id": "U0154JA98TH",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "N\/3Tm",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "hey sorry to keep at this but in the properties i can see on each runner there is no sort_priority option, so i cant just do runner.sort_priority                                These are all the attributes i can see "
+                            },
+                            {
+                                "type": "text",
+                                "text": "['selection_id', 'status', 'total_matched', 'adjustment_factor', 'handicap', 'last_price_traded', 'removal_date', 'sp', 'ex', 'orders', 'matches', 'matches_by_strategy', '__module__', '__doc__', '__init__', '__str__', '__repr__', '__dict__', '__weakref__', '__hash__', '__getattribute__', '__setattr__', '__delattr__', '__lt__', '__le__', '__eq__', '__ne__', '__gt__', '__ge__', '__new__', '__reduce_ex__', '__reduce__', '__subclasshook__', '__init_subclass__', '__format__', '__sizeof__', '__dir__', '__class__']",
+                                "style": {
+                                    "code": true
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U0154JA98TH",
+        "type": "message",
+        "ts": "1603818591.162700",
+        "client_msg_id": "a7ace91c-bfb0-4dcb-93b1-390e4f83ad4c",
+        "text": "am i going about this the correct way?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g04d857ee3ad",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/04d857ee3ad168a8451932c84c7d0d6d.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0007-72.png",
+            "first_name": "Jonathan",
+            "real_name": "Jonathan Wadsworth",
+            "display_name": "Jono",
+            "team": "T4G9NBD2M",
+            "name": "jonowads",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1603811044.145800",
+        "parent_user_id": "U0154JA98TH",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "h3h",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "am i going about this the correct way?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1603819214.163300",
+        "client_msg_id": "84EDDBB3-DF96-423B-A5C3-09F0F7DAE6B1",
+        "text": "Look in the runners in the market definition",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1603811044.145800",
+        "parent_user_id": "U0154JA98TH",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "aFb5",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Look in the runners in the market definition"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "U0154JA98TH"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "U0154JA98TH",
+        "type": "message",
+        "ts": "1603820235.163700",
+        "client_msg_id": "c85349ab-129c-4dad-9e08-1217de2a6531",
+        "text": "cheers i see them now",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g04d857ee3ad",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/04d857ee3ad168a8451932c84c7d0d6d.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0007-72.png",
+            "first_name": "Jonathan",
+            "real_name": "Jonathan Wadsworth",
+            "display_name": "Jono",
+            "team": "T4G9NBD2M",
+            "name": "jonowads",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1603811044.145800",
+        "parent_user_id": "U0154JA98TH",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "bpK",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "cheers i see them now"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

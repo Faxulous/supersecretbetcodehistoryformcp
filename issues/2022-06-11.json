@@ -1,0 +1,790 @@
+[
+    {
+        "user": "UG03WDCHH",
+        "type": "message",
+        "ts": "1654935601.468109",
+        "client_msg_id": "32480402-7cd7-4c86-aaea-7ffbc5d6806c",
+        "text": "yeah fair enough, I essentially use one of your examples",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g03ce37265ba",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/803ce37265ba7d4f1be4d779100eaa60.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0023-72.png",
+            "first_name": "Rudeger",
+            "real_name": "Rudeger Jamison",
+            "display_name": "Rudeger Jamison",
+            "team": "T4G9NBD2M",
+            "name": "ben.k.muller",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1654837718.399949",
+        "parent_user_id": "USLACKBOT",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "t1Da",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "yeah fair enough, I essentially use one of your examples"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UG03WDCHH",
+        "type": "message",
+        "ts": "1654935655.320209",
+        "client_msg_id": "997ac265-3f80-48e8-a25a-fdde6ae8e708",
+        "text": "```    def _process_cleared_orders(self, event):\n        if event.event.orders:\n            client = boto3.client(\"kinesis\", region_name=\"eu-west-1\")\n            orders = [json.dumps(o.__dict__, default=str).encode(\"utf-8\") for o in event.event.orders]\n            self._write_logs(client=client, data=orders, write_table=\"cleared_orders\")\n\n    def _process_cleared_orders_meta(self, event):\n        orders = event.event\n        updated_orders = []\n        for order in orders:\n            if order.order_type.ORDER_TYPE == OrderTypes.LIMIT:\n                size = order.order_type.size\n            else:\n                size = order.order_type.liability\n\n            if order.order_type.ORDER_TYPE == OrderTypes.MARKET_ON_CLOSE:\n                price = None\n            else:\n                price = order.order_type.price\n\n            order_data = {\n                \"bet_id\": order.bet_id,\n                \"market_id\": order.market_id,\n                \"selection_id\": order.selection_id,\n                \"trade_id\": order.trade.id,\n                \"date_time_placed\": order.responses.date_time_placed,\n                \"price\": price,\n                \"price_matched\": order.average_price_matched,\n                \"size\": size,\n                \"size_matched\": order.size_matched,\n                \"side\": order.side,\n                \"market_type\": order.market_type,\n                \"elapsed_seconds_executable\": order.elapsed_seconds_executable,\n                \"customer_strategy_ref\": order.trade.strategy.name,\n                \"order_status\": order.status.value,\n                \"market_note\": order.trade.market_notes,\n                \"trade_notes\": order.trade.notes_str,\n                \"order_notes\": order.notes_str,\n                \"is_cleared_order\": True if order.cleared_order else False,  # it is either None or True, so need to coerce\n                **order.context,\n            }\n            updated_orders.append(json.dumps(order_data, default=str).encode(\"utf-8\"))\n\n        if updated_orders:\n            client = boto3.client(\"kinesis\", region_name=\"eu-west-1\")\n            self._write_logs(client=client, data=updated_orders, write_table=\"cleared_orders_meta\")```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g03ce37265ba",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/803ce37265ba7d4f1be4d779100eaa60.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0023-72.png",
+            "first_name": "Rudeger",
+            "real_name": "Rudeger Jamison",
+            "display_name": "Rudeger Jamison",
+            "team": "T4G9NBD2M",
+            "name": "ben.k.muller",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1654837718.399949",
+        "parent_user_id": "USLACKBOT",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "P+QrE",
+                "elements": [
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "    def _process_cleared_orders(self, event):\n        if event.event.orders:\n            client = boto3.client(\"kinesis\", region_name=\"eu-west-1\")\n            orders = [json.dumps(o.__dict__, default=str).encode(\"utf-8\") for o in event.event.orders]\n            self._write_logs(client=client, data=orders, write_table=\"cleared_orders\")\n\n    def _process_cleared_orders_meta(self, event):\n        orders = event.event\n        updated_orders = []\n        for order in orders:\n            if order.order_type.ORDER_TYPE == OrderTypes.LIMIT:\n                size = order.order_type.size\n            else:\n                size = order.order_type.liability\n\n            if order.order_type.ORDER_TYPE == OrderTypes.MARKET_ON_CLOSE:\n                price = None\n            else:\n                price = order.order_type.price\n\n            order_data = {\n                \"bet_id\": order.bet_id,\n                \"market_id\": order.market_id,\n                \"selection_id\": order.selection_id,\n                \"trade_id\": order.trade.id,\n                \"date_time_placed\": order.responses.date_time_placed,\n                \"price\": price,\n                \"price_matched\": order.average_price_matched,\n                \"size\": size,\n                \"size_matched\": order.size_matched,\n                \"side\": order.side,\n                \"market_type\": order.market_type,\n                \"elapsed_seconds_executable\": order.elapsed_seconds_executable,\n                \"customer_strategy_ref\": order.trade.strategy.name,\n                \"order_status\": order.status.value,\n                \"market_note\": order.trade.market_notes,\n                \"trade_notes\": order.trade.notes_str,\n                \"order_notes\": order.notes_str,\n                \"is_cleared_order\": True if order.cleared_order else False,  # it is either None or True, so need to coerce\n                **order.context,\n            }\n            updated_orders.append(json.dumps(order_data, default=str).encode(\"utf-8\"))\n\n        if updated_orders:\n            client = boto3.client(\"kinesis\", region_name=\"eu-west-1\")\n            self._write_logs(client=client, data=updated_orders, write_table=\"cleared_orders_meta\")"
+                            }
+                        ],
+                        "border": 0
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UG03WDCHH",
+        "type": "message",
+        "ts": "1654935675.947389",
+        "client_msg_id": "44d2088b-3169-43dd-9f1a-03fa60bf6bac",
+        "text": "```    def _write_logs(self, client, data: List[bytes], write_table: str):\n        records = [{\"Data\": d, \"PartitionKey\": f\"{self.log_prefix}{write_table}\"} for d in data]\n        for chunk in chunks(records, n=200):\n            client.put_records(StreamName=\"LoggingStream\", Records=chunk)```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g03ce37265ba",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/803ce37265ba7d4f1be4d779100eaa60.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0023-72.png",
+            "first_name": "Rudeger",
+            "real_name": "Rudeger Jamison",
+            "display_name": "Rudeger Jamison",
+            "team": "T4G9NBD2M",
+            "name": "ben.k.muller",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1654837718.399949",
+        "parent_user_id": "USLACKBOT",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "j2e9",
+                "elements": [
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "    def _write_logs(self, client, data: List[bytes], write_table: str):\n        records = [{\"Data\": d, \"PartitionKey\": f\"{self.log_prefix}{write_table}\"} for d in data]\n        for chunk in chunks(records, n=200):\n            client.put_records(StreamName=\"LoggingStream\", Records=chunk)"
+                            }
+                        ],
+                        "border": 0
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1654936634.927969",
+        "client_msg_id": "d3d4e37e-1be3-47c7-9315-4fb5d031e27c",
+        "text": "Hmm, its tricky because obviously the markets are now removed, if possible can you post next time it happens and someone may be able to check at their end at the same time (or if someone has the market recorded they may be able to check for that time)?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "A+mj",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Hmm, its tricky because obviously the markets are now removed, if possible can you post next time it happens and someone may be able to check at their end at the same time (or if someone has the market recorded they may be able to check for that time)?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1654936710.853549",
+        "client_msg_id": "9b7ab18c-e348-401d-8657-4e9cc16442fe",
+        "text": "My guess (and it is just that, not sure) is that perhaps the market_id's get removed before the event_id, so there is a brief window where the event_id exists and those market_id's don't",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "NNly",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "My guess (and it is just that, not sure) is that perhaps the market_id's get removed before the event_id, so there is a brief window where the event_id exists and those market_id's don't"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1654936811.419819",
+        "edited": {
+            "user": "UBS7QANF3",
+            "ts": "1654936817.000000"
+        },
+        "client_msg_id": "EF15D79E-330A-4A9C-8B7D-BBA86E0A468B",
+        "text": "OU markets can get closed well before the event ends ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "xNq",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "OU markets can get closed well before the event"
+                            },
+                            {
+                                "type": "text",
+                                "text": " ends "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U032F6F7B5M",
+        "type": "message",
+        "ts": "1654957196.675059",
+        "client_msg_id": "82df91f3-f38d-456a-891c-1c97d6ac3357",
+        "text": "Hi <@UBS7QANF3> thanks for support!\n\nExactly, but as I'm putting a filter so that only games with these markets in `markets_base` are present, when they don't exist because they have already closed, shouldn't it theoretically be left out of the list of ids that are collected in `trading.betting.list_events`?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "f1a6af0e57e6",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2022-04-20\/3417984726532_f1a6af0e57e6096efe9d_72.jpg",
+            "first_name": "Brøndby",
+            "real_name": "Brøndby IF",
+            "display_name": "Brøndby IF",
+            "team": "T4G9NBD2M",
+            "name": "frattosdj",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "vcin",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Hi "
+                            },
+                            {
+                                "type": "user",
+                                "user_id": "UBS7QANF3"
+                            },
+                            {
+                                "type": "text",
+                                "text": " thanks for support!\n\nExactly, but as I'm putting a filter so that only games with these markets in "
+                            },
+                            {
+                                "type": "text",
+                                "text": "markets_base",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " are present, when they don't exist because they have already closed, shouldn't it theoretically be left out of the list of ids that are collected in "
+                            },
+                            {
+                                "type": "text",
+                                "text": "trading.betting.list_events",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U032F6F7B5M",
+        "type": "message",
+        "ts": "1654957469.203959",
+        "client_msg_id": "ab281bb1-bcc6-4d63-9d84-ac1ab737c136",
+        "text": "<@UFTBRB3F1> I'm noticing that the games that are doing this, are those that are registered to go to inplay but for some reason disappear from inplay shortly after the start time of the match and also in cases where the game is ends (but in case the game ends, I'm still confused because if the markets no longer exist, then it shouldn't appear in the filter I put for ids, but I'll keep tracking to understand)\n\nDuring the week I can turn on a notification alert so that I can send here the ids that are happening, today and tomorrow as there are many games, I am very busy all day.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "f1a6af0e57e6",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2022-04-20\/3417984726532_f1a6af0e57e6096efe9d_72.jpg",
+            "first_name": "Brøndby",
+            "real_name": "Brøndby IF",
+            "display_name": "Brøndby IF",
+            "team": "T4G9NBD2M",
+            "name": "frattosdj",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "sk89",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "user",
+                                "user_id": "UFTBRB3F1"
+                            },
+                            {
+                                "type": "text",
+                                "text": " I'm noticing that the games that are doing this, are those that are registered to go to inplay but for some reason disappear from inplay shortly after the start time of the match and also in cases where the game is ends (but in case the game ends, I'm still confused because if the markets no longer exist, then it shouldn't appear in the filter I put for ids, but I'll keep tracking to understand)\n\nDuring the week I can turn on a notification alert so that I can send here the ids that are happening, today and tomorrow as there are many games, I am very busy all day."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1654957612.925089",
+        "client_msg_id": "0aba24c0-7563-4544-83b1-177bd911821e",
+        "text": "I think it comes back to <@UBS7QANF3>’s point, I hadn't been paying attention to the fact they were OU markets, these typically close in-play once the event has occurred (or shortly after I think), so once for example 3 goals have been scored the 2.5 goals market can settle and would therefore disappear.\n\nIs it definitely not that?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "8EDt",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I think it comes back to "
+                            },
+                            {
+                                "type": "user",
+                                "user_id": "UBS7QANF3"
+                            },
+                            {
+                                "type": "text",
+                                "text": "’s point, I hadn't been paying attention to the fact they were OU markets, these typically close in-play once the event has occurred (or shortly after I think), so once for example 3 goals have been scored the 2.5 goals market can settle and would therefore disappear.\n\nIs it definitely not that?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U032F6F7B5M",
+        "type": "message",
+        "ts": "1654957936.854159",
+        "edited": {
+            "user": "U032F6F7B5M",
+            "ts": "1654957992.000000"
+        },
+        "client_msg_id": "70216d5b-4f1f-4a9c-8763-8be4caf49035",
+        "text": "<@UFTBRB3F1> So, but in `trading.betting.list_events` I put a filter so that it only pulls event ids that contain at least some of the mentioned markets, correct?\n\nSo it wouldn't make sense for a game that started 0-0 or that is 2-1 to appear with a blank market return.\n\nDetail, if I run every 1 second, for example, I think it would make more sense for failures of thousandths of difference to happen, but this happens by calling 1 time per minute, so it doesn't seem to me that it's a coincidence to always get it right at the time of the problem, must have some little detail that lasts for at least 1 minute or more (I think. Haha)\n\nOr am I missing something because of my lack of knowledge?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "f1a6af0e57e6",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2022-04-20\/3417984726532_f1a6af0e57e6096efe9d_72.jpg",
+            "first_name": "Brøndby",
+            "real_name": "Brøndby IF",
+            "display_name": "Brøndby IF",
+            "team": "T4G9NBD2M",
+            "name": "frattosdj",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "BulBB",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "user",
+                                "user_id": "UFTBRB3F1"
+                            },
+                            {
+                                "type": "text",
+                                "text": " So, but in "
+                            },
+                            {
+                                "type": "text",
+                                "text": "trading.betting.list_events",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " I put a filter so that it only pulls event ids that contain at least some of the mentioned markets, correct?\n\nSo it wouldn't make sense for a game that started 0-0 or that is 2-1 to appear with a blank market return.\n\nDetail, if I run every 1 second, for example, I think it would make more sense for failures of thousandths of difference to happen, but this happens by calling 1 time per minute, so it doesn't seem to me that it's a coincidence to always get it right at the time of the problem, must have some little detail that lasts for at least 1 minute or more (I think. Haha)\n\nOr am I missing something because of my lack of knowledge?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U032F6F7B5M",
+        "type": "message",
+        "ts": "1654958190.917659",
+        "client_msg_id": "d8a3f713-1be7-4e7c-9404-130c2e66aee3",
+        "text": "Or putting the filter on games that contain these markets does not mean that it will only pull games that contain at least one of these markets that still exist and it actually means that it will pull games that have these markets at the time of game creation but it doesn't look if they are available currently?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "f1a6af0e57e6",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2022-04-20\/3417984726532_f1a6af0e57e6096efe9d_72.jpg",
+            "first_name": "Brøndby",
+            "real_name": "Brøndby IF",
+            "display_name": "Brøndby IF",
+            "team": "T4G9NBD2M",
+            "name": "frattosdj",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "MP5IQ",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Or putting the filter on games that contain these markets does not mean that it will only pull games that contain at least one of these markets that still exist and it actually means that it will pull games that have these markets at the time of game creation but it doesn't look if they are available currently?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1654958435.010609",
+        "client_msg_id": "287f5576-b276-41bb-9b5e-10ba52352cf2",
+        "text": "Tricky to say, it sounds like its probably as Mo suggested...but when you can try and see which particular markets this occurs on and for example if you notice its always markets that settle in game once an event occurs then it probably answers it....if not then at least we know its something else.\n\nI'm not 100% on how the filter behaves for markets that are settled whilst the event is still live for football, but I would assume as soon as the market is closed that market_id drops out and wouldn't appear, but other markets (as you have a range of market types) would still appear, OVER_UNDER_85 for example presumably virtually always remains at a guess?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "U8g",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Tricky to say, it sounds like its probably as Mo suggested...but when you can try and see which particular markets this occurs on and for example if you notice its always markets that settle in game once an event occurs then it probably answers it....if not then at least we know its something else.\n\nI'm not 100% on how the filter behaves for markets that are settled whilst the event is still live for football, but I would assume as soon as the market is closed that market_id drops out and wouldn't appear, but other markets (as you have a range of market types) would still appear, OVER_UNDER_85 for example presumably virtually always remains at a guess?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1654958504.023459",
+        "client_msg_id": "4ee47e0e-9a44-4e25-85e6-490a82d97e7a",
+        "text": "Not sure if you've used the visualiser much, but you might find it useful for this: <https:\/\/docs.developer.betfair.com\/visualisers\/api-ng-sports-operations\/>",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "G=T",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Not sure if you've used the visualiser much, but you might find it useful for this: "
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/docs.developer.betfair.com\/visualisers\/api-ng-sports-operations\/"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U032F6F7B5M",
+        "type": "message",
+        "ts": "1654958713.289039",
+        "client_msg_id": "97b5a9bb-c1c6-4b2d-aeb7-736b8a779927",
+        "text": "<@UFTBRB3F1> During this week I will create a anchor in the code that will take me directly to the game page on the Betfair match website whenever this occurs and I will perfectly record the moment of the game, to clear this doubt and I will bring it here for us to find the pattern.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "f1a6af0e57e6",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2022-04-20\/3417984726532_f1a6af0e57e6096efe9d_72.jpg",
+            "first_name": "Brøndby",
+            "real_name": "Brøndby IF",
+            "display_name": "Brøndby IF",
+            "team": "T4G9NBD2M",
+            "name": "frattosdj",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "vL7",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "user",
+                                "user_id": "UFTBRB3F1"
+                            },
+                            {
+                                "type": "text",
+                                "text": " During this week I will create a anchor in the code that will take me directly to the game page on the Betfair match website whenever this occurs and I will perfectly record the moment of the game, to clear this doubt and I will bring it here for us to find the pattern."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1654958785.057749",
+        "client_msg_id": "5631b962-b72e-4ded-9b11-18ec9084314d",
+        "text": "cool, let us know!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "il+",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "cool, let us know!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "white_check_mark",
+                "users": [
+                    "U032F6F7B5M"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "UUE6E1LA1",
+        "type": "message",
+        "ts": "1654959631.018939",
+        "client_msg_id": "fc6833a4-b460-4225-937e-a80c99d4e71d",
+        "text": "Possibly worth bearing in mind that these O\/U markets are sometimes incorrectly\/prematurely settled by Betfair when there is a VAR intervention. They might have got their act together a bit more recently but this is another element that may muddy the water for you",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gf53cae45edd",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/f53cae45edd7f7b67bbe98819597612e.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0017-72.png",
+            "first_name": "",
+            "real_name": "D C",
+            "display_name": "D C",
+            "team": "T4G9NBD2M",
+            "name": "oddsvantage",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "HzBd",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Possibly worth bearing in mind that these O\/U markets are sometimes incorrectly\/prematurely settled by Betfair when there is a VAR intervention. They might have got their act together a bit more recently but this is another element that may muddy the water for you"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U032F6F7B5M",
+        "type": "message",
+        "ts": "1654973198.579009",
+        "edited": {
+            "user": "U032F6F7B5M",
+            "ts": "1654973250.000000"
+        },
+        "client_msg_id": "3d6fbf7c-d48c-4318-9f67-24062775bb02",
+        "text": "<@UUE6E1LA1>  thanks for support, in fact yes, I understand this point, but in the case only a specific market would not be delivered, the rest would be (it would be quite rare cases of games where all markets are marked as settled on account of VAR, we would not have 13 cases per day as I mentioned), an empty response would not come as if there was no market in the event. And the game I brought as an example, is from a German regional league, there is no VAR in the tournament. The case is really focused on a pattern that I will find out what it is during this week and I will bring the results of the test.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "f1a6af0e57e6",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2022-04-20\/3417984726532_f1a6af0e57e6096efe9d_72.jpg",
+            "first_name": "Brøndby",
+            "real_name": "Brøndby IF",
+            "display_name": "Brøndby IF",
+            "team": "T4G9NBD2M",
+            "name": "frattosdj",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "ihL",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "user",
+                                "user_id": "UUE6E1LA1"
+                            },
+                            {
+                                "type": "text",
+                                "text": "  thanks for support, in fact yes, I understand this point, but in the case only a specific market would not be delivered, the rest would be (it would be quite rare cases of games where all markets are marked as settled on account of VAR, we would not have 13 cases per day as I mentioned), an empty response would not come as if there was no market in the event. And the game I brought as an example, is from a German regional league, there is no VAR in the tournament. The case is really focused on a pattern that I will find out what it is during this week and I will bring the results of the test."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UG03WDCHH",
+        "type": "message",
+        "ts": "1654980369.723859",
+        "client_msg_id": "c714a2dd-12d1-4bef-b62a-e8ecd18118a1",
+        "text": "That code help?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g03ce37265ba",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/803ce37265ba7d4f1be4d779100eaa60.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0023-72.png",
+            "first_name": "Rudeger",
+            "real_name": "Rudeger Jamison",
+            "display_name": "Rudeger Jamison",
+            "team": "T4G9NBD2M",
+            "name": "ben.k.muller",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1654837718.399949",
+        "parent_user_id": "USLACKBOT",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "lCyCk",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "That code help?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

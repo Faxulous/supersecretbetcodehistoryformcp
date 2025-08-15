@@ -1,0 +1,811 @@
+[
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1705224779.170759",
+        "client_msg_id": "47E00EA7-55A1-4A36-A484-A12F2B415844",
+        "text": "Your code so I can replicate? ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1705177089.648299",
+        "parent_user_id": "U02RN7YDRQ9",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "lbN\/F",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Your code so I can replicate? "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U02RN7YDRQ9",
+        "type": "message",
+        "ts": "1705239424.190559",
+        "client_msg_id": "3a6e4a41-ca2c-4bad-85a9-80dda5087890",
+        "text": "Call strategy.placeOpenBets() once from process_market_book() - example to lay 10p at current lay price on every runner - not Asian since hcap forced\n\n    `def placeOpenBets(self, market, market_book):`\n        `for r in range(len(market_book.runners)) :`\n            `if market_book.runners[r].status != \"ACTIVE\": continue`\n            `trade = Trade(market.market_book.market_id, market_book.runners[r].selection_id, 0, self, )`\n            `o = BetfairOrder( trade=trade, side=\"LAY\",`\n                                `order_type=LimitOrder(price=1.10, size=1.00),`\n                                `notes=OrderedDict(`\n                                    `required_size=0.10,`\n                                    `required_price=market_book.runners[r].ex.available_to_lay[0][\"price\"],`\n                                `),`\n                            `)`\n            `market.place_order(o)`\n\n    `def process_orders(self, market, orders):`\n        `for order in orders:`\n            `if order.trade.strategy != self : continue`\n            `if order.status != OrderStatus.EXECUTABLE: continue`\n            `# completed order - change stake or odds if needed`\n            `if \"required_size\" in order.notes:`\n                `if order.notes[\"required_size\"] != 0.00:`\n                    `size_reduction = 0.90`\n                    `market.cancel_order(order, size_reduction=size_reduction)`\n                    `order.notes[\"required_size\"] = 0.00`\n                `elif order.notes[\"required_price\"] != 0.00:`\n                    `# ensure size reduction has gone through - if not leave it at £1 @ 1.10`\n                    `if order.size_cancelled == 0.90:`\n                        `market.replace_order(order, new_price=order.notes[\"required_price\"])`\n                        `order.notes[\"required_price\"] = 0.00`",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "ge46f1f8b708",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/e46f1f8b708a630e3191de7b2c42b1d1.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0023-72.png",
+            "first_name": "edblock",
+            "real_name": "edblock",
+            "display_name": "foxwood",
+            "team": "T4G9NBD2M",
+            "name": "eanb",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1705177089.648299",
+        "parent_user_id": "U02RN7YDRQ9",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "pWjtG",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Call strategy.placeOpenBets() once from process_market_book() - example to lay 10p at current lay price on every runner - not Asian since hcap forced\n\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "    def placeOpenBets(self, market, market_book):",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "        for r in range(len(market_book.runners)) :",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "            if market_book.runners[r].status != \"ACTIVE\": continue",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "            trade = Trade(market.market_book.market_id, market_book.runners[r].selection_id, 0, self, )",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "            o = BetfairOrder( trade=trade, side=\"LAY\",",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "                                order_type=LimitOrder(price=1.10, size=1.00),",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "                                notes=OrderedDict(",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "                                    required_size=0.10,",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "                                    required_price=market_book.runners[r].ex.available_to_lay[0][\"price\"],",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "                                ),",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "                            )",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "            market.place_order(o)",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "    def process_orders(self, market, orders):",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "        for order in orders:",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "            if order.trade.strategy != self : continue",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "            if order.status != OrderStatus.EXECUTABLE: continue",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "            # completed order - change stake or odds if needed",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "            if \"required_size\" in order.notes:",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "                if order.notes[\"required_size\"] != 0.00:",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "                    size_reduction = 0.90",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "                    market.cancel_order(order, size_reduction=size_reduction)",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "                    order.notes[\"required_size\"] = 0.00",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "                elif order.notes[\"required_price\"] != 0.00:",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "                    # ensure size reduction has gone through - if not leave it at £1 @ 1.10",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "                    if order.size_cancelled == 0.90:",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "                        market.replace_order(order, new_price=order.notes[\"required_price\"])",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "                        order.notes[\"required_price\"] = 0.00",
+                                "style": {
+                                    "code": true
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U04NWADNCFR",
+        "type": "message",
+        "ts": "1705244465.715439",
+        "edited": {
+            "user": "U04NWADNCFR",
+            "ts": "1705244497.000000"
+        },
+        "client_msg_id": "b9227f3f-69ff-46dc-a26a-d216f47e8d52",
+        "text": "Does anybody else experience this error with Flumine 2.5.6?\n\n>  line 182, in _process_sports_data\n>     event_id = sports_data.event_id\n> AttributeError: 'Race' object has no attribute 'event_id'\nIt seems a genuine error when I inspect in the debugger - there is no 'event_id' in the Race object. If I switch to Flumine 2.5.4 then the error doesn't occur because the code references market_id instead of event_id in 2.5.4.\n\nMy sample code to reproduce the error:\n\n```\nclass ExampleStrategy(BaseStrategy):\n    def process_sports_data(self, market, sports_data) -> None:\n        # called on each update from sports-data-stream\n        print('***',market, sports_data)\n\nclient = clients.BetfairClient(trading)\n\nframework = Flumine(client)\n\nstrategy = ExampleStrategy(\n    market_filter=streaming_market_filter(\n        event_type_ids=[\"7\"], market_types=[\"WIN\"],\n            country_codes=['GB' ],\n    ),\n    sports_data_filter=['raceSubscription'],  \n)\nframework.add_strategy(strategy)\n\nframework.run()```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g3c4e33a28db",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/3c4e33a28dbfc1fe70799f8e243bf305.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0026-72.png",
+            "first_name": "Derek",
+            "real_name": "Derek C",
+            "display_name": "Derek C",
+            "team": "T4G9NBD2M",
+            "name": "dataexmachinazzzzz",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1705244465.715439",
+        "reply_count": 7,
+        "reply_users_count": 3,
+        "latest_reply": "1705309971.772429",
+        "reply_users": [
+            "UBS7QANF3",
+            "U4H19D1D2",
+            "U04NWADNCFR"
+        ],
+        "replies": [
+            {
+                "user": "UBS7QANF3",
+                "ts": "1705244902.001229"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1705244987.964629"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1705244997.252229"
+            },
+            {
+                "user": "U04NWADNCFR",
+                "ts": "1705245005.161559"
+            },
+            {
+                "user": "U04NWADNCFR",
+                "ts": "1705245258.061679"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1705308329.703439"
+            },
+            {
+                "user": "U04NWADNCFR",
+                "ts": "1705309971.772429"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": true,
+        "last_read": "1705309971.772429",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "KXWzR",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Does anybody else experience this error with Flumine 2.5.6?\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_quote",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": " line 182, in _process_sports_data\n    event_id = sports_data.event_id\nAttributeError: 'Race' object has no attribute 'event_id'"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\nIt seems a genuine error when I inspect in the debugger - there is no 'event_id' in the Race object. If I switch to Flumine 2.5.4 then the error doesn't occur because the code references market_id instead of event_id in 2.5.4.\n\nMy sample code to reproduce the error:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\nclass ExampleStrategy(BaseStrategy):\n    def process_sports_data(self, market, sports_data) -> None:\n        # called on each update from sports-data-stream\n        print('***',market, sports_data)\n\nclient = clients.BetfairClient(trading)\n\nframework = Flumine(client)\n\nstrategy = ExampleStrategy(\n    market_filter=streaming_market_filter(\n        event_type_ids=[\"7\"], market_types=[\"WIN\"],\n            country_codes=['GB' ],\n    ),\n    sports_data_filter=['raceSubscription'],  \n)\nframework.add_strategy(strategy)\n\nframework.run()"
+                            }
+                        ],
+                        "border": 0
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1705244902.001229",
+        "client_msg_id": "A720A053-0452-4A05-9C25-12C476080087",
+        "text": "Surely also depends on what version of bflw you’re running?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1705244465.715439",
+        "parent_user_id": "U04NWADNCFR",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "xlJ9R",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Surely also depends on what version of bflw "
+                            },
+                            {
+                                "type": "text",
+                                "text": "you’re"
+                            },
+                            {
+                                "type": "text",
+                                "text": " running?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1705244987.964629",
+        "client_msg_id": "B5083152-08DC-4004-81C1-CBCBC04053B7",
+        "text": "Ah, this is because I changed it to work with cricket data ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1705244465.715439",
+        "parent_user_id": "U04NWADNCFR",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "rOgqK",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Ah, this is because I changed it to work with cricket data "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1705244997.252229",
+        "client_msg_id": "CFB9C810-DAD0-476C-B8FA-FEFFAF5D6D19",
+        "text": "Can you create a GH issue ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1705244465.715439",
+        "parent_user_id": "U04NWADNCFR",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "XdSV2",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Can you create a GH issue "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "U04NWADNCFR"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "U04NWADNCFR",
+        "type": "message",
+        "ts": "1705245005.161559",
+        "client_msg_id": "5604fe13-d96c-4bed-a24d-0f4d585a52e1",
+        "text": "2.19.1\nBut the way I created the test was to just pip install flumine. I didn't specifically install the dependencies",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g3c4e33a28db",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/3c4e33a28dbfc1fe70799f8e243bf305.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0026-72.png",
+            "first_name": "Derek",
+            "real_name": "Derek C",
+            "display_name": "Derek C",
+            "team": "T4G9NBD2M",
+            "name": "dataexmachinazzzzz",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1705244465.715439",
+        "parent_user_id": "U04NWADNCFR",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "aFSg8",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "2.19.1\nBut the way I created the test was to just pip install flumine. I didn't specifically install the dependencies"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U04NWADNCFR",
+        "type": "message",
+        "ts": "1705245258.061679",
+        "client_msg_id": "aec5852b-15bc-4500-85ee-cb6f9ef759e1",
+        "text": "The reason I am at this point is because I do not see any TPD data via Flumine, only via non-Flu mine strategies and I'm trying to track down the root cause of that.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g3c4e33a28db",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/3c4e33a28dbfc1fe70799f8e243bf305.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0026-72.png",
+            "first_name": "Derek",
+            "real_name": "Derek C",
+            "display_name": "Derek C",
+            "team": "T4G9NBD2M",
+            "name": "dataexmachinazzzzz",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1705244465.715439",
+        "parent_user_id": "U04NWADNCFR",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "s0JzH",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "The reason I am at this point is because I do not see any TPD data via Flumine, only via non-Flu mine strategies and I'm trying to track down the root cause of that."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U04NWADNCFR",
+        "type": "message",
+        "ts": "1705246272.226609",
+        "edited": {
+            "user": "U04NWADNCFR",
+            "ts": "1705246495.000000"
+        },
+        "client_msg_id": "bf2f34c3-ed82-49d0-90ee-083220592279",
+        "text": "Possibly related issues: I do not see TPD data coming through Flumine from version 2.3.0 onwards. I've been upgrading from old versions so could have missed some steps.\n\n> pip3 install flumine==2.2.7\nI see output from \"process_sports_data\"\n\n> pip3 install flumine==2.3  # or 2.5.4, 2.5.6\nno output from following example:\n\n```\nclass ExampleStrategy(BaseStrategy):\n    def process_sports_data(self, market, sports_data) -> None:\n        # called on each update from sports-data-stream\n        print('***',market, sports_data)\n\nclient = clients.BetfairClient(trading)\n\nframework = Flumine(client)\n\nstrategy = ExampleStrategy(\n    market_filter=streaming_market_filter(\n        event_type_ids=[\"7\"], market_types=[\"WIN\"],\n            country_codes=['GB' ],\n    ),\n    sports_data_filter=['raceSubscription'],  \"raceSubscription\"\n)\nframework.add_strategy(strategy)\n\nframework.run()```\n",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g3c4e33a28db",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/3c4e33a28dbfc1fe70799f8e243bf305.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0026-72.png",
+            "first_name": "Derek",
+            "real_name": "Derek C",
+            "display_name": "Derek C",
+            "team": "T4G9NBD2M",
+            "name": "dataexmachinazzzzz",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1705246272.226609",
+        "reply_count": 1,
+        "reply_users_count": 1,
+        "latest_reply": "1705428340.237049",
+        "reply_users": [
+            "U04NWADNCFR"
+        ],
+        "replies": [
+            {
+                "user": "U04NWADNCFR",
+                "ts": "1705428340.237049"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": false,
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "88kL0",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Possibly related issues: I do not see TPD data coming through Flumine from version 2.3.0 onwards. I've been upgrading from old versions so could have missed some steps.\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_quote",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "pip3 install flumine==2.2.7"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I see output from \"process_sports_data\"\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_quote",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "pip3 install flumine==2.3  # or 2.5.4, 2.5.6"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "no output from following example:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\nclass ExampleStrategy(BaseStrategy):\n    def process_sports_data(self, market, sports_data) -> None:\n        # called on each update from sports-data-stream\n        print('***',market, sports_data)\n\nclient = clients.BetfairClient(trading)\n\nframework = Flumine(client)\n\nstrategy = ExampleStrategy(\n    market_filter=streaming_market_filter(\n        event_type_ids=[\"7\"], market_types=[\"WIN\"],\n            country_codes=['GB' ],\n    ),\n    sports_data_filter=['raceSubscription'],  \"raceSubscription\"\n)\nframework.add_strategy(strategy)\n\nframework.run()"
+                            }
+                        ],
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": []
+                    }
+                ]
+            }
+        ]
+    }
+]

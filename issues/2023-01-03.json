@@ -1,0 +1,275 @@
+[
+    {
+        "user": "U032F6F7B5M",
+        "type": "message",
+        "ts": "1672773986.307709",
+        "client_msg_id": "b583d45f-fa09-42fb-b63c-5640d30bcf19",
+        "text": "Good afternoon everyone!\n\nAbout streaming (specifically about soccer events).\n\nIn a normal filter `betfairlightweight.filters.market_filter` I use `in_play_only=True`, but in `streaming_market_filter` there is only `turnInPlayEnabled`.\n\nWhat method do you recommend to handle the need for only inplay events using streaming for lower latency in data collection?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "f1a6af0e57e6",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2022-04-20\/3417984726532_f1a6af0e57e6096efe9d_72.jpg",
+            "first_name": "Brøndby",
+            "real_name": "Brøndby IF",
+            "display_name": "Brøndby IF",
+            "team": "T4G9NBD2M",
+            "name": "frattosdj",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "aW6",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Good afternoon everyone!\n\nAbout streaming (specifically about soccer events).\n\nIn a normal filter "
+                            },
+                            {
+                                "type": "text",
+                                "text": "betfairlightweight.filters.market_filter",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " I use "
+                            },
+                            {
+                                "type": "text",
+                                "text": "in_play_only=True",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": ", but in "
+                            },
+                            {
+                                "type": "text",
+                                "text": "streaming_market_filter",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " there is only "
+                            },
+                            {
+                                "type": "text",
+                                "text": "turnInPlayEnabled",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": ".\n\nWhat method do you recommend to handle the need for only inplay events using streaming for lower latency in data collection?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U9JHLMZB4",
+        "type": "message",
+        "ts": "1672782100.304019",
+        "edited": {
+            "user": "U9JHLMZB4",
+            "ts": "1672822776.000000"
+        },
+        "client_msg_id": "589c6c04-90f5-4d89-8706-e14d46e274d3",
+        "text": "The <https:\/\/github.com\/betcode-org\/flumine\/blob\/master\/flumine\/markets\/middleware.py|SimulatedSportsDataMiddleware> has a check that\n`pt &gt; update.publish_time_epoch`\ni.e. the market time is later than the timestamp for the sports data update. This means that, unless I’m misunderstanding something in the wider context, the strategy’s process_sports_data method assessments and trades are based on market data from the future.\n\nIf my reasoning is correct, is this a compromise necessary because when backtesting the sports stream is simulated by middleware that can only be triggered by the market update? Would this also mean that the comment in the <https:\/\/github.com\/betcode-org\/flumine\/blob\/master\/examples\/simulate-sportsdata.py|simulate-sportsdata.py> example’s process_sports_data() method that said method is “called on each update from sports-data-stream” is slightly off?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g951ddcb43e7",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/3951ddcb43e788a387d6daf330dad5ca.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0018-72.png",
+            "first_name": "",
+            "real_name": "Peter Coles",
+            "display_name": "Peter",
+            "team": "T4G9NBD2M",
+            "name": "peter",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1672782100.304019",
+        "reply_count": 5,
+        "reply_users_count": 4,
+        "latest_reply": "1673334124.649809",
+        "reply_users": [
+            "UCQB6S222",
+            "U016TGY3676",
+            "U9JHLMZB4",
+            "U4H19D1D2"
+        ],
+        "replies": [
+            {
+                "user": "UCQB6S222",
+                "ts": "1672783675.193569"
+            },
+            {
+                "user": "U016TGY3676",
+                "ts": "1672787719.820809"
+            },
+            {
+                "user": "U9JHLMZB4",
+                "ts": "1672823553.693269"
+            },
+            {
+                "user": "U016TGY3676",
+                "ts": "1672829967.645559"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1673334124.649809"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": true,
+        "last_read": "1673334124.649809",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "epVWV",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "The "
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/betcode-org\/flumine\/blob\/master\/flumine\/markets\/middleware.py",
+                                "text": "SimulatedSportsDataMiddleware"
+                            },
+                            {
+                                "type": "text",
+                                "text": " has a check that\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "pt > update.publish_time_epoch",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\ni.e. the market time is later than the timestamp for the sports data update. This means that, unless I’m misunderstanding something in the wider context, the strategy’s process_sports_data method assessments and trades are based on market data from the future.\n\nIf my reasoning is correct, is this a compromise necessary because when backtesting the sports stream is simulated by middleware that can only be triggered by the market update? Would this also mean that the comment in the "
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/betcode-org\/flumine\/blob\/master\/examples\/simulate-sportsdata.py",
+                                "text": "simulate-sportsdata.py",
+                                "unsafe": true
+                            },
+                            {
+                                "type": "text",
+                                "text": " example’s process_sports_data() method that said method is “called on each update from sports-data-stream” is slightly off?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UCQB6S222",
+        "type": "message",
+        "ts": "1672783675.193569",
+        "edited": {
+            "user": "UCQB6S222",
+            "ts": "1672783839.000000"
+        },
+        "client_msg_id": "1833aa10-6791-41fd-b7b8-6c38b26f60cd",
+        "text": "I came across this exact issue a few months ago. I think the answer I received is that it's Middleware, and therefore if you want to do something different, you should code it up yourself!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g953ffd5e3b7",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/5813be539113b05ece8212c2a06d006a.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "George",
+            "real_name": "George",
+            "display_name": "George",
+            "team": "T4G9NBD2M",
+            "name": "gd",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1672782100.304019",
+        "parent_user_id": "U9JHLMZB4",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "W0qI",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I came across this exact issue a few months ago. I think the answer I received is that it's Middleware, and therefore if you want to do something different, you should code it up yourself!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U016TGY3676",
+        "type": "message",
+        "ts": "1672787719.820809",
+        "client_msg_id": "08147207-78af-4318-8aae-a31702237a50",
+        "text": "I've not used that middleware yet but it seems logical that you'd want to get the information first and then check the market? That's assuming that the information source precedes the market updating.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6a681220e11",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6a681220e11c1a2ed3685375d658dadb.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0001-72.png",
+            "first_name": "",
+            "real_name": "birchy",
+            "display_name": "birchy",
+            "team": "T4G9NBD2M",
+            "name": "birchy",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1672782100.304019",
+        "parent_user_id": "U9JHLMZB4",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "1Sh3",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I've not used that middleware yet but it seems logical that you'd want to get the information first and then check the market? That's assuming that the information source precedes the market updating."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

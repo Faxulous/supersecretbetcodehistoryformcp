@@ -1,0 +1,740 @@
+[
+    {
+        "subtype": "channel_join",
+        "user": "U018YDJUKPZ",
+        "text": "<@U018YDJUKPZ> has joined the channel",
+        "type": "message",
+        "ts": "1598281393.013400"
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1598282735.016000",
+        "client_msg_id": "eba7a316-c485-424d-bd92-afea65d95e9f",
+        "text": "<@U4H19D1D2>, I haven't been able to replicate the issue with pending orders from the other day, but came across this today and wanted to check the correct way it's intended to be handled:\n\n```{\"asctime\": \"2020-08-24 15:11:49,150\", \"levelname\": \"INFO\", \"message\": \"Order status update: Violation\", \"market_id\": \"1.172319685\", \"selection_id\": 26578374, \"handicap\": 0, \"id\": \"138175747090349752\", \"customer_order_ref\": \"27cfde50caeb3-138175747090349752\", \"bet_id\": null, \"trade\": {\"id\": \"21e4feb7-e61c-11ea-8071-2016d8944b85\", \"strategy\": \"ExampleStrategy\", \"status\": \"TradeStatus.LIVE\", \"orders\": [\"138175747090349752\"], \"notes\": \"1.172319685,2020-08-24 15:15:00,2020-08-24 15:11:48.783000,OPEN,False,26578374,Phoenix Strike,0,32,32,34,30,36,1116.3899999999999,4.0,34.20734773394412,34.20734773394412,-0.00017030046190238602,-0.015229531148119538,0,-0.34410707742395563,-1.0,-0.9994686305661997,-1.0,-0.9994686305661997,0.04510370240413563,32,36,32\", \"market_notes\": \"32,34,32\"}, \"order_type\": {\"order_type\": \"Limit\", \"price\": 32, \"size\": 2, \"persistence_type\": \"PERSIST\", \"time_in_force\": null, \"min_fill_size\": null, \"bet_target_type\": null, \"bet_target_size\": null}, \"info\": {\"side\": \"LAY\", \"size_matched\": 0.0, \"size_remaining\": 0.0, \"size_cancelled\": 0.0, \"size_lapsed\": 0.0, \"size_voided\": 0.0, \"average_price_matched\": 0.0}, \"status\": \"Violation\", \"status_log\": \"Pending, Violation\"}\n{\"asctime\": \"2020-08-24 15:11:49,151\", \"levelname\": \"WARNING\", \"message\": \"Order has violated STRATEGY_EXPOSURE and will not be placed\", \"control\": \"STRATEGY_EXPOSURE\", \"error\": \"Order exposure (62) is greater than strategy.max_order_strategy (20)\", \"order\": {\"market_id\": \"1.172319685\", \"selection_id\": 26578374, \"handicap\": 0, \"id\": \"138175747090349752\", \"customer_order_ref\": \"27cfde50caeb3-138175747090349752\", \"bet_id\": null, \"trade\": {\"id\": \"21e4feb7-e61c-11ea-8071-2016d8944b85\", \"strategy\": \"ExampleStrategy\", \"status\": \"TradeStatus.LIVE\", \"orders\": [\"138175747090349752\"], \"notes\": \"1.172319685,2020-08-24 15:15:00,2020-08-24 15:11:48.783000,OPEN,False,26578374,Phoenix Strike,0,32,32,34,30,36,1116.3899999999999,4.0,34.20734773394412,34.20734773394412,-0.00017030046190238602,-0.015229531148119538,0,-0.34410707742395563,-1.0,-0.9994686305661997,-1.0,-0.9994686305661997,0.04510370240413563,32,36,32\", \"market_notes\": \"32,34,32\"}, \"order_type\": {\"order_type\": \"Limit\", \"price\": 32, \"size\": 2, \"persistence_type\": \"PERSIST\", \"time_in_force\": null, \"min_fill_size\": null, \"bet_target_type\": null, \"bet_target_size\": null}, \"info\": {\"side\": \"LAY\", \"size_matched\": 0.0, \"size_remaining\": 0.0, \"size_cancelled\": 0.0, \"size_lapsed\": 0.0, \"size_voided\": 0.0, \"average_price_matched\": 0.0}, \"status\": \"Violation\", \"status_log\": \"Pending, Violation\"}}```\nSo that order failed validation, which makes sense, all looks correct...however,\n```runner_data = strategy.get_runner_context(market_id=market_book.market_id,\n    selection_id=runner['selection_id'],\n            handicap=runner['handicap'])\nlive_trade_count = runner_data.live_trade_count```\nlive_trade_count returned 1 until the close.\n\nIf an order fails validation, does the live_trade_count need to be manually adjusted and is that intentional?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "cMRJ3",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "user",
+                                "user_id": "U4H19D1D2"
+                            },
+                            {
+                                "type": "text",
+                                "text": ", I haven't been able to replicate the issue with pending orders from the other day, but came across this today and wanted to check the correct way it's intended to be handled:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "{\"asctime\": \"2020-08-24 15:11:49,150\", \"levelname\": \"INFO\", \"message\": \"Order status update: Violation\", \"market_id\": \"1.172319685\", \"selection_id\": 26578374, \"handicap\": 0, \"id\": \"138175747090349752\", \"customer_order_ref\": \"27cfde50caeb3-138175747090349752\", \"bet_id\": null, \"trade\": {\"id\": \"21e4feb7-e61c-11ea-8071-2016d8944b85\", \"strategy\": \"ExampleStrategy\", \"status\": \"TradeStatus.LIVE\", \"orders\": [\"138175747090349752\"], \"notes\": \"1.172319685,2020-08-24 15:15:00,2020-08-24 15:11:48.783000,OPEN,False,26578374,Phoenix Strike,0,32,32,34,30,36,1116.3899999999999,4.0,34.20734773394412,34.20734773394412,-0.00017030046190238602,-0.015229531148119538,0,-0.34410707742395563,-1.0,-0.9994686305661997,-1.0,-0.9994686305661997,0.04510370240413563,32,36,32\", \"market_notes\": \"32,34,32\"}, \"order_type\": {\"order_type\": \"Limit\", \"price\": 32, \"size\": 2, \"persistence_type\": \"PERSIST\", \"time_in_force\": null, \"min_fill_size\": null, \"bet_target_type\": null, \"bet_target_size\": null}, \"info\": {\"side\": \"LAY\", \"size_matched\": 0.0, \"size_remaining\": 0.0, \"size_cancelled\": 0.0, \"size_lapsed\": 0.0, \"size_voided\": 0.0, \"average_price_matched\": 0.0}, \"status\": \"Violation\", \"status_log\": \"Pending, Violation\"}\n{\"asctime\": \"2020-08-24 15:11:49,151\", \"levelname\": \"WARNING\", \"message\": \"Order has violated STRATEGY_EXPOSURE and will not be placed\", \"control\": \"STRATEGY_EXPOSURE\", \"error\": \"Order exposure (62) is greater than strategy.max_order_strategy (20)\", \"order\": {\"market_id\": \"1.172319685\", \"selection_id\": 26578374, \"handicap\": 0, \"id\": \"138175747090349752\", \"customer_order_ref\": \"27cfde50caeb3-138175747090349752\", \"bet_id\": null, \"trade\": {\"id\": \"21e4feb7-e61c-11ea-8071-2016d8944b85\", \"strategy\": \"ExampleStrategy\", \"status\": \"TradeStatus.LIVE\", \"orders\": [\"138175747090349752\"], \"notes\": \"1.172319685,2020-08-24 15:15:00,2020-08-24 15:11:48.783000,OPEN,False,26578374,Phoenix Strike,0,32,32,34,30,36,1116.3899999999999,4.0,34.20734773394412,34.20734773394412,-0.00017030046190238602,-0.015229531148119538,0,-0.34410707742395563,-1.0,-0.9994686305661997,-1.0,-0.9994686305661997,0.04510370240413563,32,36,32\", \"market_notes\": \"32,34,32\"}, \"order_type\": {\"order_type\": \"Limit\", \"price\": 32, \"size\": 2, \"persistence_type\": \"PERSIST\", \"time_in_force\": null, \"min_fill_size\": null, \"bet_target_type\": null, \"bet_target_size\": null}, \"info\": {\"side\": \"LAY\", \"size_matched\": 0.0, \"size_remaining\": 0.0, \"size_cancelled\": 0.0, \"size_lapsed\": 0.0, \"size_voided\": 0.0, \"average_price_matched\": 0.0}, \"status\": \"Violation\", \"status_log\": \"Pending, Violation\"}}"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\nSo that order failed validation, which makes sense, all looks correct...however,\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "runner_data = strategy.get_runner_context(market_id=market_book.market_id,\n    selection_id=runner['selection_id'],\n            handicap=runner['handicap'])\nlive_trade_count = runner_data.live_trade_count"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\nlive_trade_count returned 1 until the close.\n\nIf an order fails validation, does the live_trade_count need to be manually adjusted and is that intentional?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1598283027.016500",
+        "client_msg_id": "2762c5b1-f2e9-437d-825c-c7004f840e69",
+        "text": "it should reset based on the fact `order.complete == True`",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "aFc",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "it should reset based on the fact "
+                            },
+                            {
+                                "type": "text",
+                                "text": "order.complete == True",
+                                "style": {
+                                    "code": true
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1598283094.017100",
+        "client_msg_id": "72fc5118-4bbf-4343-b282-0b956a13201f",
+        "text": "Yes, thats what I assumed, but it doesn't appear to (no further logs).",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "xC0F",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Yes, thats what I assumed, but it doesn't appear to (no further logs)."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1598283126.017700",
+        "client_msg_id": "a814bcc4-a4fc-4532-b79b-216055c66b4d",
+        "text": "(other than the live_trade_count)",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "THTGV",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "(other than the live_trade_count)"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1598283139.018000",
+        "client_msg_id": "4456d441-c6e7-4e08-8719-c10cc614d5fa",
+        "text": "So I can see the value never went back to 0",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "ySs",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "So I can see the value never went back to 0"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1598283199.018400",
+        "client_msg_id": "a5c28c10-a4fc-4777-86f9-ac0ebec7421a",
+        "text": "have you used the `offset_orders` var in the order?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "=bsF",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "have you used the "
+                            },
+                            {
+                                "type": "text",
+                                "text": "offset_orders",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " var in the order?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1598283252.018700",
+        "client_msg_id": "3ed398c9-010d-4dd4-a8d3-193d92aab094",
+        "text": "or does the Trade have multiple orders linked?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "v5I",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "or does the Trade have multiple orders linked?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1598283311.019600",
+        "client_msg_id": "4d0818f6-fdb1-4025-bb55-9db8e79ec96c",
+        "text": "didn't use offset_orders, but yes there was another (succesful) order in the batch (which executed and then the live_order_count for that runner went to 0)",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "\/ve",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "didn't use offset_orders, but yes there was another (succesful) order in the batch (which executed and then the live_order_count for that runner went to 0)"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1598283343.019800",
+        "client_msg_id": "292fb859-b8ae-4f54-ae52-6ee16046574b",
+        "text": "can you put the debugger here <https:\/\/github.com\/liampauling\/flumine\/blob\/master\/flumine\/order\/process.py#L69>",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "attachments": [
+            {
+                "fallback": "[liampauling\/flumine] flumine\/order\/process.py:69",
+                "text": "```\n    if order.trade.complete:\n```",
+                "title": "flumine\/order\/process.py:69",
+                "footer": "<https:\/\/github.com\/liampauling\/flumine|liampauling\/flumine>",
+                "id": 1,
+                "title_link": "https:\/\/github.com\/liampauling\/flumine\/blob\/master\/flumine\/order\/process.py#L69",
+                "footer_icon": "https:\/\/github.githubassets.com\/favicon.ico",
+                "color": "24292f",
+                "mrkdwn_in": [
+                    "text"
+                ],
+                "bot_id": "B01144Z0734",
+                "app_unfurl_url": "https:\/\/github.com\/liampauling\/flumine\/blob\/master\/flumine\/order\/process.py#L69",
+                "is_app_unfurl": true
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "bDgU",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "can you put the debugger here "
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/liampauling\/flumine\/blob\/master\/flumine\/order\/process.py#L69"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1598283366.020500",
+        "client_msg_id": "552931b9-0aab-4a2e-8a0d-b834c4f196f3",
+        "text": "it should be True for the violated order and then complete the trade",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "9Ebz",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "it should be True for the violated order and then complete the trade"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1598283386.020700",
+        "client_msg_id": "e849e54e-84c5-4c1f-ae53-0e0bbee34a79",
+        "text": "Ok cool, tks, will report back...",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "P=V",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Ok cool, tks, will report back..."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1598297655.021000",
+        "client_msg_id": "bddce6d7-7661-41d6-868f-ffc18b598172",
+        "text": "So I managed to replicate I think, from this log:",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Pxd",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "So I managed to replicate I think, from this log:"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1598297659.021200",
+        "client_msg_id": "11241f16-b0a9-4c63-927c-8331d0c86562",
+        "text": "```{\"asctime\": \"2020-08-24 19:29:22,513\", \"levelname\": \"WARNING\", \"message\": \"Order has violated ORDER_VALIDATION and will not be placed\", \"control\": \"ORDER_VALIDATION\", \"error\": \"Order size is less than min bet size (2) or payout (10) for currency\", \"order\": {\"market_id\": \"1.172363533\", \"selection_id\": 19763676, \"handicap\": 0, \"id\": \"138175901625116463\", \"customer_order_ref\": \"27cfde50caeb3-138175901625116463\", \"bet_id\": null, \"trade\": {\"id\": \"1ce2672e-e640-11ea-9229-2016d8944b85\", \"strategy\": \"ExampleStrategy\", \"status\": \"TradeStatus.LIVE\", \"orders\": [\"138175901625116463\"], \"notes\": \"1.172363533,2020-08-24 19:30:00,2020-08-24 19:29:22.551000,OPEN,False,19763676,Hush Buffy,0,2.88,2.88,2.9,2.84,2.92,384.1600000000001,39.120000000000005,2.9232699537837674,2.9232699537837674,-0.00016599506431987516,-0.0018108429044144984,0,-0.43546624108134707,-1.0,-1.020314057737078,-1.0,-1.020314057737078,0.012721252976427583,2.82,2.9,2.82\", \"market_notes\": \"2.88,2.9,2.88\"}, \"order_type\": {\"order_type\": \"Limit\", \"price\": 2.9, \"size\": 0.73, \"persistence_type\": \"PERSIST\", \"time_in_force\": null, \"min_fill_size\": null, \"bet_target_type\": null, \"bet_target_size\": null}, \"info\": {\"side\": \"BACK\", \"size_matched\": 0.0, \"size_remaining\": 0.0, \"size_cancelled\": 0.0, \"size_lapsed\": 0.0, \"size_voided\": 0.0, \"average_price_matched\": 0.0}, \"status\": \"Violation\", \"status_log\": \"Pending, Violation\"}}\n{\"asctime\": \"2020-08-24 19:29:22,515\", \"levelname\": \"WARNING\", \"message\": \"Empty package, not executing\", \"id\": \"1ce28e3d-e640-11ea-905c-2016d8944b85\", \"client\": \"&lt;flumine.clients.betfairclient.BetfairClient object at 0x000001BC1E36D100&gt;\", \"market_id\": \"1.172363533\", \"orders\": [\"138175901625116463\"], \"package_type\": \"Place\", \"customer_strategy_ref\": \"BlueOcean\", \"bet_delay\": 0, \"market_version\": null, \"retry\": true, \"retry_count\": 0}```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "eoe",
+                "elements": [
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "{\"asctime\": \"2020-08-24 19:29:22,513\", \"levelname\": \"WARNING\", \"message\": \"Order has violated ORDER_VALIDATION and will not be placed\", \"control\": \"ORDER_VALIDATION\", \"error\": \"Order size is less than min bet size (2) or payout (10) for currency\", \"order\": {\"market_id\": \"1.172363533\", \"selection_id\": 19763676, \"handicap\": 0, \"id\": \"138175901625116463\", \"customer_order_ref\": \"27cfde50caeb3-138175901625116463\", \"bet_id\": null, \"trade\": {\"id\": \"1ce2672e-e640-11ea-9229-2016d8944b85\", \"strategy\": \"ExampleStrategy\", \"status\": \"TradeStatus.LIVE\", \"orders\": [\"138175901625116463\"], \"notes\": \"1.172363533,2020-08-24 19:30:00,2020-08-24 19:29:22.551000,OPEN,False,19763676,Hush Buffy,0,2.88,2.88,2.9,2.84,2.92,384.1600000000001,39.120000000000005,2.9232699537837674,2.9232699537837674,-0.00016599506431987516,-0.0018108429044144984,0,-0.43546624108134707,-1.0,-1.020314057737078,-1.0,-1.020314057737078,0.012721252976427583,2.82,2.9,2.82\", \"market_notes\": \"2.88,2.9,2.88\"}, \"order_type\": {\"order_type\": \"Limit\", \"price\": 2.9, \"size\": 0.73, \"persistence_type\": \"PERSIST\", \"time_in_force\": null, \"min_fill_size\": null, \"bet_target_type\": null, \"bet_target_size\": null}, \"info\": {\"side\": \"BACK\", \"size_matched\": 0.0, \"size_remaining\": 0.0, \"size_cancelled\": 0.0, \"size_lapsed\": 0.0, \"size_voided\": 0.0, \"average_price_matched\": 0.0}, \"status\": \"Violation\", \"status_log\": \"Pending, Violation\"}}\n{\"asctime\": \"2020-08-24 19:29:22,515\", \"levelname\": \"WARNING\", \"message\": \"Empty package, not executing\", \"id\": \"1ce28e3d-e640-11ea-905c-2016d8944b85\", \"client\": \"<flumine.clients.betfairclient.BetfairClient object at 0x000001BC1E36D100>\", \"market_id\": \"1.172363533\", \"orders\": [\"138175901625116463\"], \"package_type\": \"Place\", \"customer_strategy_ref\": \"BlueOcean\", \"bet_delay\": 0, \"market_version\": null, \"retry\": true, \"retry_count\": 0}"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1598297680.021400",
+        "client_msg_id": "dc460496-4ba6-489c-87b9-1eca0f10de95",
+        "text": "{'order_selection_id': 19763676, 'order_trade_complete': False}",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "msQq1",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "{'order_selection_id': 19763676, 'order_trade_complete': False}"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1598297729.021800",
+        "client_msg_id": "57b2aaf2-c39e-41ee-9212-967421fd112c",
+        "text": "I think its something along the lines of, a replaced order that then violates never completes",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "7991",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I think its something along the lines of, a replaced order that then violates never completes"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1598297742.022000",
+        "client_msg_id": "e8e00849-a316-4350-bf7e-e5e620e47eaf",
+        "text": "(but not 100% on that)",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "oQY",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "(but not 100% on that)"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1598297862.023500",
+        "client_msg_id": "A8937F53-5732-42A4-B483-4AD2818B08D2",
+        "text": "Can you share what the code looks like for the order \/ trade in the strategy? Without revealing the secret sauce :wink:",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "IZY",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Can you share what the code looks like for the order \/ trade in the strategy? Without revealing the secret sauce "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "wink",
+                                "unicode": "1f609"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

@@ -1,0 +1,387 @@
+[
+    {
+        "subtype": "channel_join",
+        "user": "UNQGKT0CR",
+        "text": "<@UNQGKT0CR> has joined the channel",
+        "type": "message",
+        "ts": "1578227099.006600"
+    },
+    {
+        "text": "Hi guys. i keep  getting the same error. how can i deal with this error attached\nmy code:\n```import os\nimport logging\nimport queue\nfrom betfairlightweight import filters\nimport datetime\nimport betfairlightweight\nfrom betfairlightweight.filters import (\n    streaming_market_filter,\n    streaming_market_data_filter,\n)\n\nimport pandas as pd\n# create trading instance\ntrading = betfairlightweight.APIClient('username',\n                                       'password',\n                                       app_key='appkey',\n                                       certs='C:\\\\Users\\\\')\n\n# login\ntrading.login()\n\n# make event type request to find horse racing event type\nhorse_racing_event_type_id = trading.betting.list_event_types(\n    filter=filters.market_filter(\n        text_query='Horse Racing'\n    )\n)\n# setup logging\nlogging.basicConfig(level=<http:\/\/logging.INFO|logging.INFO>)  # change to DEBUG to see log all updates\n\n# create trading instance (app key must be activated for streaming)\ntrading.login()\n\nt = datetime.datetime.now()+datetime.timedelta(hours=12)\n\nwhile datetime.datetime.now() &lt; t:\n    h_i1 =datetime.datetime.now()\n    h_i2 = h_i1 + datetime.timedelta(hours=12)\n    # Define a market filter\n    thoroughbreds_event_filter = betfairlightweight.filters.market_filter(\n        event_type_ids=['7'],\n        market_start_time={\n            'from': h_i1.strftime(\"%Y-%m-%dT%TZ\"),\n            'to': h_i2.strftime(\"%Y-%m-%dT%TZ\")\n        }\n    )\n\n    # Print the filter\n    # thoroughbreds_event_filter\n\n    # Get a list of all thoroughbred events as objects\n    thoroughbred_events = trading.betting.list_events(\n        filter=thoroughbreds_event_filter\n    )\n\n    # Get a list of all thoroughbred events as objects\n    hr_thoroughbred_events = trading.betting.list_events(\n        filter=thoroughbreds_event_filter\n    )\n\n    # Create a DataFrame with all the events by iterating over each event object\n    hr_thoroughbred_events_next_12hours = pd.DataFrame({\n        'Event Name': [event_object.event.name for event_object in hr_thoroughbred_events],\n        'Event ID': [event_object.event.id for event_object in hr_thoroughbred_events],\n        'Event Venue': [event_object.event.venue for event_object in hr_thoroughbred_events],\n        'Country Code': [event_object.event.country_code for event_object in\n                         hr_thoroughbred_events],\n        'Time Zone': [event_object.event.time_zone for event_object in hr_thoroughbred_events],\n        'Open Date': [event_object.event.open_date for event_object in hr_thoroughbred_events],\n        'Market Count': [event_object.market_count for event_object in hr_thoroughbred_events]\n    })\n    # create queue\n    output_queue = queue.Queue()\n\n    # create stream listener\n    listener = betfairlightweight.StreamListener(\n        output_queue=output_queue,\n    )\n\n    # create stream\n    stream = trading.streaming.create_stream(\n        listener=listener,\n    )\n\n    # create filters (GB WIN racing)\n    market_filter = streaming_market_filter(\n        event_type_ids=['7'],\n        event_ids=hr_thoroughbred_events_next_12hours['Event ID'],\n        market_types=['WIN'],\n    )\n    market_data_filter = streaming_market_data_filter(\n        fields=['EX_BEST_OFFERS', 'EX_MARKET_DEF'],\n        ladder_levels=5,\n    )\n\n    # subscribe\n    streaming_unique_id = stream.subscribe_to_markets(\n        market_filter=market_filter,\n        market_data_filter=market_data_filter,\n        conflate_ms=1000,  # send update every 1000ms\n    )\n\n    # start stream\n    stream.start(async_=True)\n\n    # check for updates in output queue\n\n    while datetime.datetime.now() &lt; t:\n        try:\n            market_books = output_queue.get()\n            print(market_books)\n\n            for market_book in market_books:\n                print(\n                    market_book.streaming_update, \n                    market_book.publish_time,  \n                )\n        except:\n            output_queue = queue.Queue()\n\n            # create stream listener\n            listener = betfairlightweight.StreamListener(\n                output_queue=output_queue,\n            )\n\n            # create stream\n            stream = trading.streaming.create_stream(\n                listener=listener,\n            )\n\n            # create filters \n            market_filter = streaming_market_filter(\n                event_type_ids=['7'],\n                event_ids=hr_thoroughbred_events_next_12hours['Event ID'],\n                market_types=['WIN'],\n            )\n            market_data_filter = streaming_market_data_filter(\n                fields=['EX_BEST_OFFERS', 'EX_MARKET_DEF' ],\n                ladder_levels=5,\n            )\n\n            # subscribe\n            streaming_unique_id = stream.subscribe_to_markets(\n                market_filter=market_filter,\n                market_data_filter=market_data_filter,\n                conflate_ms=1000,  # send update every 1000ms\n            )\n\n            # start stream\n            stream.start(async_=True)\n    t = t + datetime.timedelta(hours=12)```\n but i doesn't  help. i thought if i put a while loop, then when error occurs it will sleep for 1 second and then subscribe to markets as you suggested and then  start the stream again. but still the code enter a state where the message below is displayed and nothing happens. this happens everyday once .  as you can see in Pycharm, the Run tab is still green, also the stop button(red square) is still active, it seems that my code does not capture the error , but the betfairlightweight source code capture it, then something happens and it stays there.why does my try and except  statements can't capture this error? I have to push  the stop button on the top left  and then rerun the code.  have you seen this issue before, any idea how can this be fixed.",
+        "files": [
+            {
+                "id": "FS9SM1B7X",
+                "mode": "hidden_by_limit"
+            }
+        ],
+        "upload": true,
+        "user": "US6CDMD7Z",
+        "display_as_bot": false,
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Ow8",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Hi guys. i keep  getting the same error. how can i deal with this error attached\nmy code:\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "import os\nimport logging\nimport queue\nfrom betfairlightweight import filters\nimport datetime\nimport betfairlightweight\nfrom betfairlightweight.filters import (\n    streaming_market_filter,\n    streaming_market_data_filter,\n)\n\nimport pandas as pd\n# create trading instance\ntrading = betfairlightweight.APIClient('username',\n                                       'password',\n                                       app_key='appkey',\n                                       certs='C:\\\\Users\\\\')\n\n# login\ntrading.login()\n\n# make event type request to find horse racing event type\nhorse_racing_event_type_id = trading.betting.list_event_types(\n    filter=filters.market_filter(\n        text_query='Horse Racing'\n    )\n)\n# setup logging\nlogging.basicConfig(level="
+                            },
+                            {
+                                "type": "link",
+                                "url": "http:\/\/logging.INFO",
+                                "text": "logging.INFO"
+                            },
+                            {
+                                "type": "text",
+                                "text": ")  # change to DEBUG to see log all updates\n\n# create trading instance (app key must be activated for streaming)\ntrading.login()\n\nt = datetime.datetime.now()+datetime.timedelta(hours=12)\n\nwhile datetime.datetime.now() < t:\n    h_i1 =datetime.datetime.now()\n    h_i2 = h_i1 + datetime.timedelta(hours=12)\n    # Define a market filter\n    thoroughbreds_event_filter = betfairlightweight.filters.market_filter(\n        event_type_ids=['7'],\n        market_start_time={\n            'from': h_i1.strftime(\"%Y-%m-%dT%TZ\"),\n            'to': h_i2.strftime(\"%Y-%m-%dT%TZ\")\n        }\n    )\n\n    # Print the filter\n    # thoroughbreds_event_filter\n\n    # Get a list of all thoroughbred events as objects\n    thoroughbred_events = trading.betting.list_events(\n        filter=thoroughbreds_event_filter\n    )\n\n    # Get a list of all thoroughbred events as objects\n    hr_thoroughbred_events = trading.betting.list_events(\n        filter=thoroughbreds_event_filter\n    )\n\n    # Create a DataFrame with all the events by iterating over each event object\n    hr_thoroughbred_events_next_12hours = pd.DataFrame({\n        'Event Name': [event_object.event.name for event_object in hr_thoroughbred_events],\n        'Event ID': [event_object.event.id for event_object in hr_thoroughbred_events],\n        'Event Venue': [event_object.event.venue for event_object in hr_thoroughbred_events],\n        'Country Code': [event_object.event.country_code for event_object in\n                         hr_thoroughbred_events],\n        'Time Zone': [event_object.event.time_zone for event_object in hr_thoroughbred_events],\n        'Open Date': [event_object.event.open_date for event_object in hr_thoroughbred_events],\n        'Market Count': [event_object.market_count for event_object in hr_thoroughbred_events]\n    })\n    # create queue\n    output_queue = queue.Queue()\n\n    # create stream listener\n    listener = betfairlightweight.StreamListener(\n        output_queue=output_queue,\n    )\n\n    # create stream\n    stream = trading.streaming.create_stream(\n        listener=listener,\n    )\n\n    # create filters (GB WIN racing)\n    market_filter = streaming_market_filter(\n        event_type_ids=['7'],\n        event_ids=hr_thoroughbred_events_next_12hours['Event ID'],\n        market_types=['WIN'],\n    )\n    market_data_filter = streaming_market_data_filter(\n        fields=['EX_BEST_OFFERS', 'EX_MARKET_DEF'],\n        ladder_levels=5,\n    )\n\n    # subscribe\n    streaming_unique_id = stream.subscribe_to_markets(\n        market_filter=market_filter,\n        market_data_filter=market_data_filter,\n        conflate_ms=1000,  # send update every 1000ms\n    )\n\n    # start stream\n    stream.start(async_=True)\n\n    # check for updates in output queue\n\n    while datetime.datetime.now() < t:\n        try:\n            market_books = output_queue.get()\n            print(market_books)\n\n            for market_book in market_books:\n                print(\n                    market_book.streaming_update, \n                    market_book.publish_time,  \n                )\n        except:\n            output_queue = queue.Queue()\n\n            # create stream listener\n            listener = betfairlightweight.StreamListener(\n                output_queue=output_queue,\n            )\n\n            # create stream\n            stream = trading.streaming.create_stream(\n                listener=listener,\n            )\n\n            # create filters \n            market_filter = streaming_market_filter(\n                event_type_ids=['7'],\n                event_ids=hr_thoroughbred_events_next_12hours['Event ID'],\n                market_types=['WIN'],\n            )\n            market_data_filter = streaming_market_data_filter(\n                fields=['EX_BEST_OFFERS', 'EX_MARKET_DEF' ],\n                ladder_levels=5,\n            )\n\n            # subscribe\n            streaming_unique_id = stream.subscribe_to_markets(\n                market_filter=market_filter,\n                market_data_filter=market_data_filter,\n                conflate_ms=1000,  # send update every 1000ms\n            )\n\n            # start stream\n            stream.start(async_=True)\n    t = t + datetime.timedelta(hours=12)"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": " but i doesn't  help. i thought if i put a while loop, then when error occurs it will sleep for 1 second and then subscribe to markets as you suggested and then  start the stream again. but still the code enter a state where the message below is displayed and nothing happens. this happens everyday once .  as you can see in Pycharm, the Run tab is still green, also the stop button(red square) is still active, it seems that my code does not capture the error , but the betfairlightweight source code capture it, then something happens and it stays there.why does my try and except  statements can't capture this error? I have to push  the stop button on the top left  and then rerun the code.  have you seen this issue before, any idea how can this be fixed."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "type": "message",
+        "ts": "1578243605.007800",
+        "edited": {
+            "user": "US6CDMD7Z",
+            "ts": "1578246259.000000"
+        },
+        "client_msg_id": "fa154aba-4fbe-4610-9d86-2a3afc058dd1"
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1578243795.008500",
+        "client_msg_id": "7d7222cc-aaed-4a52-bfc8-1440529493a0",
+        "text": "Can you fix the formatting? It's very hard to read",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1578243795.008500",
+        "reply_count": 2,
+        "reply_users_count": 1,
+        "latest_reply": "1578246031.011600",
+        "reply_users": [
+            "US6CDMD7Z"
+        ],
+        "replies": [
+            {
+                "user": "US6CDMD7Z",
+                "ts": "1578244558.009000"
+            },
+            {
+                "user": "US6CDMD7Z",
+                "ts": "1578246031.011600"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": false,
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Ith4",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Can you fix the formatting? It's very hard to read"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "US6CDMD7Z",
+        "type": "message",
+        "ts": "1578244558.009000",
+        "client_msg_id": "8f5c0894-6484-467d-b693-ed1bd6481416",
+        "text": "i wil,thanks",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g19c4206d93c",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/19c4206d93c52ebd2221e703d5f8e9de.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0026-72.png",
+            "first_name": "DonJ80",
+            "real_name": "DonJ80",
+            "display_name": "DonJ80",
+            "team": "T4G9NBD2M",
+            "name": "ali.jwan",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1578243795.008500",
+        "parent_user_id": "UBS7QANF3",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "mqGYv",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "i wil,thanks"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "US6CDMD7Z",
+        "type": "message",
+        "ts": "1578246031.011600",
+        "edited": {
+            "user": "US6CDMD7Z",
+            "ts": "1578246094.000000"
+        },
+        "client_msg_id": "d7acb895-95fe-4c71-a64d-0567bf119513",
+        "text": "fixed formatting of the code now",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g19c4206d93c",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/19c4206d93c52ebd2221e703d5f8e9de.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0026-72.png",
+            "first_name": "DonJ80",
+            "real_name": "DonJ80",
+            "display_name": "DonJ80",
+            "team": "T4G9NBD2M",
+            "name": "ali.jwan",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1578243795.008500",
+        "parent_user_id": "UBS7QANF3",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "xgipi",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "fixed formatting of the code now"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "subtype": "channel_join",
+        "user": "URYCXUZLK",
+        "text": "<@URYCXUZLK> has joined the channel",
+        "type": "message",
+        "ts": "1578246152.011900"
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1578247809.016400",
+        "client_msg_id": "091D8128-F7ED-4983-9FC4-0984C4E63354",
+        "text": "I can’t see the error at the moment but can try tomorrow when back on the laptop, the reason the program doesn’t end is because you start the stream in async which creates a new thread. Your program is then blocking on the queue.get, v2 is going to remove async as it results in bad habits \/ the socket timing out\/errors without the main thread catching errors.\n\nRemove that try except as it’s a bit pointless along with the while loop.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "\/dh5Q",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I can’t see the error at the moment but can try tomorrow when back on the laptop, the reason the program doesn’t end is because you start the stream in async which creates a new thread. Your program is then blocking on the queue.get, v2 is going to remove async as it results in bad habits \/ the socket timing out\/errors without the main thread catching errors."
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "Remove that try except as it’s a bit pointless along with the while loop."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1578247830.016900",
+        "client_msg_id": "8A7DE5BE-DF0F-419C-8D46-15085CFAE492",
+        "text": "Can you change logging to DEBUG so we can see more?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1578247830.016900",
+        "reply_count": 1,
+        "reply_users_count": 1,
+        "latest_reply": "1578248009.017000",
+        "reply_users": [
+            "US6CDMD7Z"
+        ],
+        "replies": [
+            {
+                "user": "US6CDMD7Z",
+                "ts": "1578248009.017000"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": true,
+        "last_read": "1578255137.832381",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "B3IXU",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Can you change logging to DEBUG so we can see more?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "subtype": "thread_broadcast",
+        "user": "US6CDMD7Z",
+        "thread_ts": "1578247830.016900",
+        "root": {
+            "user": "U4H19D1D2",
+            "type": "message",
+            "ts": "1578247830.016900",
+            "client_msg_id": "8A7DE5BE-DF0F-419C-8D46-15085CFAE492",
+            "text": "Can you change logging to DEBUG so we can see more?",
+            "team": "T4G9NBD2M",
+            "thread_ts": "1578247830.016900",
+            "reply_count": 1,
+            "reply_users_count": 1,
+            "latest_reply": "1578248009.017000",
+            "reply_users": [
+                "US6CDMD7Z"
+            ],
+            "replies": [
+                {
+                    "user": "US6CDMD7Z",
+                    "ts": "1578248009.017000"
+                }
+            ],
+            "is_locked": false,
+            "subscribed": true,
+            "last_read": "1578255137.832381",
+            "blocks": [
+                {
+                    "type": "rich_text",
+                    "block_id": "B3IXU",
+                    "elements": [
+                        {
+                            "type": "rich_text_section",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "Can you change logging to DEBUG so we can see more?"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        "type": "message",
+        "ts": "1578248009.017000",
+        "client_msg_id": "0364e008-fdd4-4aef-b10e-181cba4fbc7c",
+        "text": "thanks Liam, i will change  it to DEBUG",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "QQeU",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "thanks Liam, i will change  it to DEBUG"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

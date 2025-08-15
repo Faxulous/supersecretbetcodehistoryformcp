@@ -1,0 +1,675 @@
+[
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1629201025.249200",
+        "client_msg_id": "0b1144f4-ee6a-49ef-a167-fff05d50466b",
+        "text": "Looking at logging controls, particularly this example (which I have up and running fine):\n\n<https:\/\/github.com\/liampauling\/flumine\/blob\/master\/examples\/controls\/backtestloggingcontrol.py>\n\nAm I correct in saying that currently the best way to capture net profit (i.e. market level grouping of cleared orders, including com) at the same time would be to make a seperate call to list_cleared_orders (with market grouping) when the ClearedOrdersMetaEvent event comes through (currently I just make 2 calls periodically for market and order level, but the logging control approach seems a bit neater than my current approach)?\n\nAppreciate its probably the obvious answer (I've had a look through baseflumine and I think my assumption is correct, but just wanted to check), I'm just always paranoid about making too many API calls!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "attachments": [
+            {
+                "text": "```\nimport csv\nimport logging\nfrom flumine.controls.loggingcontrols import LoggingControl\n\nlogger = logging.getLogger(__name__)\n\nFIELDNAMES = [\n    \"bet_id\",\n    \"strategy_name\",\n    \"market_id\",\n    \"selection_id\",\n    \"trade_id\",\n    \"date_time_placed\",\n    \"price\",\n    \"price_matched\",\n    \"size\",\n    \"size_matched\",\n    \"profit\",\n    \"side\",\n    \"elapsed_seconds_executable\",\n    \"order_status\",\n    \"market_note\",\n    \"notes\",\n]\n\n\nclass BacktestLoggingControl(LoggingControl):\n    NAME = \"BACKTEST_LOGGING_CONTROL\"\n\n    def __init__(self, *args, **kwargs):\n        super(BacktestLoggingControl, self).__init__(*args, **kwargs)\n        self._setup()\n\n    def _setup(self):\n        with open(\"orders.txt\", \"w\") as m:\n            csv_writer = csv.DictWriter(m, delimiter=\",\", fieldnames=FIELDNAMES)\n            csv_writer.writeheader()\n\n    def _process_cleared_orders_meta(self, event):\n        orders = event.event\n        with open(\"orders.txt\", \"a\") as m:\n            for order in orders:\n                try:\n                    order_data = {\n                        \"bet_id\": order.bet_id,\n                        \"strategy_name\": order.trade.strategy,\n                        \"market_id\": order.market_id,\n                        \"selection_id\": order.selection_id,\n                        \"trade_id\": order.trade.id,\n                        \"date_time_placed\": order.responses.date_time_placed,\n                        \"price\": order.order_type.price,\n                        \"price_matched\": order.average_price_matched,\n                        \"size\": order.order_type.size,\n                        \"size_matched\": order.size_matched,\n                        \"profit\": order.simulated.profit,\n                        \"side\": order.side,\n                        \"elapsed_seconds_executable\": order.elapsed_seconds_executable,\n                        \"order_status\": order.status.value,\n                        \"market_note\": order.trade.market_notes,\n                        \"notes\": order.trade.notes_str,\n                    }\n                    csv_writer = csv.DictWriter(m, delimiter=\",\", fieldnames=FIELDNAMES)\n                    csv_writer.writerow(order_data)\n                except Exception as e:\n                    logger.error(\n                        \"_process_cleared_orders_meta: %s\" % e,\n                        extra={\"order\": order, \"error\": e},\n                    )\n\n        <http:\/\/logger.info|logger.info>(\"Orders updated\", extra={\"order_count\": len(orders)})\n\n```",
+                "title": "<https:\/\/github.com\/liampauling\/flumine\/blob\/master\/examples\/controls\/backtestloggingcontrol.py | backtestloggingcontrol.py>",
+                "footer": "<https:\/\/github.com\/liampauling\/flumine|liampauling\/flumine>",
+                "id": 1,
+                "footer_icon": "https:\/\/slack.github.com\/static\/img\/favicon-neutral.png",
+                "color": "24292f",
+                "mrkdwn_in": [
+                    "text"
+                ],
+                "fallback": "<https:\/\/github.com\/liampauling\/flumine\/blob\/master\/examples\/controls\/backtestloggingcontrol.py | backtestloggingcontrol.py>",
+                "bot_id": "B021ZJYSBMW",
+                "app_unfurl_url": "https:\/\/github.com\/liampauling\/flumine\/blob\/master\/examples\/controls\/backtestloggingcontrol.py",
+                "is_app_unfurl": true
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "a=AZ",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Looking at logging controls, particularly this example (which I have up and running fine):\n\n"
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/liampauling\/flumine\/blob\/master\/examples\/controls\/backtestloggingcontrol.py"
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n\nAm I correct in saying that currently the best way to capture net profit (i.e. market level grouping of cleared orders, including com) at the same time would be to make a seperate call to list_cleared_orders (with market grouping) when the ClearedOrdersMetaEvent event comes through (currently I just make 2 calls periodically for market and order level, but the logging control approach seems a bit neater than my current approach)?\n\nAppreciate its probably the obvious answer (I've had a look through baseflumine and I think my assumption is correct, but just wanted to check), I'm just always paranoid about making too many API calls!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UUCD6P13J",
+        "type": "message",
+        "ts": "1629201280.250500",
+        "client_msg_id": "7ebbb0da-a618-4192-a36d-739baf021aa8",
+        "text": "There's already a worker that does this for you <https:\/\/github.com\/liampauling\/flumine\/blob\/1213faebdb8176268ee663a80d48854edacb6872\/flumine\/worker.py#L226|here> and be able to process <https:\/\/github.com\/liampauling\/flumine\/blob\/62b40ad11988ecab039b3b822bc70779aed64bca\/flumine\/controls\/loggingcontrols.py#L68|here>",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6898272ab81",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6898272ab810e419c2c9ca9af1e53da8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0012-72.png",
+            "first_name": "Lee",
+            "real_name": "Lee U",
+            "display_name": "Lee",
+            "team": "T4G9NBD2M",
+            "name": "lunswor",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "attachments": [
+            {
+                "title": "<https:\/\/github.com\/liampauling\/flumine\/blob\/1213faebdb8176268ee663a80d48854edacb6872\/flumine\/worker.py | worker.py>",
+                "footer": "<https:\/\/github.com\/liampauling\/flumine|liampauling\/flumine>",
+                "id": 1,
+                "footer_icon": "https:\/\/slack.github.com\/static\/img\/favicon-neutral.png",
+                "color": "24292f",
+                "mrkdwn_in": [
+                    "text"
+                ],
+                "fallback": "<https:\/\/github.com\/liampauling\/flumine\/blob\/1213faebdb8176268ee663a80d48854edacb6872\/flumine\/worker.py | worker.py>",
+                "bot_id": "B021ZJYSBMW",
+                "app_unfurl_url": "https:\/\/github.com\/liampauling\/flumine\/blob\/1213faebdb8176268ee663a80d48854edacb6872\/flumine\/worker.py#L226",
+                "is_app_unfurl": true
+            },
+            {
+                "title": "<https:\/\/github.com\/liampauling\/flumine\/blob\/62b40ad11988ecab039b3b822bc70779aed64bca\/flumine\/controls\/loggingcontrols.py | loggingcontrols.py>",
+                "footer": "<https:\/\/github.com\/liampauling\/flumine|liampauling\/flumine>",
+                "id": 2,
+                "footer_icon": "https:\/\/slack.github.com\/static\/img\/favicon-neutral.png",
+                "color": "24292f",
+                "mrkdwn_in": [
+                    "text"
+                ],
+                "fallback": "<https:\/\/github.com\/liampauling\/flumine\/blob\/62b40ad11988ecab039b3b822bc70779aed64bca\/flumine\/controls\/loggingcontrols.py | loggingcontrols.py>",
+                "bot_id": "B021ZJYSBMW",
+                "app_unfurl_url": "https:\/\/github.com\/liampauling\/flumine\/blob\/62b40ad11988ecab039b3b822bc70779aed64bca\/flumine\/controls\/loggingcontrols.py#L68",
+                "is_app_unfurl": true
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "A+Mh9",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "There's already a worker that does this for you "
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/liampauling\/flumine\/blob\/1213faebdb8176268ee663a80d48854edacb6872\/flumine\/worker.py#L226",
+                                "text": "here"
+                            },
+                            {
+                                "type": "text",
+                                "text": " and be able to process "
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/liampauling\/flumine\/blob\/62b40ad11988ecab039b3b822bc70779aed64bca\/flumine\/controls\/loggingcontrols.py#L68",
+                                "text": "here"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1629203783.252300",
+        "client_msg_id": "c7f6f119-a48e-4563-be0a-a48d3ef0d2b2",
+        "text": "Apologies, I'm probably being dense, but in order to use that approach, do I not need to tweak the source code (which I was hoping to avoid), I'm perhaps missing the obvious in how I can get that into a custom class (e.g. that backtest logging control example), without adjusting some of the source (of course if that is the only way so be it, not a problem, was just hoping to avoid it if pos)?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "hKAT",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Apologies, I'm probably being dense, but in order to use that approach, do I not need to tweak the source code (which I was hoping to avoid), I'm perhaps missing the obvious in how I can get that into a custom class (e.g. that backtest logging control example), without adjusting some of the source (of course if that is the only way so be it, not a problem, was just hoping to avoid it if pos)?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UUCD6P13J",
+        "type": "message",
+        "ts": "1629204123.253800",
+        "client_msg_id": "f02f60bc-302f-4060-92ee-bb9db0ab454f",
+        "text": "I may have misunderstood what you was asking but you can do something like the following:\n```class MyLoggingControl(LoggingControl):\n    def _process_cleared_markets(self, event: events.ClearedMarketsEvent):\n        for cleared_market in event.event.orders:\n            print(cleared_market.profit, cleared_market.commission)```\n",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6898272ab81",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6898272ab810e419c2c9ca9af1e53da8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0012-72.png",
+            "first_name": "Lee",
+            "real_name": "Lee U",
+            "display_name": "Lee",
+            "team": "T4G9NBD2M",
+            "name": "lunswor",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "lQvk",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I may have misunderstood what you was asking but you can do something like the following:\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "class MyLoggingControl(LoggingControl):\n    def _process_cleared_markets(self, event: events.ClearedMarketsEvent):\n        for cleared_market in event.event.orders:\n            print(cleared_market.profit, cleared_market.commission)"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": []
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UUCD6P13J",
+        "type": "message",
+        "ts": "1629204222.255200",
+        "client_msg_id": "70a3f5f5-9303-4865-8ab3-db4b2987e658",
+        "text": "The one caveat to that is the cleared market call will only group orders from that flumine instance but you could easily create your own worker that does similar",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6898272ab81",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6898272ab810e419c2c9ca9af1e53da8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0012-72.png",
+            "first_name": "Lee",
+            "real_name": "Lee U",
+            "display_name": "Lee",
+            "team": "T4G9NBD2M",
+            "name": "lunswor",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "4aJ",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "The one caveat to that is the cleared market call will only group orders from that flumine instance but you could easily create your own worker that does similar"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1629204235.255400",
+        "client_msg_id": "c8e4867c-007b-4be1-866a-9bda0755cbbb",
+        "text": "yes that was exactly  it...but that doesn't appear to work for me (i.e. the event never arrives)",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "m+Ya7",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "yes that was exactly  it...but that doesn't appear to work for me (i.e. the event never arrives)"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1629204254.255900",
+        "client_msg_id": "d3e0b50b-7e39-4fa8-947b-c5da2ee7d0c5",
+        "text": "weird, will play around, maybe I'm doing something stupid",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "key",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "weird, will play around, maybe I'm doing something stupid"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1629204266.256200",
+        "client_msg_id": "c3cca546-a194-4a22-a215-6caa2a203691",
+        "text": "in theory what you've suggested is exactly what I was trying to do",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "pmf",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "in theory what you've suggested is exactly what I was trying to do"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1629208159.259300",
+        "client_msg_id": "eed847e4-216b-4f45-a929-58ca2f4f302a",
+        "text": "Still can't get this working, I can see the control is added to the framework here:\n\n```framework.add_logging_control(MyLoggingControl())```\nand I can see from the logs that it is definitely added.\n\nThe meta event I can see is sent here and if I try to capture that it works fine:\n\n<https:\/\/github.com\/liampauling\/flumine\/blob\/720eb8168a18bbea62042d3fd0a67a0550b19e9e\/flumine\/baseflumine.py#L314>).\n\nSo I'm missing a step I think, I can see the ClearMarketsEvent is being sent here, but the control never seems to receive this event:\n\n<https:\/\/github.com\/liampauling\/flumine\/blob\/1213faebdb8176268ee663a80d48854edacb6872\/flumine\/worker.py#L252>\n\nI presume its something blindingly obvious, but I'm missing it!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "attachments": [
+            {
+                "title": "<https:\/\/github.com\/liampauling\/flumine\/blob\/720eb8168a18bbea62042d3fd0a67a0550b19e9e\/flumine\/baseflumine.py | baseflumine.py>",
+                "footer": "<https:\/\/github.com\/liampauling\/flumine|liampauling\/flumine>",
+                "id": 1,
+                "footer_icon": "https:\/\/slack.github.com\/static\/img\/favicon-neutral.png",
+                "color": "24292f",
+                "mrkdwn_in": [
+                    "text"
+                ],
+                "fallback": "<https:\/\/github.com\/liampauling\/flumine\/blob\/720eb8168a18bbea62042d3fd0a67a0550b19e9e\/flumine\/baseflumine.py | baseflumine.py>",
+                "bot_id": "B021ZJYSBMW",
+                "app_unfurl_url": "https:\/\/github.com\/liampauling\/flumine\/blob\/720eb8168a18bbea62042d3fd0a67a0550b19e9e\/flumine\/baseflumine.py#L314",
+                "is_app_unfurl": true
+            },
+            {
+                "title": "<https:\/\/github.com\/liampauling\/flumine\/blob\/1213faebdb8176268ee663a80d48854edacb6872\/flumine\/worker.py | worker.py>",
+                "footer": "<https:\/\/github.com\/liampauling\/flumine|liampauling\/flumine>",
+                "id": 2,
+                "footer_icon": "https:\/\/slack.github.com\/static\/img\/favicon-neutral.png",
+                "color": "24292f",
+                "mrkdwn_in": [
+                    "text"
+                ],
+                "fallback": "<https:\/\/github.com\/liampauling\/flumine\/blob\/1213faebdb8176268ee663a80d48854edacb6872\/flumine\/worker.py | worker.py>",
+                "bot_id": "B021ZJYSBMW",
+                "app_unfurl_url": "https:\/\/github.com\/liampauling\/flumine\/blob\/1213faebdb8176268ee663a80d48854edacb6872\/flumine\/worker.py#L252",
+                "is_app_unfurl": true
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "nc=",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Still can't get this working, I can see the control is added to the framework here:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "framework.add_logging_control(MyLoggingControl())"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\nand I can see from the logs that it is definitely added.\n\nThe meta event I can see is sent here and if I try to capture that it works fine:\n\n"
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/liampauling\/flumine\/blob\/720eb8168a18bbea62042d3fd0a67a0550b19e9e\/flumine\/baseflumine.py#L314"
+                            },
+                            {
+                                "type": "text",
+                                "text": ").\n\nSo I'm missing a step I think, I can see the ClearMarketsEvent is being sent here, but the control never seems to receive this event:\n\n"
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/liampauling\/flumine\/blob\/1213faebdb8176268ee663a80d48854edacb6872\/flumine\/worker.py#L252"
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n\nI presume its something blindingly obvious, but I'm missing it!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "subtype": "channel_join",
+        "user": "U02BDQG2JLV",
+        "text": "<@U02BDQG2JLV> has joined the channel",
+        "type": "message",
+        "ts": "1629228412.259800"
+    },
+    {
+        "user": "UPMUFSGCR",
+        "type": "message",
+        "ts": "1629231056.260300",
+        "client_msg_id": "2b652bd9-020c-4720-b10d-4c85f935c75f",
+        "text": "If different processes are writing to the same log file, can there be issues?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "31c0bb5a442c",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2019-10-28\/812386967189_31c0bb5a442c5b8d2c61_72.png",
+            "first_name": "Jon",
+            "real_name": "Jon Jon Jon Jon Jon Jon Jon Jon",
+            "display_name": "Jonjonjon",
+            "team": "T4G9NBD2M",
+            "name": "fcmisc",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1629231056.260300",
+        "reply_count": 2,
+        "reply_users_count": 2,
+        "latest_reply": "1629272553.262700",
+        "reply_users": [
+            "U9JHLMZB4",
+            "UPMUFSGCR"
+        ],
+        "replies": [
+            {
+                "user": "U9JHLMZB4",
+                "ts": "1629272343.262400"
+            },
+            {
+                "user": "UPMUFSGCR",
+                "ts": "1629272553.262700"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": false,
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "htYPI",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "If different processes are writing to the same log file, can there be issues?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1629231512.262200",
+        "client_msg_id": "4a0fbbe9-60b0-49c1-8e33-4644042fbfc1",
+        "text": "I can't even get the ClearMarketsEvent at all, it never comes through. I do however always see the meta event, so it feel like I've missed a step somewhere, but I can't see where as logically the ClearMarketsEvent is put in the queue in the background worker and presumably thats it, it should then come through?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1629231512.262200",
+        "reply_count": 17,
+        "reply_users_count": 3,
+        "latest_reply": "1629296264.277600",
+        "reply_users": [
+            "U4H19D1D2",
+            "UFTBRB3F1",
+            "UUCD6P13J"
+        ],
+        "replies": [
+            {
+                "user": "U4H19D1D2",
+                "ts": "1629272625.262900"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1629272658.263200"
+            },
+            {
+                "user": "UFTBRB3F1",
+                "ts": "1629290382.274600"
+            },
+            {
+                "user": "UFTBRB3F1",
+                "ts": "1629290405.274800"
+            },
+            {
+                "user": "UUCD6P13J",
+                "ts": "1629295054.275000"
+            },
+            {
+                "user": "UFTBRB3F1",
+                "ts": "1629295349.275300"
+            },
+            {
+                "user": "UFTBRB3F1",
+                "ts": "1629295353.275500"
+            },
+            {
+                "user": "UFTBRB3F1",
+                "ts": "1629295355.275700"
+            },
+            {
+                "user": "UFTBRB3F1",
+                "ts": "1629295445.275900"
+            },
+            {
+                "user": "UUCD6P13J",
+                "ts": "1629295500.276100"
+            },
+            {
+                "user": "UUCD6P13J",
+                "ts": "1629295610.276300"
+            },
+            {
+                "user": "UFTBRB3F1",
+                "ts": "1629295738.276500"
+            },
+            {
+                "user": "UUCD6P13J",
+                "ts": "1629296075.276700"
+            },
+            {
+                "user": "UFTBRB3F1",
+                "ts": "1629296153.276900"
+            },
+            {
+                "user": "UFTBRB3F1",
+                "ts": "1629296202.277100"
+            },
+            {
+                "user": "UUCD6P13J",
+                "ts": "1629296211.277300"
+            },
+            {
+                "user": "UFTBRB3F1",
+                "ts": "1629296264.277600"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": true,
+        "last_read": "1629296264.277600",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "O9rs",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I can't even get the ClearMarketsEvent at all, it never comes through. I do however always see the meta event, so it feel like I've missed a step somewhere, but I can't see where as logically the ClearMarketsEvent is put in the queue in the background worker and presumably thats it, it should then come through?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

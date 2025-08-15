@@ -1,0 +1,179 @@
+[
+    {
+        "user": "U9JHLMZB4",
+        "type": "message",
+        "ts": "1702984376.517999",
+        "client_msg_id": "71d15f3f-56a1-41f3-9c83-39c3733a538f",
+        "text": "Flumine will only see its own orders. But you could use betfairlightweight in a work or middleware to inject those that you place directly on the Betfair website. There's <https:\/\/github.com\/betcode-org\/flumine\/blob\/master\/examples\/middleware\/orders.py|a middleware example that does this> to repair the setup when Flumine is re-started that could be adapted to infill your manually-placed bets.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g951ddcb43e7",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/3951ddcb43e788a387d6daf330dad5ca.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0018-72.png",
+            "first_name": "",
+            "real_name": "Peter Coles",
+            "display_name": "Peter",
+            "team": "T4G9NBD2M",
+            "name": "peter",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1695005008.194789",
+        "parent_user_id": "U0322P0CK0E",
+        "attachments": [
+            {
+                "id": 1,
+                "footer_icon": "https:\/\/slack.github.com\/static\/img\/favicon-neutral.png",
+                "color": "24292f",
+                "bot_id": "B021ZJYSBMW",
+                "app_unfurl_url": "https:\/\/github.com\/betcode-org\/flumine\/blob\/master\/examples\/middleware\/orders.py",
+                "is_app_unfurl": true,
+                "app_id": "A01BP7R4KNY",
+                "fallback": "<https:\/\/github.com\/betcode-org\/flumine\/blob\/master\/examples\/middleware\/orders.py | orders.py>",
+                "text": "```\nimport logging\nfrom flumine import config\nfrom flumine.utils import STRATEGY_NAME_HASH_LENGTH\nfrom flumine.markets.middleware import Middleware\nfrom flumine.order.trade import Trade\n\nlogger = logging.getLogger(__name__)\n\n\nclass OrdersMiddleware(Middleware):\n    \"\"\"\n    Middleware to add execution complete orders\n    to the blotter. This is required on a restart\n    as the order stream does not include\n    EXECUTION_COMPLETE orders\n    \"\"\"\n\n    def __init__(self, flumine):\n        self.flumine = flumine\n\n    def add_market(self, market) -> None:\n        for client in self.flumine.clients:\n            resp = client.betting_client.betting.list_current_orders(\n                customer_strategy_refs=[config.customer_strategy_ref],\n                order_projection=\"EXECUTION_COMPLETE\",\n            )\n            for current_order in resp.orders:\n                <http:\/\/logger.info|logger.info>(\n                    \"OrdersMiddleware: Processing order %s\",\n                    current_order.bet_id,\n                    extra={\n                        \"bet_id\": current_order.bet_id,\n                        \"market_id\": current_order.market_id,\n                        \"customer_strategy_ref\": current_order.customer_strategy_ref,\n                        \"customer_order_ref\": current_order.customer_order_ref,\n                        \"client_username\": client.username,\n                    },\n                )\n                order = self._create_order_from_current(client, current_order, market)\n                if order:\n                    order.update_current_order(current_order)\n                    order.execution_complete()\n\n    def _create_order_from_current(self, client, current_order, market):\n        strategy_name_hash = current_order.customer_order_ref[\n            :STRATEGY_NAME_HASH_LENGTH\n        ]\n        order_id = current_order.customer_order_ref[STRATEGY_NAME_HASH_LENGTH + 1 :]\n        # get strategy\n        strategy = self.flumine.strategies.hashes.get(strategy_name_hash)\n        if strategy is None:\n            logger.warning(\n                \"OrdersMiddleware: Strategy not available to create order %s\",\n                order_id,\n                extra={\n                    \"bet_id\": current_order.bet_id,\n                    \"market_id\": current_order.market_id,\n                    \"customer_strategy_ref\": current_order.customer_strategy_ref,\n                    \"customer_order_ref\": current_order.customer_order_ref,\n                    \"strategy_name\": str(strategy),\n                    \"client_username\": client.username,\n                },\n            )\n            return\n        # add trade\/order\n        trade = Trade(\n            market.market_id,\n            current_order.selection_id,\n            current_order.handicap,\n            strategy,\n        )\n        order = trade.create_order_from_current(client, current_order, order_id)\n        market.blotter[order.id] = order\n        runner_context = strategy.get_runner_context(*order.lookup)\n        runner_context.place(trade.id)\n        <http:\/\/logger.info|logger.info>(\n            \"OrdersMiddleware: New order trade created\",\n            extra={\n                \"bet_id\": current_order.bet_id,\n                \"market_id\": current_order.market_id,\n                \"customer_strategy_ref\": current_order.customer_strategy_ref,\n                \"customer_order_ref\": current_order.customer_order_ref,\n                \"strategy_name\": str(strategy),\n                \"client_username\": client.username,\n            },\n        )\n        return order\n\n```",
+                "title": "<https:\/\/github.com\/betcode-org\/flumine\/blob\/master\/examples\/middleware\/orders.py | orders.py>",
+                "footer": "<https:\/\/github.com\/betcode-org\/flumine|betcode-org\/flumine>",
+                "mrkdwn_in": [
+                    "text"
+                ]
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "JRIUN",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Flumine will only see its own orders. But you could use betfairlightweight in a work or middleware to inject those that you place directly on the Betfair website. There's "
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/betcode-org\/flumine\/blob\/master\/examples\/middleware\/orders.py",
+                                "text": "a middleware example that does this"
+                            },
+                            {
+                                "type": "text",
+                                "text": " to repair the setup when Flumine is re-started that could be adapted to infill your manually-placed bets."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U03QLPZQBLM",
+        "type": "message",
+        "ts": "1703047764.297679",
+        "client_msg_id": "77e032de-20da-49a7-8227-63972f0a1803",
+        "text": "Hey <@U4H19D1D2> further to this, why would I see multiple `bet_ids` in my `cleareed_orders_meta` ?\n\nThey seem to span accross different markets, is it wrong to assume a bet_id is unique?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gee4caf4e81f",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/ee4caf4e81ff96058a7d4a3efdf1a260.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0016-72.png",
+            "first_name": "Johnny",
+            "real_name": "Johnny Boston",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "mike.breen.bbb",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1702545412.369359",
+        "parent_user_id": "U03QLPZQBLM",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "J0RVN",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Hey "
+                            },
+                            {
+                                "type": "user",
+                                "user_id": "U4H19D1D2"
+                            },
+                            {
+                                "type": "text",
+                                "text": " further to this, why would I see multiple "
+                            },
+                            {
+                                "type": "text",
+                                "text": "bet_ids",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " in my "
+                            },
+                            {
+                                "type": "text",
+                                "text": "cleareed_orders_meta",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " ?\n\nThey seem to span accross different markets, is it wrong to assume a bet_id is unique?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1703054396.548649",
+        "client_msg_id": "B3E3A24E-BC8A-4A51-9338-42205BB052AD",
+        "text": "Huh?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1702545412.369359",
+        "parent_user_id": "U03QLPZQBLM",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "dpRLd",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Huh?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

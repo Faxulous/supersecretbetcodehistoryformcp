@@ -1,0 +1,484 @@
+[
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1708332679.935089",
+        "client_msg_id": "737f968a-2bc9-4329-8749-a294081e99d6",
+        "text": "Confirmed",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1708292709.282479",
+        "parent_user_id": "U03B4S0K1T2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "DQz3Q",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Confirmed"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U06G1373VB2",
+        "type": "message",
+        "ts": "1708336735.163429",
+        "client_msg_id": "946953aa-05bb-406b-bf4c-63814d2319ef",
+        "text": "Hey folks,\nI was working with betfair stream and wanted to know how will betfairlightweight client will inform application if stream is closed due to session expiry?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "4a65420bf390",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-01-24\/6534965180305_4a65420bf390fffb1696_72.png",
+            "first_name": "Aiyaj",
+            "real_name": "Aiyaj Khalani",
+            "display_name": "Aiyaj Khalani",
+            "team": "T4G9NBD2M",
+            "name": "aiyaj.khalani",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1708336735.163429",
+        "reply_count": 1,
+        "reply_users_count": 1,
+        "latest_reply": "1708337248.247299",
+        "reply_users": [
+            "U4H19D1D2"
+        ],
+        "replies": [
+            {
+                "user": "U4H19D1D2",
+                "ts": "1708337248.247299"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": true,
+        "last_read": "1708337248.247299",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "qes86",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Hey folks,\nI was working with betfair stream and wanted to know how will betfairlightweight client will inform application if stream is closed due to session expiry?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1708337248.247299",
+        "client_msg_id": "c8c2c860-6e90-4567-9622-8c15a11270ab",
+        "text": "Betfair won't actually close your stream on session expiry however you should use the error handling <https:\/\/github.com\/betcode-org\/betfair\/blob\/master\/examples\/examplestreamingerrhandling.py|example> or just use flumine and it does it all for you",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1708336735.163429",
+        "parent_user_id": "U06G1373VB2",
+        "attachments": [
+            {
+                "id": 1,
+                "footer_icon": "https:\/\/slack.github.com\/static\/img\/favicon-neutral.png",
+                "color": "24292f",
+                "bot_id": "B021ZJYSBMW",
+                "app_unfurl_url": "https:\/\/github.com\/betcode-org\/betfair\/blob\/master\/examples\/examplestreamingerrhandling.py",
+                "is_app_unfurl": true,
+                "app_id": "A01BP7R4KNY",
+                "fallback": "<https:\/\/github.com\/betcode-org\/betfair\/blob\/master\/examples\/examplestreamingerrhandling.py | examplestreamingerrhandling.py>",
+                "text": "```\nimport logging\nimport queue\nimport threading\nfrom tenacity import retry, wait_exponential\n\nimport betfairlightweight\nfrom betfairlightweight import StreamListener\nfrom betfairlightweight import BetfairError\nfrom betfairlightweight.filters import (\n    streaming_market_filter,\n    streaming_market_data_filter,\n)\n\n\"\"\"\nStreaming example to handle timeouts or connection errors, \nwith reconnect.\n\nCode uses 'tenacity' library for retrying.\n\nStreaming class inherits threading module to simplify start\/\nstop.\n\"\"\"\n\n# setup logging\nlogging.basicConfig(level=<http:\/\/logging.INFO|logging.INFO>)  # change to DEBUG to see log all updates\nlogger = logging.getLogger(__name__)\n\n\nclass Streaming(threading.Thread):\n    def __init__(\n        self,\n        client: betfairlightweight.APIClient,\n        market_filter: dict,\n        market_data_filter: dict,\n        conflate_ms: int = None,\n        streaming_unique_id: int = 1000,\n    ):\n        threading.Thread.__init__(self, daemon=True, name=self.__class__.__name__)\n        self.client = client\n        self.market_filter = market_filter\n        self.market_data_filter = market_data_filter\n        self.conflate_ms = conflate_ms\n        self.streaming_unique_id = streaming_unique_id\n        self.stream = None\n        self.output_queue = queue.Queue()\n        self.listener = StreamListener(output_queue=self.output_queue)\n\n    @retry(wait=wait_exponential(multiplier=1, min=2, max=20))\n    def run(self) -> None:\n        <http:\/\/logger.info|logger.info>(\"Starting MarketStreaming\")\n        self.client.login()\n        self.stream = self.client.streaming.create_stream(\n            unique_id=self.streaming_unique_id, listener=self.listener\n        )\n        try:\n            self.streaming_unique_id = self.stream.subscribe_to_markets(\n                market_filter=self.market_filter,\n                market_data_filter=self.market_data_filter,\n                conflate_ms=self.conflate_ms,\n                initial_clk=self.listener.initial_clk,  # supplying these two values allows a reconnect\n                clk=self.listener.clk,\n            )\n            self.stream.start()\n        except BetfairError:\n            logger.error(\"MarketStreaming run error\", exc_info=True)\n            raise\n        except Exception:\n            logger.critical(\"MarketStreaming run error\", exc_info=True)\n            raise\n        <http:\/\/logger.info|logger.info>(\"Stopped MarketStreaming %s\", self.streaming_unique_id)\n\n    def stop(self) -> None:\n        if self.stream:\n            self.stream.stop()\n\n\n# create trading instance (app key must be activated for streaming)\ntrading = betfairlightweight.APIClient(\"username\", \"password\", app_key=\"appKey\")\n\n# login\ntrading.login()\n\n# create filters (GB WIN racing)\nmarket_filter = streaming_market_filter(\n    event_type_ids=[\"7\"], country_codes=[\"GB\"], market_types=[\"WIN\"]\n)\nmarket_data_filter = streaming_market_data_filter(\n    fields=[\"EX_BEST_OFFERS\", \"EX_MARKET_DEF\"], ladder_levels=3\n)\n\n# create streaming object\nstreaming = Streaming(trading, market_filter, market_data_filter)\n\n# start streaming (runs in new thread and handles any errors)\nstreaming.start()\n\n# check for updates in output queue\nwhile True:\n    market_books = streaming.output_queue.get()\n    print(market_books)\n\n    for market_book in market_books:\n        print(\n            market_book,\n            market_book.streaming_unique_id,  # unique id of stream (returned from subscribe request)\n            market_book.streaming_update,  # json update received\n            market_book.market_definition,  # streaming definition, similar to catalogue request\n            market_book.publish_time,  # betfair publish time of update\n        )\n\n```",
+                "title": "<https:\/\/github.com\/betcode-org\/betfair\/blob\/master\/examples\/examplestreamingerrhandling.py | examplestreamingerrhandling.py>",
+                "footer": "<https:\/\/github.com\/betcode-org\/betfair|betcode-org\/betfair>",
+                "mrkdwn_in": [
+                    "text"
+                ]
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "iN62M",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Betfair won't actually close your stream on session expiry however you should use the error handling "
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/betcode-org\/betfair\/blob\/master\/examples\/examplestreamingerrhandling.py",
+                                "text": "example"
+                            },
+                            {
+                                "type": "text",
+                                "text": " or just use flumine and it does it all for you"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UPMUFSGCR",
+        "type": "message",
+        "ts": "1708384061.147779",
+        "client_msg_id": "3750351f-222d-4783-8d09-5e1a4e402ad0",
+        "text": "I noticed this in my logs:\n\n`\"instructionReports\": [{\"status\": \"FAILURE\", \"errorCode\": \"ERROR_IN_ORDER\", \"instruction\":`\n\nThe market was shortly unsuspended.\n\nWhat's the recommended way to handle this in my code? I would like to attempt to place the order after the market resumes.\n\nFor context, this was pre-race.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "31c0bb5a442c",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2019-10-28\/812386967189_31c0bb5a442c5b8d2c61_72.png",
+            "first_name": "Jon",
+            "real_name": "Jon Jon Jon Jon Jon Jon Jon Jon",
+            "display_name": "Jonjonjon",
+            "team": "T4G9NBD2M",
+            "name": "fcmisc",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1708384061.147779",
+        "reply_count": 1,
+        "reply_users_count": 1,
+        "latest_reply": "1708418162.117859",
+        "reply_users": [
+            "U4H19D1D2"
+        ],
+        "replies": [
+            {
+                "user": "U4H19D1D2",
+                "ts": "1708418162.117859"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": true,
+        "last_read": "1708418162.117859",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "LBEbk",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I noticed this in my logs:\n\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "\"instructionReports\": [{\"status\": \"FAILURE\", \"errorCode\": \"ERROR_IN_ORDER\", \"instruction\":",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n\nThe market was shortly unsuspended.\n\nWhat's the recommended way to handle this in my code? I would like to attempt to place the order after the market resumes.\n\nFor context, this was pre-race."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UPMUFSGCR",
+        "type": "message",
+        "ts": "1708384610.713779",
+        "client_msg_id": "3c83db0f-9e27-4d9d-99ea-068d6107148e",
+        "text": "The `ERROR_CODE` was `MARKET_SUSPENDED`.\nLooking at my historical data file, the market did not get suspended at time of placement.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "31c0bb5a442c",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2019-10-28\/812386967189_31c0bb5a442c5b8d2c61_72.png",
+            "first_name": "Jon",
+            "real_name": "Jon Jon Jon Jon Jon Jon Jon Jon",
+            "display_name": "Jonjonjon",
+            "team": "T4G9NBD2M",
+            "name": "fcmisc",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "LDvfr",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "The "
+                            },
+                            {
+                                "type": "text",
+                                "text": "ERROR_CODE",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " was "
+                            },
+                            {
+                                "type": "text",
+                                "text": "MARKET_SUSPENDED",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": ".\nLooking at my historical data file, the market did not get suspended at time of placement."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U03B4S0K1T2",
+        "type": "message",
+        "ts": "1708397373.216019",
+        "client_msg_id": "a6789cac-7666-43c4-8857-987a17af13f9",
+        "text": "Race card? Can I access the race card from some betfair endpoint?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "cc253c3f37f9",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2022-04-06\/3348480972038_cc253c3f37f9d424c465_72.png",
+            "first_name": "Andrey",
+            "real_name": "Andrey Luiz Malheiros",
+            "display_name": "Andrey Luiz Malheiros",
+            "team": "T4G9NBD2M",
+            "name": "andreylcj",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1708292709.282479",
+        "parent_user_id": "U03B4S0K1T2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "eT0RR",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Race card? Can I access the race card from some betfair endpoint?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U06DURYFXK7",
+        "type": "message",
+        "ts": "1708402167.834089",
+        "edited": {
+            "user": "U06DURYFXK7",
+            "ts": "1708405006.000000"
+        },
+        "client_msg_id": "c414aad8-213e-413a-a960-440870591fcd",
+        "text": "Hi All, I run a script before each day's racing to collect 'raceday' data for my models to use. This data is stored in a csv, and a ref to the csv is created in the start function of the strategy. The model is run x seconds before jump in the strategy class to determine bets etc.\n\nI would like to use a background worker to run the raceday data collection every x hours. What is the best practice to do this?\nCould I run the collection script, then re-run the strat start function using the worker function? Is there anything else i need to do?\n\nHappy for suggestions on how i can do the whole process betterrerr :slightly_smiling_face:\n\nUpdate: I have placed the 'get data' code inside the start func and re run start() using the worker. Seems ok?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "e397ac707759",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-01-15\/6473811233506_e397ac707759c168298e_72.png",
+            "first_name": "Jared",
+            "real_name": "Jared King",
+            "display_name": "Jared King",
+            "team": "T4G9NBD2M",
+            "name": "jaristyking",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "fOVhO",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Hi All, I run a script before each day's racing to collect 'raceday' data for my models to use. This data is stored in a csv, and a ref to the csv is created in the start function of the strategy. The model is run x seconds before jump in the strategy class to determine bets etc.\n\nI would like to use a background worker to run the raceday data collection every x hours. What is the best practice to do this?\nCould I run the collection script, then re-run the strat start function using the worker function? Is there anything else i need to do?\n\nHappy for suggestions on how i can do the whole process betterrerr "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "slightly_smiling_face",
+                                "unicode": "1f642"
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n\nUpdate: I have placed the 'get data' code inside the start func and re run start() using the worker. Seems ok?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01D23DDMTQ",
+        "type": "message",
+        "ts": "1708405905.623699",
+        "edited": {
+            "user": "U01D23DDMTQ",
+            "ts": "1708405992.000000"
+        },
+        "client_msg_id": "84DE8012-B6B1-46F7-B0EA-762FD5CCF971",
+        "text": "I’d put the collection script is a separate schedule process. The output files would be named accordingly. Inside the strategy when each market is ready to process (“few seconds before the jump”) then open the appropriate presaved csv to read your necessary racedata. Alternatively use a database rather than CSV or maybe a preprocessed pickled file for quick loading. But definitely disconnected processes.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "5d6a9e5a85c0",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2021-06-26\/2219792322468_5d6a9e5a85c01e3abc9e_72.png",
+            "first_name": "Andrew",
+            "real_name": "Andrew",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "agruskin",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "EDyou",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I’d"
+                            },
+                            {
+                                "type": "text",
+                                "text": " put the collection script is a separate schedule process. The output files would be named accordingly. Inside the strategy when each market is ready to process (“few seconds before the jump”) then open the appropriate presaved csv to read your necessary racedata. Alternatively use a database rather than CSV or maybe a preprocessed pickled file for quick loading. But definitely disconnected processes."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1708411045.102399",
+        "client_msg_id": "FF5179AC-C53C-4AAC-B608-0A7CCC2778E7",
+        "text": "<https:\/\/github.com\/betcode-org\/betfair\/blob\/master\/examples\/exampleracecard.py|https:\/\/github.com\/betcode-org\/betfair\/blob\/master\/examples\/exampleracecard.py>",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1708292709.282479",
+        "parent_user_id": "U03B4S0K1T2",
+        "attachments": [
+            {
+                "id": 1,
+                "footer_icon": "https:\/\/slack.github.com\/static\/img\/favicon-neutral.png",
+                "color": "24292f",
+                "bot_id": "B021ZJYSBMW",
+                "app_unfurl_url": "https:\/\/github.com\/betcode-org\/betfair\/blob\/master\/examples\/exampleracecard.py",
+                "is_app_unfurl": true,
+                "app_id": "A01BP7R4KNY",
+                "fallback": "<https:\/\/github.com\/betcode-org\/betfair\/blob\/master\/examples\/exampleracecard.py | exampleracecard.py>",
+                "text": "```\nimport logging\n\nimport betfairlightweight\n\n\n# setup logging\nlogging.basicConfig(level=<http:\/\/logging.INFO|logging.INFO>)  # change to DEBUG to see log all updates\n\n# create trading instance (don't need username\/password)\ntrading = betfairlightweight.APIClient(\"username\", \"password\")\n\n# race card login\ntrading.race_card.login()\n\n# update\nmarket_id = \"1.133559518\"\n\n# race card request (provide list \/ returns list)\nrace_cards = trading.race_card.get_race_card(market_ids=[market_id])\n\n\nprint(race_cards)\nfor race_card in race_cards:\n    print(\n        race_card, race_card.prize, race_card.timeform_123_text\n    )  # view resources or debug to see all values available\n\n    for runner in race_card.runners:\n        print(runner.name, runner.comment)\n\n\n# results request (provide list \/ returns list of dictionaries)\nresults = trading.race_card.get_race_result(market_ids=[market_id])\n\nprint(results)\nfor result in results:\n    print(result)\n\n```",
+                "title": "<https:\/\/github.com\/betcode-org\/betfair\/blob\/master\/examples\/exampleracecard.py | exampleracecard.py>",
+                "footer": "<https:\/\/github.com\/betcode-org\/betfair|betcode-org\/betfair>",
+                "mrkdwn_in": [
+                    "text"
+                ]
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "4vAAO",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/betcode-org\/betfair\/blob\/master\/examples\/exampleracecard.py",
+                                "text": "https:\/\/github.com\/betcode-org\/betfair\/blob\/master\/examples\/exampleracecard.py"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

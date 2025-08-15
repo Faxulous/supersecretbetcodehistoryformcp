@@ -1,0 +1,1437 @@
+[
+    {
+        "user": "U9JHLMZB4",
+        "type": "message",
+        "ts": "1643623793.939369",
+        "client_msg_id": "cd802f3b-484d-4531-894e-6316f0523cd0",
+        "text": "Not much to do as the bet is locked in, So if I backed I accept that I won't win as much, but have a higher chance of winning, and if I laid I accept that I have a higher risk of paying out, but it won't be as much as I was prepared to risk. If the horse doesn't win or place, it makes no difference.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g951ddcb43e7",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/3951ddcb43e788a387d6daf330dad5ca.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0018-72.png",
+            "first_name": "",
+            "real_name": "Peter Coles",
+            "display_name": "Peter",
+            "team": "T4G9NBD2M",
+            "name": "peter",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "6jYyD",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Not much to do as the bet is locked in, So if I backed I accept that I won't win as much, but have a higher chance of winning, and if I laid I accept that I have a higher risk of paying out, but it won't be as much as I was prepared to risk. If the horse doesn't win or place, it makes no difference."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UUX1L88MC",
+        "type": "message",
+        "ts": "1643632926.633889",
+        "client_msg_id": "696c2959-6f5c-4eb1-aefe-d28b5ec5bc93",
+        "text": "Hi Guys (I’m a lurker from the Aus Quants channel), Im doing some work with <@UUUAJQZ5J> writing some content for the BF Aus Automation hub around using the historic data files. The main problem I’m tasked with addressing is the speed and performance of how long it takes to parse through the files and the ease and developer experience when doing so. \nI’ve written a new python library whose aim is solely to read\/parse these files and I’ll be open sourcing it along with my article and tutorials. The library is written entirely in rust and uses some tricky things like in place deserialisation and offloading decompression to threads to significantly speed up the parsing performance.\n\nIm now onto writing the accompanying article and I want to make sure I cast betfair_lightweight in the best possible light. Im not a python dev at all, I don’t understand its concurrency patterns or its async capabilities and Im worried my benchmark code (stolen from the hub tutorials) is missing some simple optimisations that might dramatically increase the performance. In particular the bz2 decompression seems to happen in the same thread blocking everything else, so seems like a good candidate to offload to a thread\/async?\n\nAny help people could share here would be much appreciated!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g15a28036452",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/15a28036452dd7be5991d4eda490e198.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0007-72.png",
+            "first_name": "",
+            "real_name": "Rob",
+            "display_name": "Rob",
+            "team": "T4G9NBD2M",
+            "name": "rtarbath",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "+V1",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Hi Guys (I’m a lurker from the Aus Quants channel), Im doing some work with "
+                            },
+                            {
+                                "type": "user",
+                                "user_id": "UUUAJQZ5J"
+                            },
+                            {
+                                "type": "text",
+                                "text": " writing some content for the BF Aus Automation hub around using the historic data files. The main problem I’m tasked with addressing is the speed and performance of how long it takes to parse through the files and the ease and developer experience when doing so. \nI’ve written a new python library whose aim is solely to read\/parse these files and I’ll be open sourcing it along with my article and tutorials. The library is written entirely in rust and uses some tricky things like in place deserialisation and offloading decompression to threads to significantly speed up the parsing performance.\n\nIm now onto writing the accompanying article and I want to make sure I cast betfair_lightweight in the best possible light. Im not a python dev at all, I don’t understand its concurrency patterns or its async capabilities and Im worried my benchmark code (stolen from the hub tutorials) is missing some simple optimisations that might dramatically increase the performance. In particular the bz2 decompression seems to happen in the same thread blocking everything else, so seems like a good candidate to offload to a thread\/async?\n\nAny help people could share here would be much appreciated!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "ok_hand",
+                "users": [
+                    "UUUAJQZ5J",
+                    "U0266A8579B"
+                ],
+                "count": 2
+            }
+        ]
+    },
+    {
+        "user": "UUX1L88MC",
+        "type": "message",
+        "ts": "1643632943.812909",
+        "client_msg_id": "fadf5ceb-2a32-444b-b3d5-035958efa52a",
+        "text": "```from typing import Sequence \n\nimport logging\nimport unittest.mock\nimport os\nimport tarfile\nimport zipfile\nimport bz2\nimport glob\nimport betfairlightweight\n\nmarket_paths = [\n    \"data\/2021_10_OctRacingProAu.tar\",\n]\n\n# loading from tar and extracting files\ndef load_markets(file_paths: Sequence[str]):\n    for file_path in file_paths:\n        if os.path.isdir(file_path):\n            for path in glob.iglob(file_path + '**\/**\/*.bz2', recursive=True):\n                f = bz2.BZ2File(path, 'rb')\n                yield f\n                f.close()\n        elif os.path.isfile(file_path):\n            ext = os.path.splitext(file_path)[1]\n            # iterate through a tar archive\n            if ext == '.tar':\n                with tarfile.TarFile(file_path) as archive:\n                    for file in archive:\n                        yield bz2.open(archive.extractfile(file))\n            # or a zip archive\n            elif ext == '.zip':\n                with zipfile.ZipFile(file_path) as archive:\n                    for file in archive.namelist():\n                        yield bz2.open(archive.open(file))\n    return None\n\n\nlogging.basicConfig(level=logging.WARN)\ntrading = betfairlightweight.APIClient(\"username\", \"password\", \"appkey\")\nlistener = betfairlightweight.StreamListener(max_latency=None)\n\ncount = 0\nfor i, file_obj in enumerate(load_markets(market_paths)):\n    with unittest.mock.patch(\"builtins.open\", lambda f, _: f):  \n        stream = trading.streaming.create_historical_generator_stream(\n            file_path=file_obj,\n            listener=listener,\n        )\n        gen = stream.get_generator()\n    \n        for market_books in gen():\n            for market_book in market_books:\n                count += 1\n\n        print(\"&gt; Market {} Update {}\".format(i, count), end='\\r')\n                ```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g15a28036452",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/15a28036452dd7be5991d4eda490e198.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0007-72.png",
+            "first_name": "",
+            "real_name": "Rob",
+            "display_name": "Rob",
+            "team": "T4G9NBD2M",
+            "name": "rtarbath",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "nct",
+                "elements": [
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "from typing import Sequence \n\nimport logging\nimport unittest.mock\nimport os\nimport tarfile\nimport zipfile\nimport bz2\nimport glob\nimport betfairlightweight\n\nmarket_paths = [\n    \"data\/2021_10_OctRacingProAu.tar\",\n]\n\n# loading from tar and extracting files\ndef load_markets(file_paths: Sequence[str]):\n    for file_path in file_paths:\n        if os.path.isdir(file_path):\n            for path in glob.iglob(file_path + '**\/**\/*.bz2', recursive=True):\n                f = bz2.BZ2File(path, 'rb')\n                yield f\n                f.close()\n        elif os.path.isfile(file_path):\n            ext = os.path.splitext(file_path)[1]\n            # iterate through a tar archive\n            if ext == '.tar':\n                with tarfile.TarFile(file_path) as archive:\n                    for file in archive:\n                        yield bz2.open(archive.extractfile(file))\n            # or a zip archive\n            elif ext == '.zip':\n                with zipfile.ZipFile(file_path) as archive:\n                    for file in archive.namelist():\n                        yield bz2.open(archive.open(file))\n    return None\n\n\nlogging.basicConfig(level=logging.WARN)\ntrading = betfairlightweight.APIClient(\"username\", \"password\", \"appkey\")\nlistener = betfairlightweight.StreamListener(max_latency=None)\n\ncount = 0\nfor i, file_obj in enumerate(load_markets(market_paths)):\n    with unittest.mock.patch(\"builtins.open\", lambda f, _: f):  \n        stream = trading.streaming.create_historical_generator_stream(\n            file_path=file_obj,\n            listener=listener,\n        )\n        gen = stream.get_generator()\n    \n        for market_books in gen():\n            for market_book in market_books:\n                count += 1\n\n        print(\"> Market {} Update {}\".format(i, count), end='\\r')\n                "
+                            }
+                        ],
+                        "border": 0
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UUX1L88MC",
+        "type": "message",
+        "ts": "1643633161.546999",
+        "client_msg_id": "3aaf9cd9-2df8-4dd6-8198-11b76f3fd341",
+        "text": "Running this with the Oct month of Aus horse data ~7500 markets \/ ~55m rows took about 1h20 mins on my new mbp.\nMy new library gets this down to about 2-3 mins",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g15a28036452",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/15a28036452dd7be5991d4eda490e198.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0007-72.png",
+            "first_name": "",
+            "real_name": "Rob",
+            "display_name": "Rob",
+            "team": "T4G9NBD2M",
+            "name": "rtarbath",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "ori",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Running this with the Oct month of Aus horse data ~7500 markets \/ ~55m rows took about 1h20 mins on my new mbp.\nMy new library gets this down to about 2-3 mins"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1643633178.281099",
+        "edited": {
+            "user": "U4H19D1D2",
+            "ts": "1643634080.000000"
+        },
+        "client_msg_id": "DDDCD835-71D2-448F-A696-81B46726ED54",
+        "text": "Real shame you haven't looked to improve \/ speed up bflw instead",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "d=UpC",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Real shame you haven't looked to improve \/ speed up bflw instead"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "100",
+                "users": [
+                    "UBS7QANF3"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "UUX1L88MC",
+        "type": "message",
+        "ts": "1643633216.512699",
+        "client_msg_id": "eb67e695-c72e-41e8-b4d9-a830f4d18706",
+        "text": "Im just not a python dev, I doubt I would be able to contribute much of value",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g15a28036452",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/15a28036452dd7be5991d4eda490e198.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0007-72.png",
+            "first_name": "",
+            "real_name": "Rob",
+            "display_name": "Rob",
+            "team": "T4G9NBD2M",
+            "name": "rtarbath",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "r\/8O",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Im just not a python dev, I doubt I would be able to contribute much of value"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UUX1L88MC",
+        "type": "message",
+        "ts": "1643633288.793439",
+        "client_msg_id": "e4b1a495-2fff-49fc-8592-ed1d8fcb2710",
+        "text": "If you were interested in upstreaming some of my rust parsing code into bflw tho, I would be happy to work with you",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g15a28036452",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/15a28036452dd7be5991d4eda490e198.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0007-72.png",
+            "first_name": "",
+            "real_name": "Rob",
+            "display_name": "Rob",
+            "team": "T4G9NBD2M",
+            "name": "rtarbath",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "NMoeW",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "If you were interested in upstreaming some of my rust parsing code into bflw tho, I would be happy to work with you"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1643634047.525569",
+        "edited": {
+            "user": "U4H19D1D2",
+            "ts": "1643635641.000000"
+        },
+        "client_msg_id": "2477a31c-9e90-4208-85cf-bf8af8721352",
+        "text": "Is this rust or python? My understanding is that to make rust bindings you need to have a pretty good knowledge of cpython? Is the code open source?\n\nRegarding your example you would need to set `lightweight=True` and `update_clk=False` on the listener for a fairer comparison. Ideally the `[speed]` install is used as well, see <https:\/\/liampauling.github.io\/betfair\/advanced\/#performance|here> for the performance docs",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "attachments": [
+            {
+                "from_url": "https:\/\/liampauling.github.io\/betfair\/advanced\/#performance",
+                "service_icon": "https:\/\/liampauling.github.io\/betfair\/assets\/images\/favicon.png",
+                "id": 1,
+                "original_url": "https:\/\/liampauling.github.io\/betfair\/advanced\/#performance",
+                "fallback": "Advanced Usage - betfairlightweight",
+                "text": "Lightweight, super fast (uses c libraries) pythonic wrapper for Betfair API-NG.",
+                "title": "Advanced Usage - betfairlightweight",
+                "title_link": "https:\/\/liampauling.github.io\/betfair\/advanced\/#performance",
+                "service_name": "liampauling.github.io"
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "2cgTy",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Is this rust or python? My understanding is that to make rust bindings you need to have a pretty good knowledge of cpython? Is the code open source?\n\nRegarding your example you would need to set "
+                            },
+                            {
+                                "type": "text",
+                                "text": "lightweight=True",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " and "
+                            },
+                            {
+                                "type": "text",
+                                "text": "update_clk=False",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " on the listener for a fairer comparison. Ideally the "
+                            },
+                            {
+                                "type": "text",
+                                "text": "[speed]",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " install is used as well, see "
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/liampauling.github.io\/betfair\/advanced\/#performance",
+                                "text": "here"
+                            },
+                            {
+                                "type": "text",
+                                "text": " for the performance docs"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UUX1L88MC",
+        "type": "message",
+        "ts": "1643634404.119549",
+        "client_msg_id": "c5f2d7a0-12b0-45a9-b37b-8191b2117602",
+        "text": "The <http:\/\/pyo3.rs|pyo3.rs> rust library is pretty top notch with great documentation and build tools which is what I used to create the library, the code will be open source as soon as happy with what the python api should look like, but I hope to get it finished this week\nI didnt mean to tread on anybodies toes here.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g15a28036452",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/15a28036452dd7be5991d4eda490e198.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0007-72.png",
+            "first_name": "",
+            "real_name": "Rob",
+            "display_name": "Rob",
+            "team": "T4G9NBD2M",
+            "name": "rtarbath",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "E3Up0",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "The "
+                            },
+                            {
+                                "type": "link",
+                                "url": "http:\/\/pyo3.rs",
+                                "text": "pyo3.rs"
+                            },
+                            {
+                                "type": "text",
+                                "text": " rust library is pretty top notch with great documentation and build tools which is what I used to create the library, the code will be open source as soon as happy with what the python api should look like, but I hope to get it finished this week\nI didnt mean to tread on anybodies toes here."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1643634485.241739",
+        "client_msg_id": "ce5acc4f-43ef-41f4-84ce-8f8bb39838f4",
+        "text": "just seems a shame as we could have worked together and created a rust binding that plugged straight into bflw",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "0NB",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "just seems a shame as we could have worked together and created a rust binding that plugged straight into bflw"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UUX1L88MC",
+        "type": "message",
+        "ts": "1643634533.982589",
+        "client_msg_id": "e4b9745f-f88b-4310-8834-7b64f17dc9b4",
+        "text": "and we still can!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g15a28036452",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/15a28036452dd7be5991d4eda490e198.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0007-72.png",
+            "first_name": "",
+            "real_name": "Rob",
+            "display_name": "Rob",
+            "team": "T4G9NBD2M",
+            "name": "rtarbath",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "n5S=",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "and we still can!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UUX1L88MC",
+        "type": "message",
+        "ts": "1643634955.186159",
+        "client_msg_id": "d4d5ea87-8d77-4d62-90fb-dcc4e0a8f731",
+        "text": "any idea on a way to stop that decompression blocking? I feel like thats a major slowdown here. You think spawning a thread and pushing the results onto a queue would speed it up? I doubt the file decompression would need to hold the GIL",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g15a28036452",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/15a28036452dd7be5991d4eda490e198.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0007-72.png",
+            "first_name": "",
+            "real_name": "Rob",
+            "display_name": "Rob",
+            "team": "T4G9NBD2M",
+            "name": "rtarbath",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "60gh",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "any idea on a way to stop that decompression blocking? I feel like thats a major slowdown here. You think spawning a thread and pushing the results onto a queue would speed it up? I doubt the file decompression would need to hold the GIL"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1643635076.268509",
+        "client_msg_id": "c038ddcc-6cf6-4464-93f4-00a962cb1cd1",
+        "text": "Its CPU bound so threads won't help, are you assuming the decompression is slow or have you profiled? Can you share the profile if so?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "HL\/LK",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Its CPU bound so threads won't help, are you assuming the decompression is slow or have you profiled? Can you share the profile if so?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UUX1L88MC",
+        "type": "message",
+        "ts": "1643635361.272639",
+        "client_msg_id": "48400519-0361-42fb-939a-05119146e8ec",
+        "text": "Yea im assuming the decompression is slow, but I feel pretty comfortable in that assumption. Bz2 can be pretty slow to decompress and it seems to block the generator providing files while it does so.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g15a28036452",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/15a28036452dd7be5991d4eda490e198.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0007-72.png",
+            "first_name": "",
+            "real_name": "Rob",
+            "display_name": "Rob",
+            "team": "T4G9NBD2M",
+            "name": "rtarbath",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "D4f=",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Yea im assuming the decompression is slow, but I feel pretty comfortable in that assumption. Bz2 can be pretty slow to decompress and it seems to block the generator providing files while it does so."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1643635982.507889",
+        "client_msg_id": "33c4c2ad-b517-44f1-a9c0-2623edc4b575",
+        "text": "relative to the streaming logic I doubt it would even register",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Err",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "relative to the streaming logic I doubt it would even register"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01DCR5PXDY",
+        "type": "message",
+        "ts": "1643636377.087119",
+        "client_msg_id": "646d7cf8-c4ac-4dce-a213-0597526cbdae",
+        "text": "Can't speak to bflw, but in my java code base decompression was taking ~20% CPU, so I just started storing the files uncompressed",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "903bc20cd9db",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-10-26\/1448127317798_903bc20cd9dba9a758e0_72.png",
+            "first_name": "thambie1",
+            "real_name": "thambie1",
+            "display_name": "thambie1",
+            "team": "T4G9NBD2M",
+            "name": "thambie1",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1643636377.087119",
+        "reply_count": 10,
+        "reply_users_count": 3,
+        "latest_reply": "1643649176.109069",
+        "reply_users": [
+            "UBS7QANF3",
+            "U01DCR5PXDY",
+            "U01PJ5YMFBJ"
+        ],
+        "replies": [
+            {
+                "user": "UBS7QANF3",
+                "ts": "1643636807.749939"
+            },
+            {
+                "user": "U01DCR5PXDY",
+                "ts": "1643636848.293199"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1643636936.942209"
+            },
+            {
+                "user": "U01DCR5PXDY",
+                "ts": "1643637049.649589"
+            },
+            {
+                "user": "U01DCR5PXDY",
+                "ts": "1643637091.063539"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1643639964.733549"
+            },
+            {
+                "user": "U01DCR5PXDY",
+                "ts": "1643639996.866399"
+            },
+            {
+                "user": "U01PJ5YMFBJ",
+                "ts": "1643649054.280579"
+            },
+            {
+                "user": "U01DCR5PXDY",
+                "ts": "1643649140.493029"
+            },
+            {
+                "user": "U01PJ5YMFBJ",
+                "ts": "1643649176.109069"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": false,
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "OfA2R",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Can't speak to bflw, but in my java code base decompression was taking ~20% CPU, so I just started storing the files uncompressed"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1643636791.985339",
+        "client_msg_id": "3836c190-8725-44df-9948-52cb40088376",
+        "text": "Locally I get around 5 markets\/second (AU win markets) using bflw compared to your ~1.6, very intrigued to see your Rust code if you are getting ~40+.\n\nTbh I would say file decompression would be out of scope for the library and this is up to the user on a cost\/ease of use case",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "P0rgf",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Locally I get around 5 markets\/second (AU win markets) using bflw compared to your ~1.6, very intrigued to see your Rust code if you are getting ~40+.\n\nTbh I would say file decompression would be out of scope for the library and this is up to the user on a cost\/ease of use case"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "ok_hand",
+                "users": [
+                    "UUUAJQZ5J"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1643636807.749939",
+        "client_msg_id": "9061a9fb-da9f-437d-8f32-3863dc175181",
+        "text": "But then you spend much more time doing I\/O surely?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1643636377.087119",
+        "parent_user_id": "U01DCR5PXDY",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "30n",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "But then you spend much more time doing I\/O surely?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01DCR5PXDY",
+        "type": "message",
+        "ts": "1643636848.293199",
+        "client_msg_id": "2c3a947a-9468-4c44-a95d-4cc7b726eee4",
+        "text": "I run on google cloud, IO is over network and pretty much free.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "903bc20cd9db",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-10-26\/1448127317798_903bc20cd9dba9a758e0_72.png",
+            "first_name": "thambie1",
+            "real_name": "thambie1",
+            "display_name": "thambie1",
+            "team": "T4G9NBD2M",
+            "name": "thambie1",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1643636377.087119",
+        "parent_user_id": "U01DCR5PXDY",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "OaKl",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I run on google cloud, IO is over network and pretty much free."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1643636936.942209",
+        "client_msg_id": "24308441-6645-4bbc-82fe-d99f0ae90b3f",
+        "text": "If it's over network then I'm even more surprised that it's quicker for you to transfer much more data over network than a much smaller amount and decompress in memory",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1643636377.087119",
+        "parent_user_id": "U01DCR5PXDY",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "7=v",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "If it's over network then I'm even more surprised that it's quicker for you to transfer much more data over network than a much smaller amount and decompress in memory"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01DCR5PXDY",
+        "type": "message",
+        "ts": "1643637049.649589",
+        "client_msg_id": "a105a4ab-a3ba-47ba-8876-be0ee0ba909a",
+        "text": "Just run more backtest threads :slightly_smiling_face:. To be clear network is internal to google cloud. So still pretty fast",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "903bc20cd9db",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-10-26\/1448127317798_903bc20cd9dba9a758e0_72.png",
+            "first_name": "thambie1",
+            "real_name": "thambie1",
+            "display_name": "thambie1",
+            "team": "T4G9NBD2M",
+            "name": "thambie1",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1643636377.087119",
+        "parent_user_id": "U01DCR5PXDY",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "cJp",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Just run more backtest threads "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "slightly_smiling_face",
+                                "unicode": "1f642"
+                            },
+                            {
+                                "type": "text",
+                                "text": ". To be clear network is internal to google cloud. So still pretty fast"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01DCR5PXDY",
+        "type": "message",
+        "ts": "1643637091.063539",
+        "client_msg_id": "bd2921b4-b8bc-4b0b-bb27-ff95e7690a79",
+        "text": "My goal is to optimize for CPU efficient utilization over everything else, since that's what dominates cost",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "903bc20cd9db",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-10-26\/1448127317798_903bc20cd9dba9a758e0_72.png",
+            "first_name": "thambie1",
+            "real_name": "thambie1",
+            "display_name": "thambie1",
+            "team": "T4G9NBD2M",
+            "name": "thambie1",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1643636377.087119",
+        "parent_user_id": "U01DCR5PXDY",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "usDKP",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "My goal is to optimize for CPU efficient utilization over everything else, since that's what dominates cost"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UUX1L88MC",
+        "type": "message",
+        "ts": "1643637496.633729",
+        "client_msg_id": "4ab7df89-5b60-43af-a076-a5036410c97e",
+        "text": "im having a quick read on how to publish to pypi and I’ll happily share an early version",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g15a28036452",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/15a28036452dd7be5991d4eda490e198.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0007-72.png",
+            "first_name": "",
+            "real_name": "Rob",
+            "display_name": "Rob",
+            "team": "T4G9NBD2M",
+            "name": "rtarbath",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "r+S6",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "im having a quick read on how to publish to pypi and I’ll happily share an early version"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1643637568.941229",
+        "client_msg_id": "afbcf0a3-6236-478a-ba93-c3684bbce2d9",
+        "text": "github?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "nzJJo",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "github?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1643639964.733549",
+        "client_msg_id": "331b620a-34e0-4f45-9f2c-c8a898dcd367",
+        "text": "You coming on Thursday? I will grill you further then :wink:",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1643636377.087119",
+        "parent_user_id": "U01DCR5PXDY",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "zu61A",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "You coming on Thursday? I will grill you further then "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "wink",
+                                "unicode": "1f609"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01DCR5PXDY",
+        "type": "message",
+        "ts": "1643639996.866399",
+        "client_msg_id": "d10cde2e-8abf-4c1f-bf2a-97841acaed03",
+        "text": "Haha, yeah happy to talk about it",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "903bc20cd9db",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-10-26\/1448127317798_903bc20cd9dba9a758e0_72.png",
+            "first_name": "thambie1",
+            "real_name": "thambie1",
+            "display_name": "thambie1",
+            "team": "T4G9NBD2M",
+            "name": "thambie1",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1643636377.087119",
+        "parent_user_id": "U01DCR5PXDY",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "UgRp",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Haha, yeah happy to talk about it"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01PJ5YMFBJ",
+        "type": "message",
+        "ts": "1643649054.280579",
+        "client_msg_id": "05f64dee-4ab2-4fbf-b4f3-3643c4583cf0",
+        "text": "<@UBS7QANF3> is there a meetup I've missed the announcement of?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g819c7f591cc",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/819c7f591cc888486f19b3f2f49f2011.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0014-72.png",
+            "first_name": "AndyL",
+            "real_name": "AndyL",
+            "display_name": "AndyL",
+            "team": "T4G9NBD2M",
+            "name": "andrew_m_leonard",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1643636377.087119",
+        "parent_user_id": "U01DCR5PXDY",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "6wons",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "user",
+                                "user_id": "UBS7QANF3"
+                            },
+                            {
+                                "type": "text",
+                                "text": " is there a meetup I've missed the announcement of?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01DCR5PXDY",
+        "type": "message",
+        "ts": "1643649140.493029",
+        "client_msg_id": "800c212a-1aca-4040-ab25-f698e3ab018f",
+        "text": "<https:\/\/betfairlightweight.slack.com\/archives\/C4H05KKMY\/p1642176260006700>",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "903bc20cd9db",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-10-26\/1448127317798_903bc20cd9dba9a758e0_72.png",
+            "first_name": "thambie1",
+            "real_name": "thambie1",
+            "display_name": "thambie1",
+            "team": "T4G9NBD2M",
+            "name": "thambie1",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1643636377.087119",
+        "parent_user_id": "U01DCR5PXDY",
+        "attachments": [
+            {
+                "from_url": "https:\/\/betfairlightweight.slack.com\/archives\/C4H05KKMY\/p1642176260006700",
+                "ts": "1642176260.006700",
+                "author_id": "UBS7QANF3",
+                "channel_team": "T4G9NBD2M",
+                "channel_id": "C4H05KKMY",
+                "is_msg_unfurl": true,
+                "message_blocks": [
+                    {
+                        "team": "T4G9NBD2M",
+                        "channel": "C4H05KKMY",
+                        "ts": "1642176260.006700",
+                        "message": {
+                            "blocks": [
+                                {
+                                    "type": "rich_text",
+                                    "block_id": "wm0ln",
+                                    "elements": [
+                                        {
+                                            "type": "rich_text_section",
+                                            "elements": [
+                                                {
+                                                    "type": "text",
+                                                    "text": "Next meet up confirmed for "
+                                                },
+                                                {
+                                                    "type": "text",
+                                                    "text": "Thursday 3rd February 6pm ",
+                                                    "style": {
+                                                        "bold": true
+                                                    }
+                                                },
+                                                {
+                                                    "type": "text",
+                                                    "text": "at "
+                                                },
+                                                {
+                                                    "type": "link",
+                                                    "url": "https:\/\/www.the-counting-house.com\/",
+                                                    "text": "The Counting House"
+                                                },
+                                                {
+                                                    "type": "text",
+                                                    "text": ". We'll be in the Partners Room"
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "id": 1,
+                "original_url": "https:\/\/betfairlightweight.slack.com\/archives\/C4H05KKMY\/p1642176260006700",
+                "fallback": "[January 14th, 2022 8:04 AM] maurice: Next meet up confirmed for *Thursday 3rd February 6pm* at <https:\/\/www.the-counting-house.com\/|The Counting House>. We'll be in the Partners Room",
+                "text": "Next meet up confirmed for *Thursday 3rd February 6pm* at <https:\/\/www.the-counting-house.com\/|The Counting House>. We'll be in the Partners Room",
+                "author_name": "Maurice Berk",
+                "author_link": "https:\/\/betfairlightweight.slack.com\/team\/UBS7QANF3",
+                "author_icon": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=48&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-48.png",
+                "author_subname": "Maurice Berk",
+                "mrkdwn_in": [
+                    "text"
+                ],
+                "footer": "Slack conversation"
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "xgy",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "link",
+                                "url": "https:\/\/betfairlightweight.slack.com\/archives\/C4H05KKMY\/p1642176260006700"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01PJ5YMFBJ",
+        "type": "message",
+        "ts": "1643649176.109069",
+        "client_msg_id": "aee2afd4-d51a-46cb-98a1-e1480d6d06e7",
+        "text": "Thanks",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g819c7f591cc",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/819c7f591cc888486f19b3f2f49f2011.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0014-72.png",
+            "first_name": "AndyL",
+            "real_name": "AndyL",
+            "display_name": "AndyL",
+            "team": "T4G9NBD2M",
+            "name": "andrew_m_leonard",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1643636377.087119",
+        "parent_user_id": "U01DCR5PXDY",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "e\/\/m",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Thanks"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U013ZS16QJZ",
+        "type": "message",
+        "ts": "1643656453.725219",
+        "edited": {
+            "user": "U013ZS16QJZ",
+            "ts": "1643656489.000000"
+        },
+        "client_msg_id": "46e11b73-f979-4ee4-b9e9-6315bba532a2",
+        "text": "Hi everyone, I received this error about 10 times today, I had received it before but it was not common, now I can't stay connected to the stream for 5 minutes and the connection is interrupted. I connect to one market only.\n\nException in thread Betfair Stream:\nTraceback (most recent call last):\n  File \"C:\\Users...\\anaconda3\\lib\\site-packages\\betfairlightweight\\streaming\\betfairstream.py\", line 230, in _receive_all\n    part = self._socket.recv(self.buffer_size)\n  File \"C:\\Users...\\anaconda3\\lib\\ssl.py\", line 1226, in recv\n    return self.read(buflen)\n  File \"C:\\Users...\\anaconda3\\lib\\ssl.py\", line 1101, in read\n    return self._sslobj.read(len)\nConnectionResetError: [WinError 10054] Foi forçado o cancelamento de uma conexão existente pelo host remoto\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"C:\\Users...\\anaconda3\\lib\\threading.py\", line 932, in _bootstrap_inner\n    self.run()\n  File \"C:\\Users...\\anaconda3\\lib\\threading.py\", line 870, in run\n    self._target(*self._args, **self._kwargs)\n  File \"C:\\Users...\\anaconda3\\lib\\site-packages\\betfairlightweight\\streaming\\betfairstream.py\", line 60, in start\n    self._read_loop()\n  File \"C:\\Users...\\anaconda3\\lib\\site-packages\\betfairlightweight\\streaming\\betfairstream.py\", line 212, in _read_loop\n    received_data_raw = self._receive_all()\n  File \"C:\\Users...\\anaconda3\\lib\\site-packages\\betfairlightweight\\streaming\\betfairstream.py\", line 234, in _receive_all\n    raise SocketError(\"[Connect: %s]: Socket %s\" % (self._unique_id, e))\nbetfairlightweight.exceptions.SocketError: [Connect: 2]: Socket [WinError 10054] Foi forçado o cancelamento de uma conexão existente pelo host remoto",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g16b34a6e706",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/16b34a6e706dbe59fcc7dd82d1ae4930.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0009-72.png",
+            "first_name": "VT",
+            "real_name": "VT",
+            "display_name": "VT",
+            "team": "T4G9NBD2M",
+            "name": "joaobaldoni",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1643656453.725219",
+        "reply_count": 1,
+        "reply_users_count": 1,
+        "latest_reply": "1643705173.965159",
+        "reply_users": [
+            "U4H19D1D2"
+        ],
+        "replies": [
+            {
+                "user": "U4H19D1D2",
+                "ts": "1643705173.965159"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": true,
+        "last_read": "1643705173.965159",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "6bTT",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Hi everyone, I received this error about 10 times today, I had received it before but it was not common, now I can't stay connected to the stream for 5 minutes and the connection is interrupted. I connect to one market only.\n\nException in thread Betfair Stream:\nTraceback (most recent call last):\n  File \"C:\\Users...\\anaconda3\\lib\\site-packages\\betfairlightweight\\streaming\\betfairstream.py\", line 230, in _receive_all\n    part = self._socket.recv(self.buffer_size)\n  File \"C:\\Users...\\anaconda3\\lib\\ssl.py\", line 1226, in recv\n    return self.read(buflen)\n  File \"C:\\Users...\\anaconda3\\lib\\ssl.py\", line 1101, in read\n    return self._sslobj.read(len)\nConnectionResetError: [WinError 10054] Foi forçado o cancelamento de uma conexão existente pelo host remoto\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"C:\\Users...\\anaconda3\\lib\\threading.py\", line 932, in _bootstrap_inner\n    self.run()\n  File \"C:\\Users...\\anaconda3\\lib\\threading.py\", line 870, in run\n    self._target(*self._args, **self._kwargs)\n  File \"C:\\Users...\\anaconda3\\lib\\site-packages\\betfairlightweight\\streaming\\betfairstream.py\", line 60, in start\n    self._read_loop()\n  File \"C:\\Users...\\anaconda3\\lib\\site-packages\\betfairlightweight\\streaming\\betfairstream.py\", line 212, in _read_loop\n    received_data_raw = self._receive_all()\n  File \"C:\\Users...\\anaconda3\\lib\\site-packages\\betfairlightweight\\streaming\\betfairstream.py\", line 234, in _receive_all\n    raise SocketError(\"[Connect: %s]: Socket %s\" % (self._unique_id, e))\nbetfairlightweight.exceptions.SocketError: [Connect: 2]: Socket [WinError 10054] Foi forçado o cancelamento de uma conexão existente pelo host remoto"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "subtype": "channel_join",
+        "user": "U030L8PPSHM",
+        "text": "<@U030L8PPSHM> has joined the channel",
+        "type": "message",
+        "ts": "1643671901.011149"
+    }
+]

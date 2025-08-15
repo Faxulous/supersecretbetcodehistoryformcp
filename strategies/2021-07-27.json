@@ -1,0 +1,643 @@
+[
+    {
+        "user": "U0154JA98TH",
+        "type": "message",
+        "ts": "1627385163.185500",
+        "edited": {
+            "user": "U0154JA98TH",
+            "ts": "1627385263.000000"
+        },
+        "client_msg_id": "d9a11bc4-347f-471f-b2b5-da424c2566eb",
+        "text": "I am working on bringing a strategy to flumine which involves backing then laying. What would be the best way to place the follow up bet once the first one has been matched? Would it be from the \"process_orders\" function once the back order is no longer of executable status and fully matched or from the \"process_market_book\" routine (but cant think how i would determine if the first order is matched from this func)? Or is there some other better way i havent considered? Any help is greatly appreciated. Cheers :grin:",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g04d857ee3ad",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/04d857ee3ad168a8451932c84c7d0d6d.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0007-72.png",
+            "first_name": "Jonathan",
+            "real_name": "Jonathan Wadsworth",
+            "display_name": "Jono",
+            "team": "T4G9NBD2M",
+            "name": "jonowads",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "9c+P",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I am working on bringing a strategy to flumine which involves backing then laying. What would be the best way to place the follow up bet once the first one has been matched? Would it be from the \"process_orders\" function once the back order is no longer of executable status and fully matched or from the \"process_market_book\" routine (but cant think how i would determine if the first order is matched from this func)? Or is there some other better way i havent considered? Any help is greatly appreciated. Cheers "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "grin",
+                                "unicode": "1f601"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1627385291.186700",
+        "client_msg_id": "88988503-a0a5-441f-873d-20d5ba2d53cd",
+        "text": "Either works tbh, `process_orders` is the 'flumine' way of doing it as that function will be called whenever there is an update to the order so you will be able to fire in the second straight away rather than wait for a marketBook update",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1627385291.186700",
+        "reply_count": 7,
+        "reply_users_count": 2,
+        "latest_reply": "1627388173.191700",
+        "reply_users": [
+            "ULDAVFDRP",
+            "U4H19D1D2"
+        ],
+        "replies": [
+            {
+                "user": "ULDAVFDRP",
+                "ts": "1627386310.189700"
+            },
+            {
+                "user": "ULDAVFDRP",
+                "ts": "1627386932.190400"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1627387300.190800"
+            },
+            {
+                "user": "ULDAVFDRP",
+                "ts": "1627387414.191100"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1627388031.191300"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1627388045.191500"
+            },
+            {
+                "user": "ULDAVFDRP",
+                "ts": "1627388173.191700"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": true,
+        "last_read": "1627388173.191700",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "WG++Y",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Either works tbh, "
+                            },
+                            {
+                                "type": "text",
+                                "text": "process_orders",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " is the 'flumine' way of doing it as that function will be called whenever there is an update to the order so you will be able to fire in the second straight away rather than wait for a marketBook update"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1627385387.188000",
+        "client_msg_id": "0b6d46a9-5c4f-4b11-8840-6ecbcc602bd6",
+        "text": "To answer your question the orders are in the blotter, so you can get them by either\n\n```selection_orders = market.blotter.strategy_selection_orders(self, selection_id, handicap)```\n```strategy_orders = market.blotter.strategy_orders(self)```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "htZ9",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "To answer your question the orders are in the blotter, so you can get them by either\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "selection_orders = market.blotter.strategy_selection_orders(self, selection_id, handicap)"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "strategy_orders = market.blotter.strategy_orders(self)"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "U0154JA98TH"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "ULDAVFDRP",
+        "type": "message",
+        "ts": "1627386310.189700",
+        "edited": {
+            "user": "ULDAVFDRP",
+            "ts": "1627386860.000000"
+        },
+        "client_msg_id": "f2bdc231-d630-4354-adbf-1f00c85cd003",
+        "text": "In the situation where lets say you have fully executed an order will processed_order get called again if you didnt act on the last update coming through confirming the full match? Is there a list somewhere as to all the things that trigger order change messages?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g46fe1c1bf03",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/b46fe1c1bf03e18d951e7032fb494283.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0019-72.png",
+            "first_name": "",
+            "real_name": "Oliver Varney",
+            "display_name": "Oliver Varney",
+            "team": "T4G9NBD2M",
+            "name": "oliverashleyvarney",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1627385291.186700",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "iE7qc",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "In the situation where lets say you have fully executed an order will processed_order get called again if you didnt act on the last update coming through confirming the full match? Is there a list somewhere as to all the things that trigger order change messages?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "ULDAVFDRP",
+        "type": "message",
+        "ts": "1627386932.190400",
+        "edited": {
+            "user": "ULDAVFDRP",
+            "ts": "1627386946.000000"
+        },
+        "client_msg_id": "af28ee2f-934d-4f6f-af95-6d4a085af933",
+        "text": "I see actually it will get called with the snap?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g46fe1c1bf03",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/b46fe1c1bf03e18d951e7032fb494283.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0019-72.png",
+            "first_name": "",
+            "real_name": "Oliver Varney",
+            "display_name": "Oliver Varney",
+            "team": "T4G9NBD2M",
+            "name": "oliverashleyvarney",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1627385291.186700",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "pKcW",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I see actually it will get called with the snap?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1627387300.190800",
+        "client_msg_id": "9edcb39c-ed65-4bf7-8c4c-2889dcdc04b0",
+        "text": "yeah, so any update to order will result in the order stream sending an update through and then flumine will <https:\/\/github.com\/liampauling\/flumine\/blob\/a7aff28371b1a7a30122dfd76a1effcee4ddc127\/flumine\/streams\/orderstream.py#L62|snap> the stream anyway every 0.25s if there are live orders or every 5s regardless, this is to cater for fill\/kill etc.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1627385291.186700",
+        "parent_user_id": "U4H19D1D2",
+        "attachments": [
+            {
+                "text": "```\n        \"\"\"Handles output from stream, snaps\n```",
+                "title": "<https:\/\/github.com\/liampauling\/flumine\/blob\/a7aff28371b1a7a30122dfd76a1effcee4ddc127\/flumine\/streams\/orderstream.py | orderstream.py>",
+                "footer": "<https:\/\/github.com\/liampauling\/flumine|liampauling\/flumine>",
+                "id": 1,
+                "footer_icon": "https:\/\/slack.github.com\/static\/img\/favicon-neutral.png",
+                "color": "24292f",
+                "mrkdwn_in": [
+                    "text"
+                ],
+                "fallback": "<https:\/\/github.com\/liampauling\/flumine\/blob\/a7aff28371b1a7a30122dfd76a1effcee4ddc127\/flumine\/streams\/orderstream.py | orderstream.py>",
+                "bot_id": "B021ZJYSBMW",
+                "app_unfurl_url": "https:\/\/github.com\/liampauling\/flumine\/blob\/a7aff28371b1a7a30122dfd76a1effcee4ddc127\/flumine\/streams\/orderstream.py#L62",
+                "is_app_unfurl": true
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "vB6UU",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "yeah, so any update to order will result in the order stream sending an update through and then flumine will "
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/liampauling\/flumine\/blob\/a7aff28371b1a7a30122dfd76a1effcee4ddc127\/flumine\/streams\/orderstream.py#L62",
+                                "text": "snap"
+                            },
+                            {
+                                "type": "text",
+                                "text": " the stream anyway every 0.25s if there are live orders or every 5s regardless, this is to cater for fill\/kill etc."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "ULDAVFDRP",
+        "type": "message",
+        "ts": "1627387414.191100",
+        "client_msg_id": "692bba1c-9098-4c07-8d9a-05c7e2731c09",
+        "text": "cool, so to confirm we are not expecting an update to come through on the order after execution complete (ignoring removals) and the snap would be the next time the function gets called in this situation ?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g46fe1c1bf03",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/b46fe1c1bf03e18d951e7032fb494283.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0019-72.png",
+            "first_name": "",
+            "real_name": "Oliver Varney",
+            "display_name": "Oliver Varney",
+            "team": "T4G9NBD2M",
+            "name": "oliverashleyvarney",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1627385291.186700",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "3ccQ",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "cool, so to confirm we are not expecting an update to come through on the order after execution complete (ignoring removals) and the snap would be the next time the function gets called in this situation ?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1627388031.191300",
+        "client_msg_id": "d4fe18b3-6898-47d6-b555-319498faf169",
+        "text": "yep",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1627385291.186700",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "5GNK",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "yep"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1627388045.191500",
+        "client_msg_id": "717dffe0-5a48-4c57-a24d-3c531f489c4d",
+        "text": "unless another order in that market has an update in which case you will",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1627385291.186700",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "YFM",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "unless another order in that market has an update in which case you will"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "ULDAVFDRP",
+        "type": "message",
+        "ts": "1627388173.191700",
+        "edited": {
+            "user": "ULDAVFDRP",
+            "ts": "1627388434.000000"
+        },
+        "client_msg_id": "523f5959-0726-4028-b940-6e996d35c0c4",
+        "text": "yup cool, what I thought but thought id double check. plenty of :beer: coming your way  tomorrow for all the help",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g46fe1c1bf03",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/b46fe1c1bf03e18d951e7032fb494283.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0019-72.png",
+            "first_name": "",
+            "real_name": "Oliver Varney",
+            "display_name": "Oliver Varney",
+            "team": "T4G9NBD2M",
+            "name": "oliverashleyvarney",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1627385291.186700",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "tklQ",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "yup cool, what I thought but thought id double check. plenty of "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "beer",
+                                "unicode": "1f37a"
+                            },
+                            {
+                                "type": "text",
+                                "text": " coming your way  tomorrow for all the help"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "beer",
+                "users": [
+                    "U4H19D1D2"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "text": "<@U01MPC0GUK1> one thing you may also notice is a sudden bump in profit after your fill kill time, for example this graph shows where the profit goes up after around 1.2s, this isn't showing +ev bets at that time but instead it is semi matched bets that are cancelled at 1-1.2s and thus showing as elapsed at that time when in reality they where semi matched somewhere between 0 and 1s\n\nCould probably change the logic to plot 'first match time' rather than elapsed seconds executable to prevent this but as long you are aware and don't optimise around it",
+        "files": [
+            {
+                "id": "F02A0R8EG3S",
+                "mode": "hidden_by_limit"
+            }
+        ],
+        "upload": false,
+        "user": "U4H19D1D2",
+        "display_as_bot": false,
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "glUt",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "user",
+                                "user_id": "U01MPC0GUK1"
+                            },
+                            {
+                                "type": "text",
+                                "text": " one thing you may also notice is a sudden bump in profit after your fill kill time, for example this graph shows where the profit goes up after around 1.2s, this isn't showing +ev bets at that time but instead it is semi matched bets that are cancelled at 1-1.2s and thus showing as elapsed at that time when in reality they where semi matched somewhere between 0 and 1s\n\nCould probably change the logic to plot 'first match time' rather than elapsed seconds executable to prevent this but as long you are aware and don't optimise around it"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "type": "message",
+        "ts": "1627398569.195000"
+    },
+    {
+        "user": "U01MPC0GUK1",
+        "type": "message",
+        "ts": "1627399990.195900",
+        "client_msg_id": "168bb445-ff74-4806-baac-a3e56918353f",
+        "text": "Yeah, I think you mentioned that before, so I'm aware of that already :+1:",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "3be8fa875ec4",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2021-02-15\/1752388211523_3be8fa875ec4866620ff_72.png",
+            "first_name": "Beeblebrox",
+            "real_name": "Beeblebrox",
+            "display_name": "Beeblebrox",
+            "team": "T4G9NBD2M",
+            "name": "arch4672",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "8S1UF",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Yeah, I think you mentioned that before, so I'm aware of that already "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "+1",
+                                "unicode": "1f44d"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "U4H19D1D2"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "subtype": "channel_join",
+        "user": "U028YLR51FH",
+        "text": "<@U028YLR51FH> has joined the channel",
+        "type": "message",
+        "ts": "1627436892.196600"
+    }
+]

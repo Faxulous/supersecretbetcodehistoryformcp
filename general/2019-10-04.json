@@ -1,0 +1,625 @@
+[
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1570173125.226900",
+        "text": "I was referring to the async parameter to placeOrders, nothing to do with streaming",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "attachments": [
+            {
+                "fallback": "[October 3rd, 2019 8:01 PM] vjmehra: I'm having a similar issue, but I'm hoping its because I don't understand exactly what the async parameter does!\n\nIf I cancel an order, I get the Success message back and temporarily store the updated order details locally.\n\nHowever if I receive a streaming update fractionally after the cancel success message comes back it contains the old order details, which then over writes my local risk calcs...obviously causing plenty of problems!\n\nI saw below the async parameter was mentioned, which I have set as follows:\n\n```order_stream.start(async_=True)\nmarket_stream.start(async_=True)```\n\nIf I take out the async_=True then it just seems to hang and never gets past that point in the code.\n\nSo, is there something obvious I'm missing here, as I'm a bit confused?",
+                "ts": "1570125678.221200",
+                "author_id": "UFTBRB3F1",
+                "author_subname": "Newbie99",
+                "channel_id": "C4HL6EZTQ",
+                "is_msg_unfurl": true,
+                "text": "I'm having a similar issue, but I'm hoping its because I don't understand exactly what the async parameter does!\n\nIf I cancel an order, I get the Success message back and temporarily store the updated order details locally.\n\nHowever if I receive a streaming update fractionally after the cancel success message comes back it contains the old order details, which then over writes my local risk calcs...obviously causing plenty of problems!\n\nI saw below the async parameter was mentioned, which I have set as follows:\n\n```order_stream.start(async_=True)\nmarket_stream.start(async_=True)```\n\nIf I take out the async_=True then it just seems to hang and never gets past that point in the code.\n\nSo, is there something obvious I'm missing here, as I'm a bit confused?\n<https:\/\/betfairlightweight.slack.com\/archives\/C4HL6EZTQ\/p1569596156170600>",
+                "author_name": "Newbie99",
+                "author_link": "https:\/\/betfairlightweight.slack.com\/team\/UFTBRB3F1",
+                "author_icon": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=48&d=https%3A%2F%2Fa.slack-edge.com%2F80588%2Fimg%2Favatars%2Fuser_shapes%2Fava_0024-48.png",
+                "mrkdwn_in": [
+                    "text"
+                ],
+                "color": "D0D0D0",
+                "from_url": "https:\/\/betfairlightweight.slack.com\/archives\/C4HL6EZTQ\/p1570125678221200",
+                "is_share": true,
+                "footer": "Slack conversation"
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "FxjZX",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I was referring to the async parameter to placeOrders, nothing to do with streaming"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1570175334.227500",
+        "client_msg_id": "212B06B1-4513-48D0-9048-B733FC5B12E0",
+        "text": "async in streaming will be going in v2 as it causes a lot of confusion ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "xWy3u",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "async in streaming will be going in v2 as it causes a lot of confusion"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1570178479.231600",
+        "client_msg_id": "238de5f2-0fe7-4e9b-9962-be854774f71c",
+        "text": "ah okay cool, so I will ignore async for now...\n\nBut how do people get round this?\n\nI did think, as JonJonJon suggests using timestamps, but the market update has a greater level of precision (down to milliseconds), whereas cancel.cancelled_date only appears to show down to seconds, so it doesn't appear that option is viable.\n\nThe only options I could come up with are:\n\nI could ignore any streaming updates within 0.5 seconds\nOverwrite the next streaming update with the position info post cancellation for just that runner\n\nNeither are ideal though, so does anyone have a smarter solution?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "EZlH",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "ah okay cool, so I will ignore async for now...\n\nBut how do people get round this?\n\nI did think, as JonJonJon suggests using timestamps, but the market update has a greater level of precision (down to milliseconds), whereas cancel.cancelled_date only appears to show down to seconds, so it doesn't appear that option is viable.\n\nThe only options I could come up with are:\n\nI could ignore any streaming updates within 0.5 seconds\nOverwrite the next streaming update with the position info post cancellation for just that runner\n\nNeither are ideal though, so does anyone have a smarter solution?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1570185709.232200",
+        "client_msg_id": "9f73319c-709d-4ba9-9ae6-11c3a295947a",
+        "text": "i ignore the place\/cancel\/replace\/update response and go off streaming",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "=wBDZ",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "i ignore the place\/cancel\/replace\/update response and go off streaming"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1570186209.237500",
+        "client_msg_id": "1cf160da-e2a6-4e9e-a4c2-4ba03171659d",
+        "text": "But are your risk calcs not off for a bit then (maybe my logic is flawed here), this is the process flow I have now:\n\n\n1) Market moves to = y or position size = z\n2) Place \/ cancel order is triggered\n3) Place \/ cancel order success message comes back (tbh arguably this is irrelevant its the next bit thats key)\n4) Update local market \/ order books with risk calcs\n5) Streaming update comes and:\na) Is fine as it already includes the updated orders\nb) Isn't fine and over writes them (as it was sent milliseconds after\/before the place\/cancel order request I guess)\n\nIf I rely on streaming alone, then when 5b occurs, I would then effectively be trying to place\/cancel the order again, as the risk calcs would suggest it was necessary.\n\nHence my issue, I get the point about ignoring the actual cancel \/ place message that's fine, but how do you account for a streaming update that doesn't yet have the updated order info in (short of ignoring the first streaming update after placing\/cancelling an order or ignoring for 0.x seconds...neither of which are ideal)?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "r=F",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "But are your risk calcs not off for a bit then (maybe my logic is flawed here), this is the process flow I have now:\n\n\n\n1) Market moves to = y or position size = z\n2) Place \/ cancel order is triggered\n3) Place \/ cancel order success message comes back (tbh arguably this is irrelevant its the next bit thats key)\n4) Update local market \/ order books with risk calcs\n5) Streaming update comes and:\na) Is fine as it already includes the updated orders\nb) Isn't fine and over writes them (as it was sent milliseconds after\/before the place\/cancel order request I guess)\n\nIf I rely on streaming alone, then when 5b occurs, I would then effectively be trying to place\/cancel the order again, as the risk calcs would suggest it was necessary.\n\nHence my issue, I get the point about ignoring the actual cancel \/ place message that's fine, but how do you account for a streaming update that doesn't yet have the updated order info in (short of ignoring the first streaming update after placing\/cancelling an order or ignoring for 0.x seconds...neither of which are ideal)?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1570186247.237700",
+        "client_msg_id": "6f4ca753-4a0f-4276-8aa5-aed1d7ec47cd",
+        "text": "i have order.status",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "vaYv",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "i have order.status"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1570186277.238500",
+        "client_msg_id": "6c97d134-3037-405c-8b0c-879e15b36913",
+        "text": "locally, this has 'PENDING' which means I don't touch till an update comes through",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "EtG1",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "locally, this has 'PENDING' which means I don't touch till an update comes through"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "text": "",
+        "files": [
+            {
+                "id": "FP1AVNQ76",
+                "mode": "hidden_by_limit"
+            }
+        ],
+        "upload": true,
+        "user": "U4H19D1D2",
+        "display_as_bot": false,
+        "type": "message",
+        "ts": "1570186346.238600",
+        "client_msg_id": "097ed25e-af8f-4475-bdd3-c9cc99f1a875",
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "U92CASP1B"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1570186499.241300",
+        "client_msg_id": "3f29ae94-e8a4-40a4-85f4-ab99cb793312",
+        "text": "maybe I'm being a bit dumb here...but wouldn't the same issue be problematic still?\n\ni.e. if the status is set to pending (which makes sense and I sort of do similar in a far messier way), then an update comes through, how do you determine that update should be ignored? As that first update may already include the pending order (and then the status is no longer pending)...however sometimes it might not, in which case you would want the order to remain as pending until the next update?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "8Bv",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "maybe I'm being a bit dumb here...but wouldn't the same issue be problematic still?\n\ni.e. if the status is set to pending (which makes sense and I sort of do similar in a far messier way), then an update comes through, how do you determine that update should be ignored? As that first update may already include the pending order (and then the status is no longer pending)...however sometimes it might not, in which case you would want the order to remain as pending until the next update?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1570186570.241500",
+        "client_msg_id": "25493ecd-26ac-4926-ae5d-d773f693d686",
+        "text": "i dont do 4",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "6S\/Xd",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "i dont do 4"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1570186617.242200",
+        "client_msg_id": "4bbf2724-1fd5-4eab-81f6-39b2122cb6d7",
+        "text": "not entirely true but i dont do anything that would result in double orders \/ double cancels",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "oxG",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "not entirely true but i dont do anything that would result in double orders \/ double cancels"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "text": "",
+        "files": [
+            {
+                "id": "FP1QWCCTX",
+                "mode": "hidden_by_limit"
+            }
+        ],
+        "upload": true,
+        "user": "U4H19D1D2",
+        "display_as_bot": false,
+        "type": "message",
+        "ts": "1570186844.242400",
+        "client_msg_id": "0330b54e-5d3d-4959-9f78-e4b25ac3e8e4"
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1570186880.243100",
+        "client_msg_id": "2576ad62-f60e-4f64-910a-b319df4b6ad7",
+        "text": "that is all i do after an execution, i then wait for an order streaming update",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "aC=W",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "that is all i do after an execution, i then wait for an order streaming update"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1570187107.244900",
+        "client_msg_id": "7f94f28b-8deb-4ceb-8186-02954c608cf5",
+        "text": "Okay, I think I see why I'd get the issue, my 'order trigger' would be looking for either a market or order update and would see the market update, take the state of the current order book (which is in effect stale) and then assume the order hasn't been placed.\n\nSo I need to change that, so it ignores the market book until it receives the order book update.\n\nI think that makes sense and should then (roughly) replicate what you have",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Tsla3",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Okay, I think I see why I'd get the issue, my 'order trigger' would be looking for either a market or order update and would see the market update, take the state of the current order book (which is in effect stale) and then assume the order hasn't been placed.\n\nSo I need to change that, so it ignores the market book until it receives the order book update.\n\nI think that makes sense and should then (roughly) replicate what you have"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "text": "so for that problem i have a strategy runner_context which stores the current state, ie. if an order is live, this would stop an order being placed if in a pending state",
+        "files": [
+            {
+                "id": "FNQAUB22X",
+                "mode": "hidden_by_limit"
+            }
+        ],
+        "upload": true,
+        "user": "U4H19D1D2",
+        "display_as_bot": false,
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "bQy",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "so for that problem i have a strategy runner_context which stores the current state, ie. if an order is live, this would stop an order being placed if in a pending state"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "type": "message",
+        "ts": "1570187311.245800",
+        "client_msg_id": "dcfc2105-cd4c-461d-b16a-136a2c53d050"
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1570187354.246400",
+        "client_msg_id": "bc0f9eff-4539-4167-b28b-3e2ea1e7cc08",
+        "text": "one day i will open source equine",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "OJ6",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "one day i will open source equine"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1570187388.246900",
+        "client_msg_id": "63cd1193-3cf1-476d-bd40-c9b950635e92",
+        "text": "ah okay cool yep that makes sense actually, I will look to do similar, cool tks that has helped a lot!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "0q+Ks",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "ah okay cool yep that makes sense actually, I will look to do similar, cool tks that has helped a lot!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

@@ -1,0 +1,465 @@
+[
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1719245744.347629",
+        "client_msg_id": "977e1674-2a46-427c-baf3-c09b8daa8bda",
+        "text": "In flumine is there a canonical way to stop processing a market when in the middle of simulating it?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1719245744.347629",
+        "reply_count": 13,
+        "reply_users_count": 3,
+        "latest_reply": "1726475850.199249",
+        "reply_users": [
+            "U4H19D1D2",
+            "U02RN7YDRQ9",
+            "UBS7QANF3"
+        ],
+        "replies": [
+            {
+                "user": "U4H19D1D2",
+                "ts": "1719248136.822409"
+            },
+            {
+                "user": "U02RN7YDRQ9",
+                "ts": "1719248337.477799"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1719248390.437389"
+            },
+            {
+                "user": "U02RN7YDRQ9",
+                "ts": "1719248518.123879"
+            },
+            {
+                "user": "U02RN7YDRQ9",
+                "ts": "1719248618.067349"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1719252285.985919"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1719298230.918699"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1719300530.691489"
+            },
+            {
+                "user": "U02RN7YDRQ9",
+                "ts": "1719308870.026079"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1726292872.088589"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1726473800.267559"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1726475242.993229"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1726475850.199249"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": true,
+        "last_read": "1726475850.199249",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "vG7WV",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "In flumine is there a canonical way to stop processing a market when in the middle of simulating it?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1719248136.822409",
+        "client_msg_id": "F6E9B1DA-1340-483B-9E86-CB5E739F4865",
+        "text": "No but welcome some ideas on how to do it as I can see a few reasons why you would want to ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1719245744.347629",
+        "parent_user_id": "UBS7QANF3",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "0bN47",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "No but welcome some ideas on how to do it as I can see a few reasons why you would want to "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "UBS7QANF3"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "U02RN7YDRQ9",
+        "type": "message",
+        "ts": "1719248337.477799",
+        "edited": {
+            "user": "U02RN7YDRQ9",
+            "ts": "1719248388.000000"
+        },
+        "client_msg_id": "68570b19-3971-4ead-9a70-2779b61c4a63",
+        "text": "I do a fiddle in `check_market_book()` where I initially set a default of 999999\n```if market.context[self.ctxname][\"skipToSeconds\"] != 999999 \\\n        and realSecsToGo > market.context[self.ctxname][\"skipToSeconds\"] :\n    # after start time and asked need to skip\n    return False```\nand in the strategy when finished set it with\n```market.context[self.ctxname][\"skipToSeconds\"] = -9999```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "ge46f1f8b708",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/e46f1f8b708a630e3191de7b2c42b1d1.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0023-72.png",
+            "first_name": "edblock",
+            "real_name": "edblock",
+            "display_name": "foxwood",
+            "team": "T4G9NBD2M",
+            "name": "eanb",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1719245744.347629",
+        "parent_user_id": "UBS7QANF3",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "y5\/W\/",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I do a fiddle in "
+                            },
+                            {
+                                "type": "text",
+                                "text": "check_market_book() ",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "where I initially set a default of 999999\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "if market.context[self.ctxname][\"skipToSeconds\"] != 999999 \\\n        and realSecsToGo > market.context[self.ctxname][\"skipToSeconds\"] :\n    # after start time and asked need to skip\n    return False"
+                            }
+                        ],
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "and in the strategy when finished set it with\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "market.context[self.ctxname][\"skipToSeconds\"] = -9999"
+                            }
+                        ],
+                        "border": 0
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1719248390.437389",
+        "client_msg_id": "32baf388-d7ea-4c7a-8266-115c0904cb82",
+        "text": "I don't think it can be as simple as `check_market_book` as you want to stop the middlewares as well",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1719245744.347629",
+        "parent_user_id": "UBS7QANF3",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "FSQuP",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I don't think it can be as simple as "
+                            },
+                            {
+                                "type": "text",
+                                "text": "check_market_book",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " as you want to stop the middlewares as well"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U02RN7YDRQ9",
+        "type": "message",
+        "ts": "1719248518.123879",
+        "client_msg_id": "afb7083a-ccaf-422a-9b13-3cd50606aabd",
+        "text": "Even better but at least I save some noticeable time at my user level without digging in too deep",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "ge46f1f8b708",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/e46f1f8b708a630e3191de7b2c42b1d1.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0023-72.png",
+            "first_name": "edblock",
+            "real_name": "edblock",
+            "display_name": "foxwood",
+            "team": "T4G9NBD2M",
+            "name": "eanb",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1719245744.347629",
+        "parent_user_id": "UBS7QANF3",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "XV5WA",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Even better but at least I save some noticeable time at my user level without digging in too deep"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U02RN7YDRQ9",
+        "type": "message",
+        "ts": "1719248618.067349",
+        "edited": {
+            "user": "U02RN7YDRQ9",
+            "ts": "1719248724.000000"
+        },
+        "client_msg_id": "34dd1ac6-7ba3-4157-ac9a-8203ae6d4577",
+        "text": "Best would be a \"skip to close\" call that would then go through `process_closed_market` so can play with result.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "ge46f1f8b708",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/e46f1f8b708a630e3191de7b2c42b1d1.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0023-72.png",
+            "first_name": "edblock",
+            "real_name": "edblock",
+            "display_name": "foxwood",
+            "team": "T4G9NBD2M",
+            "name": "eanb",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1719245744.347629",
+        "parent_user_id": "UBS7QANF3",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "vjIaX",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Best would be a \"skip to close\" call that would then go through "
+                            },
+                            {
+                                "type": "text",
+                                "text": "process_closed_market ",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "so can play with result."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1719252285.985919",
+        "client_msg_id": "E6CF1D42-30B1-4AB6-8B13-348E617C043D",
+        "text": "I think we need to trigger something as low as possible so the books stop getting processed by bflw ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1719245744.347629",
+        "parent_user_id": "UBS7QANF3",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "blh7C",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I think we need to trigger something as low as possible so the books stop getting processed by bflw "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1719298230.918699",
+        "client_msg_id": "4dd69f0a-325f-44fc-bec3-75488e2bbc83",
+        "text": "I can see how both of those requirements are desirable but they also seem to be directly opposed with each other?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1719245744.347629",
+        "parent_user_id": "UBS7QANF3",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "LD3zm",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I can see how both of those requirements are desirable but they also seem to be directly opposed with each other?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

@@ -1,0 +1,479 @@
+[
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1673597607.952409",
+        "edited": {
+            "user": "UBS7QANF3",
+            "ts": "1673597645.000000"
+        },
+        "client_msg_id": "b91c3a7d-2c1e-47e1-a2ad-6100a2931c67",
+        "text": "Obviously in the absence of feature requests, what I add to betfairutil is whatever I'm currently working on. I've been finding recently that it really helps not to be lazy about just reading everything into memory as this allows me to saturate my CPU with workers\n\n```  * get_market_books_from_prices_file\n  * get_minimum_book_percentage_market_books_from_prices_file```\nAre two other examples. Previously I would probably just have read the entire set of market books into memory then use bisect functions to find the ones I care about",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1673594006.073299",
+        "parent_user_id": "UBS7QANF3",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "55EU",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Obviously in the absence of feature requests, what I add to betfairutil is whatever I'm currently working on. I've been finding recently that it really helps not to be lazy about just reading everything into memory as this allows me to saturate my CPU with workers\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "  * get_market_books_from_prices_file\n  * get_minimum_book_percentage_market_books_from_prices_file"
+                            }
+                        ],
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\nAre two other examples. Previously I would probably just have read the entire set of market books into memory then use bisect functions to find the ones I care about"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1673598969.100259",
+        "client_msg_id": "b50ee1b1-f4ab-46b3-b512-7f40fa48d709",
+        "text": "I have always found reading to memory and then bisect is quicker on a market to market basis",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1673594006.073299",
+        "parent_user_id": "UBS7QANF3",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "w3LY0",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I have always found reading to memory and then bisect is quicker on a market to market basis"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1673601006.236489",
+        "client_msg_id": "78930103-c430-486e-8491-8acb4cc5f122",
+        "text": "I'm surprised. I will benchmark it\n\nAnother thing is it will depend on context - you can potentially avoid reading a significant portion of the file depending on when the final market book you're interested in is\n\nBut to revisit my current use case - perhaps to avoid running out of memory when using the bisect method when processing my entire set of markets I need to limit to 8 workers. With the new method I can use 48 workers. Perhaps in the first case each market gets processed a bit quicker but it'll be dominated by the speed up in the second case. Obvious to you I'm sure, just spelling out the motivation. Again, depends on context. The entire set of market books for a football match is probably going to take up more memory than a horse race",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1673594006.073299",
+        "parent_user_id": "UBS7QANF3",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "N\/d",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I'm surprised. I will benchmark it\n\nAnother thing is it will depend on context - you can potentially avoid reading a significant portion of the file depending on when the final market book you're interested in is\n\nBut to revisit my current use case - perhaps to avoid running out of memory when using the bisect method when processing my entire set of markets I need to limit to 8 workers. With the new method I can use 48 workers. Perhaps in the first case each market gets processed a bit quicker but it'll be dominated by the speed up in the second case. Obvious to you I'm sure, just spelling out the motivation. Again, depends on context. The entire set of market books for a football match is probably going to take up more memory than a horse race"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01C12ZEADQ",
+        "type": "message",
+        "ts": "1673601557.467219",
+        "client_msg_id": "e7a2f9b5-b8bc-48e8-8c0a-4ede26808871",
+        "text": "OK makes more sense now, and it's pretty logical: if you are doing very few samples (investments) from a very large distribution, the amount of statistical power you get out of it is basically zero",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "e3b7687b0ef8",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-10-06\/1432945617648_e3b7687b0ef86e4f28b8_72.png",
+            "first_name": "Alessio",
+            "real_name": "Alessio",
+            "display_name": "Alessio",
+            "team": "T4G9NBD2M",
+            "name": "alessio",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1673511840.802919",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Ec0",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "OK makes more sense now, and it's pretty logical: if you are doing very few samples (investments) from a very large distribution, the amount of statistical power you get out of it is basically zero"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1673601748.924139",
+        "client_msg_id": "479ef3ca-8f37-4b66-a7ee-d259125a8ec2",
+        "text": "My context is one marketBook \/ race at a time so yeah",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1673594006.073299",
+        "parent_user_id": "UBS7QANF3",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "72sJ",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "My context is one marketBook \/ race at a time so yeah"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "subtype": "thread_broadcast",
+        "user": "UNW8Q88EL",
+        "thread_ts": "1672805450.416069",
+        "root": {
+            "text": "Via twitter",
+            "files": [
+                {
+                    "id": "F04HS5N13R7",
+                    "mode": "hidden_by_limit"
+                }
+            ],
+            "upload": false,
+            "user": "U010GM77S4W",
+            "display_as_bot": false,
+            "blocks": [
+                {
+                    "type": "rich_text",
+                    "block_id": "2tgT",
+                    "elements": [
+                        {
+                            "type": "rich_text_section",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "Via twitter"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ],
+            "type": "message",
+            "ts": "1672805450.416069",
+            "client_msg_id": "5746ad51-84be-4099-8348-af2247678db9",
+            "thread_ts": "1672805450.416069",
+            "reply_count": 10,
+            "reply_users_count": 8,
+            "latest_reply": "1673605419.361009",
+            "reply_users": [
+                "UBS7QANF3",
+                "U010GM77S4W",
+                "UPMUFSGCR",
+                "U4H19D1D2",
+                "UUE6E1LA1",
+                "UCQB6S222",
+                "U0128E7BEHW",
+                "UNW8Q88EL"
+            ],
+            "replies": [
+                {
+                    "user": "UBS7QANF3",
+                    "ts": "1672818865.464439"
+                },
+                {
+                    "user": "U010GM77S4W",
+                    "ts": "1672819988.331799"
+                },
+                {
+                    "user": "UBS7QANF3",
+                    "ts": "1672820040.699729"
+                },
+                {
+                    "user": "UPMUFSGCR",
+                    "ts": "1672821181.857189"
+                },
+                {
+                    "user": "U4H19D1D2",
+                    "ts": "1672821754.086839"
+                },
+                {
+                    "user": "UUE6E1LA1",
+                    "ts": "1672823066.110199"
+                },
+                {
+                    "user": "UCQB6S222",
+                    "ts": "1672823758.201439"
+                },
+                {
+                    "user": "U0128E7BEHW",
+                    "ts": "1672840553.234769"
+                },
+                {
+                    "user": "U0128E7BEHW",
+                    "ts": "1672840571.725699"
+                },
+                {
+                    "user": "UNW8Q88EL",
+                    "ts": "1673605419.361009"
+                }
+            ],
+            "is_locked": false,
+            "subscribed": true,
+            "last_read": "1673605419.361009"
+        },
+        "type": "message",
+        "ts": "1673605419.361009",
+        "client_msg_id": "350b2c9e-11ee-4013-a054-2014c85e3693",
+        "text": "Hi All, the above issue occurs when there's a problem with our virtual stream producer, which causes invalid virtual prices to be displayed via all channels (including the Stream API).  I can confirm that there is an item on our development roadmap to fix this within Q2 this year.",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "hFY9",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Hi All, the above issue occurs when there's a problem with our virtual stream producer, which causes invalid virtual prices to be displayed via all channels (including the Stream API).  I can confirm that there is an item on our development roadmap to fix this within Q2 this year."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U02GGCCLTKM",
+        "type": "message",
+        "ts": "1673612999.319559",
+        "client_msg_id": "58c62ef9-cf1a-43ba-9741-19ce1bc8eec6",
+        "text": "You’re probably unlikely to break the 6 figure ceiling as MLE outside of London. thats definitely a generalisation though - the caveat (as with all things salary related) is it massively depends on the company and industry. As for career progression beyond senior MLE you’ll eventually probably hit a fork in the road and will have to decide if you want to stay focused on ML. Director level roles and higher will usually be a much broader remit e.g. director of analytics or director of business intelligence or something like that. Not many companies are so focused on ML that they’d have directors or above dedicated to it",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "ge8c986b4886",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/e8c986b48866eae41e70e68deddde864.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "John",
+            "real_name": "John Foley",
+            "display_name": "John Foley",
+            "team": "T4G9NBD2M",
+            "name": "johnf1004",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1673482104.920759",
+        "parent_user_id": "U027P3N2WMQ",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "C+Z",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "You’re probably unlikely to break the 6 figure ceiling as MLE outside of London. thats definitely a generalisation though - the caveat (as with all things salary related) is it massively depends on the company and industry. As for career progression beyond senior MLE you’ll eventually probably hit a fork in the road and will have to decide if you want to stay focused on ML. Director level roles and higher will usually be a much broader remit e.g. director of analytics or director of business intelligence or something like that. Not many companies are so focused on ML that they’d have directors or above dedicated to it"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U02GGCCLTKM",
+        "type": "message",
+        "ts": "1673613062.610219",
+        "client_msg_id": "f3bf52b7-3527-4878-8c87-7bfe879a5743",
+        "text": "Feel free to ping me if you want to chat more! (i hire MLEs)",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "ge8c986b4886",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/e8c986b48866eae41e70e68deddde864.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "John",
+            "real_name": "John Foley",
+            "display_name": "John Foley",
+            "team": "T4G9NBD2M",
+            "name": "johnf1004",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1673482104.920759",
+        "parent_user_id": "U027P3N2WMQ",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "uSIF",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Feel free to ping me if you want to chat more! (i hire MLEs)"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U02GSMUSG56",
+        "type": "message",
+        "ts": "1673618648.551359",
+        "client_msg_id": "6df40da5-ea30-410a-8151-b906cc75f787",
+        "text": "Hi <@UUE6E1LA1>, we've re-released today. Please can you check again and let me know how you get on?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "99e804a429e7",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2022-08-02\/3895477058305_99e804a429e740e422aa_72.jpg",
+            "first_name": "Carl",
+            "real_name": "Carl Albon",
+            "display_name": "Carl",
+            "team": "T4G9NBD2M",
+            "name": "carl.albon",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1672422379.866409",
+        "parent_user_id": "UUE6E1LA1",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "cqWbj",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Hi "
+                            },
+                            {
+                                "type": "user",
+                                "user_id": "UUE6E1LA1"
+                            },
+                            {
+                                "type": "text",
+                                "text": ", we've re-released today. Please can you check again and let me know how you get on?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "UUE6E1LA1"
+                ],
+                "count": 1
+            }
+        ]
+    }
+]

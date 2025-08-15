@@ -1,0 +1,328 @@
+[
+    {
+        "user": "U06R7GCC26B",
+        "type": "message",
+        "ts": "1714038872.134609",
+        "client_msg_id": "d0a84d45-24b7-497f-a930-a347125c0c59",
+        "text": "I think there’s a bug in the keep alive worker where it’s not logging in properly\n\nTraceback in thread\n\nI’ve been getting this for a couple of days wheen leaving the stream running for a long while (to build up local data as discussed  elsewhere) but also logging into betfair from other devices to look at things or manually execute.\n\nThe fix should be relatively straightforward, happy to open a PR into the flumine repo if that’s the done thing?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g68a674a57e0",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/68a674a57e001129884dc5a186684950.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0004-72.png",
+            "first_name": "Ammar",
+            "real_name": "Ammar",
+            "display_name": "Ammar",
+            "team": "T4G9NBD2M",
+            "name": "ammarorama",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1714038872.134609",
+        "reply_count": 11,
+        "reply_users_count": 3,
+        "latest_reply": "1715071274.262839",
+        "reply_users": [
+            "U06R7GCC26B",
+            "U02RN7YDRQ9",
+            "U04NWADNCFR"
+        ],
+        "replies": [
+            {
+                "user": "U06R7GCC26B",
+                "ts": "1714038884.783229"
+            },
+            {
+                "user": "U02RN7YDRQ9",
+                "ts": "1714075231.922959"
+            },
+            {
+                "user": "U06R7GCC26B",
+                "ts": "1714076285.291429"
+            },
+            {
+                "user": "U04NWADNCFR",
+                "ts": "1714118815.250379"
+            },
+            {
+                "user": "U06R7GCC26B",
+                "ts": "1714119316.845009"
+            },
+            {
+                "user": "U02RN7YDRQ9",
+                "ts": "1714121941.484699"
+            },
+            {
+                "user": "U06R7GCC26B",
+                "ts": "1714122439.793139"
+            },
+            {
+                "user": "U02RN7YDRQ9",
+                "ts": "1714126743.448749"
+            },
+            {
+                "user": "U06R7GCC26B",
+                "ts": "1714129315.900329"
+            },
+            {
+                "user": "U06R7GCC26B",
+                "ts": "1714161342.573529"
+            },
+            {
+                "user": "U06R7GCC26B",
+                "ts": "1715071274.262839"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": false,
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "R4xNB",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I think there’s a bug in the keep alive worker where it’s not logging in properly\n\nTraceback in thread\n\nI’ve been getting this for a couple of days wheen leaving the stream running for a long while (to build up local data as discussed  elsewhere) but also logging into betfair from other devices to look at things or manually execute.\n\nThe fix should be relatively straightforward, happy to open a PR into the flumine repo if that’s the done thing?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U06R7GCC26B",
+        "type": "message",
+        "ts": "1714038884.783229",
+        "edited": {
+            "user": "U06R7GCC26B",
+            "ts": "1714041724.000000"
+        },
+        "client_msg_id": "b538a9d1-5ed8-4265-881d-99b3aae87bda",
+        "text": "```\n{\"asctime\": \"2024-04-24 21:20:22,236\", \"levelname\": \"ERROR\", \"message\": \"BetfairClient `keep_alive` error\", \"exc_info\": \"Traceback (most recent call last):\nFile \\\"\/Users\/user\/.virtualenvs\/b2023\/lib\/python3.11\/site-packages\/flumine\/clients\/betfairclient.py\\\", line 44, in keep_alive\nreturn self.betting_client.keep_alive()\n^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nFile \\\"\/Users\/user\/.virtualenvs\/b2023\/lib\/python3.11\/site-packages\/betfairlightweight\/endpoints\/keepalive.py\\\", line 30, in __call__\n(response, response_json, elapsed_time) = self.request(session=session)\n                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n                           File \\\"\/Users\/user\/.virtualenvs\/b2023\/lib\/python3.11\/site-packages\/betfairlightweight\/endpoints\/keepalive.py\\\", line 60, in request\n                               self._error_handler(response_json)\n                                 File \\\"\/Users\/user\/.virtualenvs\/b2023\/lib\/python3.11\/site-packages\/betfairlightweight\/endpoints\/keepalive.py\\\", line 67, in _error_handler\n                                     raise self._error(response)\n                                     betfairlightweight.exceptions.KeepAliveError: API keepAlive FAIL: NO_SESSION\", \"client\": \"APIClient\", \"trading_function\": \"keep_alive\", \"response\": \"API keepAlive FAIL: NO_SESSION\"}\n\n\n{\"asctime\": \"2024-04-24 21:20:22,240\", \"levelname\": \"ERROR\", \"message\": \"Error in BackgroundWorker keep_alive: 'NoneType' object has no attribute 'status'\", \"exc_info\": \"Traceback (most recent call last):\nFile \\\"\/Users\/user\/.virtualenvs\/b2023\/lib\/python3.11\/site-packages\/flumine\/worker.py\\\", line 66, in run\nself.function(\nFile \\\"\/Users\/user\/.virtualenvs\/b2023\/lib\/python3.11\/site-packages\/flumine\/worker.py\\\", line 106, in keep_alive\nif resp is True or resp.status == \\\"SUCCESS\\\":\n^^^^^^^^^^^\nAttributeError: 'NoneType' object has no attribute 'status'\", \"worker_name\": \"keep_alive\", \"function\": \"<function keep_alive at 0x1041e99e0>\", \"context\": {}}```\n\n---\nraw json format from the logger\n```{\"asctime\": \"2024-04-24 21:02:11,658\", \"levelname\": \"ERROR\", \"message\": \"BetfairClient `account.get_account_details` error\", \"exc_info\": \"Traceback (most recent call last):\\n  File \\\"\/Users\/user\/.virtualenvs\/b2023\/lib\/python3.11\/site-packages\/flumine\/clients\/betfairclient.py\\\", line 84, in _get_account_details\\n    return self.betting_client.account.get_account_details()\\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\\n  File \\\"\/Users\/user\/.virtualenvs\/b2023\/lib\/python3.11\/site-packages\/betfairlightweight\/endpoints\/account.py\\\", line 54, in get_account_details\\n    (response, response_json, elapsed_time) = self.request(method, params, session)\\n                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\\n  File \\\"\/Users\/user\/.virtualenvs\/b2023\/lib\/python3.11\/site-packages\/betfairlightweight\/endpoints\/baseendpoint.py\\\", line 54, in request\\n    self._error_handler(response_json, method, params)\\n  File \\\"\/Users\/user\/.virtualenvs\/b2023\/lib\/python3.11\/site-packages\/betfairlightweight\/endpoints\/baseendpoint.py\\\", line 80, in _error_handler\\n    raise self._error(response, method, params)\\nbetfairlightweight.exceptions.APIError: AccountAPING\/v1.0\/getAccountDetails \\nParams: {} \\nException: None \\nError: {'code': -32099, 'message': 'AANGX-0002', 'data': {'exceptionname': 'AccountAPINGException', 'AccountAPINGException': {'requestUUID': 'null', 'errorCode': 'INVALID_SESSION_INFORMATION', 'errorDetails': ''}}} \\nFull Response: {'jsonrpc': '2.0', 'error': {'code': -32099, 'message': 'AANGX-0002', 'data': {'exceptionname': 'AccountAPINGException', 'AccountAPINGException': {'requestUUID': 'null', 'errorCode': 'INVALID_SESSION_INFORMATION', 'errorDetails': ''}}}, 'id': 1}\", \"client\": \"APIClient\", \"trading_function\": \"account.get_account_details\", \"response\": \"AccountAPING\/v1.0\/getAccountDetails \\nParams: {} \\nException: None \\nError: {'code': -32099, 'message': 'AANGX-0002', 'data': {'exceptionname': 'AccountAPINGException', 'AccountAPINGException': {'requestUUID': 'null', 'errorCode': 'INVALID_SESSION_INFORMATION', 'errorDetails': ''}}} \\nFull Response: {'jsonrpc': '2.0', 'error': {'code': -32099, 'message': 'AANGX-0002', 'data': {'exceptionname': 'AccountAPINGException', 'AccountAPINGException': {'requestUUID': 'null', 'errorCode': 'INVALID_SESSION_INFORMATION', 'errorDetails': ''}}}, 'id': 1}\"}\n{\"asctime\": \"2024-04-24 21:02:11,762\", \"levelname\": \"ERROR\", \"message\": \"BetfairClient `account.get_account_funds` error\", \"exc_info\": \"Traceback (most recent call last):\\n  File \\\"\/Users\/user\/.virtualenvs\/b2023\/lib\/python3.11\/site-packages\/flumine\/clients\/betfairclient.py\\\", line 98, in _get_account_funds\\n    return self.betting_client.account.get_account_funds()\\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\\n  File \\\"\/Users\/user\/.virtualenvs\/b2023\/lib\/python3.11\/site-packages\/betfairlightweight\/endpoints\/account.py\\\", line 35, in get_account_funds\\n    (response, response_json, elapsed_time) = self.request(method, params, session)\\n                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\\n  File \\\"\/Users\/user\/.virtualenvs\/b2023\/lib\/python3.11\/site-packages\/betfairlightweight\/endpoints\/baseendpoint.py\\\", line 54, in request\\n    self._error_handler(response_json, method, params)\\n  File \\\"\/Users\/user\/.virtualenvs\/b2023\/lib\/python3.11\/site-packages\/betfairlightweight\/endpoints\/baseendpoint.py\\\", line 80, in _error_handler\\n    raise self._error(response, method, params)\\nbetfairlightweight.exceptions.APIError: AccountAPING\/v1.0\/getAccountFunds \\nParams: {} \\nException: None \\nError: {'code': -32099, 'message': 'AANGX-0002', 'data': {'exceptionname': 'AccountAPINGException', 'AccountAPINGException': {'requestUUID': 'null', 'errorCode': 'INVALID_SESSION_INFORMATION', 'errorDetails': ''}}} \\nFull Response: {'jsonrpc': '2.0', 'error': {'code': -32099, 'message': 'AANGX-0002', 'data': {'exceptionname': 'AccountAPINGException', 'AccountAPINGException': {'requestUUID': 'null', 'errorCode': 'INVALID_SESSION_INFORMATION', 'errorDetails': ''}}}, 'id': 1}\", \"client\": \"APIClient\", \"trading_function\": \"account.get_account_funds\", \"response\": \"AccountAPING\/v1.0\/getAccountFunds \\nParams: {} \\nException: None \\nError: {'code': -32099, 'message': 'AANGX-0002', 'data': {'exceptionname': 'AccountAPINGException', 'AccountAPINGException': {'requestUUID': 'null', 'errorCode': 'INVALID_SESSION_INFORMATION', 'errorDetails': ''}}} \\nFull Response: {'jsonrpc': '2.0', 'error': {'code': -32099, 'message': 'AANGX-0002', 'data': {'exceptionname': 'AccountAPINGException', 'AccountAPINGException': {'requestUUID': 'null', 'errorCode': 'INVALID_SESSION_INFORMATION', 'errorDetails': ''}}}, 'id': 1}\"}```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g68a674a57e0",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/68a674a57e001129884dc5a186684950.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0004-72.png",
+            "first_name": "Ammar",
+            "real_name": "Ammar",
+            "display_name": "Ammar",
+            "team": "T4G9NBD2M",
+            "name": "ammarorama",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1714038872.134609",
+        "parent_user_id": "U06R7GCC26B",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "\/7N32",
+                "elements": [
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\n{\"asctime\": \"2024-04-24 21:20:22,236\", \"levelname\": \"ERROR\", \"message\": \"BetfairClient `keep_alive` error\", \"exc_info\": \"Traceback (most recent call last):\nFile \\\"\/Users\/user\/.virtualenvs\/b2023\/lib\/python3.11\/site-packages\/flumine\/clients\/betfairclient.py\\\", line 44, in keep_alive\nreturn self.betting_client.keep_alive()\n^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nFile \\\"\/Users\/user\/.virtualenvs\/b2023\/lib\/python3.11\/site-packages\/betfairlightweight\/endpoints\/keepalive.py\\\", line 30, in __call__\n(response, response_json, elapsed_time) = self.request(session=session)\n                         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n                           File \\\"\/Users\/user\/.virtualenvs\/b2023\/lib\/python3.11\/site-packages\/betfairlightweight\/endpoints\/keepalive.py\\\", line 60, in request\n                               self._error_handler(response_json)\n                                 File \\\"\/Users\/user\/.virtualenvs\/b2023\/lib\/python3.11\/site-packages\/betfairlightweight\/endpoints\/keepalive.py\\\", line 67, in _error_handler\n                                     raise self._error(response)\n                                     betfairlightweight.exceptions.KeepAliveError: API keepAlive FAIL: NO_SESSION\", \"client\": \"APIClient\", \"trading_function\": \"keep_alive\", \"response\": \"API keepAlive FAIL: NO_SESSION\"}\n\n\n{\"asctime\": \"2024-04-24 21:20:22,240\", \"levelname\": \"ERROR\", \"message\": \"Error in BackgroundWorker keep_alive: 'NoneType' object has no attribute 'status'\", \"exc_info\": \"Traceback (most recent call last):\nFile \\\"\/Users\/user\/.virtualenvs\/b2023\/lib\/python3.11\/site-packages\/flumine\/worker.py\\\", line 66, in run\nself.function(\nFile \\\"\/Users\/user\/.virtualenvs\/b2023\/lib\/python3.11\/site-packages\/flumine\/worker.py\\\", line 106, in keep_alive\nif resp is True or resp.status == \\\"SUCCESS\\\":\n^^^^^^^^^^^\nAttributeError: 'NoneType' object has no attribute 'status'\", \"worker_name\": \"keep_alive\", \"function\": \"<function keep_alive at 0x1041e99e0>\", \"context\": {}}"
+                            }
+                        ],
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\n\n---\nraw json format from the logger\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "{\"asctime\": \"2024-04-24 21:02:11,658\", \"levelname\": \"ERROR\", \"message\": \"BetfairClient `account.get_account_details` error\", \"exc_info\": \"Traceback (most recent call last):\\n  File \\\"\/Users\/user\/.virtualenvs\/b2023\/lib\/python3.11\/site-packages\/flumine\/clients\/betfairclient.py\\\", line 84, in _get_account_details\\n    return self.betting_client.account.get_account_details()\\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\\n  File \\\"\/Users\/user\/.virtualenvs\/b2023\/lib\/python3.11\/site-packages\/betfairlightweight\/endpoints\/account.py\\\", line 54, in get_account_details\\n    (response, response_json, elapsed_time) = self.request(method, params, session)\\n                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\\n  File \\\"\/Users\/user\/.virtualenvs\/b2023\/lib\/python3.11\/site-packages\/betfairlightweight\/endpoints\/baseendpoint.py\\\", line 54, in request\\n    self._error_handler(response_json, method, params)\\n  File \\\"\/Users\/user\/.virtualenvs\/b2023\/lib\/python3.11\/site-packages\/betfairlightweight\/endpoints\/baseendpoint.py\\\", line 80, in _error_handler\\n    raise self._error(response, method, params)\\nbetfairlightweight.exceptions.APIError: AccountAPING\/v1.0\/getAccountDetails \\nParams: {} \\nException: None \\nError: {'code': -32099, 'message': 'AANGX-0002', 'data': {'exceptionname': 'AccountAPINGException', 'AccountAPINGException': {'requestUUID': 'null', 'errorCode': 'INVALID_SESSION_INFORMATION', 'errorDetails': ''}}} \\nFull Response: {'jsonrpc': '2.0', 'error': {'code': -32099, 'message': 'AANGX-0002', 'data': {'exceptionname': 'AccountAPINGException', 'AccountAPINGException': {'requestUUID': 'null', 'errorCode': 'INVALID_SESSION_INFORMATION', 'errorDetails': ''}}}, 'id': 1}\", \"client\": \"APIClient\", \"trading_function\": \"account.get_account_details\", \"response\": \"AccountAPING\/v1.0\/getAccountDetails \\nParams: {} \\nException: None \\nError: {'code': -32099, 'message': 'AANGX-0002', 'data': {'exceptionname': 'AccountAPINGException', 'AccountAPINGException': {'requestUUID': 'null', 'errorCode': 'INVALID_SESSION_INFORMATION', 'errorDetails': ''}}} \\nFull Response: {'jsonrpc': '2.0', 'error': {'code': -32099, 'message': 'AANGX-0002', 'data': {'exceptionname': 'AccountAPINGException', 'AccountAPINGException': {'requestUUID': 'null', 'errorCode': 'INVALID_SESSION_INFORMATION', 'errorDetails': ''}}}, 'id': 1}\"}\n{\"asctime\": \"2024-04-24 21:02:11,762\", \"levelname\": \"ERROR\", \"message\": \"BetfairClient `account.get_account_funds` error\", \"exc_info\": \"Traceback (most recent call last):\\n  File \\\"\/Users\/user\/.virtualenvs\/b2023\/lib\/python3.11\/site-packages\/flumine\/clients\/betfairclient.py\\\", line 98, in _get_account_funds\\n    return self.betting_client.account.get_account_funds()\\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\\n  File \\\"\/Users\/user\/.virtualenvs\/b2023\/lib\/python3.11\/site-packages\/betfairlightweight\/endpoints\/account.py\\\", line 35, in get_account_funds\\n    (response, response_json, elapsed_time) = self.request(method, params, session)\\n                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\\n  File \\\"\/Users\/user\/.virtualenvs\/b2023\/lib\/python3.11\/site-packages\/betfairlightweight\/endpoints\/baseendpoint.py\\\", line 54, in request\\n    self._error_handler(response_json, method, params)\\n  File \\\"\/Users\/user\/.virtualenvs\/b2023\/lib\/python3.11\/site-packages\/betfairlightweight\/endpoints\/baseendpoint.py\\\", line 80, in _error_handler\\n    raise self._error(response, method, params)\\nbetfairlightweight.exceptions.APIError: AccountAPING\/v1.0\/getAccountFunds \\nParams: {} \\nException: None \\nError: {'code': -32099, 'message': 'AANGX-0002', 'data': {'exceptionname': 'AccountAPINGException', 'AccountAPINGException': {'requestUUID': 'null', 'errorCode': 'INVALID_SESSION_INFORMATION', 'errorDetails': ''}}} \\nFull Response: {'jsonrpc': '2.0', 'error': {'code': -32099, 'message': 'AANGX-0002', 'data': {'exceptionname': 'AccountAPINGException', 'AccountAPINGException': {'requestUUID': 'null', 'errorCode': 'INVALID_SESSION_INFORMATION', 'errorDetails': ''}}}, 'id': 1}\", \"client\": \"APIClient\", \"trading_function\": \"account.get_account_funds\", \"response\": \"AccountAPING\/v1.0\/getAccountFunds \\nParams: {} \\nException: None \\nError: {'code': -32099, 'message': 'AANGX-0002', 'data': {'exceptionname': 'AccountAPINGException', 'AccountAPINGException': {'requestUUID': 'null', 'errorCode': 'INVALID_SESSION_INFORMATION', 'errorDetails': ''}}} \\nFull Response: {'jsonrpc': '2.0', 'error': {'code': -32099, 'message': 'AANGX-0002', 'data': {'exceptionname': 'AccountAPINGException', 'AccountAPINGException': {'requestUUID': 'null', 'errorCode': 'INVALID_SESSION_INFORMATION', 'errorDetails': ''}}}, 'id': 1}\"}"
+                            }
+                        ],
+                        "border": 0
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U02RN7YDRQ9",
+        "type": "message",
+        "ts": "1714075231.922959",
+        "client_msg_id": "cc4d6923-98d6-420a-b9ad-8566e89eedd6",
+        "text": "Not sure there is a bug there - runs for weeks on end 24\/7 for me and others using flumine. Suggest you look at your usage of flumine and other things you are doing that may interfere. Once you come up with proof of how to cause the supposed error or the repeatable actions that make it happen then that's the time to consider a PR.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "ge46f1f8b708",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/e46f1f8b708a630e3191de7b2c42b1d1.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0023-72.png",
+            "first_name": "edblock",
+            "real_name": "edblock",
+            "display_name": "foxwood",
+            "team": "T4G9NBD2M",
+            "name": "eanb",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1714038872.134609",
+        "parent_user_id": "U06R7GCC26B",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "oHZbK",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Not sure there is a bug there - runs for weeks on end 24\/7 for me and others using flumine. Suggest you look at your usage of flumine and other things you are doing that may interfere. Once you come up with proof of how to cause the supposed error or the repeatable actions that make it happen then that's the time to consider a PR."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U06R7GCC26B",
+        "type": "message",
+        "ts": "1714076285.291429",
+        "client_msg_id": "8bb974f5-4f95-42b6-961e-655b356b320c",
+        "text": "It looks to me like there’s an unexpected response type (as `None`) which is coming thru from the call stack — which looks entirely plausible as I read thru the code all the way back to `betfairlightweight`\n\nto be clear, this isn’t impacting the data stream; but it does look like very unhappy noise in the logs, which is never nice :)\n\nsteps to replicate:\n• leave the market recorder going on one machine — this is _all_ I’m using flumine for, it’s a single process which I kick off each day.  (currently on a laptop, behind expressVPN, which may be a noteworthy point) \n• use betfair to manually execute and check markets via the mobile app, and other computers\n• over the course of 8-10 hours the error will start to present\n\nthe fix could be very light in the keepalive (similar to how it’s handling a failure already)\n\n\n```def keep_alive(context: dict, flumine) -&gt; None:\n    \"\"\"Attempt keep alive if required or\n    login if keep alive failed\n    \"\"\"\n    for client in flumine.clients:\n        if client.EXCHANGE == ExchangeType.BETFAIR:\n            if client.betting_client.session_token:\n                resp = client.keep_alive()\n\n                # start change\n                if resp is None:  # this is the unexpected response type I'm seeing\n                    client.login()\n                # end chage\n\n                if resp is True or resp.status == \"SUCCESS\":\n                    continue\n        elif client.EXCHANGE == ExchangeType.BETCONNECT:\n            resp = client.keep_alive()\n            if resp:\n                continue\n        # keep-alive failed lets try a login\n        client.login()```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g68a674a57e0",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/68a674a57e001129884dc5a186684950.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0004-72.png",
+            "first_name": "Ammar",
+            "real_name": "Ammar",
+            "display_name": "Ammar",
+            "team": "T4G9NBD2M",
+            "name": "ammarorama",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1714038872.134609",
+        "parent_user_id": "U06R7GCC26B",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "pUxw5",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "It looks to me like there’s an unexpected response type (as "
+                            },
+                            {
+                                "type": "text",
+                                "text": "None",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": ") which is coming thru from the call stack — which looks entirely plausible as I read thru the code all the way back to "
+                            },
+                            {
+                                "type": "text",
+                                "text": "betfairlightweight",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n\nto be clear, this isn’t impacting the data stream; but it does look like very unhappy noise in the logs, which is never nice :)\n\nsteps to replicate:\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_list",
+                        "elements": [
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "leave the market recorder going on one machine — this is "
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": "all",
+                                        "style": {
+                                            "italic": true
+                                        }
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": " I’m using flumine for, it’s a single process which I kick off each day.  (currently on a laptop, behind expressVPN, which may be a noteworthy point) "
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "use betfair to manually execute and check markets via the mobile app, and other computers"
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "over the course of 8-10 hours the error will start to present"
+                                    }
+                                ]
+                            }
+                        ],
+                        "style": "bullet",
+                        "indent": 0,
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\n\nthe fix could be very light in the keepalive (similar to how it’s handling a failure already)\n\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "def keep_alive(context: dict, flumine) -> None:\n    \"\"\"Attempt keep alive if required or\n    login if keep alive failed\n    \"\"\"\n    for client in flumine.clients:\n        if client.EXCHANGE == ExchangeType.BETFAIR:\n            if client.betting_client.session_token:\n                resp = client.keep_alive()\n\n                # start change\n                if resp is None:  # this is the unexpected response type I'm seeing\n                    client.login()\n                # end chage\n\n                if resp is True or resp.status == \"SUCCESS\":\n                    continue\n        elif client.EXCHANGE == ExchangeType.BETCONNECT:\n            resp = client.keep_alive()\n            if resp:\n                continue\n        # keep-alive failed lets try a login\n        client.login()"
+                            }
+                        ],
+                        "border": 0
+                    }
+                ]
+            }
+        ]
+    }
+]

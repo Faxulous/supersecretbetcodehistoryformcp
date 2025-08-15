@@ -1,0 +1,148 @@
+[
+    {
+        "user": "U0128E7BEHW",
+        "type": "message",
+        "ts": "1651303891.386259",
+        "client_msg_id": "d12ab4f4-98be-47c5-a812-70fd7d87350e",
+        "text": "Presumably you don't want to retry logging in, but rather use the keep-alive every so often: <https:\/\/github.com\/rozzac90\/matchbook\/blob\/master\/matchbook\/endpoints\/keepalive.py>",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gb57a2bdd15a",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/b57a2bdd15acccdb845ce257f38940cc.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "Dave",
+            "real_name": "Dave R",
+            "display_name": "Dave",
+            "team": "T4G9NBD2M",
+            "name": "d7m",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "attachments": [
+            {
+                "id": 1,
+                "footer_icon": "https:\/\/slack.github.com\/static\/img\/favicon-neutral.png",
+                "color": "24292f",
+                "bot_id": "B021ZJYSBMW",
+                "app_unfurl_url": "https:\/\/github.com\/rozzac90\/matchbook\/blob\/master\/matchbook\/endpoints\/keepalive.py",
+                "is_app_unfurl": true,
+                "app_id": "A01BP7R4KNY",
+                "fallback": "<https:\/\/github.com\/rozzac90\/matchbook\/blob\/master\/matchbook\/endpoints\/keepalive.py | keepalive.py>",
+                "text": "```\n\nimport json\n\nfrom matchbook.endpoints.baseendpoint import BaseEndpoint\nfrom matchbook.exceptions import AuthError\n\n\nclass KeepAlive(BaseEndpoint):\n\n    def __call__(self, session=None):\n        session = session or self.client.session\n        response = self.request('GET', self.client.urn_main, 'security\/session', data=self.data, session=session)\n        if response.status_code == 200:\n            pass\n        elif response.status_code == 401:\n            response = self.request(\"POST\", self.client.urn_main, 'security\/session', data=self.data, session=session)\n            if response.status_code == 200:\n                response_json = response.json()\n                self.client.set_session_token(response_json.get('session-token'), response_json.get('user-id'))\n            else:\n                raise AuthError(response)\n        else:\n            raise AuthError(response)\n\n    def request(self, request_method, urn, method, params={}, data={}, target=None, session=None):\n        \"\"\"\n        :param request_method: type of request to be sent.\n        :param urn: matchbook urn to append to url specified.\n        :param method: Matchbook method to be used.\n        :param params: Params to be used in request\n        :param url: define different URL to use.\n        :param data: data to be sent in request body.\n        :param target: target key to get from data, if None returns full response.\n        :param session: Requests session to be used, reduces latency.\n        \"\"\"\n        session = session or self.client.session\n        data['session-token'] = self.client.session_token\n        data['user-id'] = self.client.user_id\n        request_url = '%s%s%s' % (self.client.url, urn, method)\n        response = session.request(\n            request_method, request_url, params=params, data=json.dumps(data), headers=self.client.headers\n        )\n        return response\n\n    @property\n    def data(self):\n        return {'username': self.client.username, 'password': self.client.password}\n```",
+                "title": "<https:\/\/github.com\/rozzac90\/matchbook\/blob\/master\/matchbook\/endpoints\/keepalive.py | keepalive.py>",
+                "footer": "<https:\/\/github.com\/rozzac90\/matchbook|rozzac90\/matchbook>",
+                "mrkdwn_in": [
+                    "text"
+                ]
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "VUw",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Presumably you don't want to retry logging in, but rather use the keep-alive every so often: "
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/rozzac90\/matchbook\/blob\/master\/matchbook\/endpoints\/keepalive.py"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U0128E7BEHW",
+        "type": "message",
+        "ts": "1651303911.707539",
+        "client_msg_id": "0eee47b6-ae2d-4599-8c97-5a5c17b2fdae",
+        "text": "(never used matchbook API but it would be the case for BF)",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gb57a2bdd15a",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/b57a2bdd15acccdb845ce257f38940cc.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "Dave",
+            "real_name": "Dave R",
+            "display_name": "Dave",
+            "team": "T4G9NBD2M",
+            "name": "d7m",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "dySm",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "(never used matchbook API but it would be the case for BF)"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U013ZS16QJZ",
+        "type": "message",
+        "ts": "1651355901.182949",
+        "edited": {
+            "user": "U013ZS16QJZ",
+            "ts": "1651356041.000000"
+        },
+        "client_msg_id": "759b3650-68b1-4ba0-85b5-1c51b8cddb5c",
+        "text": "The book The Logic Of Sports Betting can be downloaded for free from the website of Deck Prism, the author's company.\n\n<https:\/\/deckprismsports.com\/tlosp_v1-0-5.pdf>",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g16b34a6e706",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/16b34a6e706dbe59fcc7dd82d1ae4930.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0009-72.png",
+            "first_name": "VT",
+            "real_name": "VT",
+            "display_name": "VT",
+            "team": "T4G9NBD2M",
+            "name": "joaobaldoni",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1651214885.629909",
+        "parent_user_id": "U01665WFPD3",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "lAu",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "The book The Logic Of Sports Betting can be downloaded for free from the website of Deck Prism, the author's company.\n\n"
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/deckprismsports.com\/tlosp_v1-0-5.pdf"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

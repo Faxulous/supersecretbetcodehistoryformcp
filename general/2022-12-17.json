@@ -1,0 +1,171 @@
+[
+    {
+        "user": "U01A5GVTBST",
+        "type": "message",
+        "ts": "1671303820.819529",
+        "edited": {
+            "user": "U01A5GVTBST",
+            "ts": "1671305173.000000"
+        },
+        "client_msg_id": "78a969ac-e920-4e3b-9bbe-dab454bee441",
+        "text": "Hi, when recording market data for 2 sports, do you recommend that I use one strategy for both sports or 2 strategies (one per sport)? In other words, would you create 2 instances of <https:\/\/github.com\/betcode-org\/flumine\/blob\/master\/examples\/strategies\/marketrecorder.py>. One per Sport or one only. Is there performance penalty in having multiples and specializing him.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "2b9b6916d876",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-09-13\/1357224664949_2b9b6916d8763fd7e1bc_72.png",
+            "first_name": "",
+            "real_name": "Matthieu Labour",
+            "display_name": "Matthieu Labour",
+            "team": "T4G9NBD2M",
+            "name": "matthieu.labour",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1671303820.819529",
+        "reply_count": 2,
+        "reply_users_count": 2,
+        "latest_reply": "1671306756.214709",
+        "reply_users": [
+            "U4H19D1D2",
+            "U9JHLMZB4"
+        ],
+        "replies": [
+            {
+                "user": "U4H19D1D2",
+                "ts": "1671305933.219499"
+            },
+            {
+                "user": "U9JHLMZB4",
+                "ts": "1671306756.214709"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": true,
+        "last_read": "1671306756.214709",
+        "attachments": [
+            {
+                "id": 1,
+                "footer_icon": "https:\/\/slack.github.com\/static\/img\/favicon-neutral.png",
+                "color": "24292f",
+                "bot_id": "B021ZJYSBMW",
+                "app_unfurl_url": "https:\/\/github.com\/betcode-org\/flumine\/blob\/master\/examples\/strategies\/marketrecorder.py",
+                "is_app_unfurl": true,
+                "app_id": "A01BP7R4KNY",
+                "fallback": "<https:\/\/github.com\/betcode-org\/flumine\/blob\/master\/examples\/strategies\/marketrecorder.py | marketrecorder.py>",
+                "text": "```\nimport os\nimport json\nimport time\nimport logging\nimport gzip\nimport boto3\nimport queue\nimport threading\nfrom boto3.s3.transfer import S3Transfer, TransferConfig\nfrom botocore.exceptions import BotoCoreError\n\nfrom flumine import BaseStrategy\nfrom flumine.utils import create_short_uuid, file_line_count\n\nlogger = logging.getLogger(__name__)\n\n\nclass MarketRecorder(BaseStrategy):\n\n    \"\"\"\n    Simple raw streaming market recorder, context:\n\n        market_expiration: int, Seconds to wait after market closure before removing files\n        remove_file: bool, Remove txt file during cleanup\n        remove_gz_file: bool, Remove gz file during cleanup\n        force_update: bool, Update zip\/closure if update received after closure\n        load_market_catalogue: bool, Store marketCatalogue as {marketId}.json\n        local_dir: str, Dir to store data\n        recorder_id: str, Directory name (defaults to random uuid)\n    \"\"\"\n\n    MARKET_ID_LOOKUP = \"id\"\n\n    def __init__(self, *args, **kwargs):\n        BaseStrategy.__init__(self, *args, **kwargs)\n        self._market_expiration = self.context.get(\"market_expiration\", 3600)  # seconds\n        self._remove_file = self.context.get(\"remove_file\", False)\n        self._remove_gz_file = self.context.get(\"remove_gz_file\", False)\n        self._force_update = self.context.get(\"force_update\", True)\n        self._load_market_catalogue = self.context.get(\"load_market_catalogue\", True)\n        self.local_dir = self.context.get(\"local_dir\", \"\/tmp\")\n        self.recorder_id = self.context.get(\"recorder_id\", create_short_uuid())\n        self._loaded_markets = []  # list of marketIds\n        self._queue = queue.Queue()\n\n    def add(self) -> None:\n        <http:\/\/logger.info|logger.info>(\"Adding strategy %s with id %s\" % (self.name, self.recorder_id))\n        # check local dir\n        if not os.path.isdir(self.local_dir):\n            raise OSError(\"File dir %s does not exist\" % self.local_dir)\n        # create sub dir\n        directory = os.path.join(self.local_dir, self.recorder_id)\n        if not os.path.exists(directory):\n            os.makedirs(directory)\n\n    def start(self) -> None:\n        # start load processor thread\n        threading.Thread(\n            name=\"{0}_load_processor\".format(self.name),\n            target=self._load_processor,\n            daemon=True,\n        ).start()\n\n    def process_raw_data(self, clk: str, publish_time: int, data: dict):\n        market_id = data.get(self.MARKET_ID_LOOKUP)\n        file_directory = os.path.join(self.local_dir, self.recorder_id, market_id)\n        with open(file_directory, \"a\") as f:\n            f.write(\n                json.dumps(\n                    {\"op\": \"mcm\", \"clk\": clk, \"pt\": publish_time, \"mc\": [data]},\n                    separators=(\",\", \":\"),\n                )\n                + \"\\n\"\n            )\n\n    def process_closed_market(self, market, data: dict) -> None:\n        market_id = data.get(self.MARKET_ID_LOOKUP)\n        if market_id in self._loaded_markets:\n            if self._force_update:\n                logger.warning(\n                    \"File: \/{0}\/{1}\/{2} has already been loaded, updating..\".format(\n                        self.local_dir, self.recorder_id, market_id\n                    )\n                )\n            else:\n                return\n        else:\n            self._loaded_markets.append(market_id)\n        <http:\/\/logger.info|logger.info>(\"Closing market %s\" % market_id)\n\n        file_dir = os.path.join(self.local_dir, self.recorder_id, market_id)\n        market_definition = data.get(\"marketDefinition\")\n\n        # check that file actually exists\n        if not os.path.isfile(file_dir):\n            logger.error(\n                \"File: %s does not exist in \/%s\/%s\/\"\n                % (self.local_dir, market_id, self.recorder_id)\n            )\n            return\n\n        # check that file is not empty \/ 1 line (i.e. the market had already closed on startup)\n        line_count = file_line_count(file_dir)\n        if line_count == 1:\n            logger.warning(\n                \"File: %s contains one line only and will not be loaded (already closed on startup)\"\n                % file_dir\n            )\n            return\n\n        self._queue.put((market, file_dir, market_definition))\n\n    def _load_processor(self):\n        # process compression\/load in thread\n        while True:\n            market, file_dir, market_definition = self._queue.get(block=True)\n            # check file still exists (potential race condition)\n            if not os.path.isfile(file_dir):\n                logger.warning(\n                    \"File: %s does not exist in %s\" % (market.market_id, file_dir)\n                )\n                continue\n            # compress file\n            compress_file_dir = self._compress_file(file_dir)\n            # core load code\n            self._load(market, compress_file_dir, market_definition)\n            # clean up\n            self._clean_up()\n\n    def _compress_file(self, file_dir: str) -> str:\n        \"\"\"compresses txt file into filename.gz\"\"\"\n        compressed_file_dir = \"{0}.gz\".format(file_dir)\n        with open(file_dir, \"rb\") as f:\n            with gzip.open(compressed_file_dir, \"wb\") as compressed_file:\n                compressed_file.writelines(f)\n        return compressed_file_dir\n\n    def _load(self, market, compress_file_dir: str, market_definition: dict) -> None:\n        # store marketCatalogue data `{marketId}.json.gz`\n        if market and self._load_market_catalogue:\n            if market.market_catalogue is None:\n                logger.warning(\n                    \"No marketCatalogue data available for %s\" % market.market_id\n                )\n                return\n            market_catalogue_compressed = self._compress_catalogue(\n                market.market_catalogue\n            )\n            # save to file\n            file_dir = os.path.join(\n                self.local_dir, self.recorder_id, \"{0}.json.gz\".format(market.market_id)\n            )\n            with open(file_dir, \"wb\") as f:\n                f.write(market_catalogue_compressed)\n\n    @staticmethod\n    def _compress_catalogue(market_catalogue) -> bytes:\n        market_catalogue_dumped = market_catalogue.json()\n        if isinstance(market_catalogue_dumped, str):\n            market_catalogue_dumped = market_catalogue_dumped.encode(\"utf-8\")\n        return gzip.compress(market_catalogue_dumped)\n\n    def _clean_up(self) -> None:\n        \"\"\"If gz > market_expiration old remove\n        gz and txt file\n        \"\"\"\n        directory = os.path.join(self.local_dir, self.recorder_id)\n        for file in os.listdir(directory):\n            if file.endswith(\".gz\"):\n                gz_path = os.path.join(directory, file)\n                file_stats = os.stat(gz_path)\n                seconds_since = time.time() - file_stats.st_mtime\n                if seconds_since > self._market_expiration:\n                    if self._remove_gz_file:\n                        <http:\/\/logger.info|logger.info>(\n                            \"Removing: %s, age: %ss\"\n                            % (gz_path, round(seconds_since, 2))\n                        )\n                        os.remove(gz_path)\n                    txt_path = os.path.join(directory, file.split(\".gz\")[0])\n                    if os.path.exists(txt_path) and self._remove_file:\n                        file_stats = os.stat(txt_path)\n                        seconds_since = time.time() - file_stats.st_mtime\n                        if seconds_since > self._market_expiration:\n                            <http:\/\/logger.info|logger.info>(\n                                \"Removing: %s, age: %ss\"\n                                % (txt_path, round(seconds_since, 2))\n                            )\n                            os.remove(txt_path)\n\n    @staticmethod\n    def _create_metadata(market_definition: dict) -> dict:\n        try:\n            del market_definition[\"runners\"]\n        except KeyError:\n            pass\n        return dict([a, str(x…",
+                "title": "<https:\/\/github.com\/betcode-org\/flumine\/blob\/master\/examples\/strategies\/marketrecorder.py | marketrecorder.py>",
+                "footer": "<https:\/\/github.com\/betcode-org\/flumine|betcode-org\/flumine>",
+                "mrkdwn_in": [
+                    "text"
+                ]
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "UT6Rx",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Hi, when recording market data for 2 sports, do you recommend that I use one strategy for both sports or 2 strategies (one per sport)? In other words, would you create 2 instances of "
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/betcode-org\/flumine\/blob\/master\/examples\/strategies\/marketrecorder.py"
+                            },
+                            {
+                                "type": "text",
+                                "text": ". One per Sport or one only. Is there performance penalty in having multiples and specializing him."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1671305933.219499",
+        "client_msg_id": "4799D4A4-FD53-45E7-8AE0-A553C3EA92AC",
+        "text": "One is better, not much in it though tbh ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1671303820.819529",
+        "parent_user_id": "U01A5GVTBST",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "8MrDM",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "One is better, not much in it though tbh "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U9JHLMZB4",
+        "type": "message",
+        "ts": "1671306756.214709",
+        "client_msg_id": "c2f28b24-6c76-4000-879c-b3b9a5295bd9",
+        "text": "A possible consideration is the number of markets at the time when you will be instantiating the collection process. You will have a limit on the number of markets to which you can subscribe (initially), and a separation by sport may help you to stay below that limit. Indeed some sports (I'm looking at you soccer) may need more than one collection instance even with a generous limit.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g951ddcb43e7",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/3951ddcb43e788a387d6daf330dad5ca.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0018-72.png",
+            "first_name": "",
+            "real_name": "Peter Coles",
+            "display_name": "Peter",
+            "team": "T4G9NBD2M",
+            "name": "peter",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1671303820.819529",
+        "parent_user_id": "U01A5GVTBST",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Bn1",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "A possible consideration is the number of markets at the time when you will be instantiating the collection process. You will have a limit on the number of markets to which you can subscribe (initially), and a separation by sport may help you to stay below that limit. Indeed some sports (I'm looking at you soccer) may need more than one collection instance even with a generous limit."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

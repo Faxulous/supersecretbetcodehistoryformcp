@@ -1,0 +1,526 @@
+[
+    {
+        "user": "U013MLED3V1",
+        "type": "message",
+        "ts": "1645089128.310279",
+        "client_msg_id": "892b5e33-4ba6-4cd1-a5ff-5b9da3a2f9c9",
+        "text": "<@U02QDJCK3NW> Betfair rest api offers CompetitionIds, UEFA Champions League has 228 CompetitionId. I do not know why betfair did not implemented the same filter to streaming api. In the streaming api we have got Venues filter, but that works only for horse racing.\n\n <@UUUAJQZ5J> you work for betfair, please put to your list of suggestions implementing all features of rest api filter to streaming api, or at least extending functionality of venues to all events, in this case venue would be competition name, like UEFA Champions League.\n\nHere is my test code. My code implementation uses Subscribe function that can take streaming filter, or markets, so it this case, I have queried markets by:\n\nlet filter = [ CompetitionIds [| 228 |]; MarketTypeCodes [| \"MATCH_ODDS\" |] ]\n\nand then subscribed to streaming api, lines from 74 to 78:\n\n<https:\/\/github.com\/StefanBelo\/Bfexplorer-BOT-SDK\/blob\/master\/TestStreamingAPI\/Program.fs>\n\nAs my code implements 2 Subscribe function, I can call first Subscribe to:\n\nlet filter = [ BetEventFilterParameter.BetEventTypeIds [| 1 |]; BetEventFilterParameter.Countries [| \"GB\" |]; BetEventFilterParameter.MarketTypeCodes [| \"MATCH_ODDS\" |] ]\n\nand the next call to Subscribe by using markets, re-subcribers all already open markets plus new ones.\n\nIf you are .net developer you can use my bot sdk, if not you can reengineer my solution to your code.\n\nHere is short video from my test:\n\n<https:\/\/youtu.be\/EGsYN0RXtNw>",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g76de2b0594d",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/76de2b0594d8598d76169231046f271a.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0001-72.png",
+            "first_name": "StefanBelo",
+            "real_name": "StefanBelo",
+            "display_name": "Stefan",
+            "team": "T4G9NBD2M",
+            "name": "stefanbelopotocan",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1645089128.310279",
+        "reply_count": 4,
+        "reply_users_count": 3,
+        "latest_reply": "1645091540.013889",
+        "reply_users": [
+            "UBS7QANF3",
+            "U013MLED3V1",
+            "UNW8Q88EL"
+        ],
+        "replies": [
+            {
+                "user": "UBS7QANF3",
+                "ts": "1645089654.248079"
+            },
+            {
+                "user": "U013MLED3V1",
+                "ts": "1645089864.186009"
+            },
+            {
+                "user": "UNW8Q88EL",
+                "ts": "1645091234.376289"
+            },
+            {
+                "user": "U013MLED3V1",
+                "ts": "1645091540.013889"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": false,
+        "attachments": [
+            {
+                "from_url": "https:\/\/youtu.be\/EGsYN0RXtNw",
+                "thumb_url": "https:\/\/i.ytimg.com\/vi\/EGsYN0RXtNw\/hqdefault.jpg",
+                "thumb_width": 480,
+                "thumb_height": 360,
+                "video_html": "<iframe width=\"400\" height=\"300\" src=\"https:\/\/www.youtube.com\/embed\/EGsYN0RXtNw?feature=oembed&autoplay=1&iv_load_policy=3\" frameborder=\"0\" allow=\"accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture\" allowfullscreen><\/iframe>",
+                "video_html_width": 400,
+                "video_html_height": 300,
+                "service_icon": "https:\/\/a.slack-edge.com\/80588\/img\/unfurl_icons\/youtube.png",
+                "id": 1,
+                "original_url": "https:\/\/youtu.be\/EGsYN0RXtNw",
+                "fallback": "YouTube Video: Betfair Streaming API Test",
+                "title": "Betfair Streaming API Test",
+                "title_link": "https:\/\/youtu.be\/EGsYN0RXtNw",
+                "author_name": "Štefan Belopotočan",
+                "author_link": "https:\/\/www.youtube.com\/c\/StefanBelopotocan",
+                "service_name": "YouTube",
+                "service_url": "https:\/\/www.youtube.com\/"
+            },
+            {
+                "id": 2,
+                "footer_icon": "https:\/\/slack.github.com\/static\/img\/favicon-neutral.png",
+                "color": "24292f",
+                "bot_id": "B021ZJYSBMW",
+                "app_unfurl_url": "https:\/\/github.com\/StefanBelo\/Bfexplorer-BOT-SDK\/blob\/master\/TestStreamingAPI\/Program.fs",
+                "is_app_unfurl": true,
+                "app_id": "A01BP7R4KNY",
+                "fallback": "<https:\/\/github.com\/StefanBelo\/Bfexplorer-BOT-SDK\/blob\/master\/TestStreamingAPI\/Program.fs | Program.fs>",
+                "text": "```\n(*\n    Copyright © 2021 - 2022, Stefan Belopotocan, <http:\/\/bfexplorer.net>\n*)\n\nmodule BeloSoft.Betfair.StreamingAPI.Test\n\nopen System\nopen System.ComponentModel\n\nopen BeloSoft.Betfair.StreamingAPI.Models\n\nopen BeloSoft.Data\nopen BeloSoft.Bfexplorer\nopen BeloSoft.Bfexplorer.Service\nopen BeloSoft.Bfexplorer.Domain\n\nlet getUserNameAndPassword (argv : string[]) =\n    if argv.Length = 2\n    then\n        Some (argv.[0], argv.[1])\n    else\n        None\n\nlet setNotify (market : Market) = \n    (market :&gt; INotifyPropertyChanged).PropertyChanged.Add (fun arg -&gt; \n        if arg.PropertyName = \"TotalMatched\" \n        then \n            printfn \"%A: %.2f\" market market.TotalMatched\n    )\n\n\/\/\/ &lt;summary&gt;\n\/\/\/ main\n\/\/\/ &lt;\/summary&gt;\n\/\/\/ &lt;param name=\"argv\"&gt;&lt;\/param&gt;\n[&lt;EntryPoint&gt;]\nlet main argv =\n    match getUserNameAndPassword argv with\n    | Some (userName, password) -&gt;\n\n        let bfexplorerService = BfexplorerService(initializeBotManager = false, UiApplication = BfexplorerHost())\n\n        async {\n            let! loginResult = bfexplorerService.Login(userName, password)\n\n            if loginResult.IsSuccessResult\n            then\n                let marketUpdateService = new MarketUpdateService(bfexplorerService, StreamingData.MarketDataFilterForPassiveMarkets)\n\n                marketUpdateService.OnMarketsOpened.Add(fun markets -&gt; markets |&gt; List.iter (fun market -&gt; printfn \"%A\" market; setNotify market))\n\n                let! startResult = marketUpdateService.Start()\n\n                if startResult.IsSuccessResult\n                then\n                    (* Football \n                    let filter = [ BetEventFilterParameter.BetEventTypeIds [| 1 |]; BetEventFilterParameter.Countries [| \"GB\" |]; BetEventFilterParameter.MarketTypeCodes [| \"MATCH_ODDS\" |] ]                    \n                    *)\n                    \n                    (* Tennis\n                    let filter = [ BetEventFilterParameter.BetEventTypeIds [| 2 |]; BetEventFilterParameter.MarketTypeCodes [| \"MATCH_ODDS\" |]; ]\n                    *)\n            \n                    (* Horse Racing \n                    let filter = [ BetEventFilterParameter.BetEventTypeIds [| 7 |]; BetEventFilterParameter.MarketTypeCodes [| \"WIN\" |]; BetEventFilterParameter.Countries [| \"GB\" |] ]\n                    *)                    \n            \n                    (* Greyhound Racings \n                    let filter = [ BetEventFilterParameter.StartTime (DateRange.Today()); BetEventFilterParameter.BetEventTypeIds [| 4339 |]; BetEventFilterParameter.MarketTypeCodes [| \"WIN\" |]; BetEventFilterParameter.Countries [| \"GB\" |] ]\n                    *)\n\n                    \/\/let! subscribeResult = marketUpdateService.Subscribe(filter)\n                    \n                    (* Football - UEFA Champions League *)\n                    let! subscribeResult = async {\n                        let filter = [ CompetitionIds [| 228 |]; MarketTypeCodes [| \"MATCH_ODDS\" |] ]\n\n                        match! bfexplorerService.GetMarkets(filter) with\n                        | DataResult.Success markets -&gt; return! marketUpdateService.Subscribe(markets)\n                        | DataResult.Failure errorMessage -&gt; return Result.Failure errorMessage\n                    }\n\n                    printfn \"%s\" &lt;|\n                        if subscribeResult.IsSuccessResult\n                        then\n                            if marketUpdateService.ConnectionHasSuccessStatus\n                            then\n                                \"Successfully subscribed.\"\n                            else\n                                sprintf \"Failed to subscribe: %s\" marketUpdateService.ErrorMessage\n                        else\n                            sprintf \"Failed to subscribe: %s\" subscribeResult.FailureMessage\n                \n                    printfn \"Press any key to exit.\"\n\n                    Console.ReadKey() |&gt; ignore\n\n                    do! marketUpdateService.Stop()\n                                                            \n                do! bfexplorerService.Logout() |&gt; Async.Ignore\n        }\n        |&gt; Async.RunSynchronously\n\n    | None -&gt; failwith \"Please enter your betfair user name and password!\"\n\n    0 \/\/ return an integer exit code\n```",
+                "title": "<https:\/\/github.com\/StefanBelo\/Bfexplorer-BOT-SDK\/blob\/master\/TestStreamingAPI\/Program.fs | Program.fs>",
+                "footer": "<https:\/\/github.com\/StefanBelo\/Bfexplorer-BOT-SDK|StefanBelo\/Bfexplorer-BOT-SDK>",
+                "mrkdwn_in": [
+                    "text"
+                ]
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "=KG8h",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "user",
+                                "user_id": "U02QDJCK3NW"
+                            },
+                            {
+                                "type": "text",
+                                "text": " Betfair rest api offers CompetitionIds, UEFA Champions League has 228 CompetitionId. I do not know why betfair did not implemented the same filter to streaming api. In the streaming api we have got Venues filter, but that works only for horse racing.\n\n "
+                            },
+                            {
+                                "type": "user",
+                                "user_id": "UUUAJQZ5J"
+                            },
+                            {
+                                "type": "text",
+                                "text": " you work for betfair, please put to your list of suggestions implementing all features of rest api filter to streaming api, or at least extending functionality of venues to all events, in this case venue would be competition name, like UEFA Champions League.\n\nHere is my test code. My code implementation uses Subscribe function that can take streaming filter, or markets, so it this case, I have queried markets by:\n\nlet filter = [ CompetitionIds [| 228 |]; MarketTypeCodes [| \"MATCH_ODDS\" |] ]\n\nand then subscribed to streaming api, lines from 74 to 78:\n\n"
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/StefanBelo\/Bfexplorer-BOT-SDK\/blob\/master\/TestStreamingAPI\/Program.fs"
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n\nAs my code implements 2 Subscribe function, I can call first Subscribe to:\n\nlet filter = [ BetEventFilterParameter.BetEventTypeIds [| 1 |]; BetEventFilterParameter.Countries [| \"GB\" |]; BetEventFilterParameter.MarketTypeCodes [| \"MATCH_ODDS\" |] ]\n\nand the next call to Subscribe by using markets, re-subcribers all already open markets plus new ones.\n\nIf you are .net developer you can use my bot sdk, if not you can reengineer my solution to your code.\n\nHere is short video from my test:\n\n"
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/youtu.be\/EGsYN0RXtNw"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1645089654.248079",
+        "client_msg_id": "5974BD0A-B066-408C-B7C4-D3C857E00805",
+        "text": "<@UNW8Q88EL> is the appropriate person to tag. But this is a very well known limitation, if it was easy to fix I'm sure they would have",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1645089128.310279",
+        "parent_user_id": "U013MLED3V1",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "IaqA",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "user",
+                                "user_id": "UNW8Q88EL"
+                            },
+                            {
+                                "type": "text",
+                                "text": " is the appropriate person to tag. But this is a very well known limitation, if it was easy to fix I'm sure they would have"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U013MLED3V1",
+        "type": "message",
+        "ts": "1645089864.186009",
+        "client_msg_id": "171dcf59-3662-4adb-8b5f-0bfd58db08de",
+        "text": "<@UBS7QANF3> <@UUUAJQZ5J> is active on both forum slacks, and actually promised to make such list, well on other slack at least. Yes, I know Neil, well just form my email communication as vendor myself, but frankly to say during those years none of my suggestion was heard by him. <@UUUAJQZ5J> at least promised.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g76de2b0594d",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/76de2b0594d8598d76169231046f271a.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0001-72.png",
+            "first_name": "StefanBelo",
+            "real_name": "StefanBelo",
+            "display_name": "Stefan",
+            "team": "T4G9NBD2M",
+            "name": "stefanbelopotocan",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1645089128.310279",
+        "parent_user_id": "U013MLED3V1",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "VeA9",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "user",
+                                "user_id": "UBS7QANF3"
+                            },
+                            {
+                                "type": "text",
+                                "text": " "
+                            },
+                            {
+                                "type": "user",
+                                "user_id": "UUUAJQZ5J"
+                            },
+                            {
+                                "type": "text",
+                                "text": " is active on both forum slacks, and actually promised to make such list, well on other slack at least. Yes, I know Neil, well just form my email communication as vendor myself, but frankly to say during those years none of my suggestion was heard by him. "
+                            },
+                            {
+                                "type": "user",
+                                "user_id": "UUUAJQZ5J"
+                            },
+                            {
+                                "type": "text",
+                                "text": " at least promised."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "subtype": "channel_join",
+        "user": "U033HB7HUTU",
+        "text": "<@U033HB7HUTU> has joined the channel",
+        "type": "message",
+        "ts": "1645090280.104929"
+    },
+    {
+        "user": "UNW8Q88EL",
+        "type": "message",
+        "ts": "1645091234.376289",
+        "client_msg_id": "4e42827f-df4f-43de-a883-e1f7161708ce",
+        "text": "Morning <@U013MLED3V1>, <@UBS7QANF3> is correct. This is a known limitation vs the REST API.   We made the decision not to include the competitionId filter when the Stream API was first developed because this involves significantly more work than you'd expect (&amp; would have delayed the rollout).  Due to the cost vs benefit of this feature vs other initiatives, this hasn't been prioritised since.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "cc2c2669d548",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2021-10-21\/2643683806753_cc2c2669d548a3476e65_72.jpg",
+            "first_name": "Neil",
+            "real_name": "Neil T (Betfair)",
+            "display_name": "Neil T (Betfair)",
+            "team": "T4G9NBD2M",
+            "name": "neil.thomas",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1645089128.310279",
+        "parent_user_id": "U013MLED3V1",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "UwuI",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Morning "
+                            },
+                            {
+                                "type": "user",
+                                "user_id": "U013MLED3V1"
+                            },
+                            {
+                                "type": "text",
+                                "text": ", "
+                            },
+                            {
+                                "type": "user",
+                                "user_id": "UBS7QANF3"
+                            },
+                            {
+                                "type": "text",
+                                "text": " is correct. This is a known limitation vs the REST API.   We made the decision not to include the competitionId filter when the Stream API was first developed because this involves significantly more work than you'd expect (& would have delayed the rollout).  Due to the cost vs benefit of this feature vs other initiatives, this hasn't been prioritised since."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "ok_hand",
+                "users": [
+                    "UUUAJQZ5J"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "U013MLED3V1",
+        "type": "message",
+        "ts": "1645091540.013889",
+        "client_msg_id": "ddbe9dcc-6834-4022-903b-5328934fd782",
+        "text": "Thanks <@UNW8Q88EL> for clarification, but as you implemented venues to streaming api you can at least extend this functionality as I suggested. Well, I have no problems with current implementation as you can see from my code I implemented workaround for such use case scenarios, but for new comers to betfair api it would be helpful to directly filter by \"meta text\" any betfair events offer.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g76de2b0594d",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/76de2b0594d8598d76169231046f271a.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0001-72.png",
+            "first_name": "StefanBelo",
+            "real_name": "StefanBelo",
+            "display_name": "Stefan",
+            "team": "T4G9NBD2M",
+            "name": "stefanbelopotocan",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1645089128.310279",
+        "parent_user_id": "U013MLED3V1",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "K\/j",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Thanks "
+                            },
+                            {
+                                "type": "user",
+                                "user_id": "UNW8Q88EL"
+                            },
+                            {
+                                "type": "text",
+                                "text": " for clarification, but as you implemented venues to streaming api you can at least extend this functionality as I suggested. Well, I have no problems with current implementation as you can see from my code I implemented workaround for such use case scenarios, but for new comers to betfair api it would be helpful to directly filter by \"meta text\" any betfair events offer."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "subtype": "channel_join",
+        "user": "U033HM6Q8BU",
+        "text": "<@U033HM6Q8BU> has joined the channel",
+        "type": "message",
+        "ts": "1645094283.220309"
+    },
+    {
+        "subtype": "channel_join",
+        "user": "UQMNQ5KGQ",
+        "text": "<@UQMNQ5KGQ> has joined the channel",
+        "type": "message",
+        "ts": "1645123369.632959"
+    },
+    {
+        "user": "U01DVUAE2G1",
+        "type": "message",
+        "ts": "1645136673.506789",
+        "edited": {
+            "user": "U01DVUAE2G1",
+            "ts": "1645136998.000000"
+        },
+        "client_msg_id": "3276c41f-489f-477a-bf42-4d09deb10a9d",
+        "text": "Lately my market_recorder is throwing some of those bois below over the day. Often times the market_recorder fails to put the market files into the s3 bucket (at any step, all i know for now is they are not in the bucket at the end of the day). For a single day\/run cycle of the market recorder, either all or none of markets that have orders in them makes it into the bucket. Anyone having an idea whats going on here?\n```{\"asctime\": \"2022-02-16 19:08:14,104\", \"levelname\": \"ERROR\", \"message\": \"_get_cleared_market error\", \"exc_info\": \"Traceback (most recent call last):\n  File \\\"\/path\/prod_market_recorder\/venv\/lib\/python3.10\/site-packages\/flumine\/worker.py\\\", line 230, in _get_cleared_market\n    cleared_markets = betting_client.betting.list_cleared_orders(\n  File \\\"\/path\/prod_market_recorder\/venv\/lib\/python3.10\/site-packages\/betfairlightweight\/endpoints\/betting.py\\\", line 434, in list_cleared_orders\n    (response, response_json, elapsed_time) = self.request(method, params, session)\n  File \\\"\/path\/prod_market_recorder\/venv\/lib\/python3.10\/site-packages\/betfairlightweight\/endpoints\/baseendpoint.py\\\", line 55, in request\n    self._error_handler(response_json, method, params)\n  File \\\"\/path\/prod_market_recorder\/venv\/lib\/python3.10\/site-packages\/betfairlightweight\/endpoints\/baseendpoint.py\\\", line 81, in _error_handler\n    raise self._error(response, method, params)\nbetfairlightweight.exceptions.APIError: SportsAPING\/v1.0\/listClearedOrders \\nParams: {'betStatus': 'SETTLED', 'marketIds': ['1.194823061'], 'customerStrategyRefs': ['ip-xxx-xx-xx-x'], 'settledDateRange': {'from': None, 'to': None}, 'groupBy': 'MARKET'} \nException: None \nError: {'code': -32099, 'message': 'ANGX-0006', 'data': {'APINGException': {'requestUUID': 'ie2-ang30b-prd-02011018-001f0d3c34', 'errorCode': 'UNEXPECTED_ERROR', 'errorDetails': ''}, 'exceptionname': 'APINGException'}} \nFull Response: {'jsonrpc': '2.0', 'error': {'code': -32099, 'message': 'ANGX-0006', 'data': {'APINGException': {'requestUUID': 'ie2-ang30b-prd-02011018-001f0d3c34', 'errorCode': 'UNEXPECTED_ERROR', 'errorDetails': ''}, 'exceptionname': 'APINGException'}}, 'id': 1}\", \"trading_function\": \"list_cleared_orders\", \"response\": \"SportsAPING\/v1.0\/listClearedOrders \nParams: {'betStatus': 'SETTLED', 'marketIds': ['1.194823061'], 'customerStrategyRefs': ['ip-xxx-xx-xx-x'], 'settledDateRange': {'from': None, 'to': None}, 'groupBy': 'MARKET'} \nException: None \nError: {'code': -32099, 'message': 'ANGX-0006', 'data': {'APINGException': {'requestUUID': 'ie2-ang30b-prd-02011018-001f0d3c34', 'errorCode': 'UNEXPECTED_ERROR', 'errorDetails': ''}, 'exceptionname': 'APINGException'}} \nFull Response: {'jsonrpc': '2.0', 'error': {'code': -32099, 'message': 'ANGX-0006', 'data': {'APINGException': {'requestUUID': 'ie2-ang30b-prd-02011018-001f0d3c34', 'errorCode': 'UNEXPECTED_ERROR', 'errorDetails': ''}, 'exceptionname': 'APINGException'}}, 'id': 1}\"}```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gd87aca58eae",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/d87aca58eaeabd0a953b4bc4204bbbaf.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Aaron Smith",
+            "display_name": "Aaron Smith",
+            "team": "T4G9NBD2M",
+            "name": "smiffyaaron",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "IkJIR",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Lately my market_recorder is throwing some of those bois below over the day. Often times the market_recorder fails to put the market files into the s3 bucket (at any step, all i know for now is they are not in the bucket at the end of the day). For a single day\/run cycle of the market recorder, either all or none of markets that have orders in them makes it into the bucket. Anyone having an idea whats going on here?\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "{\"asctime\": \"2022-02-16 19:08:14,104\", \"levelname\": \"ERROR\", \"message\": \"_get_cleared_market error\", \"exc_info\": \"Traceback (most recent call last):\n  File \\\"\/path\/prod_market_recorder\/venv\/lib\/python3.10\/site-packages\/flumine\/worker.py\\\", line 230, in _get_cleared_market\n    cleared_markets = betting_client.betting.list_cleared_orders(\n  File \\\"\/path\/prod_market_recorder\/venv\/lib\/python3.10\/site-packages\/betfairlightweight\/endpoints\/betting.py\\\", line 434, in list_cleared_orders\n    (response, response_json, elapsed_time) = self.request(method, params, session)\n  File \\\"\/path\/prod_market_recorder\/venv\/lib\/python3.10\/site-packages\/betfairlightweight\/endpoints\/baseendpoint.py\\\", line 55, in request\n    self._error_handler(response_json, method, params)\n  File \\\"\/path\/prod_market_recorder\/venv\/lib\/python3.10\/site-packages\/betfairlightweight\/endpoints\/baseendpoint.py\\\", line 81, in _error_handler\n    raise self._error(response, method, params)\nbetfairlightweight.exceptions.APIError: SportsAPING\/v1.0\/listClearedOrders \\nParams: {'betStatus': 'SETTLED', 'marketIds': ['1.194823061'], 'customerStrategyRefs': ['ip-xxx-xx-xx-x'], 'settledDateRange': {'from': None, 'to': None}, 'groupBy': 'MARKET'} \nException: None \nError: {'code': -32099, 'message': 'ANGX-0006', 'data': {'APINGException': {'requestUUID': 'ie2-ang30b-prd-02011018-001f0d3c34', 'errorCode': 'UNEXPECTED_ERROR', 'errorDetails': ''}, 'exceptionname': 'APINGException'}} \nFull Response: {'jsonrpc': '2.0', 'error': {'code': -32099, 'message': 'ANGX-0006', 'data': {'APINGException': {'requestUUID': 'ie2-ang30b-prd-02011018-001f0d3c34', 'errorCode': 'UNEXPECTED_ERROR', 'errorDetails': ''}, 'exceptionname': 'APINGException'}}, 'id': 1}\", \"trading_function\": \"list_cleared_orders\", \"response\": \"SportsAPING\/v1.0\/listClearedOrders \nParams: {'betStatus': 'SETTLED', 'marketIds': ['1.194823061'], 'customerStrategyRefs': ['ip-xxx-xx-xx-x'], 'settledDateRange': {'from': None, 'to': None}, 'groupBy': 'MARKET'} \nException: None \nError: {'code': -32099, 'message': 'ANGX-0006', 'data': {'APINGException': {'requestUUID': 'ie2-ang30b-prd-02011018-001f0d3c34', 'errorCode': 'UNEXPECTED_ERROR', 'errorDetails': ''}, 'exceptionname': 'APINGException'}} \nFull Response: {'jsonrpc': '2.0', 'error': {'code': -32099, 'message': 'ANGX-0006', 'data': {'APINGException': {'requestUUID': 'ie2-ang30b-prd-02011018-001f0d3c34', 'errorCode': 'UNEXPECTED_ERROR', 'errorDetails': ''}, 'exceptionname': 'APINGException'}}, 'id': 1}\"}"
+                            }
+                        ],
+                        "border": 0
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01DVUAE2G1",
+        "type": "message",
+        "ts": "1645136773.963849",
+        "client_msg_id": "cfbb2b25-9ff1-48c5-9551-36fc621c068b",
+        "text": "Note: i m not confident that the missing data in the s3 bucket is directly connected to this error message, as this error is not thrown for all market ids, but only a few. Thanks to anyone taking the time to have a look :blush:",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gd87aca58eae",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/d87aca58eaeabd0a953b4bc4204bbbaf.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Aaron Smith",
+            "display_name": "Aaron Smith",
+            "team": "T4G9NBD2M",
+            "name": "smiffyaaron",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "mvvS",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Note: i m not confident that the missing data in the s3 bucket is directly connected to this error message, as this error is not thrown for all market ids, but only a few. Thanks to anyone taking the time to have a look "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "blush",
+                                "unicode": "1f60a"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1645168386.786259",
+        "client_msg_id": "9A35F105-252E-4300-BBB0-A65E58A43EF6",
+        "text": "Standard error ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1645168386.786259",
+        "reply_count": 3,
+        "reply_users_count": 2,
+        "latest_reply": "1645179483.955289",
+        "reply_users": [
+            "U01DVUAE2G1",
+            "U4H19D1D2"
+        ],
+        "replies": [
+            {
+                "user": "U01DVUAE2G1",
+                "ts": "1645179263.945879"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1645179360.891379"
+            },
+            {
+                "user": "U01DVUAE2G1",
+                "ts": "1645179483.955289"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": true,
+        "last_read": "1645179483.955289",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "3ov5",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Standard error "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

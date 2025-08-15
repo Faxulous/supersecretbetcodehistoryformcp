@@ -1,0 +1,132 @@
+[
+    {
+        "text": "Whats the best approach to dealing with a socket error? Delete the current subscription and create a new one?",
+        "files": [
+            {
+                "id": "F0173VC7JVA",
+                "mode": "hidden_by_limit"
+            }
+        ],
+        "upload": false,
+        "user": "U011VL3CA2Y",
+        "display_as_bot": false,
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "YuN",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Whats the best approach to dealing with a socket error? Delete the current subscription and create a new one?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "type": "message",
+        "ts": "1594465917.395800"
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1594467101.396200",
+        "client_msg_id": "6832CB37-8EDA-4BD2-A4FC-3ED327D81C03",
+        "text": "<https:\/\/github.com\/liampauling\/betfair\/blob\/master\/examples\/examplestreamingerrhandling.py|https:\/\/github.com\/liampauling\/betfair\/blob\/master\/examples\/examplestreamingerrhandling.py>",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "attachments": [
+            {
+                "fallback": "[liampauling\/betfair] examples\/examplestreamingerrhandling.py",
+                "text": "```\nimport logging\nimport queue\nimport threading\nfrom tenacity import retry, wait_exponential\n\nimport betfairlightweight\nfrom betfairlightweight import StreamListener\nfrom betfairlightweight import BetfairError\nfrom betfairlightweight.filters import (\n    streaming_market_filter,\n    streaming_market_data_filter,\n)\n\n\"\"\"\nStreaming example to handle timeouts or connection errors, \nwith reconnect.\n\nCode uses 'tenacity' library for retrying.\n\nStreaming class inherits threading module to simplify start\/\nstop.\n\"\"\"\n\n# setup logging\nlogging.basicConfig(level=<http:\/\/logging.INFO|logging.INFO>)  # change to DEBUG to see log all updates\nlogger = logging.getLogger(__name__)\n\n\nclass Streaming(threading.Thread):\n    def __init__(\n        self,\n        client: betfairlightweight.APIClient,\n        market_filter: dict,\n        market_data_filter: dict,\n        conflate_ms: int = None,\n        streaming_unique_id: int = 1000,\n    ):\n        threading.Thread.__init__(self, daemon=True, name=self.__class__.__name__)\n        self.client = client\n        self.market_filter = market_filter\n        self.market_data_filter = market_data_filter\n        self.conflate_ms = conflate_ms\n        self.streaming_unique_id = streaming_unique_id\n        self.stream = None\n        self.output_queue = queue.Queue()\n        self.listener = StreamListener(output_queue=self.output_queue)\n\n    @retry(wait=wait_exponential(multiplier=1, min=2, max=20))\n    def run(self) -&gt; None:\n        <http:\/\/logger.info|logger.info>(\"Starting MarketStreaming\")\n        self.client.login()\n        self.stream = self.client.streaming.create_stream(\n            unique_id=self.streaming_unique_id, listener=self.listener\n        )\n        try:\n            self.streaming_unique_id = self.stream.subscribe_to_markets(\n                market_filter=self.market_filter,\n                market_data_filter=self.market_data_filter,\n                conflate_ms=self.conflate_ms,\n                initial_clk=self.listener.initial_clk,  # supplying these two values allows a reconnect\n                clk=self.listener.clk,\n            )\n            self.stream.start()\n        except BetfairError:\n            logger.error(\"MarketStreaming run error\", exc_info=True)\n            raise\n        except Exception:\n            logger.critical(\"MarketStreaming run error\", exc_info=True)\n            raise\n        <http:\/\/logger.info|logger.info>(\"Stopped MarketStreaming {0}\".format(self.streaming_unique_id))\n\n    def stop(self) -&gt; None:\n        if self.stream:\n            self.stream.stop()\n\n\n# create trading instance (app key must be activated for streaming)\ntrading = betfairlightweight.APIClient(\"username\", \"password\", app_key=\"appKey\")\n\n# login\ntrading.login()\n\n# create filters (GB WIN racing)\nmarket_filter = streaming_market_filter(\n    event_type_ids=[\"7\"], country_codes=[\"GB\"], market_types=[\"WIN\"]\n)\nmarket_data_filter = streaming_market_data_filter(\n    fields=[\"EX_BEST_OFFERS\", \"EX_MARKET_DEF\"], ladder_levels=3\n)\n\n# create streaming object\nstreaming = Streaming(trading, market_filter, market_data_filter)\n\n# start streaming (runs in new thread and handles any errors)\nstreaming.start()\n\n# check for updates in output queue\nwhile True:\n    market_books = streaming.output_queue.get()\n    print(market_books)\n\n    for market_book in market_books:\n        print(\n            market_book,\n            market_book.streaming_unique_id,  # unique id of stream (returned from subscribe request)\n            market_book.streaming_update,  # json update received\n            market_book.market_definition,  # streaming definition, similar to catalogue request\n            market_book.publish_time,  # betfair publish time of update\n        )\n\n```",
+                "title": "examples\/examplestreamingerrhandling.py",
+                "footer": "<https:\/\/github.com\/liampauling\/betfair|liampauling\/betfair>",
+                "id": 1,
+                "title_link": "https:\/\/github.com\/liampauling\/betfair\/blob\/master\/examples\/examplestreamingerrhandling.py",
+                "footer_icon": "https:\/\/github.githubassets.com\/favicon.ico",
+                "color": "24292f",
+                "mrkdwn_in": [
+                    "text"
+                ],
+                "bot_id": "B01144Z0734",
+                "app_unfurl_url": "https:\/\/github.com\/liampauling\/betfair\/blob\/master\/examples\/examplestreamingerrhandling.py",
+                "is_app_unfurl": true
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Jsy",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/liampauling\/betfair\/blob\/master\/examples\/examplestreamingerrhandling.py",
+                                "text": "https:\/\/github.com\/liampauling\/betfair\/blob\/master\/examples\/examplestreamingerrhandling.py"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U011VL3CA2Y",
+        "type": "message",
+        "ts": "1594467467.396600",
+        "client_msg_id": "fe0bea88-90d8-4a71-82f5-bb5c5aa0d967",
+        "text": "thanks one more time <@U4H19D1D2>",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g1ec6e88d1e4",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/1ec6e88d1e4dd0bff349d83e9edba6bd.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0005-72.png",
+            "first_name": "Ruben",
+            "real_name": "Ruben",
+            "display_name": "Ruben",
+            "team": "T4G9NBD2M",
+            "name": "tduqruqtgtpiioibww",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "xMH",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "thanks one more time "
+                            },
+                            {
+                                "type": "user",
+                                "user_id": "U4H19D1D2"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

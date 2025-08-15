@@ -1,0 +1,193 @@
+[
+    {
+        "user": "U02RN7YDRQ9",
+        "type": "message",
+        "ts": "1695117784.766039",
+        "client_msg_id": "5a4d795a-66e9-4749-8918-1c096cdc9083",
+        "text": "If you just want the volume for stats purposes then volumes are in the next day's BSP files which you could load to a db for lookup. Never checked how accurate and complete they are but may be of some use if you can't get them easily with <@UBS7QANF3>'s solution. <https:\/\/promo.betfair.com\/betfairsp\/prices>",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "ge46f1f8b708",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/e46f1f8b708a630e3191de7b2c42b1d1.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0023-72.png",
+            "first_name": "edblock",
+            "real_name": "edblock",
+            "display_name": "foxwood",
+            "team": "T4G9NBD2M",
+            "name": "eanb",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1695104858.813929",
+        "parent_user_id": "U0322P0CK0E",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "D\/Z3",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "If you just want the volume for stats purposes then volumes are in the next day's BSP files which you could load to a db for lookup. Never checked how accurate and complete they are but may be of some use if you can't get them easily with "
+                            },
+                            {
+                                "type": "user",
+                                "user_id": "UBS7QANF3"
+                            },
+                            {
+                                "type": "text",
+                                "text": "'s solution. "
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/promo.betfair.com\/betfairsp\/prices"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01FJPFQPML",
+        "type": "message",
+        "ts": "1695123998.861929",
+        "client_msg_id": "e75bd628-aa23-4560-a187-2288cd8a2ea8",
+        "text": "I haven't been able to figure this out, so looking for a bit of assistance if possible.  My existing strategy looks like:\n\nclass MyStrat (BaseStrategy):\n\n    def start(self) -&gt; None:\n        print(\"starting strategy\")\n\n    def check_market_book(self, market: Market, market_book: MarketBook) -&gt; bool:\n        # process_market_book only executed if this returns True\n        if market_book.status != \"CLOSED\":\n            return True\n\n    # If check_market_book returns true i.e. the market is open and not closed then we will run process_market_book once initially\n    # After the first inital time process_market_book has been run, every single time the market ticks, process_market_book will run again\n    def process_market_book(self, market: Market, market_book: MarketBook) -&gt; None:\n\n        if market is not None:\n            if market is not None and market.market_catalogue is not None and market.market_catalogue.market_name is not None:\n                RaceNumber = market.market_catalogue.market_name.split(' ')[0].replace(\"R\",\"\").strip()\n\n        if market.seconds_to_start &lt;= 5 and market_book.inplay == False:\n            TrackName = market.venue.lower()\n            for runner in market_book.runners:\n                RunnerName = [x.runner_name for x in market.market_catalogue.runners if x.selection_id == runner.selection_id]\n                RunnerName = RunnerName[0].split('. ')[1].lower()\n                if runner.status == \"ACTIVE\" and runner.ex.available_to_back: # and runner.ex.available_to_lay[0]['price']:\n                    filtered_row = pd.DataFrame()\n                    if market.market_type == 'WIN':\n                        filtered_row = GreysList[(GreysList['TrackName'] == TrackName) &amp;\n                            (GreysList['RaceNumber'] == int(RaceNumber)) &amp;\n                            (GreysList['DogName'] == RunnerName)]\n\n                    if not filtered_row.empty or market.market_type == 'PLACE':\n                        if not filtered_row.empty:\n                            runner_odds = filtered_row['ODDS'].iloc[0]\n                            current_price = runner.ex.available_to_back[0]['price']\n                            bet_price = get_nearest_price(round((current_price),2))\n                            if runner_odds &lt; current_price and runner_odds &gt; 0 and current_price &gt;=2.5 and current_price &lt;= 10 and market.market_type == 'WIN':\n                                print(market.market_type)\n\n                                if market.market_type == 'WIN':\n                                    stake = round((3\/current_price),2)\n                                    if stake &lt; 0.1: stake = 0.1\n                                    print(TrackName, RunnerName, runner_odds, current_price, stake)\n                                    trade = Trade(\n                                    market_id=market_book.market_id,\n                                    selection_id=runner.selection_id,\n                                    handicap=runner.handicap,\n                                    strategy=self,\n                                    )\n                                    order = trade.create_order(\n                                        side=\"BACK\", order_type=MarketOnCloseOrder(liability=stake)\n                                    )\n                                    market.place_order(order)\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t# At this point, I want to also make a place bet but I need to get the value of runner.ex.available_to_back[0]['price'] from the PLACE market.\n\t\t\t\t\t\t\t\t\t# At the start of my script, I get a list of WIN and PLACE markets and store them in a dataframe called TodaysRaces.\n\t\t\t\t\t\t\t\t\t# I can locate the PLACE market id by querying this dataframe, but I don't know how to utilise Market.event[\"PLACE\"] to get the value of runner.ex.available_to_back[0]['price'], so that I can set up the trade and order to place the bet.\n\t\t\t\t\t\t\t\t\t# Can someone point me in the right direction please?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "4130984c3401",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-11-29\/1541691682196_4130984c3401120bcb1e_72.png",
+            "first_name": "",
+            "real_name": "Andy B",
+            "display_name": "Andy B",
+            "team": "T4G9NBD2M",
+            "name": "behrendta",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1694951572.217439",
+        "parent_user_id": "U01FJPFQPML",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "ftL5",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I haven't been able to figure this out, so looking for a bit of assistance if possible.  My existing strategy looks like:\n\nclass MyStrat (BaseStrategy):\n\n    def start(self) -> None:\n        print(\"starting strategy\")\n\n    def check_market_book(self, market: Market, market_book: MarketBook) -> bool:\n        # process_market_book only executed if this returns True\n        if market_book.status != \"CLOSED\":\n            return True\n\n    # If check_market_book returns true i.e. the market is open and not closed then we will run process_market_book once initially\n    # After the first inital time process_market_book has been run, every single time the market ticks, process_market_book will run again\n    def process_market_book(self, market: Market, market_book: MarketBook) -> None:\n\n        if market is not None:\n            if market is not None and market.market_catalogue is not None and market.market_catalogue.market_name is not None:\n                RaceNumber = market.market_catalogue.market_name.split(' ')[0].replace(\"R\",\"\").strip()\n\n        if market.seconds_to_start <= 5 and market_book.inplay == False:\n            TrackName = market.venue.lower()\n            for runner in market_book.runners:\n                RunnerName = [x.runner_name for x in market.market_catalogue.runners if x.selection_id == runner.selection_id]\n                RunnerName = RunnerName[0].split('. ')[1].lower()\n                if runner.status == \"ACTIVE\" and runner.ex.available_to_back: # and runner.ex.available_to_lay[0]['price']:\n                    filtered_row = pd.DataFrame()\n                    if market.market_type == 'WIN':\n                        filtered_row = GreysList[(GreysList['TrackName'] == TrackName) &\n                            (GreysList['RaceNumber'] == int(RaceNumber)) &\n                            (GreysList['DogName'] == RunnerName)]\n\n                    if not filtered_row.empty or market.market_type == 'PLACE':\n                        if not filtered_row.empty:\n                            runner_odds = filtered_row['ODDS'].iloc[0]\n                            current_price = runner.ex.available_to_back[0]['price']\n                            bet_price = get_nearest_price(round((current_price),2))\n                            if runner_odds < current_price and runner_odds > 0 and current_price >=2.5 and current_price <= 10 and market.market_type == 'WIN':\n                                print(market.market_type)\n\n                                if market.market_type == 'WIN':\n                                    stake = round((3\/current_price),2)\n                                    if stake < 0.1: stake = 0.1\n                                    print(TrackName, RunnerName, runner_odds, current_price, stake)\n                                    trade = Trade(\n                                    market_id=market_book.market_id,\n                                    selection_id=runner.selection_id,\n                                    handicap=runner.handicap,\n                                    strategy=self,\n                                    )\n                                    order = trade.create_order(\n                                        side=\"BACK\", order_type=MarketOnCloseOrder(liability=stake)\n                                    )\n                                    market.place_order(order)\n\t\t\t\t\t\t\t\t\t\n\t\t\t\t\t\t\t\t\t# At this point, I want to also make a place bet but I need to get the value of runner.ex.available_to_back[0]['price'] from the PLACE market.\n\t\t\t\t\t\t\t\t\t# At the start of my script, I get a list of WIN and PLACE markets and store them in a dataframe called TodaysRaces.\n\t\t\t\t\t\t\t\t\t# I can locate the PLACE market id by querying this dataframe, but I don't know how to utilise Market.event[\"PLACE\"] to get the value of runner.ex.available_to_back[0]['price'], so that I can set up the trade and order to place the bet.\n\t\t\t\t\t\t\t\t\t# Can someone point me in the right direction please?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1695124242.115699",
+        "client_msg_id": "2b18c895-b08f-4f75-88f3-f6449c422540",
+        "text": "This gives you the place market:\n\n```place_market = market.event[\"PLACE\"]\nplace_market_book = place_market.market_book\n\nfor runner in place_market_book.runners:\n    yadayada```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1694951572.217439",
+        "parent_user_id": "U01FJPFQPML",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Rkj6",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "This gives you the place market:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "place_market = market.event[\"PLACE\"]\nplace_market_book = place_market.market_book\n\nfor runner in place_market_book.runners:\n    yadayada"
+                            }
+                        ],
+                        "border": 0
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01FJPFQPML",
+        "type": "message",
+        "ts": "1695124507.019369",
+        "client_msg_id": "a3e959fd-f4b5-421c-ab7e-31e7bf7bd6b6",
+        "text": "Thanks Liam, I tried a number of ways to make it more complicated than that.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "4130984c3401",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-11-29\/1541691682196_4130984c3401120bcb1e_72.png",
+            "first_name": "",
+            "real_name": "Andy B",
+            "display_name": "Andy B",
+            "team": "T4G9NBD2M",
+            "name": "behrendta",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1694951572.217439",
+        "parent_user_id": "U01FJPFQPML",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "rqQ=\/",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Thanks Liam, I tried a number of ways to make it more complicated than that."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "joy",
+                "users": [
+                    "U4H19D1D2"
+                ],
+                "count": 1
+            }
+        ]
+    }
+]

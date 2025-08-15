@@ -1,0 +1,540 @@
+[
+    {
+        "user": "U013K4VNB6D",
+        "type": "message",
+        "ts": "1632124642.024100",
+        "client_msg_id": "1ff68eed-b3bb-4c46-b458-619670e82404",
+        "text": "When doing backtesting with Flumine, is it possible to combine BSP and non-BSP bets?\n\nWhen I write the following code, only the non-BSP bets appear in my results spreadsheet:\n\n```def process_market_book(self, market, market_book) -&gt; None:\n    for runner in market_book.runners:\n        update_lists.vol_change_actions(runner)\n        if runner.status != \"ACTIVE\" or not runner.last_price_traded:\n            continue\n        else:\n            runner_context = self.get_runner_context(\n                market.market_id, runner.selection_id, runner.handicap\n            )\n            if 360 &gt; market.seconds_to_start &gt; 0:\n                # Bets are possible when no bets have been placed previously for this selection.\n                able_to_proceed = True\n                for order in market.blotter:\n                    if order.selection_id == runner.selection_id:\n                        able_to_proceed = False\n                if able_to_proceed:\n                    # LAY NON-BSP BET\n                    # create trade\n                    trade = Trade(\n                        market_book.market_id,\n                        runner.selection_id,\n                        runner.handicap,\n                        self,\n                    )\n                    # create order\n                    price = get_price(runner.ex.available_to_lay, 3)\n                    order = trade.create_order(\n                        side=\"LAY\",\n                        order_type=LimitOrder(1000, 2)\n                    )\n                    # place order for execution\n                    market.place_order(order)\n                    print(\"Lay placed\")\n                    # NOW BSP BACK\n                    # Create trade\n                    trade = Trade(\n                        market_book.market_id,\n                        runner.selection_id,\n                        runner.handicap,\n                        self,\n                    )\n                    # create order\n                    order = trade.create_order(\n                        side=\"BACK\",\n                        order_type=LimitOnCloseOrder(2, 1.01)\n                    )\n                    # place order for execution\n                    market.place_order(order)\n                    print(\"BSP back placed\")```\nAm I doing something wrong?\n\nThanks\n\nJeff",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gf188478b89f",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/f188478b89f4a5e2c5af9eafa0433712.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0004-72.png",
+            "first_name": "",
+            "real_name": "Jeff Waters",
+            "display_name": "Jeff Waters",
+            "team": "T4G9NBD2M",
+            "name": "watersjg",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "\/VtG",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "When doing backtesting with Flumine, is it possible to combine BSP and non-BSP bets?\n\nWhen I write the following code, only the non-BSP bets appear in my results spreadsheet:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "def process_market_book(self, market, market_book) -> None:\n    for runner in market_book.runners:\n        update_lists.vol_change_actions(runner)\n        if runner.status != \"ACTIVE\" or not runner.last_price_traded:\n            continue\n        else:\n            runner_context = self.get_runner_context(\n                market.market_id, runner.selection_id, runner.handicap\n            )\n            if 360 > market.seconds_to_start > 0:\n                # Bets are possible when no bets have been placed previously for this selection.\n                able_to_proceed = True\n                for order in market.blotter:\n                    if order.selection_id == runner.selection_id:\n                        able_to_proceed = False\n                if able_to_proceed:\n                    # LAY NON-BSP BET\n                    # create trade\n                    trade = Trade(\n                        market_book.market_id,\n                        runner.selection_id,\n                        runner.handicap,\n                        self,\n                    )\n                    # create order\n                    price = get_price(runner.ex.available_to_lay, 3)\n                    order = trade.create_order(\n                        side=\"LAY\",\n                        order_type=LimitOrder(1000, 2)\n                    )\n                    # place order for execution\n                    market.place_order(order)\n                    print(\"Lay placed\")\n                    # NOW BSP BACK\n                    # Create trade\n                    trade = Trade(\n                        market_book.market_id,\n                        runner.selection_id,\n                        runner.handicap,\n                        self,\n                    )\n                    # create order\n                    order = trade.create_order(\n                        side=\"BACK\",\n                        order_type=LimitOnCloseOrder(2, 1.01)\n                    )\n                    # place order for execution\n                    market.place_order(order)\n                    print(\"BSP back placed\")"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\nAm I doing something wrong?\n\nThanks\n\nJeff"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1632125005.025500",
+        "client_msg_id": "dc03bc64-3415-40dc-80c0-0a6eae435191",
+        "text": "It will be due to the runner_context stopping the second order (the logs would tell you this), you can let two orders go through by\n\n```strategy = LowestLayer(\n    market_filter={\"markets\": markets, \"listener_kwargs\": {\"inplay\": True}},\n    max_live_trade_count=2\n)```\nOr putting them under the same trade",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "xPP",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "It will be due to the runner_context stopping the second order (the logs would tell you this), you can let two orders go through by\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "strategy = LowestLayer(\n    market_filter={\"markets\": markets, \"listener_kwargs\": {\"inplay\": True}},\n    max_live_trade_count=2\n)"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\nOr putting them under the same trade"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "U013K4VNB6D"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1632125049.025900",
+        "client_msg_id": "d4bb7cb9-2cc3-457b-ad35-1004b5b3beae",
+        "text": "ie flumine as already handling your `able_to_proceed` logic",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "kqIqD",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "ie flumine as already handling your "
+                            },
+                            {
+                                "type": "text",
+                                "text": "able_to_proceed",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " logic"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U013K4VNB6D",
+        "type": "message",
+        "ts": "1632126026.026200",
+        "client_msg_id": "56be59a3-3546-42e0-a40a-cc56ac2bfce9",
+        "text": "Thanks Liam",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gf188478b89f",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/f188478b89f4a5e2c5af9eafa0433712.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0004-72.png",
+            "first_name": "",
+            "real_name": "Jeff Waters",
+            "display_name": "Jeff Waters",
+            "team": "T4G9NBD2M",
+            "name": "watersjg",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "7NWW",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Thanks Liam"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "subtype": "channel_join",
+        "user": "U02F37B4F6W",
+        "text": "<@U02F37B4F6W> has joined the channel",
+        "type": "message",
+        "ts": "1632202455.026800"
+    },
+    {
+        "user": "U02F37B4F6W",
+        "type": "message",
+        "ts": "1632202809.027200",
+        "client_msg_id": "b571dce7-be4d-44df-b2f6-14a4d97f9d15",
+        "text": "Could anyone lend a hand towards my issue?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "f4ae76fe16e3",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2021-09-20\/2498531903927_f4ae76fe16e31c258e8b_72.png",
+            "first_name": "K",
+            "real_name": "K",
+            "display_name": "K",
+            "team": "T4G9NBD2M",
+            "name": "k",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "d4QT",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Could anyone lend a hand towards my issue?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U02F37B4F6W",
+        "type": "message",
+        "ts": "1632202838.027500",
+        "client_msg_id": "5486e474-a482-4ad3-8440-2e12994bdc54",
+        "text": "I am unable to get the starting price data of a race pre-start. I am specifically looking at Greyhounds. I get the market books [*1*] and then go through each runner [*2*], but no sp data is available [*3*]. I am also only searching for `bsp_only` market catalogues.\n\n[*1*]\n```market_books = self.trading.betting.list_market_book(\n            market_ids=[market_catalogue.market_id],\n            price_projection=filters.price_projection(\n                price_data=filters.price_data(\n                    sp_available=True, \n                    sp_traded=True, \n                    ex_best_offers=True\n                ),\n                # virtualise=True\n            )\n        )```\n[*2*]\n`for market_book in market_books: ...`\n\n[*3*]\n```for runner in market_book.runners:\n    print(runner.sp.__dict__)\n\n&gt;&gt; {'near_price': None, 'far_price': None, 'actual_sp': None, 'back_stake_taken': [], 'lay_liability_taken': []}```\nAny clarification would be appreciated.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "f4ae76fe16e3",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2021-09-20\/2498531903927_f4ae76fe16e31c258e8b_72.png",
+            "first_name": "K",
+            "real_name": "K",
+            "display_name": "K",
+            "team": "T4G9NBD2M",
+            "name": "k",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "41CS",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I am unable to get the starting price data of a race pre-start. I am specifically looking at Greyhounds. I get the market books ["
+                            },
+                            {
+                                "type": "text",
+                                "text": "1",
+                                "style": {
+                                    "bold": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "] and then go through each runner ["
+                            },
+                            {
+                                "type": "text",
+                                "text": "2",
+                                "style": {
+                                    "bold": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "], but no sp data is available ["
+                            },
+                            {
+                                "type": "text",
+                                "text": "3",
+                                "style": {
+                                    "bold": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "]. I am also only searching for "
+                            },
+                            {
+                                "type": "text",
+                                "text": "bsp_only",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " market catalogues.\n\n["
+                            },
+                            {
+                                "type": "text",
+                                "text": "1",
+                                "style": {
+                                    "bold": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "]\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "market_books = self.trading.betting.list_market_book(\n            market_ids=[market_catalogue.market_id],\n            price_projection=filters.price_projection(\n                price_data=filters.price_data(\n                    sp_available=True, \n                    sp_traded=True, \n                    ex_best_offers=True\n                ),\n                # virtualise=True\n            )\n        )"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\n["
+                            },
+                            {
+                                "type": "text",
+                                "text": "2",
+                                "style": {
+                                    "bold": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "]\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "for market_book in market_books: ...",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n\n["
+                            },
+                            {
+                                "type": "text",
+                                "text": "3",
+                                "style": {
+                                    "bold": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "]\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "for runner in market_book.runners:\n    print(runner.sp.__dict__)\n\n>> {'near_price': None, 'far_price': None, 'actual_sp': None, 'back_stake_taken': [], 'lay_liability_taken': []}"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\nAny clarification would be appreciated."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1632207522.028000",
+        "client_msg_id": "79de8c08-329d-4fe2-87ff-8a4b39bacb1a",
+        "text": "Works fine on my machine\n\n```market_books = trading.betting.list_market_book(\n    market_ids=[\"1.187934755\"],\n    price_projection=filters.price_projection(\n        price_data=filters.price_data(\n            sp_available=True,\n            sp_traded=True,\n            ex_best_offers=True\n        ),\n    )\n)\n\nfor market_book in market_books:\n    for runner in market_book.runners:\n        print(runner.sp.__dict__)```\n```{'nearPrice': 5.603971159, 'farPrice': 1.0, 'backStakeTaken': [{'price': 1.01, 'size': 5.0}], 'layLiabilityTaken': []}\n{'nearPrice': 7.258596706856043, 'farPrice': 4.333333333333334, 'backStakeTaken': [{'price': 1.01, 'size': 6.0}], 'layLiabilityTaken': [{'price': 1000.0, 'size': 20.0}]}\n{'nearPrice': 8.65, 'farPrice': 'NaN', 'backStakeTaken': [], 'layLiabilityTaken': []}\n{'nearPrice': 6.628117068428546, 'farPrice': 1.0, 'backStakeTaken': [{'price': 1.01, 'size': 3.0}], 'layLiabilityTaken': []}\n{'nearPrice': 5.083917260300369, 'farPrice': 8.0, 'backStakeTaken': [{'price': 1.01, 'size': 5.0}], 'layLiabilityTaken': [{'price': 1000.0, 'size': 35.0}]}\n{'nearPrice': 4.805279193446038, 'farPrice': 6.0, 'backStakeTaken': [{'price': 1.01, 'size': 3.0}], 'layLiabilityTaken': [{'price': 1000.0, 'size': 15.0}]}```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1632207522.028000",
+        "reply_count": 9,
+        "reply_users_count": 2,
+        "latest_reply": "1632211325.030400",
+        "reply_users": [
+            "U02F37B4F6W",
+            "U4H19D1D2"
+        ],
+        "replies": [
+            {
+                "user": "U02F37B4F6W",
+                "ts": "1632208358.028200"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1632208553.028500"
+            },
+            {
+                "user": "U02F37B4F6W",
+                "ts": "1632208888.028700"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1632210174.029400"
+            },
+            {
+                "user": "U02F37B4F6W",
+                "ts": "1632210836.029600"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1632211065.029800"
+            },
+            {
+                "user": "U02F37B4F6W",
+                "ts": "1632211111.030000"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1632211323.030200"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1632211325.030400"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": true,
+        "last_read": "1632211325.030400",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "9U\/g",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Works fine on my machine\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "market_books = trading.betting.list_market_book(\n    market_ids=[\"1.187934755\"],\n    price_projection=filters.price_projection(\n        price_data=filters.price_data(\n            sp_available=True,\n            sp_traded=True,\n            ex_best_offers=True\n        ),\n    )\n)\n\nfor market_book in market_books:\n    for runner in market_book.runners:\n        print(runner.sp.__dict__)"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "{'nearPrice': 5.603971159, 'farPrice': 1.0, 'backStakeTaken': [{'price': 1.01, 'size': 5.0}], 'layLiabilityTaken': []}\n{'nearPrice': 7.258596706856043, 'farPrice': 4.333333333333334, 'backStakeTaken': [{'price': 1.01, 'size': 6.0}], 'layLiabilityTaken': [{'price': 1000.0, 'size': 20.0}]}\n{'nearPrice': 8.65, 'farPrice': 'NaN', 'backStakeTaken': [], 'layLiabilityTaken': []}\n{'nearPrice': 6.628117068428546, 'farPrice': 1.0, 'backStakeTaken': [{'price': 1.01, 'size': 3.0}], 'layLiabilityTaken': []}\n{'nearPrice': 5.083917260300369, 'farPrice': 8.0, 'backStakeTaken': [{'price': 1.01, 'size': 5.0}], 'layLiabilityTaken': [{'price': 1000.0, 'size': 35.0}]}\n{'nearPrice': 4.805279193446038, 'farPrice': 6.0, 'backStakeTaken': [{'price': 1.01, 'size': 3.0}], 'layLiabilityTaken': [{'price': 1000.0, 'size': 15.0}]}"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "face_with_raised_eyebrow",
+                "users": [
+                    "U02F37B4F6W"
+                ],
+                "count": 1
+            }
+        ]
+    }
+]

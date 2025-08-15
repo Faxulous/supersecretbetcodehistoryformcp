@@ -1,0 +1,718 @@
+[
+    {
+        "user": "U03QNF31U8N",
+        "type": "message",
+        "ts": "1662028468.108889",
+        "edited": {
+            "user": "U03QNF31U8N",
+            "ts": "1662038317.000000"
+        },
+        "client_msg_id": "0ddc140c-c6de-4f66-a740-dd97ddd0a3f1",
+        "text": "Hi! I created an example strategy just to test some features of flumine but I'm struggling with a problem\n```class ExampleStrategy(BaseStrategy):\n    def start(self) -&gt; None:\n        print(\"starting strategy 'ExampleStrategy'\")\n\n    def check_market_book(self, market: Market, market_book: MarketBook) -&gt; bool:\n        return (market_book.status == \"OPEN\") and (not market_book.inplay)\n\n    def process_market_book(self, market: Market, market_book: MarketBook) -&gt; None:\n        for i in range(len(market_book.runners)):\n            runner = market_book.runners[i]\n\n            LPT = runner.last_price_traded\n\n            if runner.status == \"ACTIVE\" and (LPT is not None):\n                if LPT &lt; 2:\n                    trade = Trade(\n                        market_id=market_book.market_id,\n                        selection_id=runner.selection_id,\n                        handicap=runner.handicap,\n                        strategy=self\n                    )\n                    order = trade.create_order(\n                        side=\"BACK\",\n                        order_type=LimitOrder(price=LPT, size=2.00)\n                    )\n\n                    res = market.place_order(order)\n\n                    if res:\n                        print(\"Order placed: \", market_book.market_id, runner.selection_id, LPT)\n\n    def process_orders(self, market: Market, orders: list) -&gt; None:\n        if not((market.market_book.status == \"OPEN\") and (not market.market_book.inplay)):\n            return\n\n        for order in orders:\n            if order.status == OrderStatus.EXECUTABLE:\n                if order.size_remaining == 2.00:\n                    market.cancel_order(order, 0.02)  # reduce size to 1.98\n\n                if order.order_type.persistence_type == \"LAPSE\":\n                    market.update_order(order, \"PERSIST\")\n\n                if order.size_remaining &gt; 0:\n                    market.replace_order(order, new_price=1.02)```\nI had run this strategy on a specific market, but then the following error was raised:\n```Traceback (most recent call last):\n  File \"\/home\/alessandro\/venv\/lib\/python3.8\/site-packages\/flumine\/simulation\/simulation.py\", line 97, in run\n    self._process_market_books(\n  File \"\/home\/alessandro\/venv\/lib\/python3.8\/site-packages\/flumine\/simulation\/simulation.py\", line 117, in _process_market_books\n    self._check_pending_packages(market_id)\n  File \"\/home\/alessandro\/venv\/lib\/python3.8\/site-packages\/flumine\/simulation\/simulation.py\", line 189, in _check_pending_packages\n    order_package.client.execution.handler(order_package)\n  File \"\/home\/alessandro\/venv\/lib\/python3.8\/site-packages\/flumine\/execution\/simulatedexecution.py\", line 31, in handler\n    func(order_package, http_session=None)\n  File \"\/home\/alessandro\/venv\/lib\/python3.8\/site-packages\/flumine\/execution\/simulatedexecution.py\", line 142, in execute_replace\n    place_instruction_report = replacement_order.simulated.place(\n  File \"\/home\/alessandro\/venv\/lib\/python3.8\/site-packages\/flumine\/simulation\/simulatedorder.py\", line 70, in place\n    return self._create_place_response(\n  File \"\/home\/alessandro\/venv\/lib\/python3.8\/site-packages\/flumine\/simulation\/simulatedorder.py\", line 181, in _create_place_response\n    if self.size_remaining == 0:\n  File \"\/home\/alessandro\/venv\/lib\/python3.8\/site-packages\/flumine\/simulation\/simulatedorder.py\", line 395, in size_remaining\n    size\nTypeError: unsupported operand type(s) for -: 'NoneType' and 'int'```\nIt seems that the execution is broken while the framework is trying to replace an order: first it tries to cancel the order, but then it discovers that the market.status is not OPEN and raise the error with\n```return SimulatedCancelResponse(\n                status=\"FAILURE\",\n                error_code=\"ERROR_IN_ORDER\",\n            )```\nin flumine\/simulation\/simulatedorder.py, line 194. I don't understand why it is happening, because the check_market_book functions should already have checked that the market is OPEN. Also, in this specific case, the market is SUSPENDED before the race, Idk if it is an useful information. Can somebody help me with it?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "c8635071fc3f",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2022-07-25\/3842166271845_c8635071fc3f9ee0281b_72.png",
+            "first_name": "Alessandro",
+            "real_name": "Alessandro Piccaro",
+            "display_name": "AP",
+            "team": "T4G9NBD2M",
+            "name": "alessandro.piccaro",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "4qh19",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Hi! I created an example strategy just to test some features of flumine but I'm struggling with a problem\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "class ExampleStrategy(BaseStrategy):\n    def start(self) -> None:\n        print(\"starting strategy 'ExampleStrategy'\")\n\n    def check_market_book(self, market: Market, market_book: MarketBook) -> bool:\n        return (market_book.status == \"OPEN\") and (not market_book.inplay)\n\n    def process_market_book(self, market: Market, market_book: MarketBook) -> None:\n        for i in range(len(market_book.runners)):\n            runner = market_book.runners[i]\n\n            LPT = runner.last_price_traded\n\n            if runner.status == \"ACTIVE\" and (LPT is not None):\n                if LPT < 2:\n                    trade = Trade(\n                        market_id=market_book.market_id,\n                        selection_id=runner.selection_id,\n                        handicap=runner.handicap,\n                        strategy=self\n                    )\n                    order = trade.create_order(\n                        side=\"BACK\",\n                        order_type=LimitOrder(price=LPT, size=2.00)\n                    )\n\n                    res = market.place_order(order)\n\n                    if res:\n                        print(\"Order placed: \", market_book.market_id, runner.selection_id, LPT)\n\n    def process_orders(self, market: Market, orders: list) -> None:\n        if not((market.market_book.status == \"OPEN\") and (not market.market_book.inplay)):\n            return\n\n        for order in orders:\n            if order.status == OrderStatus.EXECUTABLE:\n                if order.size_remaining == 2.00:\n                    market.cancel_order(order, 0.02)  # reduce size to 1.98\n\n                if order.order_type.persistence_type == \"LAPSE\":\n                    market.update_order(order, \"PERSIST\")\n\n                if order.size_remaining > 0:\n                    market.replace_order(order, new_price=1.02)"
+                            }
+                        ],
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I had run this strategy on a specific market, but then the following error was raised:\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Traceback (most recent call last):\n  File \"\/home\/alessandro\/venv\/lib\/python3.8\/site-packages\/flumine\/simulation\/simulation.py\", line 97, in run\n    self._process_market_books(\n  File \"\/home\/alessandro\/venv\/lib\/python3.8\/site-packages\/flumine\/simulation\/simulation.py\", line 117, in _process_market_books\n    self._check_pending_packages(market_id)\n  File \"\/home\/alessandro\/venv\/lib\/python3.8\/site-packages\/flumine\/simulation\/simulation.py\", line 189, in _check_pending_packages\n    order_package.client.execution.handler(order_package)\n  File \"\/home\/alessandro\/venv\/lib\/python3.8\/site-packages\/flumine\/execution\/simulatedexecution.py\", line 31, in handler\n    func(order_package, http_session=None)\n  File \"\/home\/alessandro\/venv\/lib\/python3.8\/site-packages\/flumine\/execution\/simulatedexecution.py\", line 142, in execute_replace\n    place_instruction_report = replacement_order.simulated.place(\n  File \"\/home\/alessandro\/venv\/lib\/python3.8\/site-packages\/flumine\/simulation\/simulatedorder.py\", line 70, in place\n    return self._create_place_response(\n  File \"\/home\/alessandro\/venv\/lib\/python3.8\/site-packages\/flumine\/simulation\/simulatedorder.py\", line 181, in _create_place_response\n    if self.size_remaining == 0:\n  File \"\/home\/alessandro\/venv\/lib\/python3.8\/site-packages\/flumine\/simulation\/simulatedorder.py\", line 395, in size_remaining\n    size\nTypeError: unsupported operand type(s) for -: 'NoneType' and 'int'"
+                            }
+                        ],
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "It seems that the execution is broken while the framework is trying to replace an order: first it tries to cancel the order, but then it discovers that the market.status is not OPEN and raise the error with\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "return SimulatedCancelResponse(\n                status=\"FAILURE\",\n                error_code=\"ERROR_IN_ORDER\",\n            )"
+                            }
+                        ],
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "in flumine\/simulation\/simulatedorder.py, line 194. I don't understand why it is happening, because the check_market_book functions should already have checked that the market is OPEN. Also, in this specific case, the market is SUSPENDED before the race, Idk if it is an useful information. Can somebody help me with it?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1662029358.046389",
+        "client_msg_id": "89ab31a6-9181-4697-bde6-96e25f565993",
+        "text": "Its to do with the size remaining",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "\/YNDr",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Its to do with the size remaining"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1662029402.624509",
+        "client_msg_id": "6bcca623-c3a3-4aae-955f-99ff059e14ba",
+        "text": "You are checking a None (in some cases) against an int",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "62wrU",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "You are checking a None (in some cases) against an int"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1662029413.564949",
+        "client_msg_id": "36638f88-2bd4-4bc2-a651-3ba26c89a7c2",
+        "text": "You need another check to ensure it is not None first",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "45otn",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "You need another check to ensure it is not None first"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U03QNF31U8N",
+        "type": "message",
+        "ts": "1662034507.988499",
+        "client_msg_id": "9d2935ef-8364-4172-8187-49b0771915df",
+        "text": "where can I add it in the strategy? Also, the problem is that the None shouldn't be present, as it is raised because the SUSPENDED status of the market was detected, or am I wrong?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "c8635071fc3f",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2022-07-25\/3842166271845_c8635071fc3f9ee0281b_72.png",
+            "first_name": "Alessandro",
+            "real_name": "Alessandro Piccaro",
+            "display_name": "AP",
+            "team": "T4G9NBD2M",
+            "name": "alessandro.piccaro",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "gsJQc",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "where can I add it in the strategy? Also, the problem is that the None shouldn't be present, as it is raised because the SUSPENDED status of the market was detected, or am I wrong?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1662037700.237269",
+        "client_msg_id": "f0d3849a-5665-4402-ba9f-d2b4550a40fb",
+        "text": "You could just do something like this:\n\n```def process_orders(self, market: Market, orders: list) -&gt; None:\n    for order in orders:\n        if order.status == OrderStatus.EXECUTABLE and order.size_remaining is not None:\n            if order.size_remaining == 2.00:\n                market.cancel_order(order, 0.02)  # reduce size to 1.98\n\n            if order.order_type.persistence_type == \"LAPSE\":\n                market.update_order(order, \"PERSIST\")\n\n            if order.size_remaining &gt; 0:\n                market.replace_order(order, new_price=1.02)```\nI can't remember why it might be None, rather than a Float, but is it possibly when as you say the market is suspended and so the order status changes from Executable to Lapsed (i.e. could you be catching it at that exact moment perhaps)?\n\nI'm just guessing, there will be a reason, but something along the lines of the above at least should catch it.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Iq8",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "You could just do something like this:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "def process_orders(self, market: Market, orders: list) -> None:\n    for order in orders:\n        if order.status == OrderStatus.EXECUTABLE and order.size_remaining is not None:\n            if order.size_remaining == 2.00:\n                market.cancel_order(order, 0.02)  # reduce size to 1.98\n\n            if order.order_type.persistence_type == \"LAPSE\":\n                market.update_order(order, \"PERSIST\")\n\n            if order.size_remaining > 0:\n                market.replace_order(order, new_price=1.02)"
+                            }
+                        ],
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\nI can't remember why it might be None, rather than a Float, but is it possibly when as you say the market is suspended and so the order status changes from Executable to Lapsed (i.e. could you be catching it at that exact moment perhaps)?\n\nI'm just guessing, there will be a reason, but something along the lines of the above at least should catch it."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1662038107.634189",
+        "client_msg_id": "02e6ee53-f0cb-4b37-9bc4-69e2469f506d",
+        "text": "Oh wait, looking at your stack trace, I think what is happening is actually:\n\n1. The replacement order is trying to place during  a suspension\n2. As this can not be done it fails\n3. This failed order is being returned by the place response, but has no size_remaining attribute\nSo the same logic applies, you still need to catch it, but stick in an extra line under process_orders with:\n\n```If (market_book.status == \"OPEN\") and (not market_book.inplay):```\nor (as I prefer):\n\n```If market_book.status not in ['SUSPENDED', 'CLOSED'] and (not market_book.inplay):```\n",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "j9gAm",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Oh wait, looking at your stack trace, I think what is happening is actually:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_list",
+                        "elements": [
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "The replacement order is trying to place during  a suspension"
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "As this can not be done it fails"
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "This failed order is being returned by the place response, but has no size_remaining attribute"
+                                    }
+                                ]
+                            }
+                        ],
+                        "style": "ordered",
+                        "indent": 0,
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\nSo the same logic applies, you still need to catch it, but stick in an extra line under process_orders with:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "If (market_book.status == \"OPEN\") and (not market_book.inplay):"
+                            }
+                        ],
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\nor (as I prefer):\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "If market_book.status not in ['SUSPENDED', 'CLOSED'] and (not market_book.inplay):"
+                            }
+                        ],
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": []
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U03QNF31U8N",
+        "type": "message",
+        "ts": "1662038338.127489",
+        "client_msg_id": "32a996fb-8fb3-448e-96d0-ce62540cbc6e",
+        "text": "I updated the code above, but I still get the same error",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "c8635071fc3f",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2022-07-25\/3842166271845_c8635071fc3f9ee0281b_72.png",
+            "first_name": "Alessandro",
+            "real_name": "Alessandro Piccaro",
+            "display_name": "AP",
+            "team": "T4G9NBD2M",
+            "name": "alessandro.piccaro",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "9VmR",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I updated the code above, but I still get the same error"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U03QNF31U8N",
+        "type": "message",
+        "ts": "1662038413.613509",
+        "client_msg_id": "e639fc6e-c9ff-43f3-84dc-ac152e1873ad",
+        "text": "the points 1,2,3 are correct, from what I explored, but the extra filter doesn't fix the problem",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "c8635071fc3f",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2022-07-25\/3842166271845_c8635071fc3f9ee0281b_72.png",
+            "first_name": "Alessandro",
+            "real_name": "Alessandro Piccaro",
+            "display_name": "AP",
+            "team": "T4G9NBD2M",
+            "name": "alessandro.piccaro",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "tXGg",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "the points 1,2,3 are correct, from what I explored, but the extra filter doesn't fix the problem"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1662038593.336239",
+        "client_msg_id": "a080e24a-c6f5-4e3d-abab-bd5051a2948e",
+        "text": "Actually yeah, the issue is here:\n\n```if self.size_remaining == 0:```\nNot sure, but it is possible there is a bug with replacing orders in simulation mode, looking at the above from _create_place_response?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "TK=",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Actually yeah, the issue is here:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "if self.size_remaining == 0:"
+                            }
+                        ],
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\nNot sure, but it is possible there is a bug with replacing orders in simulation mode, looking at the above from _create_place_response?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U03QNF31U8N",
+        "type": "message",
+        "ts": "1662039405.193669",
+        "edited": {
+            "user": "U03QNF31U8N",
+            "ts": "1662039457.000000"
+        },
+        "client_msg_id": "1cc17bbf-a3ee-44d3-80aa-d8c3ecedb6f3",
+        "text": "on my side I was testing to substitute lines 194-197 in flumine.simulation.simulatedorder.py with\n```return SimulatedCancelResponse(\n                status=\"FAILURE\",\n                size_cancelled=0,\n                error_code=\"ERROR_IN_ORDER\",\n            )```\nand also changing line 389 (for example inverting the 2 arguments of the \"or\" operation worked, because (0 or None) != (None or 0))",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "c8635071fc3f",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2022-07-25\/3842166271845_c8635071fc3f9ee0281b_72.png",
+            "first_name": "Alessandro",
+            "real_name": "Alessandro Piccaro",
+            "display_name": "AP",
+            "team": "T4G9NBD2M",
+            "name": "alessandro.piccaro",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "HDjdz",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "on my side I was testing to substitute lines 194-197 in flumine.simulation.simulatedorder.py with\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "return SimulatedCancelResponse(\n                status=\"FAILURE\",\n                size_cancelled=0,\n                error_code=\"ERROR_IN_ORDER\",\n            )"
+                            }
+                        ],
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "and also changing line 389 (for example inverting the 2 arguments of the \"or\" operation worked, because (0 or None) != (None or 0))"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1662039883.546099",
+        "client_msg_id": "3ed3d98f-ea84-4e45-8386-393dd28146b4",
+        "text": "might need <@U4H19D1D2> on this one!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1662039883.546099",
+        "reply_count": 10,
+        "reply_users_count": 2,
+        "latest_reply": "1662624616.794799",
+        "reply_users": [
+            "U03QNF31U8N",
+            "U4H19D1D2"
+        ],
+        "replies": [
+            {
+                "user": "U03QNF31U8N",
+                "ts": "1662474062.557229"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1662475171.437889"
+            },
+            {
+                "user": "U03QNF31U8N",
+                "ts": "1662478713.946919"
+            },
+            {
+                "user": "U03QNF31U8N",
+                "ts": "1662532317.186609"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1662537762.848319"
+            },
+            {
+                "user": "U03QNF31U8N",
+                "ts": "1662541223.210429"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1662542544.185579"
+            },
+            {
+                "user": "U03QNF31U8N",
+                "ts": "1662543343.438699"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1662624071.368699"
+            },
+            {
+                "user": "U03QNF31U8N",
+                "ts": "1662624616.794799"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": true,
+        "last_read": "1662624616.794799",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "W5uNb",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "might need "
+                            },
+                            {
+                                "type": "user",
+                                "user_id": "U4H19D1D2"
+                            },
+                            {
+                                "type": "text",
+                                "text": " on this one!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

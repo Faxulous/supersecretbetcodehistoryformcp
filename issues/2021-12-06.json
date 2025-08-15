@@ -1,0 +1,205 @@
+[
+    {
+        "user": "U016TGY3676",
+        "type": "message",
+        "ts": "1638786835.245600",
+        "client_msg_id": "a3bc205e-19d6-49fc-908b-4a30d759b397",
+        "text": "Thanks <@UBS7QANF3>. Will update my code.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6a681220e11",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6a681220e11c1a2ed3685375d658dadb.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0001-72.png",
+            "first_name": "",
+            "real_name": "birchy",
+            "display_name": "birchy",
+            "team": "T4G9NBD2M",
+            "name": "birchy",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "sV1e",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Thanks "
+                            },
+                            {
+                                "type": "user",
+                                "user_id": "UBS7QANF3"
+                            },
+                            {
+                                "type": "text",
+                                "text": ". Will update my code."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1638822245.249300",
+        "client_msg_id": "2b300c90-2170-42be-bf59-a580b86bdd96",
+        "text": "This error has come up a few times recently, when the market cleared event is processed:\n\n```\n{\"asctime\": \"2021-12-06 14:30:14,617\", \"levelname\": \"ERROR\", \"message\": \"_get_cleared_market error\", \"exc_info\": \"Traceback (most recent call last):\\n  File \\\"\/home\/ec2-user\/trading\/env\/lib64\/python3.7\/site-packages\/flumine\/worker.py\\\", line 234, in _get_cleared_market\\n    group_by=\\\"MARKET\\\",\\n  File \\\"\/home\/ec2-user\/trading\/env\/lib64\/python3.7\/site-packages\/betfairlightweight\/endpoints\/betting.py\\\", line 434, in list_cleared_orders\\n    (response, response_json, elapsed_time) = self.request(method, params, session)\\n  File \\\"\/home\/ec2-user\/trading\/env\/lib64\/python3.7\/site-packages\/betfairlightweight\/endpoints\/baseendpoint.py\\\", line 55, in request\\n    self._error_handler(response_json, method, params)\\n  File \\\"\/home\/ec2-user\/trading\/env\/lib64\/python3.7\/site-packages\/betfairlightweight\/endpoints\/baseendpoint.py\\\", line 81, in _error_handler\\n    raise self._error(response, method, params)\\nbetfairlightweight.exceptions.APIError: SportsAPING\/v1.0\/listClearedOrders \\nParams: {'betStatus': 'SETTLED', 'marketIds': ['1.192009763'], 'customerStrategyRefs': ['ip-172-31-4-105'], 'settledDateRange': {'from': None, 'to': None}, 'groupBy': 'MARKET'} \\nException: None \\nError: {'code': -32099, 'message': 'ANGX-0006', 'data': {'APINGException': {'requestUUID': 'ie1-ang11b-prd-10290844-0055b9d69e', 'errorCode': 'UNEXPECTED_ERROR', 'errorDetails': ''}, 'exceptionname': 'APINGException'}} \\nFull Response: {'jsonrpc': '2.0', 'error': {'code': -32099, 'message': 'ANGX-0006', 'data': {'APINGException': {'requestUUID': 'ie1-ang11b-prd-10290844-0055b9d69e', 'errorCode': 'UNEXPECTED_ERROR', 'errorDetails': ''}, 'exceptionname': 'APINGException'}}, 'id': 1}\", \"trading_function\": \"list_cleared_orders\", \"response\": \"SportsAPING\/v1.0\/listClearedOrders \\nParams: {'betStatus': 'SETTLED', 'marketIds': ['1.192009763'], 'customerStrategyRefs': ['ip-172-31-4-105'], 'settledDateRange': {'from': None, 'to': None}, 'groupBy': 'MARKET'} \\nException: None \\nError: {'code': -32099, 'message': 'ANGX-0006', 'data': {'APINGException': {'requestUUID': 'ie1-ang11b-prd-10290844-0055b9d69e', 'errorCode': 'UNEXPECTED_ERROR', 'errorDetails': ''}, 'exceptionname': 'APINGException'}} \\nFull Response: {'jsonrpc': '2.0', 'error': {'code': -32099, 'message': 'ANGX-0006', 'data': {'APINGException': {'requestUUID': 'ie1-ang11b-prd-10290844-0055b9d69e', 'errorCode': 'UNEXPECTED_ERROR', 'errorDetails': ''}, 'exceptionname': 'APINGException'}}, 'id': 1}\"}```\nAll I'm doing is the following (using the Closed Market Logging example):\n\n```    def _process_cleared_markets(self, event):\n        for market in event.event.orders:\n            market_id = market.market_id\n            file_path = market_closed_report_path + '\/' + str(market_id) + '_cleared_market_data.json'\n            cleared_market_data = {'market_id': market_id,\n                                  'market_profit': market.profit,\n                                  'market_com': market.commission\n                                 }\n\n            check_and_create_json(file_path, cleared_market_data)```\nBut the error looks like Flumine is making an incorrectly constructed API call to Betfair if I'm reading that correctly?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "WQT",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "This error has come up a few times recently, when the market cleared event is processed:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\n{\"asctime\": \"2021-12-06 14:30:14,617\", \"levelname\": \"ERROR\", \"message\": \"_get_cleared_market error\", \"exc_info\": \"Traceback (most recent call last):\\n  File \\\"\/home\/ec2-user\/trading\/env\/lib64\/python3.7\/site-packages\/flumine\/worker.py\\\", line 234, in _get_cleared_market\\n    group_by=\\\"MARKET\\\",\\n  File \\\"\/home\/ec2-user\/trading\/env\/lib64\/python3.7\/site-packages\/betfairlightweight\/endpoints\/betting.py\\\", line 434, in list_cleared_orders\\n    (response, response_json, elapsed_time) = self.request(method, params, session)\\n  File \\\"\/home\/ec2-user\/trading\/env\/lib64\/python3.7\/site-packages\/betfairlightweight\/endpoints\/baseendpoint.py\\\", line 55, in request\\n    self._error_handler(response_json, method, params)\\n  File \\\"\/home\/ec2-user\/trading\/env\/lib64\/python3.7\/site-packages\/betfairlightweight\/endpoints\/baseendpoint.py\\\", line 81, in _error_handler\\n    raise self._error(response, method, params)\\nbetfairlightweight.exceptions.APIError: SportsAPING\/v1.0\/listClearedOrders \\nParams: {'betStatus': 'SETTLED', 'marketIds': ['1.192009763'], 'customerStrategyRefs': ['ip-172-31-4-105'], 'settledDateRange': {'from': None, 'to': None}, 'groupBy': 'MARKET'} \\nException: None \\nError: {'code': -32099, 'message': 'ANGX-0006', 'data': {'APINGException': {'requestUUID': 'ie1-ang11b-prd-10290844-0055b9d69e', 'errorCode': 'UNEXPECTED_ERROR', 'errorDetails': ''}, 'exceptionname': 'APINGException'}} \\nFull Response: {'jsonrpc': '2.0', 'error': {'code': -32099, 'message': 'ANGX-0006', 'data': {'APINGException': {'requestUUID': 'ie1-ang11b-prd-10290844-0055b9d69e', 'errorCode': 'UNEXPECTED_ERROR', 'errorDetails': ''}, 'exceptionname': 'APINGException'}}, 'id': 1}\", \"trading_function\": \"list_cleared_orders\", \"response\": \"SportsAPING\/v1.0\/listClearedOrders \\nParams: {'betStatus': 'SETTLED', 'marketIds': ['1.192009763'], 'customerStrategyRefs': ['ip-172-31-4-105'], 'settledDateRange': {'from': None, 'to': None}, 'groupBy': 'MARKET'} \\nException: None \\nError: {'code': -32099, 'message': 'ANGX-0006', 'data': {'APINGException': {'requestUUID': 'ie1-ang11b-prd-10290844-0055b9d69e', 'errorCode': 'UNEXPECTED_ERROR', 'errorDetails': ''}, 'exceptionname': 'APINGException'}} \\nFull Response: {'jsonrpc': '2.0', 'error': {'code': -32099, 'message': 'ANGX-0006', 'data': {'APINGException': {'requestUUID': 'ie1-ang11b-prd-10290844-0055b9d69e', 'errorCode': 'UNEXPECTED_ERROR', 'errorDetails': ''}, 'exceptionname': 'APINGException'}}, 'id': 1}\"}"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\nAll I'm doing is the following (using the Closed Market Logging example):\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "    def _process_cleared_markets(self, event):\n        for market in event.event.orders:\n            market_id = market.market_id\n            file_path = market_closed_report_path + '\/' + str(market_id) + '_cleared_market_data.json'\n            cleared_market_data = {'market_id': market_id,\n                                  'market_profit': market.profit,\n                                  'market_com': market.commission\n                                 }\n\n            check_and_create_json(file_path, cleared_market_data)"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\nBut the error looks like Flumine is making an incorrectly constructed API call to Betfair if I'm reading that correctly?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1638823136.249800",
+        "client_msg_id": "4D53BDE8-9B74-476F-9461-C2788AB99E0D",
+        "text": "Looks more like the usual flakiness of the account statement endpoint",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "8z\/i",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Looks more like the usual flakiness of the account statement endpoint"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1638824040.250400",
+        "client_msg_id": "1899a974-f86f-4124-b5f8-5c3edd8ba06e",
+        "text": "Ah, so probably not much can be done then, just check back for any missing markets later I guess!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Unsuz",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Ah, so probably not much can be done then, just check back for any missing markets later I guess!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "subtype": "channel_join",
+        "user": "U02PRJG38SF",
+        "text": "<@U02PRJG38SF> has joined the channel",
+        "type": "message",
+        "ts": "1638850146.250600"
+    }
+]

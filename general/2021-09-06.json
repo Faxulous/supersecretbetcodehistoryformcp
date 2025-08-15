@@ -1,0 +1,2338 @@
+[
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1630911796.234400",
+        "client_msg_id": "ca7467d9-3ce4-44d1-ba00-fb1861222988",
+        "text": "I'm not a flumine user but I think a generic approach to this would be to have a queue that you push requests for database insertion on to and then a worker that pulls off the queue and does the actual insertion",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "JniC=",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I'm not a flumine user but I think a generic approach to this would be to have a queue that you push requests for database insertion on to and then a worker that pulls off the queue and does the actual insertion"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1630911848.235100",
+        "client_msg_id": "e2b78dc5-887a-4195-a6b1-3bdfc6862ff3",
+        "text": "However really that worker needs to be a separate process because you don't want to hold things up while you make an expensive database insertion",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "2=QxD",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "However really that worker needs to be a separate process because you don't want to hold things up while you make an expensive database insertion"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U0154JA98TH",
+        "type": "message",
+        "ts": "1630912239.238600",
+        "edited": {
+            "user": "U0154JA98TH",
+            "ts": "1630912273.000000"
+        },
+        "client_msg_id": "70ec8e90-007a-4ae9-95fd-429c32adf6e0",
+        "text": "if the worker is only performing the post request to the db every 30 seconds or so surely if the process only takes 4-5 seconds it shouldn't cause strategy run time issues? Also to clarify the backin up concern that time window 4-5 second window is time spent waiting for a response rather than actually inserting the order information so nothing intensive is actually taking place in the worker, just something with a fair amount of blocking.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g04d857ee3ad",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/04d857ee3ad168a8451932c84c7d0d6d.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0007-72.png",
+            "first_name": "Jonathan",
+            "real_name": "Jonathan Wadsworth",
+            "display_name": "Jono",
+            "team": "T4G9NBD2M",
+            "name": "jonowads",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "gUI",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "if the worker is only performing the post request to the db every 30 seconds or so surely if the process only takes 4-5 seconds it shouldn't cause strategy run time issues? Also to clarify the backin up concern that time window 4-5 second window is time spent waiting for a response rather than actually inserting the order information so nothing intensive is actually taking place in the worker, just something with a fair amount of blocking."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1630912298.239500",
+        "client_msg_id": "5dbbb3f8-e1fa-4a7b-9a81-0d8375678036",
+        "text": "If it's blocking I\/O such that the thread can yield then it's OK. But if you block the entire application for 4 - 5 seconds you will have major problems",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "6hs3n",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "If it's blocking I\/O such that the thread can yield then it's OK. But if you block the entire application for 4 - 5 seconds you will have major problems"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U0154JA98TH",
+        "type": "message",
+        "ts": "1630912733.245700",
+        "client_msg_id": "cca2d912-b7ba-4d80-93f7-7d6bd839bc66",
+        "text": "yes ive seen previously on here that you have to mindful of requests as to not interfere with the actual flumine event loop. Assuming the blocking I\/O request works as intended the last thing to clarify before pushing forward with this idea is: Is a pandas df an appropriate object to set up add rows to inside market.context eg market.context['bet_df'] ? I know you arent a flumine user so may not be able to give me a definite answer on this one so its no problem if i have to go trial this one myself",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g04d857ee3ad",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/04d857ee3ad168a8451932c84c7d0d6d.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0007-72.png",
+            "first_name": "Jonathan",
+            "real_name": "Jonathan Wadsworth",
+            "display_name": "Jono",
+            "team": "T4G9NBD2M",
+            "name": "jonowads",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Z6I",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "yes ive seen previously on here that you have to mindful of requests as to not interfere with the actual flumine event loop. Assuming the blocking I\/O request works as intended the last thing to clarify before pushing forward with this idea is: Is a pandas df an appropriate object to set up add rows to inside market.context eg market.context['bet_df'] ? I know you arent a flumine user so may not be able to give me a definite answer on this one so its no problem if i have to go trial this one myself"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UUE6E1LA1",
+        "type": "message",
+        "ts": "1630915687.245900",
+        "client_msg_id": "0075ee46-67ce-4776-96b1-33eb7fa36fe7",
+        "text": "Thanks. Was going to try this to start but tricky the way I do it as I use specific market ID in the subscription rather than the coarser types so if those markets are closed at the time of resub I need to remember them. If only I knew then what I know now....",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gf53cae45edd",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/f53cae45edd7f7b67bbe98819597612e.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0017-72.png",
+            "first_name": "",
+            "real_name": "D C",
+            "display_name": "D C",
+            "team": "T4G9NBD2M",
+            "name": "oddsvantage",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1630850913.204000",
+        "parent_user_id": "UUE6E1LA1",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "TRE",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Thanks. Was going to try this to start but tricky the way I do it as I use specific market ID in the subscription rather than the coarser types so if those markets are closed at the time of resub I need to remember them. If only I knew then what I know now...."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01UN2R5LM8",
+        "type": "message",
+        "ts": "1630915812.246100",
+        "client_msg_id": "0c56d39c-eeac-4530-a48d-bfbbc52a6c9f",
+        "text": "Ah, didn't notice that. I was changing it in the source code, which is quite dodge",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g73a9b1b8752",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/73a9b1b8752c606178cda631f5d11f05.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0021-72.png",
+            "first_name": "",
+            "real_name": "Ke",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "kechen1998",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1630533761.121900",
+        "parent_user_id": "U01UN2R5LM8",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "dL0s8",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Ah, didn't notice that. I was changing it in the source code, which is quite dodge"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "ULDAVFDRP",
+        "type": "message",
+        "ts": "1630917065.247700",
+        "client_msg_id": "b5dfc76b-4ff8-432e-8077-cfb77b4bdff4",
+        "text": "sending stuff to a database for cataloging can be done post market using flumine logging control (I think its a on market close event), unless you really really need it somewhere in a relatively decent time frame.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g46fe1c1bf03",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/b46fe1c1bf03e18d951e7032fb494283.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0019-72.png",
+            "first_name": "",
+            "real_name": "Oliver Varney",
+            "display_name": "Oliver Varney",
+            "team": "T4G9NBD2M",
+            "name": "oliverashleyvarney",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1630917065.247700",
+        "reply_count": 2,
+        "reply_users_count": 2,
+        "latest_reply": "1630923293.249100",
+        "reply_users": [
+            "UBS7QANF3",
+            "U9JHLMZB4"
+        ],
+        "replies": [
+            {
+                "user": "UBS7QANF3",
+                "ts": "1630917237.248600"
+            },
+            {
+                "user": "U9JHLMZB4",
+                "ts": "1630923293.249100"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": false,
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "sTQ",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "sending stuff to a database for cataloging can be done post market using flumine logging control (I think its a on market close event), unless you really really need it somewhere in a relatively decent time frame."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "ULDAVFDRP",
+        "type": "message",
+        "ts": "1630917141.248000",
+        "client_msg_id": "aaa1e02c-c005-4ff2-90e8-db25dd85ac54",
+        "text": "If it is needed a background worker should be fine",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g46fe1c1bf03",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/b46fe1c1bf03e18d951e7032fb494283.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0019-72.png",
+            "first_name": "",
+            "real_name": "Oliver Varney",
+            "display_name": "Oliver Varney",
+            "team": "T4G9NBD2M",
+            "name": "oliverashleyvarney",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "vNL7o",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "If it is needed a background worker should be fine"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "U0154JA98TH"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1630917237.248600",
+        "client_msg_id": "11D2533A-1A17-4CFC-9C11-749626AA1680",
+        "text": "Good point about whether it’s really needed in near real time",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1630917065.247700",
+        "parent_user_id": "ULDAVFDRP",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "bd4UR",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Good point about whether it’s really needed in near real time"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "subtype": "channel_join",
+        "user": "U02D2B81FGX",
+        "text": "<@U02D2B81FGX> has joined the channel",
+        "type": "message",
+        "ts": "1630918299.248900"
+    },
+    {
+        "user": "U9JHLMZB4",
+        "type": "message",
+        "ts": "1630923293.249100",
+        "edited": {
+            "user": "U9JHLMZB4",
+            "ts": "1630923334.000000"
+        },
+        "client_msg_id": "b5d609bb-20ac-45f9-8ea6-cbb093892e45",
+        "text": "Doesn't need to wait until market close, which carries the risk of losing order data if something interrupts the stream or the market closure doesn't come through for any other reason. I have a database logging control that inserts orders during _process_order() and updates them during _process_cleared_orders_meta()",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g951ddcb43e7",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/3951ddcb43e788a387d6daf330dad5ca.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0018-72.png",
+            "first_name": "",
+            "real_name": "Peter Coles",
+            "display_name": "Peter",
+            "team": "T4G9NBD2M",
+            "name": "peter",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1630917065.247700",
+        "parent_user_id": "ULDAVFDRP",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "eo0W",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Doesn't need to wait until market close, which carries the risk of losing order data if something interrupts the stream or the market closure doesn't come through for any other reason. I have a database logging control that inserts orders during _process_order() and updates them during _process_cleared_orders_meta()"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U013K4VNB6D",
+        "type": "message",
+        "ts": "1630929004.251200",
+        "client_msg_id": "39e03bd0-000b-4950-a6bc-41d71875dbac",
+        "text": "I started running a backtest this morning at 7:45 am (it was a month's worth of 'pro' data that I'd purchased from Betfair - the uncompressed file is 1.7 gigabytes). At I write, the program is still running.\n\nIs it normal for it to take so long to run a backtest, or am I possibly doing something wrong?\n\nThanks\n\nJeff",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gf188478b89f",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/f188478b89f4a5e2c5af9eafa0433712.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0004-72.png",
+            "first_name": "",
+            "real_name": "Jeff Waters",
+            "display_name": "Jeff Waters",
+            "team": "T4G9NBD2M",
+            "name": "watersjg",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "qDJ",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I started running a backtest this morning at 7:45 am (it was a month's worth of 'pro' data that I'd purchased from Betfair - the uncompressed file is 1.7 gigabytes). At I write, the program is still running.\n\nIs it normal for it to take so long to run a backtest, or am I possibly doing something wrong?\n\nThanks\n\nJeff"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "text": "<@U013K4VNB6D> Not sure how many markets you are testing against.. however, Ive just run a backtest on a small amount of markets to time...it ran 229 markets in 6:30 mins to give you an idea.\nNot sure if that is comparable with other members.\nDo you have something that is printed on the console (Like the image attached) so you know what is happening?",
+        "files": [
+            {
+                "id": "F02D32098P9",
+                "mode": "hidden_by_limit"
+            }
+        ],
+        "upload": false,
+        "user": "UQL0QDEKA",
+        "display_as_bot": false,
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "gXP",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "user",
+                                "user_id": "U013K4VNB6D"
+                            },
+                            {
+                                "type": "text",
+                                "text": " Not sure how many markets you are testing against.. however, Ive just run a backtest on a small amount of markets to time...it ran 229 markets in 6:30 mins to give you an idea.\nNot sure if that is comparable with other members.\nDo you have something that is printed on the console (Like the image attached) so you know what is happening?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "type": "message",
+        "ts": "1630931363.253700",
+        "thread_ts": "1630931363.253700",
+        "reply_count": 4,
+        "reply_users_count": 2,
+        "latest_reply": "1630933027.259900",
+        "reply_users": [
+            "U013K4VNB6D",
+            "UQL0QDEKA"
+        ],
+        "replies": [
+            {
+                "user": "U013K4VNB6D",
+                "ts": "1630931572.253800"
+            },
+            {
+                "user": "UQL0QDEKA",
+                "ts": "1630931706.254100"
+            },
+            {
+                "user": "UQL0QDEKA",
+                "ts": "1630932861.259200"
+            },
+            {
+                "user": "U013K4VNB6D",
+                "ts": "1630933027.259900"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": false,
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "U013K4VNB6D"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "U013K4VNB6D",
+        "type": "message",
+        "ts": "1630931572.253800",
+        "client_msg_id": "d249017c-0288-4e8c-a7ed-e9e459216e1c",
+        "text": "Thanks Peter.\n\nMy program gives the PL details when it has finished processing, and I haven't managed to get that far yet (though printing interim information so I know how the program is progressing might be a good idea).\n\nBTW, 17% ROI over 2110 bets is extremely impressive! :raised_hands:",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gf188478b89f",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/f188478b89f4a5e2c5af9eafa0433712.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0004-72.png",
+            "first_name": "",
+            "real_name": "Jeff Waters",
+            "display_name": "Jeff Waters",
+            "team": "T4G9NBD2M",
+            "name": "watersjg",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1630931363.253700",
+        "parent_user_id": "UQL0QDEKA",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "zQrF",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Thanks Peter.\n\nMy program gives the PL details when it has finished processing, and I haven't managed to get that far yet (though printing interim information so I know how the program is progressing might be a good idea).\n\nBTW, 17% ROI over 2110 bets is extremely impressive! "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "raised_hands",
+                                "unicode": "1f64c"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UQL0QDEKA",
+        "type": "message",
+        "ts": "1630931706.254100",
+        "client_msg_id": "dbd50b8e-d056-429f-b1bc-3cb39d7fd958",
+        "text": "Thanks, but Ive had some great help from the folk on here",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g444d10128c0",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/444d10128c0aaf094041a52a76796602.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0005-72.png",
+            "first_name": "Peter",
+            "real_name": "Peter Lenagh",
+            "display_name": "PeterLe",
+            "team": "T4G9NBD2M",
+            "name": "lenagh",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1630931363.253700",
+        "parent_user_id": "UQL0QDEKA",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "6ci7a",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Thanks, but Ive had some great help from the folk on here"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UPMUFSGCR",
+        "type": "message",
+        "ts": "1630932637.258100",
+        "client_msg_id": "ec9e7461-5319-407e-a6cf-70c9b67d71dc",
+        "text": "<@U013K4VNB6D> The time will depend a lot on how much processing your own code does. And how many orders it places.\n\nIf you place lots of limit orders, flumine will check them for fills on every market book update. That takes time.\n\nYou'll get up to 20 market book updates per second. So if you do time-consuming work in process_market_book, that will increase the time.\n\nIt also depends on your CPU and size of data. From memory, on a single-thread, and with a very simple strategy that does virtually nothing, I think my Ryzen 3950x CPU, with a Samsung EVO 970 PRO NVME drive, can process a single GB horse racing WIN file in under 3 seconds. It might even be under 1 second. You can do a crude comparison of your CPU, vs the 3950X, just by comparing the single thread ratings here: <https:\/\/www.cpubenchmark.net\/cpu.php?cpu=AMD+Ryzen+9+3950X&amp;id=3598>",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "31c0bb5a442c",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2019-10-28\/812386967189_31c0bb5a442c5b8d2c61_72.png",
+            "first_name": "Jon",
+            "real_name": "Jon Jon Jon Jon Jon Jon Jon Jon",
+            "display_name": "Jonjonjon",
+            "team": "T4G9NBD2M",
+            "name": "fcmisc",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1630932637.258100",
+        "reply_count": 4,
+        "reply_users_count": 2,
+        "latest_reply": "1630933419.260800",
+        "reply_users": [
+            "U013K4VNB6D",
+            "UPMUFSGCR"
+        ],
+        "replies": [
+            {
+                "user": "U013K4VNB6D",
+                "ts": "1630932917.259400"
+            },
+            {
+                "user": "UPMUFSGCR",
+                "ts": "1630933125.260100"
+            },
+            {
+                "user": "UPMUFSGCR",
+                "ts": "1630933202.260300"
+            },
+            {
+                "user": "U013K4VNB6D",
+                "ts": "1630933419.260800"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": false,
+        "attachments": [
+            {
+                "title": "PassMark - AMD Ryzen 9 3950X - Price performance comparison",
+                "title_link": "https:\/\/www.cpubenchmark.net\/cpu.php?cpu=AMD+Ryzen+9+3950X&id=3598",
+                "text": "Performance and price comparison graphs for AMD Ryzen 9 3950X",
+                "fallback": "PassMark - AMD Ryzen 9 3950X - Price performance comparison",
+                "from_url": "https:\/\/www.cpubenchmark.net\/cpu.php?cpu=AMD+Ryzen+9+3950X&id=3598",
+                "service_icon": "https:\/\/www.cpubenchmark.net\/favicon.ico",
+                "service_name": "cpubenchmark.net",
+                "id": 1,
+                "original_url": "https:\/\/www.cpubenchmark.net\/cpu.php?cpu=AMD+Ryzen+9+3950X&amp;id=3598"
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Lzn",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "user",
+                                "user_id": "U013K4VNB6D"
+                            },
+                            {
+                                "type": "text",
+                                "text": " The time will depend a lot on how much processing your own code does. And how many orders it places.\n\nIf you place lots of limit orders, flumine will check them for fills on every market book update. That takes time.\n\nYou'll get up to 20 market book updates per second. So if you do time-consuming work in process_market_book, that will increase the time.\n\nIt also depends on your CPU and size of data. From memory, on a single-thread, and with a very simple strategy that does virtually nothing, I think my Ryzen 3950x CPU, with a Samsung EVO 970 PRO NVME drive, can process a single GB horse racing WIN file in under 3 seconds. It might even be under 1 second. You can do a crude comparison of your CPU, vs the 3950X, just by comparing the single thread ratings here: "
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/www.cpubenchmark.net\/cpu.php?cpu=AMD+Ryzen+9+3950X&id=3598"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "U013K4VNB6D"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "UPMUFSGCR",
+        "type": "message",
+        "ts": "1630932679.259100",
+        "client_msg_id": "cfdcd162-2367-4a67-8166-2d047aaba1c3",
+        "text": "If you have plenty of cores and memory, you can also use Python's `multiprocessing` module to run backtests in parallel.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "31c0bb5a442c",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2019-10-28\/812386967189_31c0bb5a442c5b8d2c61_72.png",
+            "first_name": "Jon",
+            "real_name": "Jon Jon Jon Jon Jon Jon Jon Jon",
+            "display_name": "Jonjonjon",
+            "team": "T4G9NBD2M",
+            "name": "fcmisc",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1630932679.259100",
+        "reply_count": 26,
+        "reply_users_count": 3,
+        "latest_reply": "1631444701.468300",
+        "reply_users": [
+            "U013K4VNB6D",
+            "UPMUFSGCR",
+            "U013MLED3V1"
+        ],
+        "replies": [
+            {
+                "user": "U013K4VNB6D",
+                "ts": "1630933347.260500"
+            },
+            {
+                "user": "UPMUFSGCR",
+                "ts": "1630933496.261000"
+            },
+            {
+                "user": "U013K4VNB6D",
+                "ts": "1630933862.261200"
+            },
+            {
+                "user": "U013MLED3V1",
+                "ts": "1631002578.291700"
+            },
+            {
+                "user": "U013K4VNB6D",
+                "ts": "1631003360.292900"
+            },
+            {
+                "user": "U013MLED3V1",
+                "ts": "1631003820.293900"
+            },
+            {
+                "user": "U013K4VNB6D",
+                "ts": "1631004091.294100"
+            },
+            {
+                "user": "UPMUFSGCR",
+                "ts": "1631004336.294500"
+            },
+            {
+                "user": "U013MLED3V1",
+                "ts": "1631004346.294700"
+            },
+            {
+                "user": "U013MLED3V1",
+                "ts": "1631004400.295000"
+            },
+            {
+                "user": "UPMUFSGCR",
+                "ts": "1631004444.295300"
+            },
+            {
+                "user": "U013MLED3V1",
+                "ts": "1631004488.295500"
+            },
+            {
+                "user": "UPMUFSGCR",
+                "ts": "1631004534.295700"
+            },
+            {
+                "user": "U013MLED3V1",
+                "ts": "1631005007.295900"
+            },
+            {
+                "user": "U013K4VNB6D",
+                "ts": "1631005543.296100"
+            },
+            {
+                "user": "U013MLED3V1",
+                "ts": "1631005660.296300"
+            },
+            {
+                "user": "U013K4VNB6D",
+                "ts": "1631005740.296600"
+            },
+            {
+                "user": "U013MLED3V1",
+                "ts": "1631006229.296900"
+            },
+            {
+                "user": "U013K4VNB6D",
+                "ts": "1631006428.297200"
+            },
+            {
+                "user": "U013MLED3V1",
+                "ts": "1631006659.298000"
+            },
+            {
+                "user": "U013MLED3V1",
+                "ts": "1631339222.464300"
+            },
+            {
+                "user": "U013K4VNB6D",
+                "ts": "1631375648.464600"
+            },
+            {
+                "user": "U013MLED3V1",
+                "ts": "1631438486.464900"
+            },
+            {
+                "user": "U013K4VNB6D",
+                "ts": "1631440264.466500"
+            },
+            {
+                "user": "U013MLED3V1",
+                "ts": "1631442644.468000"
+            },
+            {
+                "user": "U013K4VNB6D",
+                "ts": "1631444701.468300"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": false,
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "9X3N",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "If you have plenty of cores and memory, you can also use Python's "
+                            },
+                            {
+                                "type": "text",
+                                "text": "multiprocessing",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " module to run backtests in parallel."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "U013K4VNB6D"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "UQL0QDEKA",
+        "type": "message",
+        "ts": "1630932861.259200",
+        "client_msg_id": "dae9547a-ae07-42e2-9af8-8e57f093c4c1",
+        "text": "Jeff, by the way; i wouldnt get too hung up on ROI as you can have an account that has a much lower ROI which produces more profit at the end of the month.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g444d10128c0",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/444d10128c0aaf094041a52a76796602.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0005-72.png",
+            "first_name": "Peter",
+            "real_name": "Peter Lenagh",
+            "display_name": "PeterLe",
+            "team": "T4G9NBD2M",
+            "name": "lenagh",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1630931363.253700",
+        "parent_user_id": "UQL0QDEKA",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "vkFd",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Jeff, by the way; i wouldnt get too hung up on ROI as you can have an account that has a much lower ROI which produces more profit at the end of the month."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "U013K4VNB6D"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "U013K4VNB6D",
+        "type": "message",
+        "ts": "1630932917.259400",
+        "edited": {
+            "user": "U013K4VNB6D",
+            "ts": "1630932941.000000"
+        },
+        "client_msg_id": "47dba899-e213-4303-8a74-634e879efe6a",
+        "text": "Thanks Jon\n\nMy code isn't doing a huge amount of bet placing. At the moment, I'm just trying to get something that works, so all I'm doing is offering a bet to the market 30 seconds before the off.\n\nI wonder whether the problem is with the way I'm retrieving the data. I had previously accessed JSON files that I'd manually accessed directly, and my program ran quickly. I'm now using the following code to get data from an extracted WINRAR file:\n\n```def get_markets(data_dir):\n    markets = []\n    for dir_, _, files in os.walk(data_dir):\n        for file_name in files:\n            rel_dir = os.path.relpath(dir_, data_dir)\n            rel_file = os.path.join(rel_dir, file_name)\n            markets.append(\"PRO\\\\\" + rel_file)\n    return markets\n\n\nstrategy = TestStrategy(\n    market_filter={\"markets\": get_markets(\"PRO\")},\n    max_order_exposure=1000,\n    max_selection_exposure=105,\n)\n\nwith mock.patch(\"builtins.open\", smart_open.open):\n    framework.add_strategy(strategy)\n    framework.run()```\nIs there anything I'm doing wrong in that code that jumps out at you?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gf188478b89f",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/f188478b89f4a5e2c5af9eafa0433712.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0004-72.png",
+            "first_name": "",
+            "real_name": "Jeff Waters",
+            "display_name": "Jeff Waters",
+            "team": "T4G9NBD2M",
+            "name": "watersjg",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1630932637.258100",
+        "parent_user_id": "UPMUFSGCR",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "91j",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Thanks Jon\n\nMy code isn't doing a huge amount of bet placing. At the moment, I'm just trying to get something that works, so all I'm doing is offering a bet to the market 30 seconds before the off.\n\nI wonder whether the problem is with the way I'm retrieving the data. I had previously accessed JSON files that I'd manually accessed directly, and my program ran quickly. I'm now using the following code to get data from an extracted WINRAR file:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "def get_markets(data_dir):\n    markets = []\n    for dir_, _, files in os.walk(data_dir):\n        for file_name in files:\n            rel_dir = os.path.relpath(dir_, data_dir)\n            rel_file = os.path.join(rel_dir, file_name)\n            markets.append(\"PRO\\\\\" + rel_file)\n    return markets\n\n\nstrategy = TestStrategy(\n    market_filter={\"markets\": get_markets(\"PRO\")},\n    max_order_exposure=1000,\n    max_selection_exposure=105,\n)\n\nwith mock.patch(\"builtins.open\", smart_open.open):\n    framework.add_strategy(strategy)\n    framework.run()"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Is there anything I'm doing wrong in that code that jumps out at you?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U013K4VNB6D",
+        "type": "message",
+        "ts": "1630933027.259900",
+        "client_msg_id": "55677156-f1b4-48bf-8e93-7d09b5905bdb",
+        "text": "Valid point, Peter. I'm aiming for a long-term positive expectancy first and foremost. Once I've achieved that, I can explore ways of maximising my profitability.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gf188478b89f",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/f188478b89f4a5e2c5af9eafa0433712.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0004-72.png",
+            "first_name": "",
+            "real_name": "Jeff Waters",
+            "display_name": "Jeff Waters",
+            "team": "T4G9NBD2M",
+            "name": "watersjg",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1630931363.253700",
+        "parent_user_id": "UQL0QDEKA",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "GCxD",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Valid point, Peter. I'm aiming for a long-term positive expectancy first and foremost. Once I've achieved that, I can explore ways of maximising my profitability."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UPMUFSGCR",
+        "type": "message",
+        "ts": "1630933125.260100",
+        "client_msg_id": "fbbe2ed4-850a-44f4-9466-754b5147fb3c",
+        "text": "Nothing jumps out.\n\nBut... How many markets are in your 1.7GB of data?\n\nGiven you have no idea what's happening, for future work I'd do some logging.\n\ne.g. in your test strategy, just before (or after) placing orders, make it log a message saying it's placing a bet for market XXX. That way, you can see its progress.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "31c0bb5a442c",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2019-10-28\/812386967189_31c0bb5a442c5b8d2c61_72.png",
+            "first_name": "Jon",
+            "real_name": "Jon Jon Jon Jon Jon Jon Jon Jon",
+            "display_name": "Jonjonjon",
+            "team": "T4G9NBD2M",
+            "name": "fcmisc",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1630932637.258100",
+        "parent_user_id": "UPMUFSGCR",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "tD0",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Nothing jumps out.\n\nBut... How many markets are in your 1.7GB of data?\n\nGiven you have no idea what's happening, for future work I'd do some logging.\n\ne.g. in your test strategy, just before (or after) placing orders, make it log a message saying it's placing a bet for market XXX. That way, you can see its progress."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UPMUFSGCR",
+        "type": "message",
+        "ts": "1630933202.260300",
+        "client_msg_id": "119caa7d-0534-4077-b081-9ac2acd43dda",
+        "text": "Also, I don't know what your data contains, but I probably wouldn't run backtests on multiple sports\/market types at once. I'd probably focus on something like WIN horse markets, or PLACE Greyhound markets etc...",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "31c0bb5a442c",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2019-10-28\/812386967189_31c0bb5a442c5b8d2c61_72.png",
+            "first_name": "Jon",
+            "real_name": "Jon Jon Jon Jon Jon Jon Jon Jon",
+            "display_name": "Jonjonjon",
+            "team": "T4G9NBD2M",
+            "name": "fcmisc",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1630932637.258100",
+        "parent_user_id": "UPMUFSGCR",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "w=9",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Also, I don't know what your data contains, but I probably wouldn't run backtests on multiple sports\/market types at once. I'd probably focus on something like WIN horse markets, or PLACE Greyhound markets etc..."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "text": "Thanks Jon.\n\nThis is my spec. Incidentally, I've considered using Google Colab, as I'm pretty sure it's processing power is greater than my computer's.\n\nThe dataset contains about 16,000 greyhound markets.",
+        "files": [
+            {
+                "id": "F02D34SMGTH",
+                "mode": "hidden_by_limit"
+            }
+        ],
+        "upload": false,
+        "user": "U013K4VNB6D",
+        "display_as_bot": false,
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "yWlqj",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Thanks Jon.\n\nThis is my spec. Incidentally, I've considered using Google Colab, as I'm pretty sure it's processing power is greater than my computer's.\n\nThe dataset contains about 16,000 greyhound markets."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "type": "message",
+        "ts": "1630933347.260500",
+        "thread_ts": "1630932679.259100",
+        "parent_user_id": "UPMUFSGCR"
+    },
+    {
+        "user": "U013K4VNB6D",
+        "type": "message",
+        "ts": "1630933419.260800",
+        "client_msg_id": "8cf92947-0f7a-401a-b7bf-1896a67361aa",
+        "text": "Thanks for the advice Jon - Will do.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gf188478b89f",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/f188478b89f4a5e2c5af9eafa0433712.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0004-72.png",
+            "first_name": "",
+            "real_name": "Jeff Waters",
+            "display_name": "Jeff Waters",
+            "team": "T4G9NBD2M",
+            "name": "watersjg",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1630932637.258100",
+        "parent_user_id": "UPMUFSGCR",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "W4=",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Thanks for the advice Jon - Will do."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UPMUFSGCR",
+        "type": "message",
+        "ts": "1630933496.261000",
+        "client_msg_id": "9a77b060-6c64-4831-84ce-8b9712acc848",
+        "text": "Hmmm... As a crude approximation, if it takes 1 second per market, that's going to be 4.4 hours.\n\nHave you tried running your backtest against a handful of markets first? Perhaps make it do the largest and smallest files, and see how long those take?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "31c0bb5a442c",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2019-10-28\/812386967189_31c0bb5a442c5b8d2c61_72.png",
+            "first_name": "Jon",
+            "real_name": "Jon Jon Jon Jon Jon Jon Jon Jon",
+            "display_name": "Jonjonjon",
+            "team": "T4G9NBD2M",
+            "name": "fcmisc",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1630932679.259100",
+        "parent_user_id": "UPMUFSGCR",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Qze",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Hmmm... As a crude approximation, if it takes 1 second per market, that's going to be 4.4 hours.\n\nHave you tried running your backtest against a handful of markets first? Perhaps make it do the largest and smallest files, and see how long those take?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U013K4VNB6D",
+        "type": "message",
+        "ts": "1630933862.261200",
+        "client_msg_id": "78c873db-e04d-49ce-be9f-8d63f52a98ca",
+        "text": "Good idea. I can create a version of the WINRAR directories that has just one day of the month's data, instead of 31 days of data. It it still take hours and hours, I know I definitely have a bug! Thanks.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gf188478b89f",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/f188478b89f4a5e2c5af9eafa0433712.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0004-72.png",
+            "first_name": "",
+            "real_name": "Jeff Waters",
+            "display_name": "Jeff Waters",
+            "team": "T4G9NBD2M",
+            "name": "watersjg",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1630932679.259100",
+        "parent_user_id": "UPMUFSGCR",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Fq5",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Good idea. I can create a version of the WINRAR directories that has just one day of the month's data, instead of 31 days of data. It it still take hours and hours, I know I definitely have a bug! Thanks."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1::skin-tone-6",
+                "users": [
+                    "UPMUFSGCR"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "U013K4VNB6D",
+        "type": "message",
+        "ts": "1630938301.264000",
+        "client_msg_id": "787a3762-25bd-4a50-9d3e-4cc43e872300",
+        "text": "Does anyone use Google Colabs to run back tests or to execute trades?\n\nThe reason I ask is that my computer is pretty slow for the purposes of backtesting, and I'm wondering if using Colabs would be a viable alternative to buying a new device.\n\nThanks\n\nJeff",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gf188478b89f",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/f188478b89f4a5e2c5af9eafa0433712.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0004-72.png",
+            "first_name": "",
+            "real_name": "Jeff Waters",
+            "display_name": "Jeff Waters",
+            "team": "T4G9NBD2M",
+            "name": "watersjg",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "23PLr",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Does anyone use Google Colabs to run back tests or to execute trades?\n\nThe reason I ask is that my computer is pretty slow for the purposes of backtesting, and I'm wondering if using Colabs would be a viable alternative to buying a new device.\n\nThanks\n\nJeff"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1630938549.266100",
+        "client_msg_id": "c3e01bab-9a48-42e6-9ee7-8c49abf9510f",
+        "text": "Not personally but generically speaking cloud computing is ideal for this scenario as you can provision as many CPUs as you want and get rid of them as soon as the backtest is over. The more you pay for the faster the backtest is completed.\n\nHaving said that, what you really need to do right now is using multiprocessing. You'll trivially speed up your backtest by a factor of 4",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1630938549.266100",
+        "reply_count": 8,
+        "reply_users_count": 4,
+        "latest_reply": "1631003410.293400",
+        "reply_users": [
+            "U013K4VNB6D",
+            "UBS7QANF3",
+            "U01S1VB9X9P",
+            "U4H19D1D2"
+        ],
+        "replies": [
+            {
+                "user": "U013K4VNB6D",
+                "ts": "1630940832.273900"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1630941893.274600"
+            },
+            {
+                "user": "U013K4VNB6D",
+                "ts": "1630942176.275000"
+            },
+            {
+                "user": "U01S1VB9X9P",
+                "ts": "1630978653.289700"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1630993051.291000"
+            },
+            {
+                "user": "U013K4VNB6D",
+                "ts": "1631003137.291900"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1631003308.292700"
+            },
+            {
+                "user": "U013K4VNB6D",
+                "ts": "1631003410.293400"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": true,
+        "last_read": "1631003410.293400",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "AYeW3",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Not personally but generically speaking cloud computing is ideal for this scenario as you can provision as many CPUs as you want and get rid of them as soon as the backtest is over. The more you pay for the faster the backtest is completed.\n\nHaving said that, what you really need to do right now is using multiprocessing. You'll trivially speed up your backtest by a factor of 4"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "U013K4VNB6D"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "U9JHLMZB4",
+        "type": "message",
+        "ts": "1630939758.270700",
+        "edited": {
+            "user": "U9JHLMZB4",
+            "ts": "1630939799.000000"
+        },
+        "client_msg_id": "b511d11d-8087-4588-b98b-f8584599bc05",
+        "text": "I use Colabs a lot for analysis. Love it. But backtesting isn't something that I would do there. There are a number of reasons: it's designed to be run in a browser, which just isn't how I run my backtests at volume, resources are limited, not guaranteed and prioritised for users using the service interactively, and you've got to get all that data up to Google somehow before you can start analysing it.\n\nSo my volume backtesting is done on a budget VPS with 12 processors, 48GB of memory and taking advantage of python multiprocessing to ensure that those resources are fully-utilised.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g951ddcb43e7",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/3951ddcb43e788a387d6daf330dad5ca.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0018-72.png",
+            "first_name": "",
+            "real_name": "Peter Coles",
+            "display_name": "Peter",
+            "team": "T4G9NBD2M",
+            "name": "peter",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "88p",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I use Colabs a lot for analysis. Love it. But backtesting isn't something that I would do there. There are a number of reasons: it's designed to be run in a browser, which just isn't how I run my backtests at volume, resources are limited, not guaranteed and prioritised for users using the service interactively, and you've got to get all that data up to Google somehow before you can start analysing it.\n\nSo my volume backtesting is done on a budget VPS with 12 processors, 48GB of memory and taking advantage of python multiprocessing to ensure that those resources are fully-utilised."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "UBS7QANF3",
+                    "U013K4VNB6D"
+                ],
+                "count": 2
+            }
+        ]
+    },
+    {
+        "user": "UPMUFSGCR",
+        "type": "message",
+        "ts": "1630939877.271000",
+        "client_msg_id": "0d1bcb2c-ae22-4307-9867-6cc461bdeb3e",
+        "text": "How pricey is that VPS?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "31c0bb5a442c",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2019-10-28\/812386967189_31c0bb5a442c5b8d2c61_72.png",
+            "first_name": "Jon",
+            "real_name": "Jon Jon Jon Jon Jon Jon Jon Jon",
+            "display_name": "Jonjonjon",
+            "team": "T4G9NBD2M",
+            "name": "fcmisc",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "TIs",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "How pricey is that VPS?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U9JHLMZB4",
+        "type": "message",
+        "ts": "1630940271.273600",
+        "client_msg_id": "d4856bca-0eba-4d85-a25f-e6511e79e05c",
+        "text": "$122 pa. Not without downsides. When backtesting I have to put a 2 minutes pause after each day's processing to slow things down a bit and avoid getting throttled. But otherwise really effective.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g951ddcb43e7",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/3951ddcb43e788a387d6daf330dad5ca.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0018-72.png",
+            "first_name": "",
+            "real_name": "Peter Coles",
+            "display_name": "Peter",
+            "team": "T4G9NBD2M",
+            "name": "peter",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Wj4L",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "$122 pa. Not without downsides. When backtesting I have to put a 2 minutes pause after each day's processing to slow things down a bit and avoid getting throttled. But otherwise really effective."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1::skin-tone-6",
+                "users": [
+                    "UPMUFSGCR"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "U013K4VNB6D",
+        "type": "message",
+        "ts": "1630940832.273900",
+        "client_msg_id": "efaf3996-570a-407a-a566-72fb845fb112",
+        "text": "Thanks Mo.\n\nMy code for getting the data and running the tests is as follows:\n\n```def get_markets(data_dir):\n    markets = []\n    for dir_, _, files in os.walk(data_dir):\n        for file_name in files:\n            rel_dir = os.path.relpath(dir_, data_dir)\n            rel_file = os.path.join(rel_dir, file_name)\n            markets.append(\"PRO\\\\\" + rel_file)\n    return markets\n\n\nstrategy = TestStrategy(\n    market_filter={\"markets\": get_markets(\"PRO\")},\n    max_order_exposure=1000,\n    max_selection_exposure=105,\n)\n\nwith mock.patch(\"builtins.open\", smart_open.open):\n    framework.add_strategy(strategy)\n    framework.run()```\nIs there a quick and easy way for me to get that code to use multiprocessing, please?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gf188478b89f",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/f188478b89f4a5e2c5af9eafa0433712.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0004-72.png",
+            "first_name": "",
+            "real_name": "Jeff Waters",
+            "display_name": "Jeff Waters",
+            "team": "T4G9NBD2M",
+            "name": "watersjg",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1630938549.266100",
+        "parent_user_id": "UBS7QANF3",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "VoB",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Thanks Mo.\n\nMy code for getting the data and running the tests is as follows:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "def get_markets(data_dir):\n    markets = []\n    for dir_, _, files in os.walk(data_dir):\n        for file_name in files:\n            rel_dir = os.path.relpath(dir_, data_dir)\n            rel_file = os.path.join(rel_dir, file_name)\n            markets.append(\"PRO\\\\\" + rel_file)\n    return markets\n\n\nstrategy = TestStrategy(\n    market_filter={\"markets\": get_markets(\"PRO\")},\n    max_order_exposure=1000,\n    max_selection_exposure=105,\n)\n\nwith mock.patch(\"builtins.open\", smart_open.open):\n    framework.add_strategy(strategy)\n    framework.run()"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\nIs there a quick and easy way for me to get that code to use multiprocessing, please?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "text": "I found this with the search: <https:\/\/betfairlightweight.slack.com\/files\/U01SCPDTV5J\/F02C21VMQ1J\/multiprocessing_backtest_py.py>",
+        "files": [
+            {
+                "id": "F02C21VMQ1J",
+                "created": 1629477632,
+                "timestamp": 1629477632,
+                "name": "multiprocessing_backtest_py.py",
+                "title": "multiprocessing_backtest.py",
+                "mimetype": "text\/plain",
+                "filetype": "python",
+                "pretty_type": "Python",
+                "user": "U01SCPDTV5J",
+                "user_team": "T4G9NBD2M",
+                "editable": true,
+                "size": 2799,
+                "mode": "snippet",
+                "is_external": false,
+                "external_type": "",
+                "is_public": true,
+                "public_url_shared": false,
+                "display_as_bot": false,
+                "username": "",
+                "url_private": "https:\/\/files.slack.com\/files-pri\/T4G9NBD2M-F02C21VMQ1J\/multiprocessing_backtest_py.py?t=xoxe-152328387089-8357743338709-8373272928225-dfe8ebcd8ca3d2f633bcafeb95191840",
+                "url_private_download": "https:\/\/files.slack.com\/files-pri\/T4G9NBD2M-F02C21VMQ1J\/download\/multiprocessing_backtest_py.py?t=xoxe-152328387089-8357743338709-8373272928225-dfe8ebcd8ca3d2f633bcafeb95191840",
+                "permalink": "https:\/\/betcode-org.slack.com\/files\/U01SCPDTV5J\/F02C21VMQ1J\/multiprocessing_backtest_py.py",
+                "permalink_public": "https:\/\/slack-files.com\/T4G9NBD2M-F02C21VMQ1J-73281d124f",
+                "edit_link": "https:\/\/betcode-org.slack.com\/files\/U01SCPDTV5J\/F02C21VMQ1J\/multiprocessing_backtest_py.py\/edit",
+                "is_starred": false,
+                "has_rich_preview": false,
+                "file_access": "visible"
+            }
+        ],
+        "upload": false,
+        "user": "UBS7QANF3",
+        "display_as_bot": false,
+        "x_files": [
+            "F02C21VMQ1J"
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "ptSm",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I found this with the search: "
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/betfairlightweight.slack.com\/files\/U01SCPDTV5J\/F02C21VMQ1J\/multiprocessing_backtest_py.py"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "type": "message",
+        "ts": "1630941893.274600",
+        "edited": {
+            "user": "UBS7QANF3",
+            "ts": "1630941899.000000"
+        },
+        "client_msg_id": "fe814d18-ba17-4090-a8f2-8bc34a48c485",
+        "thread_ts": "1630938549.266100",
+        "parent_user_id": "UBS7QANF3",
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "U013K4VNB6D",
+                    "U01SCPDTV5J"
+                ],
+                "count": 2
+            }
+        ]
+    },
+    {
+        "user": "U013K4VNB6D",
+        "type": "message",
+        "ts": "1630942176.275000",
+        "client_msg_id": "1cdc625a-03eb-4c50-8b87-d166922d859e",
+        "text": "Thanks Mo.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gf188478b89f",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/f188478b89f4a5e2c5af9eafa0433712.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0004-72.png",
+            "first_name": "",
+            "real_name": "Jeff Waters",
+            "display_name": "Jeff Waters",
+            "team": "T4G9NBD2M",
+            "name": "watersjg",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1630938549.266100",
+        "parent_user_id": "UBS7QANF3",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "ow+i1",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Thanks Mo."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "U013K4VNB6D"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "U01DCR5PXDY",
+        "type": "message",
+        "ts": "1630946631.277800",
+        "client_msg_id": "3d9a37f9-1495-4f44-8aed-a5e5ce44c4ee",
+        "text": "<@U013K4VNB6D> If you want to use GCP, I'd suggest using Dataflow or Dataproc. But first, as Mo mentioned, you should squeeze everything out of your local machine first",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "903bc20cd9db",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-10-26\/1448127317798_903bc20cd9dba9a758e0_72.png",
+            "first_name": "thambie1",
+            "real_name": "thambie1",
+            "display_name": "thambie1",
+            "team": "T4G9NBD2M",
+            "name": "thambie1",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1630946631.277800",
+        "reply_count": 1,
+        "reply_users_count": 1,
+        "latest_reply": "1630953261.286400",
+        "reply_users": [
+            "U013K4VNB6D"
+        ],
+        "replies": [
+            {
+                "user": "U013K4VNB6D",
+                "ts": "1630953261.286400"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": false,
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "LwAG",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "user",
+                                "user_id": "U013K4VNB6D"
+                            },
+                            {
+                                "type": "text",
+                                "text": " If you want to use GCP, I'd suggest using Dataflow or Dataproc. But first, as Mo mentioned, you should squeeze everything out of your local machine first"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "U013K4VNB6D"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "UEA14GBRR",
+        "type": "message",
+        "ts": "1630948308.286100",
+        "client_msg_id": "c853e00b-52e5-4592-9c6c-bb09516fd43c",
+        "text": "I find just being organised is easier than a tech solution or spending money. I test a few strategies at the same time, log enough info to allow many ways to look at it afterwards and run them overnight locally. I'm not a flumine user so I can't compare but takes me about 15hrs to run 12months of UK horses with 2 or 3 fairly intensive strategies. I never find I'm sat waiting for it with nothing to do because each run creates more than a day's work.   Similar approach to the recent question about disk full warnings, the answer is to just be organised enough not to get them, scheduled archiving etc.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "889680f46fe7",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-06\/6774538588752_889680f46fe773047cb9_72.jpg",
+            "first_name": "",
+            "real_name": "Shaun White",
+            "display_name": "ShaunW",
+            "team": "T4G9NBD2M",
+            "name": "shaunwhite",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1630948308.286100",
+        "reply_count": 1,
+        "reply_users_count": 1,
+        "latest_reply": "1631012479.308800",
+        "reply_users": [
+            "U016TGY3676"
+        ],
+        "replies": [
+            {
+                "user": "U016TGY3676",
+                "ts": "1631012479.308800"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": false,
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Iu40r",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I find just being organised is easier than a tech solution or spending money. I test a few strategies at the same time, log enough info to allow many ways to look at it afterwards and run them overnight locally. I'm not a flumine user so I can't compare but takes me about 15hrs to run 12months of UK horses with 2 or 3 fairly intensive strategies. I never find I'm sat waiting for it with nothing to do because each run creates more than a day's work.   Similar approach to the recent question about disk full warnings, the answer is to just be organised enough not to get them, scheduled archiving etc."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "U013K4VNB6D",
+                    "U4H19D1D2"
+                ],
+                "count": 2
+            },
+            {
+                "name": "heavy_plus_sign",
+                "users": [
+                    "U016TGY3676"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "U013K4VNB6D",
+        "type": "message",
+        "ts": "1630953261.286400",
+        "client_msg_id": "b5a55584-cf81-4ca4-9db4-7d1a9bf4566e",
+        "text": "Thanks Thambie\n\nI'll have a go at multiprocessing (though it may be beyond my current Python abilities, which are rather modest!).",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gf188478b89f",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/f188478b89f4a5e2c5af9eafa0433712.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0004-72.png",
+            "first_name": "",
+            "real_name": "Jeff Waters",
+            "display_name": "Jeff Waters",
+            "team": "T4G9NBD2M",
+            "name": "watersjg",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1630946631.277800",
+        "parent_user_id": "U01DCR5PXDY",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "D1S",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Thanks Thambie\n\nI'll have a go at multiprocessing (though it may be beyond my current Python abilities, which are rather modest!)."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1630953587.288600",
+        "client_msg_id": "A04F7A27-4858-4F14-8FAE-5163E6964374",
+        "text": "<@U013K4VNB6D> you really want to be using <https:\/\/liampauling.github.io\/flumine\/quickstart\/|listener_kwarg>s to turbo charge the backtest ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1630953587.288600",
+        "reply_count": 6,
+        "reply_users_count": 3,
+        "latest_reply": "1631003431.293700",
+        "reply_users": [
+            "U013K4VNB6D",
+            "U01SCPDTV5J",
+            "U4H19D1D2"
+        ],
+        "replies": [
+            {
+                "user": "U013K4VNB6D",
+                "ts": "1630953941.289000"
+            },
+            {
+                "user": "U013K4VNB6D",
+                "ts": "1630963153.289200"
+            },
+            {
+                "user": "U01SCPDTV5J",
+                "ts": "1630967459.289500"
+            },
+            {
+                "user": "U013K4VNB6D",
+                "ts": "1631000663.291400"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1631003363.293100"
+            },
+            {
+                "user": "U013K4VNB6D",
+                "ts": "1631003431.293700"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": true,
+        "last_read": "1631003431.293700",
+        "attachments": [
+            {
+                "title": "QuickStart - flumine",
+                "title_link": "https:\/\/liampauling.github.io\/flumine\/quickstart\/",
+                "text": "Trading framework for Betfair API-NG.",
+                "fallback": "QuickStart - flumine",
+                "from_url": "https:\/\/liampauling.github.io\/flumine\/quickstart\/",
+                "service_icon": "https:\/\/liampauling.github.io\/flumine\/assets\/images\/favicon.png",
+                "service_name": "liampauling.github.io",
+                "id": 1,
+                "original_url": "https:\/\/liampauling.github.io\/flumine\/quickstart\/"
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "P5yu",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "user",
+                                "user_id": "U013K4VNB6D"
+                            },
+                            {
+                                "type": "text",
+                                "text": " you really want to be using "
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/liampauling.github.io\/flumine\/quickstart\/",
+                                "text": "listener_kwarg"
+                            },
+                            {
+                                "type": "text",
+                                "text": "s to turbo charge the backtest "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "U013K4VNB6D"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "U013K4VNB6D",
+        "type": "message",
+        "ts": "1630953941.289000",
+        "client_msg_id": "9d6d41ec-6e6b-487c-8287-c2e9212fe03d",
+        "text": "Thanks Liam - I'll take a look.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gf188478b89f",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/f188478b89f4a5e2c5af9eafa0433712.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0004-72.png",
+            "first_name": "",
+            "real_name": "Jeff Waters",
+            "display_name": "Jeff Waters",
+            "team": "T4G9NBD2M",
+            "name": "watersjg",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1630953587.288600",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "por55",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Thanks Liam - I'll take a look."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U013K4VNB6D",
+        "type": "message",
+        "ts": "1630963153.289200",
+        "client_msg_id": "fc699333-4edd-43c1-9041-b5fb409cbbc7",
+        "text": "Am I right in thinking that adding *\"market_types\": [\"WIN\"]* to my filter will mean that place markets will be removed from consideration?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gf188478b89f",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/f188478b89f4a5e2c5af9eafa0433712.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0004-72.png",
+            "first_name": "",
+            "real_name": "Jeff Waters",
+            "display_name": "Jeff Waters",
+            "team": "T4G9NBD2M",
+            "name": "watersjg",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1630953587.288600",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "BSU",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Am I right in thinking that adding "
+                            },
+                            {
+                                "type": "text",
+                                "text": "\"market_types\": [\"WIN\"]",
+                                "style": {
+                                    "bold": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " to my filter will mean that place markets will be removed from consideration?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01SCPDTV5J",
+        "type": "message",
+        "ts": "1630967459.289500",
+        "client_msg_id": "36b00b79-3108-4c7c-af94-37fdfff8b8bf",
+        "text": "```strategy = ExampleStrategy(\n    market_filter={\n        \"markets\": [\"\/tmp\/marketdata\/1.170212754\"],\n        \"listener_kwargs\": {\"inplay\": False, \"seconds_to_start\": 600},\n    }\n)```\n<@U013K4VNB6D> I think <@U4H19D1D2> is talking about this.\n\nIf you are only placing a bet 30seconds before the off then you don't need Flumine to run all the way from the market opening to that point.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "4db627cf9e3e",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2021-09-07\/2464604515811_4db627cf9e3ea5713217_72.jpg",
+            "first_name": "Jack",
+            "real_name": "Jack Rickards",
+            "display_name": "Jack",
+            "team": "T4G9NBD2M",
+            "name": "jack.rickards",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1630953587.288600",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "xXuG",
+                "elements": [
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "strategy = ExampleStrategy(\n    market_filter={\n        \"markets\": [\"\/tmp\/marketdata\/1.170212754\"],\n        \"listener_kwargs\": {\"inplay\": False, \"seconds_to_start\": 600},\n    }\n)"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "user",
+                                "user_id": "U013K4VNB6D"
+                            },
+                            {
+                                "type": "text",
+                                "text": " I think "
+                            },
+                            {
+                                "type": "user",
+                                "user_id": "U4H19D1D2"
+                            },
+                            {
+                                "type": "text",
+                                "text": " is talking about this.\n\nIf you are only placing a bet 30seconds before the off then you don't need Flumine to run all the way from the market opening to that point."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "100",
+                "users": [
+                    "U4H19D1D2",
+                    "U013K4VNB6D"
+                ],
+                "count": 2
+            }
+        ]
+    },
+    {
+        "user": "U01S1VB9X9P",
+        "type": "message",
+        "ts": "1630978653.289700",
+        "edited": {
+            "user": "U01S1VB9X9P",
+            "ts": "1630983440.000000"
+        },
+        "client_msg_id": "e121dce0-b580-4d0b-9647-fbf2b3587a7f",
+        "text": "What would be the advantage of this vs splitting up your markets and running multiple backtests?\n\nBtw, this script is working pretty great. It's barely using any CPU though, is it possible to speed it up?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gedbe1c0faac",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/da19bb58fa64d5c88c2a156c73a2ccf3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0018-72.png",
+            "first_name": "Adrian",
+            "real_name": "Adrian",
+            "display_name": "Adrian",
+            "team": "T4G9NBD2M",
+            "name": "adrianwf",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1630938549.266100",
+        "parent_user_id": "UBS7QANF3",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "SOSF",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "What would be the advantage of this vs splitting up your markets and running multiple backtests?\n\nBtw, this script is working pretty great. It's barely using any CPU though, is it possible to speed it up?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "U013K4VNB6D"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1630993051.291000",
+        "client_msg_id": "366D3FD9-FC40-4F46-93FB-333B190AB49C",
+        "text": "How many cores do you have? Python\/bflw\/flumine will happily use all of them and max them out if backtesting ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1630938549.266100",
+        "parent_user_id": "UBS7QANF3",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "CoK",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "How many cores do you have? Python\/bflw\/flumine will happily use all of them and max them out if backtesting "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "U013K4VNB6D"
+                ],
+                "count": 1
+            }
+        ]
+    }
+]

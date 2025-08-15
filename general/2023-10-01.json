@@ -1,0 +1,1027 @@
+[
+    {
+        "user": "U01FJPFQPML",
+        "type": "message",
+        "ts": "1696147567.759489",
+        "client_msg_id": "d0c2a5bb-795b-434d-869c-59019539a7b4",
+        "text": "Thanks (again) Liam.  I'm still not getting the response I was expecting though.  My strategy looks like:\n\nstrategy = BoxPercSim(\n        market_filter={\n            \"markets\": markets,\n            'market_types':['WIN','PLACE'],\n            \"listener_kwargs\": {\"inplay\": False, \"seconds_to_start\": 80},\n            \"event_processing\": True\n            },\n    max_order_exposure= 50, # Max bet sizes of $50\n    max_trade_count=1, # Max of trade\/bet attempt per selection\n    max_live_trade_count=1, # Max of 1 unmatched Bet per selection\n    )\n\nAnd then the rest of my code is:\n\nplace_market = market.event[\"PLACE\"]\n                            print(place_market)\n                            for a in place_market:\n                                print('event:', a.event, 'market_type:', a.market_type, 'place_market_type:', type(place_market))\n                            place_market_book = place_market[0].market_book\n\nI put that bit of debug in there to try and see what is being returned and I can see that place_market is indeed a flumine object as per my code in the live stream - &lt;flumine.markets.market.Market object at 0x000001B593B74AF0&gt;.\n\nIn the second part of the debug, I can see the output as:\nevent: defaultdict(&lt;class 'list'&gt;, {'WIN': [&lt;flumine.markets.market.Market object at 0x000001B592FECDF0&gt;], 'PLACE': [&lt;flumine.markets.market.Market object at 0x000001B593B74AF0&gt;]}) market_type: PLACE place_market_type: &lt;class 'list'&gt;\n\nUsing the vscode debugger, I can see that market.event = 'WIN\" and the value of place_market is an empty list i.e. [].  Presumably I need to be getting the value for place_market from somewhere else, but looking through the debuger output in vscode isn't giving me the answers I expect.  I did wonder if the market I was accessing was only a WIN market, but it does this for every market when I let the back test run, so that can't be the answer.  It has to be the way I am trying to access it.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "4130984c3401",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-11-29\/1541691682196_4130984c3401120bcb1e_72.png",
+            "first_name": "",
+            "real_name": "Andy B",
+            "display_name": "Andy B",
+            "team": "T4G9NBD2M",
+            "name": "behrendta",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1694951572.217439",
+        "parent_user_id": "U01FJPFQPML",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "q7\/",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Thanks (again) Liam.  I'm still not getting the response I was expecting though.  My strategy looks like:\n\nstrategy = BoxPercSim(\n        market_filter={\n            \"markets\": markets,\n            'market_types':['WIN','PLACE'],\n            \"listener_kwargs\": {\"inplay\": False, \"seconds_to_start\": 80},\n            \"event_processing\": True\n            },\n    max_order_exposure= 50, # Max bet sizes of $50\n    max_trade_count=1, # Max of trade\/bet attempt per selection\n    max_live_trade_count=1, # Max of 1 unmatched Bet per selection\n    )\n\nAnd then the rest of my code is:\n\nplace_market = market.event[\"PLACE\"]\n                            print(place_market)\n                            for a in place_market:\n                                print('event:', a.event, 'market_type:', a.market_type, 'place_market_type:', type(place_market))\n                            place_market_book = place_market[0].market_book\n\nI put that bit of debug in there to try and see what is being returned and I can see that place_market is indeed a flumine object as per my code in the live stream - <flumine.markets.market.Market object at 0x000001B593B74AF0>.\n\nIn the second part of the debug, I can see the output as:\nevent: defaultdict(<class 'list'>, {'WIN': [<flumine.markets.market.Market object at 0x000001B592FECDF0>], 'PLACE': [<flumine.markets.market.Market object at 0x000001B593B74AF0>]}) market_type: PLACE place_market_type: <class 'list'>\n\nUsing the vscode debugger, I can see that market.event = 'WIN\" and the value of place_market is an empty list i.e. [].  Presumably I need to be getting the value for place_market from somewhere else, but looking through the debuger output in vscode isn't giving me the answers I expect.  I did wonder if the market I was accessing was only a WIN market, but it does this for every market when I let the back test run, so that can't be the answer.  It has to be the way I am trying to access it."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1696147630.734909",
+        "client_msg_id": "d79a549e-3ce3-45e3-8d36-49c741a1884b",
+        "text": "I assume `markets` is a list of both the win and place file markets?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1694951572.217439",
+        "parent_user_id": "U01FJPFQPML",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "cuD2K",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I assume "
+                            },
+                            {
+                                "type": "text",
+                                "text": "markets",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " is a list of both the win and place file markets?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01FJPFQPML",
+        "type": "message",
+        "ts": "1696147853.097079",
+        "client_msg_id": "5f6052ce-3b4c-4bcf-b2a9-ba5eae43ea6f",
+        "text": "Yes, that's the folder that I have extracted both win and place markets from the AU PRO greyhound data to",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "4130984c3401",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-11-29\/1541691682196_4130984c3401120bcb1e_72.png",
+            "first_name": "",
+            "real_name": "Andy B",
+            "display_name": "Andy B",
+            "team": "T4G9NBD2M",
+            "name": "behrendta",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1694951572.217439",
+        "parent_user_id": "U01FJPFQPML",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "NveKV",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Yes, that's the folder that I have extracted both win and place markets from the AU PRO greyhound data to"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1696148096.520299",
+        "client_msg_id": "ec21dd6b-1449-4071-b963-63a13fbd082b",
+        "text": "Huh? `markets` should be a list of paths, I have just copied your code and it works fine, the only thing it is pointing to is the markets not being in that list",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1694951572.217439",
+        "parent_user_id": "U01FJPFQPML",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "rA9",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Huh? "
+                            },
+                            {
+                                "type": "text",
+                                "text": "markets",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " should be a list of paths, I have just copied your code and it works fine, the only thing it is pointing to is the markets not being in that list"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01FJPFQPML",
+        "type": "message",
+        "ts": "1696148288.433579",
+        "client_msg_id": "3b5cebee-c94c-4495-8780-3474fdc553e9",
+        "text": "I have it set up in flumine like this:\n# Searches for all betfair data files within the folder sample_monthly_data_output\ndata_folder = 'Greyhounds\\\\Data'\ndata_files = os.listdir(data_folder,)\ndata_files = [f'{data_folder}\/{path}' for path in data_files]\n\ndef run_process(markets):\n    \"\"\"Replays a Betfair historic data. Places bets according to the user defined strategy and tries to accurately simulate matching by replaying the historic data.\n\n    Args:\n        markets (list: [file paths]): a list of file paths to where the historic data is stored locally. e.g. user\/zhoui\/downloads\/test.csv\n    \"\"\"\n    # Set Flumine to simulation mode\n    client = clients.SimulatedClient()\n    framework = FlumineSimulation(client=client)\n\n    # Set parameters for our strategy\n    # strategy = FlatIggyModel(\n    strategy = BoxPercSim(\n        market_filter={\n            \"markets\": markets,\n            'market_types':['WIN','PLACE'],\n            \"listener_kwargs\": {\"inplay\": False, \"seconds_to_start\": 80},\n            \"event_processing\": True\n            },\n    max_order_exposure= 50, # Max bet sizes of $50\n    max_trade_count=1, # Max of trade\/bet attempt per selection\n    max_live_trade_count=1, # Max of 1 unmatched Bet per selection\n    )\n    framework.add_strategy(strategy)\n\n    framework.add_logging_control(\n        BacktestLoggingControl()\n    )\n    framework.run()\n\n# Multi processing\nif __name__ == \"__main__\":\n    all_markets = data_files  # All the markets we want to simulate\n    processes = os.cpu_count()  # Returns the number of CPUs in the system.\n    markets_per_process = 8   # 8 is optimal as it prevents data leakage.\n\n    _process_jobs = []\n    with futures.ProcessPoolExecutor(max_workers=processes) as p:\n        # Number of chunks to split the process into depends on the number of markets we want to process and number of CPUs we have.\n        chunk = min(\n            markets_per_process, math.ceil(len(all_markets) \/ processes)\n        )\n        # Split all the markets we want to process into chunks to run on separate CPUs and then run them on the separate CPUs\n        for m in (utils.chunks(all_markets, chunk)):\n            _process_jobs.append(\n                p.submit(\n                    run_process,\n                    markets=m,\n                )\n            )\n        for job in <http:\/\/futures.as|futures.as>_completed(_process_jobs):\n            job.result()  # wait for result\n\nSo it should be populating the list of markets correctly I think.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "4130984c3401",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-11-29\/1541691682196_4130984c3401120bcb1e_72.png",
+            "first_name": "",
+            "real_name": "Andy B",
+            "display_name": "Andy B",
+            "team": "T4G9NBD2M",
+            "name": "behrendta",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1694951572.217439",
+        "parent_user_id": "U01FJPFQPML",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "xXGw",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I have it set up in flumine like this:\n# Searches for all betfair data files within the folder sample_monthly_data_output\ndata_folder = 'Greyhounds\\\\Data'\ndata_files = os.listdir(data_folder,)\ndata_files = [f'{data_folder}\/{path}' for path in data_files]\n\ndef run_process(markets):\n    \"\"\"Replays a Betfair historic data. Places bets according to the user defined strategy and tries to accurately simulate matching by replaying the historic data.\n\n    Args:\n        markets (list: [file paths]): a list of file paths to where the historic data is stored locally. e.g. user\/zhoui\/downloads\/test.csv\n    \"\"\"\n    # Set Flumine to simulation mode\n    client = clients.SimulatedClient()\n    framework = FlumineSimulation(client=client)\n\n    # Set parameters for our strategy\n    # strategy = FlatIggyModel(\n    strategy = BoxPercSim(\n        market_filter={\n            \"markets\": markets,\n            'market_types':['WIN','PLACE'],\n            \"listener_kwargs\": {\"inplay\": False, \"seconds_to_start\": 80},\n            \"event_processing\": True\n            },\n    max_order_exposure= 50, # Max bet sizes of $50\n    max_trade_count=1, # Max of trade\/bet attempt per selection\n    max_live_trade_count=1, # Max of 1 unmatched Bet per selection\n    )\n    framework.add_strategy(strategy)\n\n    framework.add_logging_control(\n        BacktestLoggingControl()\n    )\n    framework.run()\n\n# Multi processing\nif __name__ == \"__main__\":\n    all_markets = data_files  # All the markets we want to simulate\n    processes = os.cpu_count()  # Returns the number of CPUs in the system.\n    markets_per_process = 8   # 8 is optimal as it prevents data leakage.\n\n    _process_jobs = []\n    with futures.ProcessPoolExecutor(max_workers=processes) as p:\n        # Number of chunks to split the process into depends on the number of markets we want to process and number of CPUs we have.\n        chunk = min(\n            markets_per_process, math.ceil(len(all_markets) \/ processes)\n        )\n        # Split all the markets we want to process into chunks to run on separate CPUs and then run them on the separate CPUs\n        for m in (utils.chunks(all_markets, chunk)):\n            _process_jobs.append(\n                p.submit(\n                    run_process,\n                    markets=m,\n                )\n            )\n        for job in "
+                            },
+                            {
+                                "type": "link",
+                                "url": "http:\/\/futures.as",
+                                "text": "futures.as"
+                            },
+                            {
+                                "type": "text",
+                                "text": "_completed(_process_jobs):\n            job.result()  # wait for result\n\nSo it should be populating the list of markets correctly I think."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1696148350.661619",
+        "client_msg_id": "0ce339cb-8d5f-407c-ac97-00d205d10748",
+        "text": "Quick guess, you are splitting the markets up but you aren't checking that the splits contain both win and place for each event",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1694951572.217439",
+        "parent_user_id": "U01FJPFQPML",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "0Ko",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Quick guess, you are splitting the markets up but you aren't checking that the splits contain both win and place for each event"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1696148361.919549",
+        "client_msg_id": "848458ff-71d5-4a6a-8543-07f22bda6231",
+        "text": "flumine is good but not that good :joy:",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1694951572.217439",
+        "parent_user_id": "U01FJPFQPML",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "YZjsM",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "flumine is good but not that good "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "joy",
+                                "unicode": "1f602"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01FJPFQPML",
+        "type": "message",
+        "ts": "1696149039.861309",
+        "client_msg_id": "4b9dc7dc-773a-43c5-a2d1-87020a07f5b9",
+        "text": "If I understand correctly, the problem is because I simply have all of the files dropped in one folder and flumine has no concept of where the next market is because it hasn't loaded all markets in the current thread?  I guess I have missed something in the doco that explains how I should set the markets up?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "4130984c3401",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-11-29\/1541691682196_4130984c3401120bcb1e_72.png",
+            "first_name": "",
+            "real_name": "Andy B",
+            "display_name": "Andy B",
+            "team": "T4G9NBD2M",
+            "name": "behrendta",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1694951572.217439",
+        "parent_user_id": "U01FJPFQPML",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "P2Ht",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "If I understand correctly, the problem is because I simply have all of the files dropped in one folder and flumine has no concept of where the next market is because it hasn't loaded all markets in the current thread?  I guess I have missed something in the doco that explains how I should set the markets up?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1696149174.552619",
+        "edited": {
+            "user": "U4H19D1D2",
+            "ts": "1696149198.000000"
+        },
+        "client_msg_id": "42652870-2056-416E-8067-10FBFAF76477",
+        "text": "You are using the multi processing example code which has a naive split function, but because you are using event processing you need to make sure each split contains all the markets each market needs, as you need to split by event type. \n\nI would first confirm this is the issue by running the simulation on a single process. If correct you then need to create a function to split by event, the only way is to read each file and pull the eventId out ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1694951572.217439",
+        "parent_user_id": "U01FJPFQPML",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "p58h",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "You are using the multi processing example code which has a naive split function, but because you are using event processing you need to make sure each split contains all the markets each market needs, as you need to split by event type. \n\nI would first confirm this is the issue by running the simulation on a single process. If correct you then need to create a function to split by event, the only way is to read each file and pull the eventId out "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01FJPFQPML",
+        "type": "message",
+        "ts": "1696149310.399289",
+        "client_msg_id": "56fba28d-3ebf-47cc-9105-22f393e4cc2d",
+        "text": "Thanks Liam (and no thanks betfair).  I'm only doing this as I needed to get the distance for the event so I could bet in the place market where events are of a specific distance.  Would be a lot simpler if they just put the distance in the place market data.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "4130984c3401",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-11-29\/1541691682196_4130984c3401120bcb1e_72.png",
+            "first_name": "",
+            "real_name": "Andy B",
+            "display_name": "Andy B",
+            "team": "T4G9NBD2M",
+            "name": "behrendta",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1694951572.217439",
+        "parent_user_id": "U01FJPFQPML",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "bObSA",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Thanks Liam (and no thanks betfair).  I'm only doing this as I needed to get the distance for the event so I could bet in the place market where events are of a specific distance.  Would be a lot simpler if they just put the distance in the place market data."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1696149382.032809",
+        "client_msg_id": "FDEBF97C-1007-46E2-983C-B7EE90CA80FF",
+        "text": "Be much quicker to just create your own lookup in a csv or similar, processing files is slow ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1694951572.217439",
+        "parent_user_id": "U01FJPFQPML",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "YyCa",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Be much quicker to just create your own lookup in a csv or similar, processing files is slow "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01FJPFQPML",
+        "type": "message",
+        "ts": "1696149706.506479",
+        "client_msg_id": "63f87e8f-f545-4014-a409-9731bc8a070c",
+        "text": "I had avoided that as I thought the memory overhead would be a problem, but I think you are right, it's possibly the simplest way forward.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "4130984c3401",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-11-29\/1541691682196_4130984c3401120bcb1e_72.png",
+            "first_name": "",
+            "real_name": "Andy B",
+            "display_name": "Andy B",
+            "team": "T4G9NBD2M",
+            "name": "behrendta",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1694951572.217439",
+        "parent_user_id": "U01FJPFQPML",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "WPy5M",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I had avoided that as I thought the memory overhead would be a problem, but I think you are right, it's possibly the simplest way forward."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1696149736.852449",
+        "client_msg_id": "C09DFB33-A409-4581-B1B7-EF26846E4651",
+        "text": "Really? I doubt you would reach a kb ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1694951572.217439",
+        "parent_user_id": "U01FJPFQPML",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "ld4A",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Really? I doubt you would reach a kb "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01FJPFQPML",
+        "type": "message",
+        "ts": "1696149822.009449",
+        "client_msg_id": "8e375d38-e6d2-480e-af75-1996286e5246",
+        "text": "I was going to run it for a year's worth of data, but I guess it still won't be a massive file.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "4130984c3401",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-11-29\/1541691682196_4130984c3401120bcb1e_72.png",
+            "first_name": "",
+            "real_name": "Andy B",
+            "display_name": "Andy B",
+            "team": "T4G9NBD2M",
+            "name": "behrendta",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1694951572.217439",
+        "parent_user_id": "U01FJPFQPML",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "nK=qr",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I was going to run it for a year's worth of data, but I guess it still won't be a massive file."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1696151099.335339",
+        "client_msg_id": "A33457D0-7F44-45C8-AE8F-D63F400C635C",
+        "text": "2kb just event I’d, time and distance, no?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1694951572.217439",
+        "parent_user_id": "U01FJPFQPML",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Nkz",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "2kb just event "
+                            },
+                            {
+                                "type": "text",
+                                "text": "I’d"
+                            },
+                            {
+                                "type": "text",
+                                "text": ", time and distance, no?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U012CS8MP52",
+        "type": "message",
+        "ts": "1696156524.274529",
+        "client_msg_id": "3d32eb03-97bc-4472-a358-b19dd7b7da39",
+        "text": "Exchange data from 2015 will behave completely differently from current data. Strategies that worked then won't work now.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g676297573c9",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/676297573c9a42e9e4aba9ffcdd8651b.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0018-72.png",
+            "first_name": "Jazz",
+            "real_name": "Jazz Man",
+            "display_name": "JazzMan",
+            "team": "T4G9NBD2M",
+            "name": "jadams.email",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1695968663.123709",
+        "parent_user_id": "U05U6RN78TY",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "bVZMH",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Exchange data from 2015 will behave completely differently from current data. Strategies that worked then won't work now."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U05U6RN78TY",
+        "type": "message",
+        "ts": "1696171279.392309",
+        "client_msg_id": "e775cdbd-572b-44fa-873e-4986699875fb",
+        "text": "I'm aware, but as I said, for mainly completeness sake, I'd like to have all of the data there is. It is certainly not something I'm looking to exactly test my strategies with. I do appreciate the heads-up though.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "e4e42dccff34",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2023-09-28\/5962591375605_e4e42dccff34520242be_72.png",
+            "first_name": "Good",
+            "real_name": "Good Job",
+            "display_name": "Good Job",
+            "team": "T4G9NBD2M",
+            "name": "san.parviainen94",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1695968663.123709",
+        "parent_user_id": "U05U6RN78TY",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "0X3=V",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I'm aware, but as I said, for mainly completeness sake, I'd like to have all of the data there is. It is certainly not something I'm looking to exactly test my strategies with. I do appreciate the heads-up though."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U05U6RN78TY",
+        "type": "message",
+        "ts": "1696171714.526349",
+        "client_msg_id": "c53d22a4-ba3d-4c4a-9865-ae60d6610cbd",
+        "text": "Also, to the best of my knowledge it is quite literally the best price data there is in most if not all terms, and some of it being missing is quite unfortunate. I have not come across a paper using said exchange data to test model  profitability, but I have seen quite a few using stuff like B365 etc...",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "e4e42dccff34",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2023-09-28\/5962591375605_e4e42dccff34520242be_72.png",
+            "first_name": "Good",
+            "real_name": "Good Job",
+            "display_name": "Good Job",
+            "team": "T4G9NBD2M",
+            "name": "san.parviainen94",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1695968663.123709",
+        "parent_user_id": "U05U6RN78TY",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "YJHs",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Also, to the best of my knowledge it is quite literally the best price data there is in most if not all terms, and some of it being missing is quite unfortunate. I have not come across a paper using said exchange data to test model  profitability, but I have seen quite a few using stuff like B365 etc..."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U05GVQBR5JA",
+        "type": "message",
+        "ts": "1696216899.941159",
+        "edited": {
+            "user": "U05GVQBR5JA",
+            "ts": "1696216918.000000"
+        },
+        "client_msg_id": "444ebadc-281a-4556-a6d3-ca0590ff59f1",
+        "text": "Does the betfairlightweight exchange scraper handle outages?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "07b2878dd975",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2023-07-14\/5604195291744_07b2878dd975a5151d6f_72.png",
+            "first_name": "Felix",
+            "real_name": "Felix Lucien",
+            "display_name": "Felix Lucien",
+            "team": "T4G9NBD2M",
+            "name": "felixmccuaig",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1696216899.941159",
+        "reply_count": 4,
+        "reply_users_count": 2,
+        "latest_reply": "1696228174.040789",
+        "reply_users": [
+            "U4H19D1D2",
+            "U05GVQBR5JA"
+        ],
+        "replies": [
+            {
+                "user": "U4H19D1D2",
+                "ts": "1696223583.699249"
+            },
+            {
+                "user": "U05GVQBR5JA",
+                "ts": "1696228123.251939"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1696228153.921219"
+            },
+            {
+                "user": "U05GVQBR5JA",
+                "ts": "1696228174.040789"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": true,
+        "last_read": "1696228174.040789",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "rG1HE",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Does the betfairlightweight exchange scraper handle outages?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1696223583.699249",
+        "client_msg_id": "73f56784-e78e-4d83-98a7-f8c796ff3c9d",
+        "text": "What is the 'betfairlightweight exchange scraper'?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1696216899.941159",
+        "parent_user_id": "U05GVQBR5JA",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "\/Oy",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "What is the 'betfairlightweight exchange scraper'?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U05GVQBR5JA",
+        "type": "message",
+        "ts": "1696228123.251939",
+        "client_msg_id": "f7fb971f-3380-4f1c-a097-d0d81d6e6f29",
+        "text": "<https:\/\/github.com\/betcode-org\/flumine\/blob\/master\/examples\/marketrecorder.py> is what I'm talking about",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "07b2878dd975",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2023-07-14\/5604195291744_07b2878dd975a5151d6f_72.png",
+            "first_name": "Felix",
+            "real_name": "Felix Lucien",
+            "display_name": "Felix Lucien",
+            "team": "T4G9NBD2M",
+            "name": "felixmccuaig",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1696216899.941159",
+        "parent_user_id": "U05GVQBR5JA",
+        "attachments": [
+            {
+                "id": 1,
+                "footer_icon": "https:\/\/slack.github.com\/static\/img\/favicon-neutral.png",
+                "color": "24292f",
+                "bot_id": "B021ZJYSBMW",
+                "app_unfurl_url": "https:\/\/github.com\/betcode-org\/flumine\/blob\/master\/examples\/marketrecorder.py",
+                "is_app_unfurl": true,
+                "app_id": "A01BP7R4KNY",
+                "fallback": "<https:\/\/github.com\/betcode-org\/flumine\/blob\/master\/examples\/marketrecorder.py | marketrecorder.py>",
+                "text": "```\nimport time\nimport logging\nimport betfairlightweight\nfrom pythonjsonlogger import jsonlogger\n\nfrom flumine import Flumine, clients\nfrom flumine.streams.datastream import DataStream\nfrom strategies.marketrecorder import MarketRecorder\n\nlogger = logging.getLogger()\n\ncustom_format = \"%(asctime) %(levelname) %(message)\"\nlog_handler = logging.StreamHandler()\nformatter = jsonlogger.JsonFormatter(custom_format)\nformatter.converter = time.gmtime\nlog_handler.setFormatter(formatter)\nlogger.addHandler(log_handler)\nlogger.setLevel(<http:\/\/logging.INFO|logging.INFO>)\n\ntrading = betfairlightweight.APIClient(\"username\")\nclient = clients.BetfairClient(trading)\n\nframework = Flumine(client=client)\n\nstrategy = MarketRecorder(\n    name=\"WIN\",\n    market_filter=betfairlightweight.filters.streaming_market_filter(\n        event_type_ids=[\"7\"],\n        country_codes=[\"GB\", \"IE\"],\n        market_types=[\"WIN\"],\n    ),\n    stream_class=DataStream,\n    context={\n        \"local_dir\": \"\/tmp\",\n        \"force_update\": False,\n        \"remove_file\": True,\n        \"remove_gz_file\": False,\n    },\n)\n\nframework.add_strategy(strategy)\n\nframework.run()\n\n```",
+                "title": "<https:\/\/github.com\/betcode-org\/flumine\/blob\/master\/examples\/marketrecorder.py | marketrecorder.py>",
+                "footer": "<https:\/\/github.com\/betcode-org\/flumine|betcode-org\/flumine>",
+                "mrkdwn_in": [
+                    "text"
+                ]
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "4Sp",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/betcode-org\/flumine\/blob\/master\/examples\/marketrecorder.py"
+                            },
+                            {
+                                "type": "text",
+                                "text": " is what I'm talking about"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1696228153.921219",
+        "client_msg_id": "42F11D0E-6B48-4E8A-AD8A-75F07697FF0C",
+        "text": "That is flumine, which does handle outages ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1696216899.941159",
+        "parent_user_id": "U05GVQBR5JA",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "j0Y",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "That is flumine, which does handle outages "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U05GVQBR5JA",
+        "type": "message",
+        "ts": "1696228174.040789",
+        "client_msg_id": "e509fe1c-2655-45d3-b887-29a770ea2a77",
+        "text": "<@U4H19D1D2> Awesome, thanks!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "07b2878dd975",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2023-07-14\/5604195291744_07b2878dd975a5151d6f_72.png",
+            "first_name": "Felix",
+            "real_name": "Felix Lucien",
+            "display_name": "Felix Lucien",
+            "team": "T4G9NBD2M",
+            "name": "felixmccuaig",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1696216899.941159",
+        "parent_user_id": "U05GVQBR5JA",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "u1t",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "user",
+                                "user_id": "U4H19D1D2"
+                            },
+                            {
+                                "type": "text",
+                                "text": " Awesome, thanks!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

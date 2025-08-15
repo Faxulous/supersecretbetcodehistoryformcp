@@ -1,0 +1,309 @@
+[
+    {
+        "user": "U03JW3KTQ79",
+        "type": "message",
+        "ts": "1655567204.468089",
+        "edited": {
+            "user": "U03JW3KTQ79",
+            "ts": "1655567408.000000"
+        },
+        "client_msg_id": "40ed7f85-c534-46e2-8857-e6cbb9aa215a",
+        "text": "Hello guys :wave: I have a question regarding the exchange API of betfair and i am using <https:\/\/github.com\/betcode-org\/betfair>. Currently I am working on upcoming F1 Race and would like to get all traded data. When I am getting _streaming update,_ i can just see 3 _ladder_ in the `\"trd\"` OTOH, if you check <https:\/\/graphs.betfair.com\/#\/1.200149997\/10997893\/0> you can see that there are many more ladders which are already _traded_. Are there any way to get all of those ladders?\n```output_queue = queue.Queue()\n\nlistener = betfairlightweight.StreamListener(output_queue=output_queue)\nstream = trading.streaming.create_stream(listener=listener)\nmarket_filter = streaming_market_filter(market_ids=[1.200149997])\n\nmarket_data_filter = streaming_market_data_filter(\n    fields=[\"EX_BEST_OFFERS_DISP\", \"EX_BEST_OFFERS\", \"EX_ALL_OFFERS\", \"EX_TRADED\", \"EX_TRADED_VOL\", \n                \"EX_LTP\", \"EX_MARKET_DEF\", \"SP_TRADED\", \"SP_PROJECTED\"],\n    ladder_levels=10)\n\n\nstreaming_unique_id = stream.subscribe_to_markets(\n    market_filter=market_filter,\n    market_data_filter=market_data_filter,\n    conflate_ms=2000)\n\n\nt = threading.Thread(target=stream.start, daemon=True)\nt.start()\nwhile True:\n    updates = output_queue.get()\n    for update in updates:\n        print(update.json())\n    break # just for testing purpose, will be removed later on!\n\n# id of leclerc -  10997893\n\nfor update in updates:\n    for rc in update.streaming_update[\"rc\"]:\n        if rc[\"id\"] == 10997893:\n            print (rc[\"trd\"])```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "25f4b5284cda",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2022-06-18\/3681627874774_25f4b5284cdab0c7e8d1_72.jpg",
+            "first_name": "Halil",
+            "real_name": "Halil Erdoğan",
+            "display_name": "Halil Erdoğan",
+            "team": "T4G9NBD2M",
+            "name": "herdoganturkey",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "9HR",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Hello guys "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "wave",
+                                "unicode": "1f44b"
+                            },
+                            {
+                                "type": "text",
+                                "text": " I have a question regarding the exchange API of betfair and i am using "
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/betcode-org\/betfair"
+                            },
+                            {
+                                "type": "text",
+                                "text": ". Currently I am working on upcoming F1 Race and would like to get all traded data. When I am getting "
+                            },
+                            {
+                                "type": "text",
+                                "text": "streaming update, ",
+                                "style": {
+                                    "italic": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "i can just see 3 "
+                            },
+                            {
+                                "type": "text",
+                                "text": "ladder",
+                                "style": {
+                                    "italic": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " in the "
+                            },
+                            {
+                                "type": "text",
+                                "text": "\"trd\"",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " OTOH, if you check "
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/graphs.betfair.com\/#\/1.200149997\/10997893\/0"
+                            },
+                            {
+                                "type": "text",
+                                "text": " you can see that there are many more ladders which are already "
+                            },
+                            {
+                                "type": "text",
+                                "text": "traded",
+                                "style": {
+                                    "italic": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": ". Are there any way to get all of those ladders?\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "output_queue = queue.Queue()\n\nlistener = betfairlightweight.StreamListener(output_queue=output_queue)\nstream = trading.streaming.create_stream(listener=listener)\nmarket_filter = streaming_market_filter(market_ids=[1.200149997])\n\nmarket_data_filter = streaming_market_data_filter(\n    fields=[\"EX_BEST_OFFERS_DISP\", \"EX_BEST_OFFERS\", \"EX_ALL_OFFERS\", \"EX_TRADED\", \"EX_TRADED_VOL\", \n                \"EX_LTP\", \"EX_MARKET_DEF\", \"SP_TRADED\", \"SP_PROJECTED\"],\n    ladder_levels=10)\n\n\nstreaming_unique_id = stream.subscribe_to_markets(\n    market_filter=market_filter,\n    market_data_filter=market_data_filter,\n    conflate_ms=2000)\n\n\nt = threading.Thread(target=stream.start, daemon=True)\nt.start()\nwhile True:\n    updates = output_queue.get()\n    for update in updates:\n        print(update.json())\n    break # just for testing purpose, will be removed later on!\n\n# id of leclerc -  10997893\n\nfor update in updates:\n    for rc in update.streaming_update[\"rc\"]:\n        if rc[\"id\"] == 10997893:\n            print (rc[\"trd\"])"
+                            }
+                        ],
+                        "border": 0
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "text": "*Update*: Looks like that is related with this <https:\/\/github.com\/betcode-org\/betfair\/blob\/e3d36f67d5291faa8e7ac85c061631b0dd722091\/betfairlightweight\/streaming\/cache.py#L262|code-line>. Looks like that is intended to make it faster and using `Available` class for that. Because when there is market change and we print that in <https:\/\/github.com\/betcode-org\/betfair\/blob\/e3d36f67d5291faa8e7ac85c061631b0dd722091\/betfairlightweight\/streaming\/cache.py#L247|here>, we can see all \"trd\" information. So that is available but for speed reason, that is disabled. Are there any way to enable full log via _streaming module_ or is it not possible? Also I can create a github issue if that is preferable.",
+        "files": [
+            {
+                "id": "F03KTJCJGS3",
+                "mode": "hidden_by_limit"
+            }
+        ],
+        "upload": false,
+        "user": "U03JW3KTQ79",
+        "display_as_bot": false,
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "NWZnR",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Update",
+                                "style": {
+                                    "bold": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": ": Looks like that is related with this "
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/betcode-org\/betfair\/blob\/e3d36f67d5291faa8e7ac85c061631b0dd722091\/betfairlightweight\/streaming\/cache.py#L262",
+                                "text": "code-line"
+                            },
+                            {
+                                "type": "text",
+                                "text": ". Looks like that is intended to make it faster and using "
+                            },
+                            {
+                                "type": "text",
+                                "text": "Available",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " class for that. Because when there is market change and we print that in "
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/betcode-org\/betfair\/blob\/e3d36f67d5291faa8e7ac85c061631b0dd722091\/betfairlightweight\/streaming\/cache.py#L247",
+                                "text": "here"
+                            },
+                            {
+                                "type": "text",
+                                "text": ", we can see all \"trd\" information. So that is available but for speed reason, that is disabled. Are there any way to enable full log via "
+                            },
+                            {
+                                "type": "text",
+                                "text": "streaming module",
+                                "style": {
+                                    "italic": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " or is it not possible? Also I can create a github issue if that is preferable."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "type": "message",
+        "ts": "1655569949.450549",
+        "client_msg_id": "b04d8b28-bd93-463b-9f90-bea9ecabf91a",
+        "attachments": [
+            {
+                "id": 1,
+                "footer_icon": "https:\/\/slack.github.com\/static\/img\/favicon-neutral.png",
+                "color": "24292f",
+                "bot_id": "B021ZJYSBMW",
+                "app_unfurl_url": "https:\/\/github.com\/betcode-org\/betfair\/blob\/e3d36f67d5291faa8e7ac85c061631b0dd722091\/betfairlightweight\/streaming\/cache.py#L262",
+                "is_app_unfurl": true,
+                "app_id": "A01BP7R4KNY",
+                "fallback": "<https:\/\/github.com\/betcode-org\/betfair\/blob\/e3d36f67d5291faa8e7ac85c061631b0dd722091\/betfairlightweight\/streaming\/cache.py | cache.py>",
+                "title": "<https:\/\/github.com\/betcode-org\/betfair\/blob\/e3d36f67d5291faa8e7ac85c061631b0dd722091\/betfairlightweight\/streaming\/cache.py | cache.py>",
+                "footer": "<https:\/\/github.com\/betcode-org\/betfair|betcode-org\/betfair>",
+                "mrkdwn_in": [
+                    "text"
+                ]
+            },
+            {
+                "id": 2,
+                "footer_icon": "https:\/\/slack.github.com\/static\/img\/favicon-neutral.png",
+                "color": "24292f",
+                "bot_id": "B021ZJYSBMW",
+                "app_unfurl_url": "https:\/\/github.com\/betcode-org\/betfair\/blob\/e3d36f67d5291faa8e7ac85c061631b0dd722091\/betfairlightweight\/streaming\/cache.py#L247",
+                "is_app_unfurl": true,
+                "app_id": "A01BP7R4KNY",
+                "fallback": "<https:\/\/github.com\/betcode-org\/betfair\/blob\/e3d36f67d5291faa8e7ac85c061631b0dd722091\/betfairlightweight\/streaming\/cache.py | cache.py>",
+                "title": "<https:\/\/github.com\/betcode-org\/betfair\/blob\/e3d36f67d5291faa8e7ac85c061631b0dd722091\/betfairlightweight\/streaming\/cache.py | cache.py>",
+                "footer": "<https:\/\/github.com\/betcode-org\/betfair|betcode-org\/betfair>",
+                "mrkdwn_in": [
+                    "text"
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1655573170.281709",
+        "edited": {
+            "user": "UBS7QANF3",
+            "ts": "1655574086.000000"
+        },
+        "client_msg_id": "A5A8D038-17ED-4B09-8AAE-B178FA0954A7",
+        "text": "I think you are confused. With streaming you only receive the deltas in each update. So when you access the streaming_update field you are only seeing those traded volumes which have just changed. If you want to see the full traded ladder then you need to iterate over update.runners and for each runner access runner.ex.traded_volume",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1655573170.281709",
+        "reply_count": 3,
+        "reply_users_count": 2,
+        "latest_reply": "1655708936.728469",
+        "reply_users": [
+            "U03JW3KTQ79",
+            "U4H19D1D2"
+        ],
+        "replies": [
+            {
+                "user": "U03JW3KTQ79",
+                "ts": "1655636074.035129"
+            },
+            {
+                "user": "U03JW3KTQ79",
+                "ts": "1655653321.051049"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1655708936.728469"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": true,
+        "last_read": "1655708936.728469",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "238",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I think you are confused. With streaming you only receive the deltas in each update. So when you access the streaming_update field you are only seeing those traded volumes which have just changed. If you want to see the full traded ladder then you need to iterate over update.runners and for each runner access"
+                            },
+                            {
+                                "type": "text",
+                                "text": " "
+                            },
+                            {
+                                "type": "text",
+                                "text": "runner.ex.traded_volume"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

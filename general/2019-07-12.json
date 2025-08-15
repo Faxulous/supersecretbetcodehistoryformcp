@@ -1,0 +1,722 @@
+[
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1562961759.283300",
+        "client_msg_id": "7a00a7ab-a1f5-4574-af34-4a8b3b976cf4",
+        "text": "possibly a very basic question....I keep getting orders randomly disappearing from my calcs and I can't see where in my code this is happening, so I think (perhaps incorrectly), its something really basic to do with how I'm capturing them from the queue.\n\nIgnoring the functions, is there anything glaringly stupid here, that I have done, that could possibly result in missing items from queues (I've only noticed the order queue, but its not impossible I'm missing things from the market queue too and simply haven't spotted that):\n\n```\nwhile True:\n    try:\n        order_books = order_queue.get(block=True, timeout=0.5)\n        market_books = market_queue.get(block=True, timeout=0.5)\n    except Empty:\n        try:\n            market_books = market_queue.get(block=True, timeout=0.5)\n        except Empty:\n            update_all(order_books, market_books, mkt_runners, profitloss, trading, eo, mb, market_catalogues, start_time)\n        finally:\n            update_all(order_books, market_books, mkt_runners, profitloss, trading, eo, mb, market_catalogues, start_time)\n    finally:\n        update_all(order_books, market_books, mkt_runners, profitloss, trading, eo, mb, market_catalogues, start_time)\n```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "s+S6l",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "possibly a very basic question....I keep getting orders randomly disappearing from my calcs and I can't see where in my code this is happening, so I think (perhaps incorrectly), its something really basic to do with how I'm capturing them from the queue.\n\nIgnoring the functions, is there anything glaringly stupid here, that I have done, that could possibly result in missing items from queues (I've only noticed the order queue, but its not impossible I'm missing things from the market queue too and simply haven't spotted that):\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "while True:\n    try:\n        order_books = order_queue.get(block=True, timeout=0.5)\n        market_books = market_queue.get(block=True, timeout=0.5)\n    except Empty:\n        try:\n            market_books = market_queue.get(block=True, timeout=0.5)\n        except Empty:\n            update_all(order_books, market_books, mkt_runners, profitloss, trading, eo, mb, market_catalogues, start_time)\n        finally:\n            update_all(order_books, market_books, mkt_runners, profitloss, trading, eo, mb, market_catalogues, start_time)\n    finally:\n        update_all(order_books, market_books, mkt_runners, profitloss, trading, eo, mb, market_catalogues, start_time)\n"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1562962204.283500",
+        "client_msg_id": "FC9154D0-4E5F-4F8E-B5BA-DA935995AB7D",
+        "text": "Ahhhhhhhhhh",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "EY3q",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Ahhhhhhhhhh"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1562962244.284600",
+        "client_msg_id": "821CDD37-7847-4DBE-9E14-01E714ACCF6B",
+        "text": "You can’t put both gets in a single try \/ except like that as you will be missing loads of updates ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "YncI",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "You can’t put both gets in a single try \/ except like that as you will be missing loads of updates"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1562962261.285000",
+        "client_msg_id": "5F033195-510A-4CE2-817E-2D992C7A48FF",
+        "text": "You need to completely separate them ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "ScI=",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "You need to completely separate them"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1562962528.286800",
+        "client_msg_id": "a531efbb-9980-40c3-a75a-414d9e866751",
+        "text": "ah so do you mean along these lines?\n\n```\nwhile True:\n    try:\n        order_books = order_queue.get(block=True, timeout=0.5)\n    except Empty:\n        do stuff\n    finally:\n        do more stuff\n\n    try:\n        market_books = market_queue.get(block=True, timeout=0.5)\n    except Empty:\n        do stuff\n    finally:\n        do more stuff\n```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "=4er",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "ah so do you mean along these lines?\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "while True:\n    try:\n        order_books = order_queue.get(block=True, timeout=0.5)\n    except Empty:\n        do stuff\n    finally:\n        do more stuff\n\n    try:\n        market_books = market_queue.get(block=True, timeout=0.5)\n    except Empty:\n        do stuff\n    finally:\n        do more stuff\n"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1562962586.287100",
+        "client_msg_id": "E97CBCA6-28B8-431B-97CA-291C09795904",
+        "text": "Separate threads ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "07pW",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Separate threads"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1562962682.287500",
+        "client_msg_id": "657f9b5c-ce36-4adc-839f-1cff40581597",
+        "text": "ah okay, thats what I was missing, cool tks, that makes sense!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "DqN4c",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "ah okay, thats what I was missing, cool tks, that makes sense!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1562962748.287900",
+        "client_msg_id": "00E376B7-7FB4-46FB-865E-13F4FD19BA4F",
+        "text": "Or use a single queue and handle the output ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "cXq69",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Or use a single queue and handle the output"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1562962889.289400",
+        "client_msg_id": "adb782b4-83a4-4a21-afd7-4eb6035e97d4",
+        "text": "I didn't realise it was possible to use a single queue, I thought they had to be split...is there a recommended approach (i.e. is different threads likely to be better or does it not make much difference performance wise)?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "zIWCM",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I didn't realise it was possible to use a single queue, I thought they had to be split...is there a recommended approach (i.e. is different threads likely to be better or does it not make much difference performance wise)?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1562963045.291000",
+        "client_msg_id": "81B1C8DF-8920-44E0-9244-3BAE04A05B30",
+        "text": "Threads will be quicker and in my mind safer as you are keeping things separate but a single queue is possible as in the end it is just a list you are pulling things from ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "yn5cQ",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Threads will be quicker and in my mind safer as you are keeping things separate but a single queue is possible as in the end it is just a list you are pulling things from"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1562963164.291500",
+        "client_msg_id": "b8216124-8581-4f8d-a826-0b271affb136",
+        "text": "Ok cool tks, will have a play around, much appreciated!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "v094=",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Ok cool tks, will have a play around, much appreciated!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1562963228.291900",
+        "client_msg_id": "235E753D-2368-4F84-845D-03F93C8BABC5",
+        "text": "This is a good read <https:\/\/github.com\/python\/cpython\/blob\/3.7\/Lib\/queue.py>",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "attachments": [
+            {
+                "service_name": "GitHub",
+                "title": "python\/cpython",
+                "title_link": "https:\/\/github.com\/python\/cpython\/blob\/3.7\/Lib\/queue.py",
+                "text": "The Python programming language. Contribute to python\/cpython development by creating an account on GitHub.",
+                "fallback": "GitHub: python\/cpython",
+                "thumb_url": "https:\/\/avatars2.githubusercontent.com\/u\/1525981?s=400&v=4",
+                "from_url": "https:\/\/github.com\/python\/cpython\/blob\/3.7\/Lib\/queue.py",
+                "thumb_width": 400,
+                "thumb_height": 400,
+                "service_icon": "https:\/\/a.slack-edge.com\/bfaba\/img\/unfurl_icons\/github.png",
+                "id": 1,
+                "original_url": "https:\/\/github.com\/python\/cpython\/blob\/3.7\/Lib\/queue.py"
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "PVq9",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "This is a good read "
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/python\/cpython\/blob\/3.7\/Lib\/queue.py"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1562963245.292300",
+        "client_msg_id": "a2ebd813-5480-4018-b4d9-248ae994af19",
+        "text": "great thank you, will have a read!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "N93",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "great thank you, will have a read!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1562971864.296000",
+        "client_msg_id": "7e65ccdb-7545-4dc1-a764-a4e273c1142a",
+        "text": "apologies...one final dumb question before bedtime...\n\nI was just trying to put a quick fix in, before I delve into a whole new threading solution, but what I thought would be a fairly simple logical process...isn't:\n\n```\nwhile True:\n    x = market_queue.get()\n\n    for y in x:\n        if type(y) == type(MarketBook):\n            print('MarketBook: ', y)\n        else:\n            if type(y) == type(CurrentOrders):\n                print('CurrentOrders: ', y)\n            else:\n                print('No idea: ', y)\n```\n\nI assumed I could neatly split out the single queue like that (for now, I can come up with a better solution later), however it seems to think nothing belongs to either custom class, i.e:\n\n```\nNo idea:  CurrentOrders\nNo idea:  CurrentOrders\nNo idea:  MarketBook\nNo idea:  MarketBook\n```\n\n(I don't get an error, so I believe the custom classes are imported correctly)...so what have I missed here...I know it's going to be something blindingly obvious!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "5qk4",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "apologies...one final dumb question before bedtime...\n\nI was just trying to put a quick fix in, before I delve into a whole new threading solution, but what I thought would be a fairly simple logical process...isn't:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "while True:\n    x = market_queue.get()\n\n    for y in x:\n        if type(y) == type(MarketBook):\n            print('MarketBook: ', y)\n        else:\n            if type(y) == type(CurrentOrders):\n                print('CurrentOrders: ', y)\n            else:\n                print('No idea: ', y)\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\n\nI assumed I could neatly split out the single queue like that (for now, I can come up with a better solution later), however it seems to think nothing belongs to either custom class, i.e:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "No idea:  CurrentOrders\nNo idea:  CurrentOrders\nNo idea:  MarketBook\nNo idea:  MarketBook\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\n\n(I don't get an error, so I believe the custom classes are imported correctly)...so what have I missed here...I know it's going to be something blindingly obvious!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1562971899.296600",
+        "client_msg_id": "eedc38e8-f1e3-4447-8a08-1efee9196f7c",
+        "text": "(oh sorry, for the avoidance of doubt, market_queue is a combined queue for orders and market updates)",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "GQxC",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "(oh sorry, for the avoidance of doubt, market_queue is a combined queue for orders and market updates)"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1562996784.297000",
+        "client_msg_id": "94FC4485-90CD-47BB-B491-2C2D6208922D",
+        "text": "Use isinstance()",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "3ZLjF",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Use isinstance()"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1562996816.297500",
+        "client_msg_id": "17D940E4-9AF2-47CE-9973-10790CBFFDE9",
+        "text": "And elif rather than another nested if ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "qNxQQ",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "And elif rather than another nested if"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

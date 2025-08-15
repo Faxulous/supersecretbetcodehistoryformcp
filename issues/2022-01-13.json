@@ -1,0 +1,911 @@
+[
+    {
+        "user": "U011VL3CA2Y",
+        "type": "message",
+        "ts": "1642062460.044500",
+        "client_msg_id": "8a54ad8f-d88d-4d1b-885c-65d390fdbe64",
+        "text": "good morning everyone, for flumine users, is it possible that `process_closed_market` is being called twice once without the cleared orders, and once with the cleared orders? context: I am logging some KPIs after every market closes such as profit\/loss, number of bets and the like, and I notice that for every event I generate two logs, and the first one does not have any profit info (due to order.cleared_order objects not being populated)",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g1ec6e88d1e4",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/1ec6e88d1e4dd0bff349d83e9edba6bd.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0005-72.png",
+            "first_name": "Ruben",
+            "real_name": "Ruben",
+            "display_name": "Ruben",
+            "team": "T4G9NBD2M",
+            "name": "tduqruqtgtpiioibww",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "nHUC9",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "good morning everyone, for flumine users, is it possible that "
+                            },
+                            {
+                                "type": "text",
+                                "text": "process_closed_market",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " is being called twice once without the cleared orders, and once with the cleared orders? context: I am logging some KPIs after every market closes such as profit\/loss, number of bets and the like, and I notice that for every event I generate two logs, and the first one does not have any profit info (due to order.cleared_order objects not being populated)"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1642063839.044700",
+        "client_msg_id": "076F93DF-13ED-4D4F-8852-3059BEC6BFB6",
+        "text": "Probably ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "XAvOk",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Probably "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U011VL3CA2Y",
+        "type": "message",
+        "ts": "1642064329.045400",
+        "edited": {
+            "user": "U011VL3CA2Y",
+            "ts": "1642064385.000000"
+        },
+        "client_msg_id": "bd07f914-e153-481f-ac49-7046c4d0d592",
+        "text": "also noticed that the alleged second call happens a while later, while the first one happens very close to event finish, is that how it is supposed to be? just so I can code knowing whats the epxected behaviour",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g1ec6e88d1e4",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/1ec6e88d1e4dd0bff349d83e9edba6bd.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0005-72.png",
+            "first_name": "Ruben",
+            "real_name": "Ruben",
+            "display_name": "Ruben",
+            "team": "T4G9NBD2M",
+            "name": "tduqruqtgtpiioibww",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Td+1",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "also noticed that the alleged second call happens a while later, while the first one happens very close to event finish, is that how it is supposed to be? just so I can code knowing whats the epxected behaviour"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1642065095.046700",
+        "client_msg_id": "33038e85-8978-48a4-b072-f297ee8cc2e6",
+        "text": "So `_process_closed_market` is triggered whenever an update is received where the market has been `CLOSED` therefore very common to have multiple calls, if you want cleared orders use the `_process_cleared_orders` func",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1642065095.046700",
+        "reply_count": 1,
+        "reply_users_count": 1,
+        "latest_reply": "1642076568.047000",
+        "reply_users": [
+            "U011VL3CA2Y"
+        ],
+        "replies": [
+            {
+                "user": "U011VL3CA2Y",
+                "ts": "1642076568.047000"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": true,
+        "last_read": "1642076568.047000",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "GvA3",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "So "
+                            },
+                            {
+                                "type": "text",
+                                "text": "_process_closed_market",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " is triggered whenever an update is received where the market has been "
+                            },
+                            {
+                                "type": "text",
+                                "text": "CLOSED",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " therefore very common to have multiple calls, if you want cleared orders use the "
+                            },
+                            {
+                                "type": "text",
+                                "text": "_process_cleared_orders",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " func"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "U011VL3CA2Y"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "subtype": "channel_join",
+        "user": "U02TVNZQDPV",
+        "text": "<@U02TVNZQDPV> has joined the channel",
+        "type": "message",
+        "ts": "1642072182.046900"
+    },
+    {
+        "user": "U011VL3CA2Y",
+        "type": "message",
+        "ts": "1642076568.047000",
+        "client_msg_id": "2442cd40-83b7-4c4e-bbda-1820c197dfe4",
+        "text": "super clear, thanks Liam",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g1ec6e88d1e4",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/1ec6e88d1e4dd0bff349d83e9edba6bd.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0005-72.png",
+            "first_name": "Ruben",
+            "real_name": "Ruben",
+            "display_name": "Ruben",
+            "team": "T4G9NBD2M",
+            "name": "tduqruqtgtpiioibww",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1642065095.046700",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "iQsTG",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "super clear, thanks Liam"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U02TCV0MEHM",
+        "type": "message",
+        "ts": "1642133090.048600",
+        "client_msg_id": "d9cfd305-1d2f-4b4f-8c98-b5080cc7b35a",
+        "text": "Hi All. I've tried searching for this and found similar occurrences, but extending the read and connect timeout values didn't seem to help. Any ideas?\n\nError:\nTraceback (most recent call last):\n  File \"\/Users\/xxx\/Documents\/Personal\/Python\/learn\/betfair.py\", line 143, in &lt;module&gt;\n    trading.login_interactive()\n  File \"\/Library\/Frameworks\/Python.framework\/Versions\/3.9\/lib\/python3.9\/site-packages\/betfairlightweight\/endpoints\/logininteractive.py\", line 30, in __call__\n    (response, response_json, elapsed_time) = self.request(\n  File \"\/Library\/Frameworks\/Python.framework\/Versions\/3.9\/lib\/python3.9\/site-packages\/betfairlightweight\/endpoints\/logininteractive.py\", line 53, in request\n    raise APIError(None, exception=e)\nbetfairlightweight.exceptions.APIError: None\nParams: None\nException: HTTPSConnectionPool(host='<http:\/\/identitysso.betfair.com|identitysso.betfair.com>', port=443): Read timed out. (read timeout=3.05)\n\nSource:\ntrading = betfairlightweight.APIClient(username=my_username,\n                                       password=my_password,\n                                       app_key=my_app_key)\n\n    trading.betting.read_timeout = 30\n    trading.betting.connect_timeout = 30\n    trading.login_interactive()",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g09c974acab3",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/09c974acab3cc43dd1129913c1bd7124.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0004-72.png",
+            "first_name": "Colin",
+            "real_name": "Colin Murphy",
+            "display_name": "Colin",
+            "team": "T4G9NBD2M",
+            "name": "cpmurphy87",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1642133090.048600",
+        "reply_count": 6,
+        "reply_users_count": 2,
+        "latest_reply": "1642240465.055700",
+        "reply_users": [
+            "U4H19D1D2",
+            "U02TCV0MEHM"
+        ],
+        "replies": [
+            {
+                "user": "U4H19D1D2",
+                "ts": "1642147748.054100"
+            },
+            {
+                "user": "U02TCV0MEHM",
+                "ts": "1642148130.054300"
+            },
+            {
+                "user": "U02TCV0MEHM",
+                "ts": "1642148181.054500"
+            },
+            {
+                "user": "U02TCV0MEHM",
+                "ts": "1642148472.054700"
+            },
+            {
+                "user": "U02TCV0MEHM",
+                "ts": "1642232975.055100"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1642240465.055700"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": true,
+        "last_read": "1642240465.055700",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "syyQ=",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Hi All. I've tried searching for this and found similar occurrences, but extending the read and connect timeout values didn't seem to help. Any ideas?\n\nError:\nTraceback (most recent call last):\n  File \"\/Users\/xxx\/Documents\/Personal\/Python\/learn\/betfair.py\", line 143, in <module>\n    trading.login_interactive()\n  File \"\/Library\/Frameworks\/Python.framework\/Versions\/3.9\/lib\/python3.9\/site-packages\/betfairlightweight\/endpoints\/logininteractive.py\", line 30, in __call__\n    (response, response_json, elapsed_time) = self.request(\n  File \"\/Library\/Frameworks\/Python.framework\/Versions\/3.9\/lib\/python3.9\/site-packages\/betfairlightweight\/endpoints\/logininteractive.py\", line 53, in request\n    raise APIError(None, exception=e)\nbetfairlightweight.exceptions.APIError: None\nParams: None\nException: HTTPSConnectionPool(host='"
+                            },
+                            {
+                                "type": "link",
+                                "url": "http:\/\/identitysso.betfair.com",
+                                "text": "identitysso.betfair.com"
+                            },
+                            {
+                                "type": "text",
+                                "text": "', port=443): Read timed out. (read timeout=3.05)\n\nSource:\ntrading = betfairlightweight.APIClient(username=my_username,\n                                       password=my_password,\n                                       app_key=my_app_key)\n\n    trading.betting.read_timeout = 30\n    trading.betting.connect_timeout = 30\n    trading.login_interactive()"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U02T42H80VD",
+        "type": "message",
+        "ts": "1642135642.051300",
+        "client_msg_id": "66981d52-df81-4db9-ac73-ec04abe2104d",
+        "text": "I have been following the tutorial and I cant seem to be able to get the runner names. Saw a question on here but couldnt understand how to apply that to the example in the docs.\n```# Create a price filter. Get all traded and offer data\nprice_filter = betfairlightweight.filters.price_projection(\n    price_data=['EX_BEST_OFFERS']\n)\n\n# Request market books\nmarket_books = trading.betting.list_market_book(\n    market_ids=['1.193314179'],\n    price_projection=price_filter\n)\n\n# Grab the first market book from the returned list as we only requested one market \nmarket_book = market_books[0]\n\nrunners_df = process_runner_books(market_book[\"runners\"])```\nAt which part of the code\/example do I make changes to ensure the horse names come through? Thanks",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g3f6b2da8b54",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/3f6b2da8b54e4b2141b031018f1e8680.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0002-72.png",
+            "first_name": "west",
+            "real_name": "west",
+            "display_name": "west",
+            "team": "T4G9NBD2M",
+            "name": "stra07",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1642135642.051300",
+        "reply_count": 9,
+        "reply_users_count": 3,
+        "latest_reply": "1642150194.054900",
+        "reply_users": [
+            "U02FXEUUMRN",
+            "U02T42H80VD",
+            "U9JHLMZB4"
+        ],
+        "replies": [
+            {
+                "user": "U02FXEUUMRN",
+                "ts": "1642135783.051400"
+            },
+            {
+                "user": "U02T42H80VD",
+                "ts": "1642136505.052300"
+            },
+            {
+                "user": "U02T42H80VD",
+                "ts": "1642136580.052500"
+            },
+            {
+                "user": "U02FXEUUMRN",
+                "ts": "1642136659.052700"
+            },
+            {
+                "user": "U02FXEUUMRN",
+                "ts": "1642136661.052900"
+            },
+            {
+                "user": "U02FXEUUMRN",
+                "ts": "1642136843.053300"
+            },
+            {
+                "user": "U02FXEUUMRN",
+                "ts": "1642136843.053500"
+            },
+            {
+                "user": "U02T42H80VD",
+                "ts": "1642137018.053700"
+            },
+            {
+                "user": "U9JHLMZB4",
+                "ts": "1642150194.054900"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": false,
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "\/3YcY",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I have been following the tutorial and I cant seem to be able to get the runner names. Saw a question on here but couldnt understand how to apply that to the example in the docs.\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "# Create a price filter. Get all traded and offer data\nprice_filter = betfairlightweight.filters.price_projection(\n    price_data=['EX_BEST_OFFERS']\n)\n\n# Request market books\nmarket_books = trading.betting.list_market_book(\n    market_ids=['1.193314179'],\n    price_projection=price_filter\n)\n\n# Grab the first market book from the returned list as we only requested one market \nmarket_book = market_books[0]\n\nrunners_df = process_runner_books(market_book[\"runners\"])"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "At which part of the code\/example do I make changes to ensure the horse names come through? Thanks"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U02FXEUUMRN",
+        "type": "message",
+        "ts": "1642135783.051400",
+        "client_msg_id": "2006c91f-3f7e-459e-b0b3-bd22e4ad52b7",
+        "text": "that kind of info is in the market catalogue",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "15c960fd4585",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2021-09-21\/2541506499648_15c960fd4585096f5419_72.png",
+            "first_name": "Finn",
+            "real_name": "Finn",
+            "display_name": "Finn",
+            "team": "T4G9NBD2M",
+            "name": "finnodonoghue",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1642135642.051300",
+        "parent_user_id": "U02T42H80VD",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "X\/y4d",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "that kind of info is in the market catalogue"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U02T42H80VD",
+        "type": "message",
+        "ts": "1642135824.051800",
+        "edited": {
+            "user": "U02T42H80VD",
+            "ts": "1642135885.000000"
+        },
+        "client_msg_id": "21a251b5-1049-4146-9315-2a73e408ea8e",
+        "text": "Great! Seems some variables from the api changed as well from underscore to camelcase style eg `selection_id` became `selectionID`",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g3f6b2da8b54",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/3f6b2da8b54e4b2141b031018f1e8680.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0002-72.png",
+            "first_name": "west",
+            "real_name": "west",
+            "display_name": "west",
+            "team": "T4G9NBD2M",
+            "name": "stra07",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1627689656.034500",
+        "parent_user_id": "UUUAJQZ5J",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "7zB",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Great! Seems some variables from the api changed as well from underscore to camelcase style eg "
+                            },
+                            {
+                                "type": "text",
+                                "text": "selection_id ",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "became "
+                            },
+                            {
+                                "type": "text",
+                                "text": "selectionID",
+                                "style": {
+                                    "code": true
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U02T42H80VD",
+        "type": "message",
+        "ts": "1642136505.052300",
+        "client_msg_id": "e1dda5f9-4470-4c76-bc81-f10c0c1b1d4c",
+        "text": "Okay thanks. I saw a previous question that got this data in market catalogue by adding this `market_projection=[\"RUNNER_DESCRIPTION\",\"EVENT_TYPE\",\"EVENT\",\"COMPETITION\",\"RUNNER_METADATA\",\"MARKET_START_TIME\"].` This worked but where exactly can I find this info? I couldnt seem to find it in the docs or in the source code.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g3f6b2da8b54",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/3f6b2da8b54e4b2141b031018f1e8680.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0002-72.png",
+            "first_name": "west",
+            "real_name": "west",
+            "display_name": "west",
+            "team": "T4G9NBD2M",
+            "name": "stra07",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1642135642.051300",
+        "parent_user_id": "U02T42H80VD",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "oah",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Okay thanks. I saw a previous question that got this data in market catalogue by adding this "
+                            },
+                            {
+                                "type": "text",
+                                "text": "market_projection=[\"RUNNER_DESCRIPTION\",\"EVENT_TYPE\",\"EVENT\",\"COMPETITION\",\"RUNNER_METADATA\",\"MARKET_START_TIME\"]. ",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "This worked but where exactly can I find this info? I couldnt seem to find it in the docs or in the source code."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U02T42H80VD",
+        "type": "message",
+        "ts": "1642136580.052500",
+        "client_msg_id": "927ac6b9-a922-4170-b711-dccf0a88835f",
+        "text": "Where's RUNNER_DESCRIPTION, EVENT_TYPE etc come from?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g3f6b2da8b54",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/3f6b2da8b54e4b2141b031018f1e8680.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0002-72.png",
+            "first_name": "west",
+            "real_name": "west",
+            "display_name": "west",
+            "team": "T4G9NBD2M",
+            "name": "stra07",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1642135642.051300",
+        "parent_user_id": "U02T42H80VD",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "I5Q",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Where's RUNNER_DESCRIPTION, EVENT_TYPE etc come from?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U02FXEUUMRN",
+        "type": "message",
+        "ts": "1642136659.052700",
+        "client_msg_id": "9ecb89aa-c00b-450c-87b5-9a3daa649f79",
+        "text": "you can find that biz in the betfair documentation",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "15c960fd4585",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2021-09-21\/2541506499648_15c960fd4585096f5419_72.png",
+            "first_name": "Finn",
+            "real_name": "Finn",
+            "display_name": "Finn",
+            "team": "T4G9NBD2M",
+            "name": "finnodonoghue",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1642135642.051300",
+        "parent_user_id": "U02T42H80VD",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Upjdv",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "you can find that biz in the betfair documentation"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U02FXEUUMRN",
+        "type": "message",
+        "ts": "1642136661.052900",
+        "client_msg_id": "801686b3-7867-4cda-810e-67803e40429b",
+        "text": "<https:\/\/docs.developer.betfair.com\/display\/1smk3cen4v3lu3yomq5qye0ni\/listMarketCatalogue>",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "15c960fd4585",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2021-09-21\/2541506499648_15c960fd4585096f5419_72.png",
+            "first_name": "Finn",
+            "real_name": "Finn",
+            "display_name": "Finn",
+            "team": "T4G9NBD2M",
+            "name": "finnodonoghue",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1642135642.051300",
+        "parent_user_id": "U02T42H80VD",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "LmmdT",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "link",
+                                "url": "https:\/\/docs.developer.betfair.com\/display\/1smk3cen4v3lu3yomq5qye0ni\/listMarketCatalogue"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UUUAJQZ5J",
+        "type": "message",
+        "ts": "1642136676.053100",
+        "client_msg_id": "a501994b-9993-42f3-8164-7ef2c667d0ea",
+        "text": "good call out <@U02T42H80VD>, thank you!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "f82cfa28f86e",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2022-01-10\/2929887731124_f82cfa28f86eb8c28a2f_72.jpg",
+            "first_name": "Kerrin",
+            "real_name": "Kerrin Grosvenor",
+            "display_name": "KG",
+            "team": "T4G9NBD2M",
+            "name": "kerrin.grosvenor",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1627689656.034500",
+        "parent_user_id": "UUUAJQZ5J",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "m0YuE",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "good call out "
+                            },
+                            {
+                                "type": "user",
+                                "user_id": "U02T42H80VD"
+                            },
+                            {
+                                "type": "text",
+                                "text": ", thank you!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U02FXEUUMRN",
+        "type": "message",
+        "ts": "1642136843.053300",
+        "client_msg_id": "847e57e8-91c0-4cca-8dbf-795bfc5023db",
+        "text": "heres the ref for market_projection",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "15c960fd4585",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2021-09-21\/2541506499648_15c960fd4585096f5419_72.png",
+            "first_name": "Finn",
+            "real_name": "Finn",
+            "display_name": "Finn",
+            "team": "T4G9NBD2M",
+            "name": "finnodonoghue",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1642135642.051300",
+        "parent_user_id": "U02T42H80VD",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "1G\/",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "heres the ref for market_projection"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U02FXEUUMRN",
+        "type": "message",
+        "ts": "1642136843.053500",
+        "client_msg_id": "fcd315e6-b52b-4146-8560-112b326bcf7f",
+        "text": "<https:\/\/docs.developer.betfair.com\/display\/1smk3cen4v3lu3yomq5qye0ni\/Betting+Enums#BettingEnums-MarketProjection>",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "15c960fd4585",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2021-09-21\/2541506499648_15c960fd4585096f5419_72.png",
+            "first_name": "Finn",
+            "real_name": "Finn",
+            "display_name": "Finn",
+            "team": "T4G9NBD2M",
+            "name": "finnodonoghue",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1642135642.051300",
+        "parent_user_id": "U02T42H80VD",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "yAYAd",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "link",
+                                "url": "https:\/\/docs.developer.betfair.com\/display\/1smk3cen4v3lu3yomq5qye0ni\/Betting+Enums#BettingEnums-MarketProjection"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U02T42H80VD",
+        "type": "message",
+        "ts": "1642137018.053700",
+        "client_msg_id": "aa44a505-0703-4403-b95d-a8bcd2a11d5d",
+        "text": "Ahh right. Thanks mate!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g3f6b2da8b54",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/3f6b2da8b54e4b2141b031018f1e8680.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0002-72.png",
+            "first_name": "west",
+            "real_name": "west",
+            "display_name": "west",
+            "team": "T4G9NBD2M",
+            "name": "stra07",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1642135642.051300",
+        "parent_user_id": "U02T42H80VD",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "sp3",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Ahh right. Thanks mate!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "subtype": "channel_join",
+        "user": "U02TUAF02DC",
+        "text": "<@U02TUAF02DC> has joined the channel",
+        "type": "message",
+        "ts": "1642144031.054000"
+    }
+]

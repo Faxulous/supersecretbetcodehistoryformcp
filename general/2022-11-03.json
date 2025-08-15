@@ -1,0 +1,1187 @@
+[
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1667459905.565239",
+        "client_msg_id": "129a4996-f8e9-463c-9968-44716bc25132",
+        "text": "Not sure if this will work as each process may need its own `trading` object but this is the basic pattern I follow for any parallelisation job in Python:\n\n```import os\nfrom concurrent import futures\nfrom tqdm import tqdm\n\nwith futures.ProcessPoolExecutor(max_workers=os.cpu_count()) as pool:\n    all_futures = [pool.submit(trading.historic.download_file, file_path=file) for file in file_list]\n    for future in tqdm(futures.as_completed(all_futures), total=len(all_futures)):\n        future.result()```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "GSar9",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Not sure if this will work as each process may need its own "
+                            },
+                            {
+                                "type": "text",
+                                "text": "trading",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " object but this is the basic pattern I follow for any parallelisation job in Python:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "import os\nfrom concurrent import futures\nfrom tqdm import tqdm\n\nwith futures.ProcessPoolExecutor(max_workers=os.cpu_count()) as pool:\n    all_futures = [pool.submit(trading.historic.download_file, file_path=file) for file in file_list]\n    for future in tqdm(futures.as_completed(all_futures), total=len(all_futures)):\n        future.result()"
+                            }
+                        ],
+                        "border": 0
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U0155J92A7Q",
+        "type": "message",
+        "ts": "1667487155.305739",
+        "client_msg_id": "3a522a96-901f-4106-81f2-5441eac0fe4f",
+        "text": "Getting back to my <https:\/\/betcode-org.slack.com\/archives\/C4HL6EZTQ\/p1667395275679079|question> from yesterday. I made it work but I am facing a problem using external data time series to trigger the bet...",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gde8c5d51af5",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/de8c5d51af54a5ac7b501f416ddb262c.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0016-72.png",
+            "first_name": "",
+            "real_name": "Jorge",
+            "display_name": "Jorge",
+            "team": "T4G9NBD2M",
+            "name": "jgarciam95",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "attachments": [
+            {
+                "from_url": "https:\/\/betcode-org.slack.com\/archives\/C4HL6EZTQ\/p1667395275679079",
+                "ts": "1667395275.679079",
+                "author_id": "U0155J92A7Q",
+                "channel_id": "C4HL6EZTQ",
+                "channel_team": "T4G9NBD2M",
+                "is_msg_unfurl": true,
+                "is_thread_root_unfurl": true,
+                "message_blocks": [
+                    {
+                        "team": "T4G9NBD2M",
+                        "channel": "C4HL6EZTQ",
+                        "ts": "1667395275.679079",
+                        "message": {
+                            "blocks": [
+                                {
+                                    "type": "rich_text",
+                                    "block_id": "5Y3o",
+                                    "elements": [
+                                        {
+                                            "type": "rich_text_section",
+                                            "elements": [
+                                                {
+                                                    "type": "text",
+                                                    "text": "And is it possible to use a data time series which is not a cricketSubscription or raceSubscription?"
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "id": 1,
+                "original_url": "https:\/\/betcode-org.slack.com\/archives\/C4HL6EZTQ\/p1667395275679079",
+                "fallback": "[November 2nd, 2022 6:21 AM] jgarciam95: And is it possible to use a data time series which is not a cricketSubscription or raceSubscription?",
+                "text": "And is it possible to use a data time series which is not a cricketSubscription or raceSubscription?",
+                "author_name": "Jorge",
+                "author_link": "https:\/\/betcode-org.slack.com\/team\/U0155J92A7Q",
+                "author_icon": "https:\/\/secure.gravatar.com\/avatar\/de8c5d51af54a5ac7b501f416ddb262c.jpg?s=48&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0016-48.png",
+                "author_subname": "Jorge",
+                "mrkdwn_in": [
+                    "text"
+                ],
+                "footer": "Thread in Slack conversation"
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "m7FG8",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Getting back to my "
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/betcode-org.slack.com\/archives\/C4HL6EZTQ\/p1667395275679079",
+                                "text": "question"
+                            },
+                            {
+                                "type": "text",
+                                "text": " from yesterday. I made it work but I am facing a problem using external data time series to trigger the bet..."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U0155J92A7Q",
+        "type": "message",
+        "ts": "1667487159.073509",
+        "client_msg_id": "8cd6b337-610c-4764-a83a-fb40819ad2d6",
+        "text": "An example:\n• At t0, the market available_to_back is 2.0 and my fair odds are 2.1, so no bet.\n• At t1, the market has not changed, so we don't have a new MarketBook, but my fair odds are now 1.9, so here I would trigger a bet.\n• At t2, the market available_to_back is 1.8 and my fair odds are 1.9, so no bet.\nHow can I simulate the bet at t1 with flumine?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gde8c5d51af5",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/de8c5d51af54a5ac7b501f416ddb262c.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0016-72.png",
+            "first_name": "",
+            "real_name": "Jorge",
+            "display_name": "Jorge",
+            "team": "T4G9NBD2M",
+            "name": "jgarciam95",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1667487159.073509",
+        "reply_count": 30,
+        "reply_users_count": 3,
+        "latest_reply": "1667568455.484679",
+        "reply_users": [
+            "U4H19D1D2",
+            "U0155J92A7Q",
+            "UBS7QANF3"
+        ],
+        "replies": [
+            {
+                "user": "U4H19D1D2",
+                "ts": "1667493661.134939"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1667493671.893169"
+            },
+            {
+                "user": "U0155J92A7Q",
+                "ts": "1667493814.832269"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1667493846.487429"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1667494091.713209"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1667494107.220129"
+            },
+            {
+                "user": "U0155J92A7Q",
+                "ts": "1667494120.189289"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1667494164.888179"
+            },
+            {
+                "user": "U0155J92A7Q",
+                "ts": "1667494176.780809"
+            },
+            {
+                "user": "U0155J92A7Q",
+                "ts": "1667494472.694869"
+            },
+            {
+                "user": "U0155J92A7Q",
+                "ts": "1667494619.677779"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1667495278.689869"
+            },
+            {
+                "user": "U0155J92A7Q",
+                "ts": "1667495364.888259"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1667495734.537499"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1667495765.311829"
+            },
+            {
+                "user": "U0155J92A7Q",
+                "ts": "1667496731.252869"
+            },
+            {
+                "user": "U0155J92A7Q",
+                "ts": "1667496824.254359"
+            },
+            {
+                "user": "U0155J92A7Q",
+                "ts": "1667496916.835839"
+            },
+            {
+                "user": "U0155J92A7Q",
+                "ts": "1667549735.703579"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1667550503.344409"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1667550775.464859"
+            },
+            {
+                "user": "U0155J92A7Q",
+                "ts": "1667551500.836269"
+            },
+            {
+                "user": "U0155J92A7Q",
+                "ts": "1667551545.743739"
+            },
+            {
+                "user": "U0155J92A7Q",
+                "ts": "1667553456.677239"
+            },
+            {
+                "user": "U0155J92A7Q",
+                "ts": "1667554568.220599"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1667554618.684729"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1667554655.046969"
+            },
+            {
+                "user": "U0155J92A7Q",
+                "ts": "1667555231.319529"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1667564372.162109"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1667568455.484679"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": true,
+        "last_read": "1667568455.484679",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "3dI",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "An example:\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_list",
+                        "elements": [
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "At t0, the market available_to_back is 2.0 and my fair odds are 2.1, so no bet."
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "At t1, the market has not changed, so we don't have a new MarketBook, but my fair odds are now 1.9, so here I would trigger a bet."
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "At t2, the market available_to_back is 1.8 and my fair odds are 1.9, so no bet."
+                                    }
+                                ]
+                            }
+                        ],
+                        "style": "bullet",
+                        "indent": 0,
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\nHow can I simulate the bet at t1 with flumine?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1667493661.134939",
+        "client_msg_id": "415c8a4f-39aa-4a36-949e-29e987280c57",
+        "text": "With no MarketBook update at t1 how is anything getting called???",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1667487159.073509",
+        "parent_user_id": "U0155J92A7Q",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "++Mt",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "With no MarketBook update at t1 how is anything getting called???"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1667493671.893169",
+        "client_msg_id": "7e2acffa-5e98-4ac2-a2a6-eaaa663ff173",
+        "text": "middleware only gets called on an update",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1667487159.073509",
+        "parent_user_id": "U0155J92A7Q",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "vJbl",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "middleware only gets called on an update"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U0155J92A7Q",
+        "type": "message",
+        "ts": "1667493814.832269",
+        "client_msg_id": "12c497ee-e2ab-4bcc-af4d-77214524ea08",
+        "text": "Exactly, so this is not possible with flumine, right? My use-case is an in-play football model that receives stats",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gde8c5d51af5",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/de8c5d51af54a5ac7b501f416ddb262c.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0016-72.png",
+            "first_name": "",
+            "real_name": "Jorge",
+            "display_name": "Jorge",
+            "team": "T4G9NBD2M",
+            "name": "jgarciam95",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1667487159.073509",
+        "parent_user_id": "U0155J92A7Q",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "f9S",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Exactly, so this is not possible with flumine, right? My use-case is an in-play football model that receives stats"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1667493846.487429",
+        "client_msg_id": "a3736f97-205c-411b-91b4-4aa5607ebfb8",
+        "text": "without seeing some code this is very tricky to debug...",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1667487159.073509",
+        "parent_user_id": "U0155J92A7Q",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "8BeX3",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "without seeing some code this is very tricky to debug..."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1667494091.713209",
+        "client_msg_id": "5abe360c-ac95-42ac-b79d-6cb42b831cc1",
+        "text": "if you want to base things off the marketBook you need to refactor to use `process_market_book`",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1667487159.073509",
+        "parent_user_id": "U0155J92A7Q",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "6jNOi",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "if you want to base things off the marketBook you need to refactor to use "
+                            },
+                            {
+                                "type": "text",
+                                "text": "process_market_book",
+                                "style": {
+                                    "code": true
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1667494107.220129",
+        "client_msg_id": "62fcfe96-6c95-49af-8dd6-4616654488f7",
+        "text": "and store the sports data in `market.context`",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1667487159.073509",
+        "parent_user_id": "U0155J92A7Q",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "AgL1",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "and store the sports data in "
+                            },
+                            {
+                                "type": "text",
+                                "text": "market.context",
+                                "style": {
+                                    "code": true
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U0155J92A7Q",
+        "type": "message",
+        "ts": "1667494120.189289",
+        "client_msg_id": "d0b4e158-f7eb-4743-9636-907ac5e656d0",
+        "text": "This is my strategy class:\n```class ExampleStrategy(BaseStrategy):\n    def check_sports_data(self, market, sports_data) -&gt; bool:\n        return True\n\n    def process_sports_data(self, market, sports_data) -&gt; None:\n        # called on each update from sports-data-stream\n        fair_price = sports_data.runners[0].fair_price\n        available_to_back = market.market_book.runners[0].ex.available_to_back[0]['price']\n        if available_to_back &gt; fair_price:\n            selection_id = market.market_book.runners[0].selection_id\n            if self._invested and self._invested[(market.market_id, selection_id, 0)].executable_orders == True:\n                return\n\n            trade = Trade(\n                market.market_id,\n                selection_id,\n                0,\n                self,\n            )\n            order = trade.create_order(\n                side=\"BACK\",\n                order_type=LimitOrder(available_to_back, 2, time_in_force=\"FILL_OR_KILL\"),\n            )\n            market.place_order(order)```\n",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gde8c5d51af5",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/de8c5d51af54a5ac7b501f416ddb262c.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0016-72.png",
+            "first_name": "",
+            "real_name": "Jorge",
+            "display_name": "Jorge",
+            "team": "T4G9NBD2M",
+            "name": "jgarciam95",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1667487159.073509",
+        "parent_user_id": "U0155J92A7Q",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "X2T3",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "This is my strategy class:\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "class ExampleStrategy(BaseStrategy):\n    def check_sports_data(self, market, sports_data) -> bool:\n        return True\n\n    def process_sports_data(self, market, sports_data) -> None:\n        # called on each update from sports-data-stream\n        fair_price = sports_data.runners[0].fair_price\n        available_to_back = market.market_book.runners[0].ex.available_to_back[0]['price']\n        if available_to_back > fair_price:\n            selection_id = market.market_book.runners[0].selection_id\n            if self._invested and self._invested[(market.market_id, selection_id, 0)].executable_orders == True:\n                return\n\n            trade = Trade(\n                market.market_id,\n                selection_id,\n                0,\n                self,\n            )\n            order = trade.create_order(\n                side=\"BACK\",\n                order_type=LimitOrder(available_to_back, 2, time_in_force=\"FILL_OR_KILL\"),\n            )\n            market.place_order(order)"
+                            }
+                        ],
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": []
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1667494164.888179",
+        "client_msg_id": "6858dd8f-af9d-4191-899f-b2d7a0d6689b",
+        "text": "as I imagine that is how you will execute live",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1667487159.073509",
+        "parent_user_id": "U0155J92A7Q",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "OA1a+",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "as I imagine that is how you will execute live"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U0155J92A7Q",
+        "type": "message",
+        "ts": "1667494176.780809",
+        "client_msg_id": "bf25adc5-6640-4041-a474-3dfc2add2dc9",
+        "text": "And I'm using this <https:\/\/github.com\/betcode-org\/flumine\/blob\/47af44b2173cf9d6b32fd9daef22dae510adea3f\/flumine\/markets\/middleware.py#L287|middleware>",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gde8c5d51af5",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/de8c5d51af54a5ac7b501f416ddb262c.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0016-72.png",
+            "first_name": "",
+            "real_name": "Jorge",
+            "display_name": "Jorge",
+            "team": "T4G9NBD2M",
+            "name": "jgarciam95",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1667487159.073509",
+        "parent_user_id": "U0155J92A7Q",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "POl",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "And I'm using this "
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/betcode-org\/flumine\/blob\/47af44b2173cf9d6b32fd9daef22dae510adea3f\/flumine\/markets\/middleware.py#L287",
+                                "text": "middleware"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U0155J92A7Q",
+        "type": "message",
+        "ts": "1667494472.694869",
+        "client_msg_id": "86d98b8c-137f-41a1-a2f3-4b1db0a02671",
+        "text": "I don't get what function would I need to refactor... Or is this something that doesn't make sense considering flumine's scope?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gde8c5d51af5",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/de8c5d51af54a5ac7b501f416ddb262c.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0016-72.png",
+            "first_name": "",
+            "real_name": "Jorge",
+            "display_name": "Jorge",
+            "team": "T4G9NBD2M",
+            "name": "jgarciam95",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1667487159.073509",
+        "parent_user_id": "U0155J92A7Q",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "QDa",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I don't get what function would I need to refactor... Or is this something that doesn't make sense considering flumine's scope?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U0155J92A7Q",
+        "type": "message",
+        "ts": "1667494619.677779",
+        "client_msg_id": "bd1d5674-5134-4a5b-8e89-fc73c37f3438",
+        "text": "Basically I'd like that `process_market_book` gets called on every `marketBook` update (as now) + on every sports data update",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gde8c5d51af5",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/de8c5d51af54a5ac7b501f416ddb262c.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0016-72.png",
+            "first_name": "",
+            "real_name": "Jorge",
+            "display_name": "Jorge",
+            "team": "T4G9NBD2M",
+            "name": "jgarciam95",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1667487159.073509",
+        "parent_user_id": "U0155J92A7Q",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "x26",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Basically I'd like that "
+                            },
+                            {
+                                "type": "text",
+                                "text": "process_market_book",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " gets called on every "
+                            },
+                            {
+                                "type": "text",
+                                "text": "marketBook",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " update (as now) + on every sports data update"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1667495278.689869",
+        "client_msg_id": "69794464-8F72-44E7-BFF6-2A7351477104",
+        "text": "But that won’t satisfy your problem you described ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1667487159.073509",
+        "parent_user_id": "U0155J92A7Q",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "M3kfo",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "But that "
+                            },
+                            {
+                                "type": "text",
+                                "text": "won’t"
+                            },
+                            {
+                                "type": "text",
+                                "text": " satisfy your problem you described "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U0155J92A7Q",
+        "type": "message",
+        "ts": "1667495364.888259",
+        "client_msg_id": "f4be436e-87c0-4c1b-81cb-73cfd31aac08",
+        "text": "why not? I think it would",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gde8c5d51af5",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/de8c5d51af54a5ac7b501f416ddb262c.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0016-72.png",
+            "first_name": "",
+            "real_name": "Jorge",
+            "display_name": "Jorge",
+            "team": "T4G9NBD2M",
+            "name": "jgarciam95",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1667487159.073509",
+        "parent_user_id": "U0155J92A7Q",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "E0L",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "why not? I think it would"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1667495734.537499",
+        "client_msg_id": "D8DF4C87-A244-44C5-AC58-E9D65C513FD6",
+        "text": "How do you plan on doing this live?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1667487159.073509",
+        "parent_user_id": "U0155J92A7Q",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "2ZmG",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "How do you plan on doing this live?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1667495765.311829",
+        "client_msg_id": "1D6C4F58-36F5-4E1D-BF0A-CD18D473077C",
+        "text": "If you can provide some dummy data with market + sport we can work it out ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1667487159.073509",
+        "parent_user_id": "U0155J92A7Q",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "u+Me",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "If you can provide some dummy data with market + sport we can work it out "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U0155J92A7Q",
+        "type": "message",
+        "ts": "1667496731.252869",
+        "client_msg_id": "0451b97d-099f-4028-91fd-4fc45ada33ea",
+        "text": "For live I'd do the same, `process_market_book` would get called on every `marketBook` update (as now) + on every sports data update",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gde8c5d51af5",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/de8c5d51af54a5ac7b501f416ddb262c.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0016-72.png",
+            "first_name": "",
+            "real_name": "Jorge",
+            "display_name": "Jorge",
+            "team": "T4G9NBD2M",
+            "name": "jgarciam95",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1667487159.073509",
+        "parent_user_id": "U0155J92A7Q",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "dQva",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "For live I'd do the same, "
+                            },
+                            {
+                                "type": "text",
+                                "text": "process_market_book",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " would get called on every "
+                            },
+                            {
+                                "type": "text",
+                                "text": "marketBook",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " update (as now) + on every sports data update"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U0155J92A7Q",
+        "type": "message",
+        "ts": "1667496824.254359",
+        "client_msg_id": "ef56f931-5a69-4816-8304-5b70b0139f1a",
+        "text": "But I don't know how to do the above:sweat_smile:",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gde8c5d51af5",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/de8c5d51af54a5ac7b501f416ddb262c.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0016-72.png",
+            "first_name": "",
+            "real_name": "Jorge",
+            "display_name": "Jorge",
+            "team": "T4G9NBD2M",
+            "name": "jgarciam95",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1667487159.073509",
+        "parent_user_id": "U0155J92A7Q",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "SaT",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "But I don't know how to do the above"
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "sweat_smile",
+                                "unicode": "1f605"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U0155J92A7Q",
+        "type": "message",
+        "ts": "1667496916.835839",
+        "edited": {
+            "user": "U0155J92A7Q",
+            "ts": "1667496936.000000"
+        },
+        "client_msg_id": "bee2469a-1f3b-4206-af2a-3f959bfc4dfe",
+        "text": "I am just using a market I recorded and a time series with \"pt\" and \"fair_odds\" as the example, quite simple",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gde8c5d51af5",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/de8c5d51af54a5ac7b501f416ddb262c.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0016-72.png",
+            "first_name": "",
+            "real_name": "Jorge",
+            "display_name": "Jorge",
+            "team": "T4G9NBD2M",
+            "name": "jgarciam95",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1667487159.073509",
+        "parent_user_id": "U0155J92A7Q",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "yQKA",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I am just using a market I recorded and a time series with \"pt\" and \"fair_odds\" as the example, quite simple"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

@@ -1,0 +1,1506 @@
+[
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1615212193.040900",
+        "client_msg_id": "06591e44-4bd6-4647-9a8a-922f0c66b80a",
+        "text": "This is possibly more of a maths question, than a Python one and hopefully quite a simple one, but my brain appears to be malfunctioning.\n\nAll I am trying to do, is create a function that returns the win probability for a and b (be they runners or teams) for a series n length (for now not allowing draws) on the assumption the series ends after one a or b reaches the target number of games (e.g. 3 out of 5, 4 out of 7 etc) and therefore  when calculating for a, a always has to win the final game (and vice versa).\n\nThis is what I've come up with, however what's bugging me is that the summed probabilities keeps increasing the higher number of games in the series, so I'm trying to get my head round whether I've made a coding mistake or if there is a mathematical reason for this that I've missed?\n\n```from math import ceil, pow, comb\n\ndef calc_win_probability(n, p_a, p_b=False):\n\n    if p_b is False:\n        p_b = 1-p_a\n\n    g = ceil(n\/2)\n    prob_list = []\n    for i in range(g,n+1):\n        a = (comb(i,g-1) * pow(p_a,g-1) * pow(p_b,(i - (g-1)))) * p_a\n        b = (comb(i,g-1) * pow(p_b,g-1) * pow(p_a,(i - (g-1)))) * p_b\n        prob_list.append({'games': i, 'prob_a_win': a, 'prob_b_win': b, 'combined_prob': a+b})\n\n    return {'overall_prob': sum([p['combined_prob'] for p in prob_list]) ,'prob_list': prob_list}\n\nt = calc_win_probability(7,2\/3,1\/3)\n\nfor x in t['prob_list']:\n    print(x,'\\n','----------------------------------------------------------')\nprint({'total_prob': t['overall_prob']})```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "EtZy",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "This is possibly more of a maths question, than a Python one and hopefully quite a simple one, but my brain appears to be malfunctioning.\n\nAll I am trying to do, is create a function that returns the win probability for a and b (be they runners or teams) for a series n length (for now not allowing draws) on the assumption the series ends after one a or b reaches the target number of games (e.g. 3 out of 5, 4 out of 7 etc) and therefore  when calculating for a, a always has to win the final game (and vice versa).\n\nThis is what I've come up with, however what's bugging me is that the summed probabilities keeps increasing the higher number of games in the series, so I'm trying to get my head round whether I've made a coding mistake or if there is a mathematical reason for this that I've missed?\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "from math import ceil, pow, comb\n\ndef calc_win_probability(n, p_a, p_b=False):\n\n    if p_b is False:\n        p_b = 1-p_a\n\n    g = ceil(n\/2)\n    prob_list = []\n    for i in range(g,n+1):\n        a = (comb(i,g-1) * pow(p_a,g-1) * pow(p_b,(i - (g-1)))) * p_a\n        b = (comb(i,g-1) * pow(p_b,g-1) * pow(p_a,(i - (g-1)))) * p_b\n        prob_list.append({'games': i, 'prob_a_win': a, 'prob_b_win': b, 'combined_prob': a+b})\n\n    return {'overall_prob': sum([p['combined_prob'] for p in prob_list]) ,'prob_list': prob_list}\n\nt = calc_win_probability(7,2\/3,1\/3)\n\nfor x in t['prob_list']:\n    print(x,'\\n','----------------------------------------------------------')\nprint({'total_prob': t['overall_prob']})"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01DVUAE2G1",
+        "type": "message",
+        "ts": "1615213000.041300",
+        "client_msg_id": "38bc819d-4443-46dd-83a2-7cf42a095e6b",
+        "text": "if i got this right you want the probability to win a \"best of n\" when for each match the probability of a winning is p_a for each match?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gd87aca58eae",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/d87aca58eaeabd0a953b4bc4204bbbaf.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Aaron Smith",
+            "display_name": "Aaron Smith",
+            "team": "T4G9NBD2M",
+            "name": "smiffyaaron",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "gxyO",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "if i got this right you want the probability to win a \"best of n\" when for each match the probability of a winning is p_a for each match?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01DVUAE2G1",
+        "type": "message",
+        "ts": "1615213033.041500",
+        "client_msg_id": "2996e713-2549-4394-9e7e-16601f330abe",
+        "text": "thats just binomial distribution, if i see it correctly your formula mixes up some variables",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gd87aca58eae",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/d87aca58eaeabd0a953b4bc4204bbbaf.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Aaron Smith",
+            "display_name": "Aaron Smith",
+            "team": "T4G9NBD2M",
+            "name": "smiffyaaron",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "lS8S",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "thats just binomial distribution, if i see it correctly your formula mixes up some variables"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01DVUAE2G1",
+        "type": "message",
+        "ts": "1615213131.041600",
+        "edited": {
+            "user": "U01DVUAE2G1",
+            "ts": "1615213189.000000"
+        },
+        "client_msg_id": "ff60168c-a519-45ef-8e40-c346591c2893",
+        "text": "```comb(n, i) * pow(p_a,i) * pow(p_b,(n - i))```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gd87aca58eae",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/d87aca58eaeabd0a953b4bc4204bbbaf.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Aaron Smith",
+            "display_name": "Aaron Smith",
+            "team": "T4G9NBD2M",
+            "name": "smiffyaaron",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "MZZb",
+                "elements": [
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "comb(n, i) * pow(p_a,i) * pow(p_b,(n - i))"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01DVUAE2G1",
+        "type": "message",
+        "ts": "1615213136.041800",
+        "client_msg_id": "c186ff66-0e31-435e-b85f-d3a66c0f4c9a",
+        "text": "should do",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gd87aca58eae",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/d87aca58eaeabd0a953b4bc4204bbbaf.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Aaron Smith",
+            "display_name": "Aaron Smith",
+            "team": "T4G9NBD2M",
+            "name": "smiffyaaron",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "1=7",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "should do"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UUE6E1LA1",
+        "type": "message",
+        "ts": "1615213302.043900",
+        "client_msg_id": "65bcc2de-49b0-4722-9b24-67767f54659f",
+        "text": "Does this depend on the series being truncated if team A \"wins\"? For example best of 7 series team A wins 4-0 and remaining games abandoned or are all 7 games played regardless?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gf53cae45edd",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/f53cae45edd7f7b67bbe98819597612e.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0017-72.png",
+            "first_name": "",
+            "real_name": "D C",
+            "display_name": "D C",
+            "team": "T4G9NBD2M",
+            "name": "oddsvantage",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "tuV",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Does this depend on the series being truncated if team A \"wins\"? For example best of 7 series team A wins 4-0 and remaining games abandoned or are all 7 games played regardless?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1615213374.044400",
+        "client_msg_id": "b655ca66-101a-4707-9b1b-f3230831faa2",
+        "text": "yep",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "YM4",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "yep"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1615213385.044800",
+        "client_msg_id": "bd64f2a8-1a54-46b9-81d2-5bc03989433e",
+        "text": "thats why I went for the above, rather than the simpler approach",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "z7yw",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "thats why I went for the above, rather than the simpler approach"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1615213391.045000",
+        "client_msg_id": "e27a2beb-2980-43c8-bf31-5663ed33b076",
+        "text": "(not to say I've got it correct)",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Ur7",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "(not to say I've got it correct)"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01DVUAE2G1",
+        "type": "message",
+        "ts": "1615213408.045600",
+        "client_msg_id": "f34bf3fb-e32b-4eab-bd51-f4af54ad7e48",
+        "text": "the chance of winning the bo7 is independent of if you play all games or stop as soon as someone reached 4 wins. That also means you can get rid of the idea of having to win the last game (in newbies forumula you could just put the last term into the brackets aswell)",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gd87aca58eae",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/d87aca58eaeabd0a953b4bc4204bbbaf.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Aaron Smith",
+            "display_name": "Aaron Smith",
+            "team": "T4G9NBD2M",
+            "name": "smiffyaaron",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "uKqHm",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "the chance of winning the bo7 is independent of if you play all games or stop as soon as someone reached 4 wins. That also means you can get rid of the idea of having to win the last game (in newbies forumula you could just put the last term into the brackets aswell)"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1615213411.045700",
+        "client_msg_id": "548bc6de-e91a-48fd-a9e8-7a4903d2918d",
+        "text": "but (and this is generic) in say tennis, baseball, nhl etc the series\/match would end after x games",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "yYZj0",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "but (and this is generic) in say tennis, baseball, nhl etc the series\/match would end after x games"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1615213475.046600",
+        "client_msg_id": "9dcb2999-d34f-453b-b1fa-f39ce23eb2d3",
+        "text": "I am making the assumption for say cricket where a series carries on regardless (and draws have to be factored in) the approach would require more work, so was ignoring that for now",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "DwV",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I am making the assumption for say cricket where a series carries on regardless (and draws have to be factored in) the approach would require more work, so was ignoring that for now"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01DVUAE2G1",
+        "type": "message",
+        "ts": "1615213533.046900",
+        "client_msg_id": "3b691aa3-e81b-4588-9665-f51248856d47",
+        "text": "i dont know exactly how it works in cricket, but draws should be no problem really",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gd87aca58eae",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/d87aca58eaeabd0a953b4bc4204bbbaf.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Aaron Smith",
+            "display_name": "Aaron Smith",
+            "team": "T4G9NBD2M",
+            "name": "smiffyaaron",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "ba24",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "i dont know exactly how it works in cricket, but draws should be no problem really"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1615213553.047400",
+        "client_msg_id": "99673065-c9e6-4fc0-a8ed-32a8fd8b9e0e",
+        "text": "(was more about the series carrying on)",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "9h0Q",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "(was more about the series carrying on)"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1615213564.047800",
+        "client_msg_id": "ee2f8fba-78ee-4fd9-9e34-03016a029604",
+        "text": "as they would play all games in a best of n",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "rTUC",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "as they would play all games in a best of n"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1615213574.048200",
+        "client_msg_id": "9b551fc2-59b7-4b1e-b72c-4cfba41bc043",
+        "text": "whereas most sports stop after x games have been won",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "ewy=0",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "whereas most sports stop after x games have been won"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01DVUAE2G1",
+        "type": "message",
+        "ts": "1615213580.048300",
+        "client_msg_id": "febbeffe-ca77-4a0b-951c-3aee7baaaac9",
+        "text": "but how does the series carrying on change anything in the winning probabilites?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gd87aca58eae",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/d87aca58eaeabd0a953b4bc4204bbbaf.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Aaron Smith",
+            "display_name": "Aaron Smith",
+            "team": "T4G9NBD2M",
+            "name": "smiffyaaron",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "V4aA",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "but how does the series carrying on change anything in the winning probabilites?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01DVUAE2G1",
+        "type": "message",
+        "ts": "1615213608.048600",
+        "client_msg_id": "dfbc9497-6f29-4eb9-a177-998a7d0dd112",
+        "text": "the probability to win a bo7 remains the same, no matter if all games are played or not",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gd87aca58eae",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/d87aca58eaeabd0a953b4bc4204bbbaf.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Aaron Smith",
+            "display_name": "Aaron Smith",
+            "team": "T4G9NBD2M",
+            "name": "smiffyaaron",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "mLt",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "the probability to win a bo7 remains the same, no matter if all games are played or not"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1615213685.050200",
+        "client_msg_id": "a14b8730-b25e-4416-97f5-b0ad2935fcc4",
+        "text": "well this is the bit I'm struggling with, I thought it was important that the last game was won by a specific team\/runner in my scenario as say a wins 4-2 then when running through the posisble combos, the outcome of 4-1 and then a b win making it 4-2 after 6 games is not possible, but 3-2 and then 4-2 is possible.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "b60z",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "well this is the bit I'm struggling with, I thought it was important that the last game was won by a specific team\/runner in my scenario as say a wins 4-2 then when running through the posisble combos, the outcome of 4-1 and then a b win making it 4-2 after 6 games is not possible, but 3-2 and then 4-2 is possible."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1615213695.050600",
+        "client_msg_id": "9bb2d6e0-57d3-444f-8741-5f302d43960d",
+        "text": "So I was trying to account for that",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "wBTJD",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "So I was trying to account for that"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1615213721.051200",
+        "client_msg_id": "290ac6e0-e22f-4899-b390-239f5b39bfa0",
+        "text": "and google has confused me a lot as people appear to have mixed opinions here (or maybe I'm misunderstanding the opinions)!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "uFKzt",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "and google has confused me a lot as people appear to have mixed opinions here (or maybe I'm misunderstanding the opinions)!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01DVUAE2G1",
+        "type": "message",
+        "ts": "1615213787.051400",
+        "client_msg_id": "6e43b946-5ecc-43be-8b5a-c0380bda65bd",
+        "text": "now you are looking at possibilites for certain standings rather than who won",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gd87aca58eae",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/d87aca58eaeabd0a953b4bc4204bbbaf.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Aaron Smith",
+            "display_name": "Aaron Smith",
+            "team": "T4G9NBD2M",
+            "name": "smiffyaaron",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "P\/N",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "now you are looking at possibilites for certain standings rather than who won"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1615213809.051900",
+        "client_msg_id": "b0fb7aab-70e5-4001-b935-dcbe720fe38f",
+        "text": "prob of a winning for example",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "2j3Uu",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "prob of a winning for example"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1615213837.052500",
+        "client_msg_id": "5550eff6-27c1-4b5b-8ed1-58099926fe6e",
+        "text": "(sorry got to shoot off, for a bit, back later)",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "sfZZ",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "(sorry got to shoot off, for a bit, back later)"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01DVUAE2G1",
+        "type": "message",
+        "ts": "1615213849.052800",
+        "client_msg_id": "2f280fec-d6c2-4f7b-9e42-94ad5f0ae531",
+        "text": "the probability of the overall winner is independent of if all games are played or not. The probability for the final standings obviously are not independent of this",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gd87aca58eae",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/d87aca58eaeabd0a953b4bc4204bbbaf.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Aaron Smith",
+            "display_name": "Aaron Smith",
+            "team": "T4G9NBD2M",
+            "name": "smiffyaaron",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1615213849.052800",
+        "reply_count": 3,
+        "reply_users_count": 3,
+        "latest_reply": "1615240988.056900",
+        "reply_users": [
+            "UUE6E1LA1",
+            "UFTBRB3F1",
+            "U01DVUAE2G1"
+        ],
+        "replies": [
+            {
+                "user": "UUE6E1LA1",
+                "ts": "1615218511.056400"
+            },
+            {
+                "user": "UFTBRB3F1",
+                "ts": "1615219571.056600"
+            },
+            {
+                "user": "U01DVUAE2G1",
+                "ts": "1615240988.056900"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": false,
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "bvu2d",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "the probability of the overall winner is independent of if all games are played or not. The probability for the final standings obviously are not independent of this"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UUE6E1LA1",
+        "type": "message",
+        "ts": "1615214539.053500",
+        "client_msg_id": "635db987-d604-48b4-9325-55ca5b1035e8",
+        "text": "Cricket results in a series playing out regardless of win. Certainly in test matches and international one day stuff.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gf53cae45edd",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/f53cae45edd7f7b67bbe98819597612e.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0017-72.png",
+            "first_name": "",
+            "real_name": "D C",
+            "display_name": "D C",
+            "team": "T4G9NBD2M",
+            "name": "oddsvantage",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1615214539.053500",
+        "reply_count": 4,
+        "reply_users_count": 2,
+        "latest_reply": "1615302051.004900",
+        "reply_users": [
+            "UFTBRB3F1",
+            "U01DVUAE2G1"
+        ],
+        "replies": [
+            {
+                "user": "UFTBRB3F1",
+                "ts": "1615217822.056000"
+            },
+            {
+                "user": "UFTBRB3F1",
+                "ts": "1615218447.056200"
+            },
+            {
+                "user": "U01DVUAE2G1",
+                "ts": "1615241193.057100"
+            },
+            {
+                "user": "UFTBRB3F1",
+                "ts": "1615302051.004900"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": false,
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "BRfJ",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Cricket results in a series playing out regardless of win. Certainly in test matches and international one day stuff."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01DVUAE2G1",
+        "type": "message",
+        "ts": "1615215794.054200",
+        "client_msg_id": "9f52a70b-d301-4730-98cc-1ed2f87f27de",
+        "text": "marketCatalogues use 2018-10-26T18:45:00.000Z for datetime representation. I prefer to handle epoch timestamps, so i wanted to convert it. Does betfair always use Z (0 timezone) or does bf use diffrent timezones aswell?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gd87aca58eae",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/d87aca58eaeabd0a953b4bc4204bbbaf.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Aaron Smith",
+            "display_name": "Aaron Smith",
+            "team": "T4G9NBD2M",
+            "name": "smiffyaaron",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "v3e",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "marketCatalogues use 2018-10-26T18:45:00.000Z for datetime representation. I prefer to handle epoch timestamps, so i wanted to convert it. Does betfair always use Z (0 timezone) or does bf use diffrent timezones aswell?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1615216128.055100",
+        "edited": {
+            "user": "UBS7QANF3",
+            "ts": "1615216144.000000"
+        },
+        "client_msg_id": "bdc76358-2a42-4569-9cba-05feac534b9f",
+        "text": "<https:\/\/docs.developer.betfair.com\/display\/1smk3cen4v3lu3yomq5qye0ni\/Additional+Information#AdditionalInformation-TimeZones&amp;TimeFormat>\n\n&gt; All times are returned in GMT and are in ISO 8601 (<http:\/\/en.wikipedia.org\/wiki\/ISO_8601>) format. They can be converted to your local timezone using the timezone field returned by the <https:\/\/docs.developer.betfair.com\/docs\/display\/1smk3cen4v3lu3yomq5qye0ni\/getAccountDetails|getAccountDetails> operation or into the local market timezone using the timezone returned for the event by <https:\/\/docs.developer.betfair.com\/docs\/display\/1smk3cen4v3lu3yomq5qye0ni\/listMarketCatalogue|listMarketCatalogue>",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "KfOPv",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "link",
+                                "url": "https:\/\/docs.developer.betfair.com\/display\/1smk3cen4v3lu3yomq5qye0ni\/Additional+Information#AdditionalInformation-TimeZones&TimeFormat"
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_quote",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "All times are returned in GMT and are in ISO 8601 ("
+                            },
+                            {
+                                "type": "link",
+                                "url": "http:\/\/en.wikipedia.org\/wiki\/ISO_8601"
+                            },
+                            {
+                                "type": "text",
+                                "text": ") format. They can be converted to your local timezone using the timezone field returned by the "
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/docs.developer.betfair.com\/docs\/display\/1smk3cen4v3lu3yomq5qye0ni\/getAccountDetails",
+                                "text": "getAccountDetails"
+                            },
+                            {
+                                "type": "text",
+                                "text": " operation or into the local market timezone using the timezone returned for the event by "
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/docs.developer.betfair.com\/docs\/display\/1smk3cen4v3lu3yomq5qye0ni\/listMarketCatalogue",
+                                "text": "listMarketCatalogue"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01DVUAE2G1",
+        "type": "message",
+        "ts": "1615216174.055700",
+        "client_msg_id": "1ad614c6-616b-49f6-b009-d7a554e49fe0",
+        "text": "<@UBS7QANF3> thanks :slightly_smiling_face:",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gd87aca58eae",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/d87aca58eaeabd0a953b4bc4204bbbaf.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Aaron Smith",
+            "display_name": "Aaron Smith",
+            "team": "T4G9NBD2M",
+            "name": "smiffyaaron",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "G+C=",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "user",
+                                "user_id": "UBS7QANF3"
+                            },
+                            {
+                                "type": "text",
+                                "text": " thanks "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "slightly_smiling_face",
+                                "unicode": "1f642"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1615216208.055900",
+        "client_msg_id": "2067357f-465f-4b88-bb88-35ce6e43aa25",
+        "text": ":+1:",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "5GaY6",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "emoji",
+                                "name": "+1",
+                                "unicode": "1f44d"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1615217822.056000",
+        "client_msg_id": "1a82bdda-0afd-4ab0-8892-2bf46e7d1c87",
+        "text": "Sorry, was sidetracked.\n\nYes, thats why I was ignoring cricket for now, I want to determine the probability of A to win, bearing in mind that:\n\nThe series ends once A reaches x out of n (e.g. 4\/7)\nThere can be no draws\nIt is know prior to the start the probability each team has of winning an individual game\n\nSo what I'm struggling to get my head round is why is it not important to discount the unplayed games and factor in that A has to win the final game (or B when in reverse)?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1615214539.053500",
+        "parent_user_id": "UUE6E1LA1",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "=JB",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Sorry, was sidetracked.\n\nYes, thats why I was ignoring cricket for now, I want to determine the probability of A to win, bearing in mind that:\n\nThe series ends once A reaches x out of n (e.g. 4\/7)\nThere can be no draws\nIt is know prior to the start the probability each team has of winning an individual game\n\nSo what I'm struggling to get my head round is why is it not important to discount the unplayed games and factor in that A has to win the final game (or B when in reverse)?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1615218447.056200",
+        "client_msg_id": "2d99013f-b97f-4143-83a0-5f88bd9ec53f",
+        "text": "and the whole purpose of this is then I can build on the logic to work out at any point the probability of winning based at any stage in the series (hence I am doubting my logic at the mo as I don't seem to get that last bit)!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1615214539.053500",
+        "parent_user_id": "UUE6E1LA1",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "dJ04",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "and the whole purpose of this is then I can build on the logic to work out at any point the probability of winning based at any stage in the series (hence I am doubting my logic at the mo as I don't seem to get that last bit)!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UUE6E1LA1",
+        "type": "message",
+        "ts": "1615218511.056400",
+        "client_msg_id": "f03b1f35-5bb2-4ada-bb95-a3780c2805ad",
+        "text": "I agree with you here but if using binomial then we are assuming probabilities of each time winning are identical for each game. I can't help but feel that Binomial distribution is not quite right for this problem though. I mean take a MLB were the choice of starting pitcher has a massive effect on price. Is it not more accurate to just enumerate all possible outcomes using the respective probabilities for each distinct pair of probabilities. I feel that this question should have a simpler answer than what I am trying to make of it though.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gf53cae45edd",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/f53cae45edd7f7b67bbe98819597612e.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0017-72.png",
+            "first_name": "",
+            "real_name": "D C",
+            "display_name": "D C",
+            "team": "T4G9NBD2M",
+            "name": "oddsvantage",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1615213849.052800",
+        "parent_user_id": "U01DVUAE2G1",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "ueP",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I agree with you here but if using binomial then we are assuming probabilities of each time winning are identical for each game. I can't help but feel that Binomial distribution is not quite right for this problem though. I mean take a MLB were the choice of starting pitcher has a massive effect on price. Is it not more accurate to just enumerate all possible outcomes using the respective probabilities for each distinct pair of probabilities. I feel that this question should have a simpler answer than what I am trying to make of it though."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1615219571.056600",
+        "client_msg_id": "4841b8e5-b546-4878-8f27-9bee5c6b91d5",
+        "text": "For the avoidance of doubt I fully appreciate this is useless for real world prices, as you say there will be too many other factors. But I am just trying to get my head round the basic logic before I consider anything else.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1615213849.052800",
+        "parent_user_id": "U01DVUAE2G1",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Lr=",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "For the avoidance of doubt I fully appreciate this is useless for real world prices, as you say there will be too many other factors. But I am just trying to get my head round the basic logic before I consider anything else."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01DVUAE2G1",
+        "type": "message",
+        "ts": "1615240988.056900",
+        "client_msg_id": "36eba6e7-07d3-4012-9343-eccdc26c619b",
+        "text": "yeah, in a real world situation this will probably be over simplified, i was just aiming to solve the math questions asked. I dont know anything about cricket really :smile:",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gd87aca58eae",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/d87aca58eaeabd0a953b4bc4204bbbaf.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Aaron Smith",
+            "display_name": "Aaron Smith",
+            "team": "T4G9NBD2M",
+            "name": "smiffyaaron",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1615213849.052800",
+        "parent_user_id": "U01DVUAE2G1",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "PX9NV",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "yeah, in a real world situation this will probably be over simplified, i was just aiming to solve the math questions asked. I dont know anything about cricket really "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "smile",
+                                "unicode": "1f604"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01DVUAE2G1",
+        "type": "message",
+        "ts": "1615241193.057100",
+        "edited": {
+            "user": "U01DVUAE2G1",
+            "ts": "1615241236.000000"
+        },
+        "client_msg_id": "bd693c18-03d6-42aa-b97b-f182809e6f9b",
+        "text": "once you see that the probability is independent of if all games are played or not, you will also see that you can disregard who wins last game. Just calculate the probability for a winning more than b over n matches. This will also be the probability for a winning over b if the series ends once a winner is decided",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gd87aca58eae",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/d87aca58eaeabd0a953b4bc4204bbbaf.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Aaron Smith",
+            "display_name": "Aaron Smith",
+            "team": "T4G9NBD2M",
+            "name": "smiffyaaron",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1615214539.053500",
+        "parent_user_id": "UUE6E1LA1",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "T56w9",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "once you see that the probability is independent of if all games are played or not, you will also see that you can disregard who wins last game. Just calculate the probability for a winning more than b over n matches. This will also be the probability for a winning over b if the series ends once a winner is decided"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

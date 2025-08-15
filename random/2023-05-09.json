@@ -1,0 +1,1335 @@
+[
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1683616481.939519",
+        "client_msg_id": "8b1fbdd7-e7b4-4a33-a2cd-cb2065d9b7a6",
+        "text": "Ah yes thats the one! Thanks",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1683576757.293849",
+        "parent_user_id": "UFTBRB3F1",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "4W5Pp",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Ah yes thats the one! Thanks"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1683634789.288409",
+        "client_msg_id": "ad845d08-a04a-49df-9882-b2379ba37317",
+        "text": "I've recently switched to a new MacBook pro, from an old windows machine and as I knew performance was rubbish on that, I didn't worry too much, just left things processing overnight etc. However with an M2 Max I was expecting super fast backtesting, but compared to the results people post on here I seem to be way behind (e.g. 16k pre-race horse racing markets, 1 hour before the off takes circa 3 hours).\n\nMy code is as follows:\n```def start_backtest_a(chunked_markets, max_workers, profit_sum, in_play, seconds_to_start, event_processing,\n                    strategy_names, match_all, middleware):\n\n    _process_jobs = []\n    with futures.ProcessPoolExecutor(max_workers=max_workers) as p:\n        for m in chunked_markets:\n            _process_jobs.append(\n                p.submit(startup,\n                         profit_sum=profit_sum,\n                         in_play=in_play,\n                         seconds_to_start=seconds_to_start,\n                         event_processing=event_processing,\n                         markets=m,\n                         strategy_names=strategy_names,\n                         match_all=match_all,\n                         middleware=middleware\n                )\n            )\n        for i, job in enumerate(futures.as_completed(_process_jobs)):\n            try:\n                mini_output_list = job.result()  # wait for result\n                output_list.extend(mini_output_list)\n                progress = len(m) * i+1\n                time_taken_seconds = (datetime.datetime.utcnow() - sim_start_time).total_seconds()\n                time_taken_minutes = time_taken_seconds \/ 60\n                percentage = progress \/ total_markets\n                time_taken = time_taken_minutes if time_taken_minutes &gt; 2 else time_taken_seconds\n                time_remaining = (time_taken \/ percentage) - time_taken\n                time_measure = 'minutes' if time_taken_minutes &gt; 2 else 'seconds'\n                print(f'Currently on market {progress} \/ {percentage*100:.2f}% of {total_markets}, '\n                      f'time taken so far is {time_taken:.2f} {time_measure}, estimated time remaining is {time_remaining:.2f} {time_measure}, ')\n            except Exception as e:\n                print(f'Exception {e}.')\n        return output_list```\nWith startup being as follows:\n\n```def startup(markets, profit_sum, in_play, seconds_to_start, event_processing, strategy_names, match_all, middleware=False):\n    logger = logging.getLogger()\n\n    custom_format = \"%(asctime) %(levelname) %(message)\"\n    log_handler = logging.StreamHandler()\n    formatter = jsonlogger.JsonFormatter(custom_format)\n    formatter.converter = time.gmtime\n    log_handler.setFormatter(formatter)\n    logger.addHandler(log_handler)\n    logger.setLevel(logging.CRITICAL)  # Set to logging.CRITICAL to speed up simulation\n\n    start_time = get_utc_time()\n\n    # Gets a list of strategy settings\n    settings = [setting for setting in rc if setting['on'] is True and setting['strategy_name'] in strategy_names]\n\n    client = clients.SimulatedClient(simulated_full_match=match_all)\n\n    framework = FlumineSimulation(client=client)\n\n    # with mock_patch(\"builtins.open\", smart_open.open): # Commented out as files will be unzipped prior to running\n    for s in settings:\n        max_selection_exposure = s['max_selection_exposure'] if true_or_false(s['max_selection_exposure']) != False else None\n        include_virtual_prices = \"EX_BEST_OFFERS_DISP\" if true_or_false(\n            s['include_virtual_prices']) is not False else \"EX_ALL_OFFERS\"\n        if s['strategy_type'] == 'simple':\n\n            strategy = betting_strategy(start_time=start_time, settings=s, paper=client.paper_trade,\n                                        market_filter=create_market_filter(markets, in_play, seconds_to_start, event_processing),\n            market_data_filter=streaming_market_data_filter(\n            fields=[\n                include_virtual_prices,\n                \"EX_TRADED\",\n                \"EX_TRADED_VOL\",\n                \"EX_LTP\",\n                \"EX_MARKET_DEF\",\n                \"SP_TRADED\",\n                \"SP_PROJECTED\",\n            ]\n            ),\n            streaming_timeout=2,\n            max_selection_exposure=max_selection_exposure,\n            max_order_exposure=s['max_order_exposure'],\n            conflate_ms=s['conflate'],\n            name=s['strategy_name'],\n\n            )\n\n            framework.add_strategy(strategy)\n\n    ''' Add in Middleware to get Market Catalogue '''\n    framework.add_market_middleware(MarketCatalogueMiddleware())\n\n    if middleware is not False:\n        framework.add_market_middleware(middleware)\n\n    framework.add_market_middleware(RiskMiddleware(framework))\n\n    framework.run()```\nI presume that calling the middleware could be an issue and also potentially my structure is wrong (i.e. in terms of trying to multiprocess at the wrong point).\n\nI did try to get chatGPT to re-write things and it tried to use:\n\n_with mp.get_context('spawn').Pool(max_workers) as pool:_ \n\nHowever I couldn't get it working (i.e. it never actually ran the framework, so I couldn't work out how to proceed).\n\nAppreciate this is a bit of a '_how long is a piece of string_' situation, but is there a fairly generic approach to using multi processing with middleware that perhaps I could use as a template?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1683634789.288409",
+        "reply_count": 35,
+        "reply_users_count": 3,
+        "latest_reply": "1683708982.507299",
+        "reply_users": [
+            "U4H19D1D2",
+            "UFTBRB3F1",
+            "UUCD6P13J"
+        ],
+        "replies": [
+            {
+                "user": "U4H19D1D2",
+                "ts": "1683634988.475859"
+            },
+            {
+                "user": "UFTBRB3F1",
+                "ts": "1683636580.081239"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1683636657.374509"
+            },
+            {
+                "user": "UFTBRB3F1",
+                "ts": "1683636704.942109"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1683636738.491239"
+            },
+            {
+                "user": "UFTBRB3F1",
+                "ts": "1683637381.684469"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1683637436.818669"
+            },
+            {
+                "user": "UFTBRB3F1",
+                "ts": "1683637527.108229"
+            },
+            {
+                "user": "UFTBRB3F1",
+                "ts": "1683655596.150749"
+            },
+            {
+                "user": "UFTBRB3F1",
+                "ts": "1683655609.651549"
+            },
+            {
+                "user": "UFTBRB3F1",
+                "ts": "1683655623.442239"
+            },
+            {
+                "user": "UUCD6P13J",
+                "ts": "1683655682.133679"
+            },
+            {
+                "user": "UFTBRB3F1",
+                "ts": "1683655958.109769"
+            },
+            {
+                "user": "UFTBRB3F1",
+                "ts": "1683657674.121649"
+            },
+            {
+                "user": "UFTBRB3F1",
+                "ts": "1683657700.493559"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1683657768.619989"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1683657804.142299"
+            },
+            {
+                "user": "UFTBRB3F1",
+                "ts": "1683658316.205149"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1683658385.911519"
+            },
+            {
+                "user": "UFTBRB3F1",
+                "ts": "1683658576.245729"
+            },
+            {
+                "user": "UFTBRB3F1",
+                "ts": "1683658596.538059"
+            },
+            {
+                "user": "UFTBRB3F1",
+                "ts": "1683658604.174499"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1683694222.636189"
+            },
+            {
+                "user": "UFTBRB3F1",
+                "ts": "1683701106.320419"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1683701300.580349"
+            },
+            {
+                "user": "UFTBRB3F1",
+                "ts": "1683705045.149049"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1683706240.672339"
+            },
+            {
+                "user": "UFTBRB3F1",
+                "ts": "1683708101.969049"
+            },
+            {
+                "user": "UFTBRB3F1",
+                "ts": "1683708117.284839"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1683708228.001079"
+            },
+            {
+                "user": "UFTBRB3F1",
+                "ts": "1683708519.841159"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1683708688.964409"
+            },
+            {
+                "user": "UFTBRB3F1",
+                "ts": "1683708796.970789"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1683708827.157309"
+            },
+            {
+                "user": "UFTBRB3F1",
+                "ts": "1683708982.507299"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": true,
+        "last_read": "1683708982.507299",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Vmr",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I've recently switched to a new MacBook pro, from an old windows machine and as I knew performance was rubbish on that, I didn't worry too much, just left things processing overnight etc. However with an M2 Max I was expecting super fast backtesting, but compared to the results people post on here I seem to be way behind (e.g. 16k pre-race horse racing markets, 1 hour before the off takes circa 3 hours).\n\nMy code is as follows:\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "def start_backtest_a(chunked_markets, max_workers, profit_sum, in_play, seconds_to_start, event_processing,\n                    strategy_names, match_all, middleware):\n\n    _process_jobs = []\n    with futures.ProcessPoolExecutor(max_workers=max_workers) as p:\n        for m in chunked_markets:\n            _process_jobs.append(\n                p.submit(startup,\n                         profit_sum=profit_sum,\n                         in_play=in_play,\n                         seconds_to_start=seconds_to_start,\n                         event_processing=event_processing,\n                         markets=m,\n                         strategy_names=strategy_names,\n                         match_all=match_all,\n                         middleware=middleware\n                )\n            )\n        for i, job in enumerate(futures.as_completed(_process_jobs)):\n            try:\n                mini_output_list = job.result()  # wait for result\n                output_list.extend(mini_output_list)\n                progress = len(m) * i+1\n                time_taken_seconds = (datetime.datetime.utcnow() - sim_start_time).total_seconds()\n                time_taken_minutes = time_taken_seconds \/ 60\n                percentage = progress \/ total_markets\n                time_taken = time_taken_minutes if time_taken_minutes > 2 else time_taken_seconds\n                time_remaining = (time_taken \/ percentage) - time_taken\n                time_measure = 'minutes' if time_taken_minutes > 2 else 'seconds'\n                print(f'Currently on market {progress} \/ {percentage*100:.2f}% of {total_markets}, '\n                      f'time taken so far is {time_taken:.2f} {time_measure}, estimated time remaining is {time_remaining:.2f} {time_measure}, ')\n            except Exception as e:\n                print(f'Exception {e}.')\n        return output_list"
+                            }
+                        ],
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\nWith startup being as follows:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "def startup(markets, profit_sum, in_play, seconds_to_start, event_processing, strategy_names, match_all, middleware=False):\n    logger = logging.getLogger()\n\n    custom_format = \"%(asctime) %(levelname) %(message)\"\n    log_handler = logging.StreamHandler()\n    formatter = jsonlogger.JsonFormatter(custom_format)\n    formatter.converter = time.gmtime\n    log_handler.setFormatter(formatter)\n    logger.addHandler(log_handler)\n    logger.setLevel(logging.CRITICAL)  # Set to logging.CRITICAL to speed up simulation\n\n    start_time = get_utc_time()\n\n    # Gets a list of strategy settings\n    settings = [setting for setting in rc if setting['on'] is True and setting['strategy_name'] in strategy_names]\n\n    client = clients.SimulatedClient(simulated_full_match=match_all)\n\n    framework = FlumineSimulation(client=client)\n\n    # with mock_patch(\"builtins.open\", smart_open.open): # Commented out as files will be unzipped prior to running\n    for s in settings:\n        max_selection_exposure = s['max_selection_exposure'] if true_or_false(s['max_selection_exposure']) != False else None\n        include_virtual_prices = \"EX_BEST_OFFERS_DISP\" if true_or_false(\n            s['include_virtual_prices']) is not False else \"EX_ALL_OFFERS\"\n        if s['strategy_type'] == 'simple':\n\n            strategy = betting_strategy(start_time=start_time, settings=s, paper=client.paper_trade,\n                                        market_filter=create_market_filter(markets, in_play, seconds_to_start, event_processing),\n            market_data_filter=streaming_market_data_filter(\n            fields=[\n                include_virtual_prices,\n                \"EX_TRADED\",\n                \"EX_TRADED_VOL\",\n                \"EX_LTP\",\n                \"EX_MARKET_DEF\",\n                \"SP_TRADED\",\n                \"SP_PROJECTED\",\n            ]\n            ),\n            streaming_timeout=2,\n            max_selection_exposure=max_selection_exposure,\n            max_order_exposure=s['max_order_exposure'],\n            conflate_ms=s['conflate'],\n            name=s['strategy_name'],\n\n            )\n\n            framework.add_strategy(strategy)\n\n    ''' Add in Middleware to get Market Catalogue '''\n    framework.add_market_middleware(MarketCatalogueMiddleware())\n\n    if middleware is not False:\n        framework.add_market_middleware(middleware)\n\n    framework.add_market_middleware(RiskMiddleware(framework))\n\n    framework.run()"
+                            }
+                        ],
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\nI presume that calling the middleware could be an issue and also potentially my structure is wrong (i.e. in terms of trying to multiprocess at the wrong point).\n\nI did try to get chatGPT to re-write things and it tried to use:\n\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "with mp.get_context('spawn').Pool(max_workers) as pool: ",
+                                "style": {
+                                    "italic": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n\nHowever I couldn't get it working (i.e. it never actually ran the framework, so I couldn't work out how to proceed).\n\nAppreciate this is a bit of a '"
+                            },
+                            {
+                                "type": "text",
+                                "text": "how long is a piece of string",
+                                "style": {
+                                    "italic": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "' situation, but is there a fairly generic approach to using multi processing with middleware that perhaps I could use as a template?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1683634988.475859",
+        "client_msg_id": "4648afdf-cac3-44c5-83fc-727f744df231",
+        "text": "What are we looking at here? Is it a simulation as I see paper trade client? a streaming market filter? no listener_kwargs?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1683634789.288409",
+        "parent_user_id": "UFTBRB3F1",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "D9N",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "What are we looking at here? Is it a simulation as I see paper trade client? a streaming market filter? no listener_kwargs?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1683636580.081239",
+        "client_msg_id": "a75c2c03-48f6-497b-bf6a-4d55d14d810e",
+        "text": "Oops, sorry, ignore the paper trade reference, it is indeed simulated.\n\nHere is the missing function for filter \/ listener_kwargs:\n\n```def create_market_filter(markets, in_play, seconds_to_start, event_processing):\n\n    if in_play is False:\n        if event_processing is False:\n            return {\"markets\": markets, \"listener_kwargs\": {\"seconds_to_start\": seconds_to_start, \"inplay\":False}}\n        else:\n            return {\"markets\": markets, \"listener_kwargs\": {\"seconds_to_start\": seconds_to_start, \"inplay\":False}, \"event_processing\": True}\n    else:\n        if event_processing is False:\n            return {\"markets\": markets, \"listener_kwargs\": {\"seconds_to_start\": seconds_to_start}}\n        else:\n            return {\"markets\": markets, \"listener_kwargs\": {\"seconds_to_start\": seconds_to_start}, \"event_processing\": True}```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1683634789.288409",
+        "parent_user_id": "UFTBRB3F1",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "UI6",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Oops, sorry, ignore the paper trade reference, it is indeed simulated.\n\nHere is the missing function for filter \/ listener_kwargs:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "def create_market_filter(markets, in_play, seconds_to_start, event_processing):\n\n    if in_play is False:\n        if event_processing is False:\n            return {\"markets\": markets, \"listener_kwargs\": {\"seconds_to_start\": seconds_to_start, \"inplay\":False}}\n        else:\n            return {\"markets\": markets, \"listener_kwargs\": {\"seconds_to_start\": seconds_to_start, \"inplay\":False}, \"event_processing\": True}\n    else:\n        if event_processing is False:\n            return {\"markets\": markets, \"listener_kwargs\": {\"seconds_to_start\": seconds_to_start}}\n        else:\n            return {\"markets\": markets, \"listener_kwargs\": {\"seconds_to_start\": seconds_to_start}, \"event_processing\": True}"
+                            }
+                        ],
+                        "border": 0
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1683636657.374509",
+        "client_msg_id": "269ec5fe-df8c-4121-9a24-2c0083a5ac92",
+        "text": "Did you get an output from profiling it?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1683634789.288409",
+        "parent_user_id": "UFTBRB3F1",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "fxzsZ",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Did you get an output from profiling it?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1683636704.942109",
+        "client_msg_id": "1d1f879c-f616-49ce-acfb-dd7bb7be3c1b",
+        "text": "No, it couldn't pickle the startup function properly, hence I'm a bit stuck!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1683634789.288409",
+        "parent_user_id": "UFTBRB3F1",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "sn+7",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "No, it couldn't pickle the startup function properly, hence I'm a bit stuck!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1683636738.491239",
+        "client_msg_id": "a043836b-33c3-46a9-9e7c-77e259336165",
+        "text": "Where you trying to multi process as well?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1683634789.288409",
+        "parent_user_id": "UFTBRB3F1",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Yhgp",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Where you trying to multi process as well?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "text": "This is the complete file, its not the neatest admitedly!",
+        "files": [
+            {
+                "id": "F056Z1BCM0C",
+                "created": 1683637354,
+                "timestamp": 1683637354,
+                "name": "backtesting.py",
+                "title": "backtesting.py",
+                "mimetype": "text\/plain",
+                "filetype": "python",
+                "pretty_type": "Python",
+                "user": "UFTBRB3F1",
+                "user_team": "T4G9NBD2M",
+                "editable": true,
+                "size": 21283,
+                "mode": "snippet",
+                "is_external": false,
+                "external_type": "",
+                "is_public": true,
+                "public_url_shared": false,
+                "display_as_bot": false,
+                "username": "",
+                "url_private": "https:\/\/files.slack.com\/files-pri\/T4G9NBD2M-F056Z1BCM0C\/backtesting.py?t=xoxe-152328387089-8357743338709-8373272928225-dfe8ebcd8ca3d2f633bcafeb95191840",
+                "url_private_download": "https:\/\/files.slack.com\/files-pri\/T4G9NBD2M-F056Z1BCM0C\/download\/backtesting.py?t=xoxe-152328387089-8357743338709-8373272928225-dfe8ebcd8ca3d2f633bcafeb95191840",
+                "permalink": "https:\/\/betcode-org.slack.com\/files\/UFTBRB3F1\/F056Z1BCM0C\/backtesting.py",
+                "permalink_public": "https:\/\/slack-files.com\/T4G9NBD2M-F056Z1BCM0C-148e3aa6d9",
+                "edit_link": "https:\/\/betcode-org.slack.com\/files\/UFTBRB3F1\/F056Z1BCM0C\/backtesting.py\/edit",
+                "is_starred": false,
+                "has_rich_preview": false,
+                "file_access": "visible"
+            }
+        ],
+        "upload": false,
+        "user": "UFTBRB3F1",
+        "display_as_bot": false,
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "UaE",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "This is the complete file, its not the neatest admitedly!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "type": "message",
+        "ts": "1683637381.684469",
+        "client_msg_id": "72b33eb0-a4d2-4db4-b6a9-1e9156d32548",
+        "thread_ts": "1683634789.288409",
+        "parent_user_id": "UFTBRB3F1"
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1683637436.818669",
+        "client_msg_id": "9459ea28-11a3-4480-8ba0-9fb8114bcb47",
+        "text": "Can you profile your code on a few files on a single process and share that output from cprofilev?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1683634789.288409",
+        "parent_user_id": "UFTBRB3F1",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "pzE4",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Can you profile your code on a few files on a single process and share that output from cprofilev?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1683637527.108229",
+        "client_msg_id": "1b44d550-65b2-4cd6-adb3-48b451dac156",
+        "text": "Okay cool, good plan, let me try that and report back",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1683634789.288409",
+        "parent_user_id": "UFTBRB3F1",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "VLfS",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Okay cool, good plan, let me try that and report back"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1683655596.150749",
+        "client_msg_id": "d866f7ea-0e59-46a0-abd7-1b56eb5ad38b",
+        "text": "```ncalls  tottime  percall  cumtime  percall filename:lineno(function)\n      113    0.002    0.000  585.570    5.182 \/Library\/Frameworks\/Python.framework\/Versions\/3.11\/lib\/python3.11\/concurrent\/futures\/_base.py:199(as_completed)\n      114    0.001    0.000  585.563    5.137 \/Library\/Frameworks\/Python.framework\/Versions\/3.11\/lib\/python3.11\/threading.py:604(wait)\n      114    0.003    0.000  585.562    5.137 \/Library\/Frameworks\/Python.framework\/Versions\/3.11\/lib\/python3.11\/threading.py:288(wait)\n     2480  585.558    0.236  585.558    0.236 {method 'acquire' of '_thread.lock' objects}\n   1998\/1    0.019    0.000   10.578   10.578 {built-in method builtins.exec}\n        1    0.000    0.000   10.578   10.578 backtesting.py:1(&lt;module&gt;)\n        1    0.002    0.002    8.888    8.888 backtesting.py:288(start_backtest_a)\n  1979\/22    0.004    0.000    1.383    0.063 &lt;frozen importlib._bootstrap&gt;:1167(_find_and_load)\n  1960\/22    0.004    0.000    1.382    0.063 &lt;frozen importlib._bootstrap&gt;:1122(_find_and_load_unlocked)\n  1874\/23    0.003    0.000    1.379    0.060 &lt;frozen importlib._bootstrap&gt;:666(_load_unlocked)\n  1630\/23    0.002    0.000    1.379    0.060 &lt;frozen importlib._bootstrap_external&gt;:934(exec_module)\n  4574\/43    0.001    0.000    1.370    0.032 &lt;frozen importlib._bootstrap&gt;:233(_call_with_frames_removed)\n  894\/160    0.001    0.000    1.056    0.007 {built-in method builtins.__import__}\n 2336\/977    0.002    0.000    0.919    0.001 &lt;frozen importlib._bootstrap&gt;:1209(_handle_fromlist)\n        1    0.000    0.000    0.688    0.688 \/python_files\/football_data.py:1(&lt;module&gt;)\n4684\/4545    0.045    0.000    0.350    0.000 {built-in method builtins.__build_class__}\n        1    0.000    0.000    0.335    0.335 \/python_files\/validation_functions.py:1(&lt;module&gt;)\n        1    0.000    0.000    0.334    0.334 \/python_files\/import_historic_horse_data.py:1(&lt;module&gt;)\n     1630    0.005    0.000    0.325    0.000 &lt;frozen importlib._bootstrap_external&gt;:1007(get_code)\n        1    0.000    0.000    0.309    0.309 backtesting.py:212(generate_event_groupings)\n        1    0.000    0.000    0.297    0.297 \/Library\/Frameworks\/Python.framework\/Versions\/3.11\/lib\/python3.11\/site-packages\/statsmodels\/tsa\/holtwinters\/__init__.py:1(&lt;module&gt;)\n        1    0.000    0.000    0.297    0.297 \/Library\/Frameworks\/Python.framework\/Versions\/3.11\/lib\/python3.11\/site-packages\/statsmodels\/tsa\/holtwinters\/model.py:1(&lt;module&gt;)\n        1    0.000    0.000    0.249    0.249 \/Library\/Frameworks\/Python.framework\/Versions\/3.11\/lib\/python3.11\/site-packages\/matplotlib\/pyplot.py:1(&lt;module&gt;)\n        1    0.000    0.000    0.231    0.231 \/Library\/Frameworks\/Python.framework\/Versions\/3.11\/lib\/python3.11\/site-packages\/pandas\/__init__.py:1(&lt;module&gt;)\n        1    0.013    0.013    0.222    0.222 backtesting.py:270(&lt;listcomp&gt;)\n    39431    0.214    0.000    0.214    0.000 {built-in method posix.stat}\n     1630    0.002    0.000    0.214    0.000 &lt;frozen importlib._bootstrap_external&gt;:1127(get_data)\n1874\/1863    0.002    0.000    0.194    0.000 &lt;frozen importlib._bootstrap&gt;:566(module_from_spec)\n        1    0.000    0.000    0.194    0.194 \/Library\/Frameworks\/Python.framework\/Versions\/3.11\/lib\/python3.11\/site-packages\/scipy\/stats\/__init__.py:1(&lt;module&gt;)\n     1637    0.188    0.000    0.188    0.000 {method 'read' of '_io.BufferedReader' objects}\n  234\/229    0.000    0.000    0.173    0.001 &lt;frozen importlib._bootstrap_external&gt;:1231(create_module)\n  234\/229    0.170    0.001    0.172    0.001 {built-in method _imp.create_dynamic}\n        1    0.000    0.000    0.172    0.172 \/Library\/Frameworks\/Python.framework\/Versions\/3.11\/lib\/python3.11\/site-packages\/scipy\/stats\/_stats_py.py:1(&lt;module&gt;)\n      100    0.000    0.000    0.164    0.002 \/Library\/Frameworks\/Python.framework\/Versions\/3.11\/lib\/python3.11\/site-packages\/matplotlib\/artist.py:159(_update_set_signature_and_docstring)\n       99    0.000    0.000    0.161    0.002 \/Library\/Frameworks\/Python.framework\/Versions\/3.11\/lib\/python3.11\/site-packages\/matplotlib\/artist.py:126(__init_subclass__)\n       33    0.000    0.000    0.148    0.004 \/Library\/Frameworks\/Python.framework\/Versions\/3.11\/lib\/python3.11\/importlib\/__init__.py:108(import_module)\n       33    0.000    0.000    0.148    0.004 &lt;frozen importlib._bootstrap&gt;:1194(_gcd_import)\n        1    0.000    0.000    0.140    0.140 \/Library\/Frameworks\/Python.framework\/Versions\/3.11\/lib\/python3.11\/site-packages\/scipy\/stats\/distributions.py:1(&lt;module&gt;)\n        1    0.000    0.000    0.137    0.137 \/Library\/Frameworks\/Python.framework\/Versions\/3.11\/lib\/python3.11\/site-packages\/matplotlib\/figure.py:1(&lt;module&gt;)\n        1    0.000    0.000    0.129    0.129 \/Library\/Frameworks\/Python.framework\/Versions\/3.11\/lib\/python3.11\/site-packages\/matplotlib\/projections\/__init__.py:1(&lt;module&gt;)\n      112    0.000    0.000    0.110    0.001 \/Library\/Frameworks\/Python.framework\/Versions\/3.11\/lib\/python3.11\/site-packages\/matplotlib\/artist.py:1841(kwdoc)\n     2025    0.039    0.000    0.103    0.000 \/Library\/Frameworks\/Python.framework\/Versions\/3.11\/lib\/python3.11\/concurrent\/futures\/process.py:762(submit)\n        1    0.000    0.000    0.100    0.100 \/python_files\/misc_functions.py:1(&lt;module&gt;)\n        1    0.024    0.024    0.099    0.099 \/Library\/Frameworks\/Python.framework\/Versions\/3.11\/lib\/python3.11\/site-packages\/scipy\/stats\/_continuous_distns.py:1(&lt;module&gt;)\n  234\/167    0.000    0.000    0.096    0.001 &lt;frozen importlib._bootstrap_external&gt;:1239(exec_module)\n  234\/167    0.017    0.000    0.096    0.001 {built-in method _imp.exec_dynamic}\n        1    0.000    0.000    0.096    0.096 \/Library\/Frameworks\/Python.framework\/Versions\/3.11\/lib\/python3.11\/site-packages\/flumine\/__init__.py:1(&lt;module&gt;)\n        1    0.000    0.000    0.095    0.095 \/Library\/Frameworks\/Python.framework\/Versions\/3.11\/lib\/python3.11\/site-packages\/smart_open\/__init__.py:1(&lt;module&gt;)\n        1    0.000    0.000    0.095    0.095 \/Library\/Frameworks\/Python.framework\/Versions\/3.11\/lib\/python3.11\/site-packages\/flumine\/flumine.py:1(&lt;module&gt;)\n        1    0.000    0.000    0.094    0.094 \/Library\/Frameworks\/Python.framework\/Versions\/3.11\/lib\/python3.11\/site-packages\/smart_open\/smart_open_lib.py:1(&lt;module&gt;)\n        1    0.000    0.000    0.094    0.094 \/Library\/Frameworks\/Python.framework\/Versions\/3.11\/lib\/python3.11\/site-packages\/flumine\/baseflumine.py:1(&lt;module&gt;)\n      112    0.002    0.000    0.094    0.001 \/Library\/Frameworks\/Python.framework\/Versions\/3.11\/lib\/python3.11\/site-packages\/matplotlib\/artist.py:1602(pprint_setters)\n        1    0.000    0.000    0.093    0.093 \/Library\/Frameworks\/Python.framework\/Versions\/3.11\/lib\/python3.11\/site-packages\/smart_open\/doctools.py:1(&lt;module&gt;)\n        1    0.000    0.000    0.093    0.093 \/Library\/Frameworks\/Python.framework\/Versions\/3.11\/lib\/python3.11\/site-packages\/smart_open\/transport.py:1(&lt;module&gt;)\n        9    0.000    0.000    0.093    0.010 \/Library\/Frameworks\/Python.framework\/Versions\/3.11\/lib\/python3.11\/site-packages\/smart_open\/transport.py:32(register_transport)\n        1    0.000    0.000    0.093    0.093 \/Library\/Frameworks\/Python.framework\/Versions\/3.11\/lib\/python3.11\/site-packages\/pandas\/core\/api.py:1(&lt;module&gt;)\n        1    0.000    0.000    0.092    0.092 \/Library\/Frameworks\/Python.framework\/Versions\/3.11\/lib\/python3.11\/site-packages\/matplotlib\/colorbar.py:1(&lt;module&gt;)\n        1    0.000    0.000    0.089    0.089 \/Library\/Frameworks\/Python.framework\/Versions\/3.11\/lib\/python3.11\/site-packages\/flumine\/strategy\/strategy.py:1(&lt;module&gt;)\n     1937    0.008    0.000    0.088    0.000 &lt;frozen importlib._bootstrap&gt;:1056(_find_spec)\n     1630    0.002    0.000    0.086    0.000 &lt;frozen importlib._bootstrap_external&gt;:727(_compile_bytecode)```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1683634789.288409",
+        "parent_user_id": "UFTBRB3F1",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "jQs",
+                "elements": [
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "ncalls  tottime  percall  cumtime  percall filename:lineno(function)\n      113    0.002    0.000  585.570    5.182 \/Library\/Frameworks\/Python.framework\/Versions\/3.11\/lib\/python3.11\/concurrent\/futures\/_base.py:199(as_completed)\n      114    0.001    0.000  585.563    5.137 \/Library\/Frameworks\/Python.framework\/Versions\/3.11\/lib\/python3.11\/threading.py:604(wait)\n      114    0.003    0.000  585.562    5.137 \/Library\/Frameworks\/Python.framework\/Versions\/3.11\/lib\/python3.11\/threading.py:288(wait)\n     2480  585.558    0.236  585.558    0.236 {method 'acquire' of '_thread.lock' objects}\n   1998\/1    0.019    0.000   10.578   10.578 {built-in method builtins.exec}\n        1    0.000    0.000   10.578   10.578 backtesting.py:1(<module>)\n        1    0.002    0.002    8.888    8.888 backtesting.py:288(start_backtest_a)\n  1979\/22    0.004    0.000    1.383    0.063 <frozen importlib._bootstrap>:1167(_find_and_load)\n  1960\/22    0.004    0.000    1.382    0.063 <frozen importlib._bootstrap>:1122(_find_and_load_unlocked)\n  1874\/23    0.003    0.000    1.379    0.060 <frozen importlib._bootstrap>:666(_load_unlocked)\n  1630\/23    0.002    0.000    1.379    0.060 <frozen importlib._bootstrap_external>:934(exec_module)\n  4574\/43    0.001    0.000    1.370    0.032 <frozen importlib._bootstrap>:233(_call_with_frames_removed)\n  894\/160    0.001    0.000    1.056    0.007 {built-in method builtins.__import__}\n 2336\/977    0.002    0.000    0.919    0.001 <frozen importlib._bootstrap>:1209(_handle_fromlist)\n        1    0.000    0.000    0.688    0.688 \/python_files\/football_data.py:1(<module>)\n4684\/4545    0.045    0.000    0.350    0.000 {built-in method builtins.__build_class__}\n        1    0.000    0.000    0.335    0.335 \/python_files\/validation_functions.py:1(<module>)\n        1    0.000    0.000    0.334    0.334 \/python_files\/import_historic_horse_data.py:1(<module>)\n     1630    0.005    0.000    0.325    0.000 <frozen importlib._bootstrap_external>:1007(get_code)\n        1    0.000    0.000    0.309    0.309 backtesting.py:212(generate_event_groupings)\n        1    0.000    0.000    0.297    0.297 \/Library\/Frameworks\/Python.framework\/Versions\/3.11\/lib\/python3.11\/site-packages\/statsmodels\/tsa\/holtwinters\/__init__.py:1(<module>)\n        1    0.000    0.000    0.297    0.297 \/Library\/Frameworks\/Python.framework\/Versions\/3.11\/lib\/python3.11\/site-packages\/statsmodels\/tsa\/holtwinters\/model.py:1(<module>)\n        1    0.000    0.000    0.249    0.249 \/Library\/Frameworks\/Python.framework\/Versions\/3.11\/lib\/python3.11\/site-packages\/matplotlib\/pyplot.py:1(<module>)\n        1    0.000    0.000    0.231    0.231 \/Library\/Frameworks\/Python.framework\/Versions\/3.11\/lib\/python3.11\/site-packages\/pandas\/__init__.py:1(<module>)\n        1    0.013    0.013    0.222    0.222 backtesting.py:270(<listcomp>)\n    39431    0.214    0.000    0.214    0.000 {built-in method posix.stat}\n     1630    0.002    0.000    0.214    0.000 <frozen importlib._bootstrap_external>:1127(get_data)\n1874\/1863    0.002    0.000    0.194    0.000 <frozen importlib._bootstrap>:566(module_from_spec)\n        1    0.000    0.000    0.194    0.194 \/Library\/Frameworks\/Python.framework\/Versions\/3.11\/lib\/python3.11\/site-packages\/scipy\/stats\/__init__.py:1(<module>)\n     1637    0.188    0.000    0.188    0.000 {method 'read' of '_io.BufferedReader' objects}\n  234\/229    0.000    0.000    0.173    0.001 <frozen importlib._bootstrap_external>:1231(create_module)\n  234\/229    0.170    0.001    0.172    0.001 {built-in method _imp.create_dynamic}\n        1    0.000    0.000    0.172    0.172 \/Library\/Frameworks\/Python.framework\/Versions\/3.11\/lib\/python3.11\/site-packages\/scipy\/stats\/_stats_py.py:1(<module>)\n      100    0.000    0.000    0.164    0.002 \/Library\/Frameworks\/Python.framework\/Versions\/3.11\/lib\/python3.11\/site-packages\/matplotlib\/artist.py:159(_update_set_signature_and_docstring)\n       99    0.000    0.000    0.161    0.002 \/Library\/Frameworks\/Python.framework\/Versions\/3.11\/lib\/python3.11\/site-packages\/matplotlib\/artist.py:126(__init_subclass__)\n       33    0.000    0.000    0.148    0.004 \/Library\/Frameworks\/Python.framework\/Versions\/3.11\/lib\/python3.11\/importlib\/__init__.py:108(import_module)\n       33    0.000    0.000    0.148    0.004 <frozen importlib._bootstrap>:1194(_gcd_import)\n        1    0.000    0.000    0.140    0.140 \/Library\/Frameworks\/Python.framework\/Versions\/3.11\/lib\/python3.11\/site-packages\/scipy\/stats\/distributions.py:1(<module>)\n        1    0.000    0.000    0.137    0.137 \/Library\/Frameworks\/Python.framework\/Versions\/3.11\/lib\/python3.11\/site-packages\/matplotlib\/figure.py:1(<module>)\n        1    0.000    0.000    0.129    0.129 \/Library\/Frameworks\/Python.framework\/Versions\/3.11\/lib\/python3.11\/site-packages\/matplotlib\/projections\/__init__.py:1(<module>)\n      112    0.000    0.000    0.110    0.001 \/Library\/Frameworks\/Python.framework\/Versions\/3.11\/lib\/python3.11\/site-packages\/matplotlib\/artist.py:1841(kwdoc)\n     2025    0.039    0.000    0.103    0.000 \/Library\/Frameworks\/Python.framework\/Versions\/3.11\/lib\/python3.11\/concurrent\/futures\/process.py:762(submit)\n        1    0.000    0.000    0.100    0.100 \/python_files\/misc_functions.py:1(<module>)\n        1    0.024    0.024    0.099    0.099 \/Library\/Frameworks\/Python.framework\/Versions\/3.11\/lib\/python3.11\/site-packages\/scipy\/stats\/_continuous_distns.py:1(<module>)\n  234\/167    0.000    0.000    0.096    0.001 <frozen importlib._bootstrap_external>:1239(exec_module)\n  234\/167    0.017    0.000    0.096    0.001 {built-in method _imp.exec_dynamic}\n        1    0.000    0.000    0.096    0.096 \/Library\/Frameworks\/Python.framework\/Versions\/3.11\/lib\/python3.11\/site-packages\/flumine\/__init__.py:1(<module>)\n        1    0.000    0.000    0.095    0.095 \/Library\/Frameworks\/Python.framework\/Versions\/3.11\/lib\/python3.11\/site-packages\/smart_open\/__init__.py:1(<module>)\n        1    0.000    0.000    0.095    0.095 \/Library\/Frameworks\/Python.framework\/Versions\/3.11\/lib\/python3.11\/site-packages\/flumine\/flumine.py:1(<module>)\n        1    0.000    0.000    0.094    0.094 \/Library\/Frameworks\/Python.framework\/Versions\/3.11\/lib\/python3.11\/site-packages\/smart_open\/smart_open_lib.py:1(<module>)\n        1    0.000    0.000    0.094    0.094 \/Library\/Frameworks\/Python.framework\/Versions\/3.11\/lib\/python3.11\/site-packages\/flumine\/baseflumine.py:1(<module>)\n      112    0.002    0.000    0.094    0.001 \/Library\/Frameworks\/Python.framework\/Versions\/3.11\/lib\/python3.11\/site-packages\/matplotlib\/artist.py:1602(pprint_setters)\n        1    0.000    0.000    0.093    0.093 \/Library\/Frameworks\/Python.framework\/Versions\/3.11\/lib\/python3.11\/site-packages\/smart_open\/doctools.py:1(<module>)\n        1    0.000    0.000    0.093    0.093 \/Library\/Frameworks\/Python.framework\/Versions\/3.11\/lib\/python3.11\/site-packages\/smart_open\/transport.py:1(<module>)\n        9    0.000    0.000    0.093    0.010 \/Library\/Frameworks\/Python.framework\/Versions\/3.11\/lib\/python3.11\/site-packages\/smart_open\/transport.py:32(register_transport)\n        1    0.000    0.000    0.093    0.093 \/Library\/Frameworks\/Python.framework\/Versions\/3.11\/lib\/python3.11\/site-packages\/pandas\/core\/api.py:1(<module>)\n        1    0.000    0.000    0.092    0.092 \/Library\/Frameworks\/Python.framework\/Versions\/3.11\/lib\/python3.11\/site-packages\/matplotlib\/colorbar.py:1(<module>)\n        1    0.000    0.000    0.089    0.089 \/Library\/Frameworks\/Python.framework\/Versions\/3.11\/lib\/python3.11\/site-packages\/flumine\/strategy\/strategy.py:1(<module>)\n     1937    0.008    0.000    0.088    0.000 <frozen importlib._bootstrap>:1056(_find_spec)\n     1630    0.002    0.000    0.086    0.000 <frozen importlib._bootstrap_external>:727(_compile_bytecode)"
+                            }
+                        ],
+                        "border": 0
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1683655609.651549",
+        "client_msg_id": "9c58ce2c-cca4-4e88-9609-28fc07a5080a",
+        "text": "That might be quite tricky to read!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1683634789.288409",
+        "parent_user_id": "UFTBRB3F1",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "UHyFK",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "That might be quite tricky to read!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1683655623.442239",
+        "client_msg_id": "ebc41f1d-a2de-4e93-8948-dc280d588377",
+        "text": "But that is sorted by cumulative time",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1683634789.288409",
+        "parent_user_id": "UFTBRB3F1",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "EHqt",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "But that is sorted by cumulative time"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UUCD6P13J",
+        "type": "message",
+        "ts": "1683655682.133679",
+        "edited": {
+            "user": "UUCD6P13J",
+            "ts": "1683655823.000000"
+        },
+        "client_msg_id": "161133cd-8268-411c-812f-8f97acf17608",
+        "text": "you need to run it in a single process to get anything useful",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6898272ab81",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6898272ab810e419c2c9ca9af1e53da8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0012-72.png",
+            "first_name": "Lee",
+            "real_name": "Lee U",
+            "display_name": "Lee",
+            "team": "T4G9NBD2M",
+            "name": "lunswor",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1683634789.288409",
+        "parent_user_id": "UFTBRB3F1",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "JWF4e",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "you need to run it in a single process to get anything useful"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1683655958.109769",
+        "client_msg_id": "b0785433-f8af-41ac-8e9c-f1de1fdda2c0",
+        "text": ":man-facepalming: yep, sorry Liam said that, will re-run!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1683634789.288409",
+        "parent_user_id": "UFTBRB3F1",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "jnOew",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "emoji",
+                                "name": "man-facepalming",
+                                "unicode": "1f926-200d-2642-fe0f"
+                            },
+                            {
+                                "type": "text",
+                                "text": " yep, sorry Liam said that, will re-run!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1683657674.121649",
+        "client_msg_id": "d00688a6-7fe3-478c-9300-6f3463a41f19",
+        "text": "```  ncalls  tottime  percall  cumtime  percall filename:lineno(function)\n   288135    1.555    0.000  662.991    0.002 \/Library\/Frameworks\/Python.framework\/Versions\/3.11\/lib\/python3.11\/site-packages\/flumine\/simulation\/simulation.py:109(_process_market_books)\n        4    0.000    0.000  467.806  116.951 \/python_files\/backtesting_functions.py:44(startup)\n        4    0.232    0.058  467.637  116.909 \/Library\/Frameworks\/Python.framework\/Versions\/3.11\/lib\/python3.11\/site-packages\/flumine\/simulation\/simulation.py:29(run)\n  1134046    8.263    0.000  459.433    0.000 \/python_files\/market_making.py:36(place_passive_order)\n  9757016   17.160    0.000  396.170    0.000 \/python_files\/place_order_functions.py:327(place_or_cancel)\n   1992\/1    0.020    0.000  282.462  282.462 {built-in method builtins.exec}\n        1    0.000    0.000  282.462  282.462 backtesting.py:1(&lt;module&gt;)\n        1    0.000    0.000  280.392  280.392 backtesting.py:325(start_backtest_b)\n  1151150    0.395    0.000  267.220    0.000 \/Library\/Frameworks\/Python.framework\/Versions\/3.11\/lib\/python3.11\/site-packages\/flumine\/utils.py:235(call_strategy_error_handling)\n   287798    0.840    0.000  243.036    0.001 \/Library\/Frameworks\/Python.framework\/Versions\/3.11\/lib\/python3.11\/site-packages\/flumine\/simulation\/simulation.py:154(_process_simulated_orders)\n   574944    0.413    0.000  242.620    0.000 \/python_files\/betting_strategy.py:53(process_market_book)\n   559802    0.202    0.000  241.037    0.000 \/Library\/Frameworks\/Python.framework\/Versions\/3.11\/lib\/python3.11\/site-packages\/flumine\/utils.py:272(call_process_orders_error_handling)\n   559802    0.632    0.000  240.835    0.000 \/python_files\/betting_strategy.py:68(process_orders)\n  4342013   47.805    0.000  154.966    0.000 \/python_files\/place_order_functions.py:577(validate_new_order)\n  1152415    0.544    0.000  150.247    0.000 \/Library\/Frameworks\/Python.framework\/Versions\/3.11\/lib\/python3.11\/site-packages\/flumine\/utils.py:255(call_middleware_error_handling)\n  4784556    3.025    0.000  102.676    0.000 \/python_files\/place_order_functions.py:310(cancel_orders_by_price)\n   288103    1.304    0.000   78.054    0.000 \/python_files\/risk_worker.py:9(__call__)\n121605882   50.622    0.000   73.601    0.000 \/python_files\/validation_functions.py:769(true_or_false)\n 20833220   20.227    0.000   72.348    0.000 \/python_files\/place_order_functions.py:924(get_limit)\n   576206   14.875    0.000   71.167    0.000 \/python_files\/risk_functions.py:31(calc_exposure_metrics)\n   288104    0.207    0.000   62.674    0.000 \/python_files\/competition.py:121(__call__)\n 14541572   31.843    0.000   61.683    0.000 \/python_files\/risk_functions.py:127(get_runner_exposure)\n   287472    0.419    0.000   61.392    0.000 \/python_files\/competition.py:146(update_market)\n   287472    0.980    0.000   60.909    0.000 \/python_files\/competition.py:187(update_modelled_price_list)\n  4784556   11.933    0.000   60.852    0.000 \/python_files\/cancel_and_replace.py:12(cancel_orders)\n 55674710   31.552    0.000   48.538    0.000 \/python_files\/validation_functions.py:725(check_race_type_by_country)\n  1136008    3.174    0.000   45.434    0.000 \/python_files\/validation_functions.py:47(validate_market_book)\n   287472    0.664    0.000   42.708    0.000 \/python_files\/competition.py:221(&lt;listcomp&gt;)\n  2486230    2.362    0.000   42.045    0.000 \/python_files\/competition.py:234(update_runner_price)\n  2486230    1.287    0.000   39.121    0.000 \/python_files\/competition.py:171(get_runner_name)\n  2486230    4.873    0.000   37.716    0.000 \/python_files\/competition.py:172(&lt;listcomp&gt;)\n  9757016   10.321    0.000   36.596    0.000 \/python_files\/market_making.py:6(create_runner_dict)\n  1440123    3.603    0.000   35.733    0.000 \/python_files\/place_order_functions.py:228(construct_price)\n 28978669   10.676    0.000   32.843    0.000 \/Library\/Frameworks\/Python.framework\/Versions\/3.11\/lib\/python3.11\/site-packages\/betfairlightweight\/resources\/bettingresources.py:8(__getitem__)\n   576206    6.713    0.000   29.727    0.000 \/python_files\/risk_functions.py:46(&lt;listcomp&gt;)\n  1134046    2.796    0.000   26.220    0.000 \/python_files\/validation_functions.py:163(validate_order_windows)\n  5095443   10.677    0.000   25.777    0.000 \/python_files\/place_order_functions.py:138(get_benchmark_percentage_and_tolerance)\n   576206    0.372    0.000   24.206    0.000 \/Library\/Frameworks\/Python.framework\/Versions\/3.11\/lib\/python3.11\/site-packages\/flumine\/strategy\/strategy.py:101(check_market)\n   576206    0.590    0.000   23.735    0.000 \/python_files\/betting_strategy.py:37(check_market_book)\n  9757016    4.906    0.000   22.284    0.000 \/python_files\/misc_functions.py:72(get_runner_info)\n 43650454   10.245    0.000   21.749    0.000 \/python_files\/risk_functions.py:135(validate_order_has_risk)\n   288166    0.864    0.000   21.579    0.000 \/Library\/Frameworks\/Python.framework\/Versions\/3.11\/lib\/python3.11\/site-packages\/flumine\/streams\/historicalstream.py:204(_read_loop)\n 28978669    7.751    0.000   20.991    0.000 \/Library\/Frameworks\/Python.framework\/Versions\/3.11\/lib\/python3.11\/site-packages\/betfairlightweight\/utils.py:69(to_snake_case)\n 10891063   11.955    0.000   19.219    0.000 \/python_files\/validation_functions.py:254(check_market)\n 14541572   18.712    0.000   18.712    0.000 \/python_files\/risk_functions.py:130(&lt;listcomp&gt;)\n380141490   17.861    0.000   17.863    0.000 {built-in method builtins.isinstance}\n  9757016   16.306    0.000   16.887    0.000 \/python_files\/misc_functions.py:73(&lt;listcomp&gt;)\n   287472    2.668    0.000   16.183    0.000 \/Library\/Frameworks\/Python.framework\/Versions\/3.11\/lib\/python3.11\/site-packages\/shin\/__init__.py:5(calculate_implied_probabilities)\n  4342013    3.838    0.000   15.908    0.000 \/python_files\/place_order_functions.py:565(get_benchmark_value)\n  1134046    1.803    0.000   15.850    0.000 \/python_files\/validation_functions.py:76(get_price_at_post_time)\n   589543    0.445    0.000   15.093    0.000 \/Library\/Frameworks\/Python.framework\/Versions\/3.11\/lib\/python3.11\/site-packages\/flumine\/streams\/historicalstream.py:187(on_data)\n 51813748    8.634    0.000   13.955    0.000 \/Library\/Frameworks\/Python.framework\/Versions\/3.11\/lib\/python3.11\/site-packages\/flumine\/order\/order.py:436(size_matched)\n   589543    1.351    0.000   13.903    0.000 \/Library\/Frameworks\/Python.framework\/Versions\/3.11\/lib\/python3.11\/site-packages\/flumine\/streams\/historicalstream.py:30(_process)\n 14497067    3.100    0.000   12.459    0.000 {built-in method builtins.sum}\n   589543    1.884    0.000   12.020    0.000 \/Library\/Frameworks\/Python.framework\/Versions\/3.11\/lib\/python3.11\/site-packages\/betfairlightweight\/streaming\/cache.py:234(update_cache)\n 28980260   11.731    0.000   11.731    0.000 {method 'sub' of 're.Pattern' objects}\n  4342013   11.682    0.000   11.682    0.000 \/python_files\/place_order_functions.py:571(&lt;listcomp&gt;)\n  1134046    1.977    0.000   11.560    0.000 \/python_files\/validation_functions.py:88(&lt;listcomp&gt;)\n144563009   11.485    0.000   11.485    0.000 \/Library\/Frameworks\/Python.framework\/Versions\/3.11\/lib\/python3.11\/site-packages\/flumine\/strategy\/strategy.py:249(name)\n  4342013   11.182    0.000   11.182    0.000 \/python_files\/misc_functions.py:148(create_ordered_dict)```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1683634789.288409",
+        "parent_user_id": "UFTBRB3F1",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "4cfHT",
+                "elements": [
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "  ncalls  tottime  percall  cumtime  percall filename:lineno(function)\n   288135    1.555    0.000  662.991    0.002 \/Library\/Frameworks\/Python.framework\/Versions\/3.11\/lib\/python3.11\/site-packages\/flumine\/simulation\/simulation.py:109(_process_market_books)\n        4    0.000    0.000  467.806  116.951 \/python_files\/backtesting_functions.py:44(startup)\n        4    0.232    0.058  467.637  116.909 \/Library\/Frameworks\/Python.framework\/Versions\/3.11\/lib\/python3.11\/site-packages\/flumine\/simulation\/simulation.py:29(run)\n  1134046    8.263    0.000  459.433    0.000 \/python_files\/market_making.py:36(place_passive_order)\n  9757016   17.160    0.000  396.170    0.000 \/python_files\/place_order_functions.py:327(place_or_cancel)\n   1992\/1    0.020    0.000  282.462  282.462 {built-in method builtins.exec}\n        1    0.000    0.000  282.462  282.462 backtesting.py:1(<module>)\n        1    0.000    0.000  280.392  280.392 backtesting.py:325(start_backtest_b)\n  1151150    0.395    0.000  267.220    0.000 \/Library\/Frameworks\/Python.framework\/Versions\/3.11\/lib\/python3.11\/site-packages\/flumine\/utils.py:235(call_strategy_error_handling)\n   287798    0.840    0.000  243.036    0.001 \/Library\/Frameworks\/Python.framework\/Versions\/3.11\/lib\/python3.11\/site-packages\/flumine\/simulation\/simulation.py:154(_process_simulated_orders)\n   574944    0.413    0.000  242.620    0.000 \/python_files\/betting_strategy.py:53(process_market_book)\n   559802    0.202    0.000  241.037    0.000 \/Library\/Frameworks\/Python.framework\/Versions\/3.11\/lib\/python3.11\/site-packages\/flumine\/utils.py:272(call_process_orders_error_handling)\n   559802    0.632    0.000  240.835    0.000 \/python_files\/betting_strategy.py:68(process_orders)\n  4342013   47.805    0.000  154.966    0.000 \/python_files\/place_order_functions.py:577(validate_new_order)\n  1152415    0.544    0.000  150.247    0.000 \/Library\/Frameworks\/Python.framework\/Versions\/3.11\/lib\/python3.11\/site-packages\/flumine\/utils.py:255(call_middleware_error_handling)\n  4784556    3.025    0.000  102.676    0.000 \/python_files\/place_order_functions.py:310(cancel_orders_by_price)\n   288103    1.304    0.000   78.054    0.000 \/python_files\/risk_worker.py:9(__call__)\n121605882   50.622    0.000   73.601    0.000 \/python_files\/validation_functions.py:769(true_or_false)\n 20833220   20.227    0.000   72.348    0.000 \/python_files\/place_order_functions.py:924(get_limit)\n   576206   14.875    0.000   71.167    0.000 \/python_files\/risk_functions.py:31(calc_exposure_metrics)\n   288104    0.207    0.000   62.674    0.000 \/python_files\/competition.py:121(__call__)\n 14541572   31.843    0.000   61.683    0.000 \/python_files\/risk_functions.py:127(get_runner_exposure)\n   287472    0.419    0.000   61.392    0.000 \/python_files\/competition.py:146(update_market)\n   287472    0.980    0.000   60.909    0.000 \/python_files\/competition.py:187(update_modelled_price_list)\n  4784556   11.933    0.000   60.852    0.000 \/python_files\/cancel_and_replace.py:12(cancel_orders)\n 55674710   31.552    0.000   48.538    0.000 \/python_files\/validation_functions.py:725(check_race_type_by_country)\n  1136008    3.174    0.000   45.434    0.000 \/python_files\/validation_functions.py:47(validate_market_book)\n   287472    0.664    0.000   42.708    0.000 \/python_files\/competition.py:221(<listcomp>)\n  2486230    2.362    0.000   42.045    0.000 \/python_files\/competition.py:234(update_runner_price)\n  2486230    1.287    0.000   39.121    0.000 \/python_files\/competition.py:171(get_runner_name)\n  2486230    4.873    0.000   37.716    0.000 \/python_files\/competition.py:172(<listcomp>)\n  9757016   10.321    0.000   36.596    0.000 \/python_files\/market_making.py:6(create_runner_dict)\n  1440123    3.603    0.000   35.733    0.000 \/python_files\/place_order_functions.py:228(construct_price)\n 28978669   10.676    0.000   32.843    0.000 \/Library\/Frameworks\/Python.framework\/Versions\/3.11\/lib\/python3.11\/site-packages\/betfairlightweight\/resources\/bettingresources.py:8(__getitem__)\n   576206    6.713    0.000   29.727    0.000 \/python_files\/risk_functions.py:46(<listcomp>)\n  1134046    2.796    0.000   26.220    0.000 \/python_files\/validation_functions.py:163(validate_order_windows)\n  5095443   10.677    0.000   25.777    0.000 \/python_files\/place_order_functions.py:138(get_benchmark_percentage_and_tolerance)\n   576206    0.372    0.000   24.206    0.000 \/Library\/Frameworks\/Python.framework\/Versions\/3.11\/lib\/python3.11\/site-packages\/flumine\/strategy\/strategy.py:101(check_market)\n   576206    0.590    0.000   23.735    0.000 \/python_files\/betting_strategy.py:37(check_market_book)\n  9757016    4.906    0.000   22.284    0.000 \/python_files\/misc_functions.py:72(get_runner_info)\n 43650454   10.245    0.000   21.749    0.000 \/python_files\/risk_functions.py:135(validate_order_has_risk)\n   288166    0.864    0.000   21.579    0.000 \/Library\/Frameworks\/Python.framework\/Versions\/3.11\/lib\/python3.11\/site-packages\/flumine\/streams\/historicalstream.py:204(_read_loop)\n 28978669    7.751    0.000   20.991    0.000 \/Library\/Frameworks\/Python.framework\/Versions\/3.11\/lib\/python3.11\/site-packages\/betfairlightweight\/utils.py:69(to_snake_case)\n 10891063   11.955    0.000   19.219    0.000 \/python_files\/validation_functions.py:254(check_market)\n 14541572   18.712    0.000   18.712    0.000 \/python_files\/risk_functions.py:130(<listcomp>)\n380141490   17.861    0.000   17.863    0.000 {built-in method builtins.isinstance}\n  9757016   16.306    0.000   16.887    0.000 \/python_files\/misc_functions.py:73(<listcomp>)\n   287472    2.668    0.000   16.183    0.000 \/Library\/Frameworks\/Python.framework\/Versions\/3.11\/lib\/python3.11\/site-packages\/shin\/__init__.py:5(calculate_implied_probabilities)\n  4342013    3.838    0.000   15.908    0.000 \/python_files\/place_order_functions.py:565(get_benchmark_value)\n  1134046    1.803    0.000   15.850    0.000 \/python_files\/validation_functions.py:76(get_price_at_post_time)\n   589543    0.445    0.000   15.093    0.000 \/Library\/Frameworks\/Python.framework\/Versions\/3.11\/lib\/python3.11\/site-packages\/flumine\/streams\/historicalstream.py:187(on_data)\n 51813748    8.634    0.000   13.955    0.000 \/Library\/Frameworks\/Python.framework\/Versions\/3.11\/lib\/python3.11\/site-packages\/flumine\/order\/order.py:436(size_matched)\n   589543    1.351    0.000   13.903    0.000 \/Library\/Frameworks\/Python.framework\/Versions\/3.11\/lib\/python3.11\/site-packages\/flumine\/streams\/historicalstream.py:30(_process)\n 14497067    3.100    0.000   12.459    0.000 {built-in method builtins.sum}\n   589543    1.884    0.000   12.020    0.000 \/Library\/Frameworks\/Python.framework\/Versions\/3.11\/lib\/python3.11\/site-packages\/betfairlightweight\/streaming\/cache.py:234(update_cache)\n 28980260   11.731    0.000   11.731    0.000 {method 'sub' of 're.Pattern' objects}\n  4342013   11.682    0.000   11.682    0.000 \/python_files\/place_order_functions.py:571(<listcomp>)\n  1134046    1.977    0.000   11.560    0.000 \/python_files\/validation_functions.py:88(<listcomp>)\n144563009   11.485    0.000   11.485    0.000 \/Library\/Frameworks\/Python.framework\/Versions\/3.11\/lib\/python3.11\/site-packages\/flumine\/strategy\/strategy.py:249(name)\n  4342013   11.182    0.000   11.182    0.000 \/python_files\/misc_functions.py:148(create_ordered_dict)"
+                            }
+                        ],
+                        "border": 0
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1683657700.493559",
+        "client_msg_id": "f5ea8982-4482-41e6-a0b8-d08d8d866a15",
+        "text": "Thats not using multi-proc",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1683634789.288409",
+        "parent_user_id": "UFTBRB3F1",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "nyJ",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Thats not using multi-proc"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1683657768.619989",
+        "client_msg_id": "B2B95999-A6CE-431B-B179-E4D9B96076C0",
+        "text": "On my phone but you have a lot of super slow functions in there ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1683634789.288409",
+        "parent_user_id": "UFTBRB3F1",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "jidY",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "On my phone but you have a lot of super slow functions in there "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1683657804.142299",
+        "client_msg_id": "DB6643ED-3263-4665-B3C6-F4C3103DAA68",
+        "text": "What an earth is place_passive_orders doing? ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1683634789.288409",
+        "parent_user_id": "UFTBRB3F1",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Nnn",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "What an earth is place_passive_orders doing? "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1683658316.205149",
+        "client_msg_id": "32409998-4b40-45a0-9ab1-1b73993b8e56",
+        "text": "That contains all the logic for placing any order, so what happens is a worker will do the fair value calculations, then update market.context with orders to place on the next market update.\n\nplace_passive_orders then checks the current price is valid (i.e. has the market moved) and if not places it, along with checking there are no other opposing orders from other strategies on the same market (to avoid self matching).",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1683634789.288409",
+        "parent_user_id": "UFTBRB3F1",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "OXWc",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "That contains all the logic for placing any order, so what happens is a worker will do the fair value calculations, then update market.context with orders to place on the next market update.\n\nplace_passive_orders then checks the current price is valid (i.e. has the market moved) and if not places it, along with checking there are no other opposing orders from other strategies on the same market (to avoid self matching)."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1683658385.911519",
+        "client_msg_id": "A7BB7DC5-75F9-436F-92EB-EB47D139A528",
+        "text": "Something really bad is happening in there, can you click on it and see the culprits ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1683634789.288409",
+        "parent_user_id": "UFTBRB3F1",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "og0",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Something really bad is happening in there, can you click on it and see the culprits "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1683658576.245729",
+        "client_msg_id": "39ac82bd-76b2-4129-b88e-e9c3194b2960",
+        "text": "```  ncalls  tottime  percall  cumtime  percall filename:lineno(function)\n  2408686   18.768    0.000 1041.182    0.000 \/python_files\/market_making.py:36(place_passive_order)\n\n\nCalled By:\n\n   Ordered by: cumulative time\n   List reduced from 9630 to 1 due to restriction &lt;'place_passive_order'&gt;\n\nFunction                                                                       was called by...\n                                                                                   ncalls  tottime  cumtime\n\/python_files\/market_making.py:36(place_passive_order)  &lt;- 1229074    9.614  554.391  \/python_files\/betting_strategy.py:53(process_market_book)\n                                                                                  1179612    9.155  486.792  \/python_files\/betting_strategy.py:68(process_orders)\n\n\nCalled:\n\n   Ordered by: cumulative time\n   List reduced from 9630 to 1 due to restriction &lt;'place_passive_order'&gt;\n\nFunction                                                                       called...\n                                                                                   ncalls  tottime  cumtime\n\/python_files\/market_making.py:36(place_passive_order)  -&gt; 2408686    0.271    0.271  \/Library\/Frameworks\/Python.framework\/Versions\/3.11\/lib\/python3.11\/site-packages\/flumine\/strategy\/strategy.py:249(name)\n                                                                                 21826158   23.419   83.258  \/python_files\/market_making.py:6(create_runner_dict)\n                                                                                 21826158   38.883  897.773  \/python_files\/place_order_functions.py:327(place_or_cancel)\n                                                                                 21826158   25.190   40.984  \/python_files\/validation_functions.py:254(check_market)\n                                                                                  2408686    0.128    0.128  {method 'keys' of 'dict' objects}```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1683634789.288409",
+        "parent_user_id": "UFTBRB3F1",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "eyHj",
+                "elements": [
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "  ncalls  tottime  percall  cumtime  percall filename:lineno(function)\n  2408686   18.768    0.000 1041.182    0.000 \/python_files\/market_making.py:36(place_passive_order)\n\n\nCalled By:\n\n   Ordered by: cumulative time\n   List reduced from 9630 to 1 due to restriction <'place_passive_order'>\n\nFunction                                                                       was called by...\n                                                                                   ncalls  tottime  cumtime\n\/python_files\/market_making.py:36(place_passive_order)  <- 1229074    9.614  554.391  \/python_files\/betting_strategy.py:53(process_market_book)\n                                                                                  1179612    9.155  486.792  \/python_files\/betting_strategy.py:68(process_orders)\n\n\nCalled:\n\n   Ordered by: cumulative time\n   List reduced from 9630 to 1 due to restriction <'place_passive_order'>\n\nFunction                                                                       called...\n                                                                                   ncalls  tottime  cumtime\n\/python_files\/market_making.py:36(place_passive_order)  -> 2408686    0.271    0.271  \/Library\/Frameworks\/Python.framework\/Versions\/3.11\/lib\/python3.11\/site-packages\/flumine\/strategy\/strategy.py:249(name)\n                                                                                 21826158   23.419   83.258  \/python_files\/market_making.py:6(create_runner_dict)\n                                                                                 21826158   38.883  897.773  \/python_files\/place_order_functions.py:327(place_or_cancel)\n                                                                                 21826158   25.190   40.984  \/python_files\/validation_functions.py:254(check_market)\n                                                                                  2408686    0.128    0.128  {method 'keys' of 'dict' objects}"
+                            }
+                        ],
+                        "border": 0
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1683658596.538059",
+        "client_msg_id": "f6a7b4cd-1109-4fc4-9d31-505ee3e863aa",
+        "text": "So it looks like (if I keep drilling down), some of those functions are very inefficient",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1683634789.288409",
+        "parent_user_id": "UFTBRB3F1",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "qOA+",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "So it looks like (if I keep drilling down), some of those functions are very inefficient"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1683658604.174499",
+        "client_msg_id": "025f4a3c-7a07-4d0a-ba00-9ec11247efa1",
+        "text": "So may need quite a bit of work",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1683634789.288409",
+        "parent_user_id": "UFTBRB3F1",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "nL1Hy",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "So may need quite a bit of work"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1683694222.636189",
+        "client_msg_id": "668f7452-ad88-4132-975a-3fe3710610fd",
+        "text": "That is mega slow, never seen it that bad, if you can share without giving away the secret sauce I can look at speeding it up",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1683634789.288409",
+        "parent_user_id": "UFTBRB3F1",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "+f1Zk",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "That is mega slow, never seen it that bad, if you can share without giving away the secret sauce I can look at speeding it up"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1683701106.320419",
+        "client_msg_id": "a2add2a5-407b-4c78-9df8-035c4da9917f",
+        "text": "Cool thanks Liam, at a high level what is happening (I think), is my conditional cancel logic (for some pre race strategies I only cancel if the model believes fair value has changed, rather than every x seconds).\n\nThen the other part is reading values from a deeply nested JSON file to get values and that involves multiple loops.\n\nWill get the functions, there's nothing proprietary as such, just inefficient code I think!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1683634789.288409",
+        "parent_user_id": "UFTBRB3F1",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "pq\/Zv",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Cool thanks Liam, at a high level what is happening (I think), is my conditional cancel logic (for some pre race strategies I only cancel if the model believes fair value has changed, rather than every x seconds).\n\nThen the other part is reading values from a deeply nested JSON file to get values and that involves multiple loops.\n\nWill get the functions, there's nothing proprietary as such, just inefficient code I think!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1683701300.580349",
+        "client_msg_id": "9481e6b9-71e9-48cb-98d2-68b054dc73e2",
+        "text": "The best way to speed up python is to not run python, so anything you can do to not call code if not required is your best option first",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1683634789.288409",
+        "parent_user_id": "UFTBRB3F1",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "QHt1",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "The best way to speed up python is to not run python, so anything you can do to not call code if not required is your best option first"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

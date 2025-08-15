@@ -1,0 +1,516 @@
+[
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1585569651.028100",
+        "client_msg_id": "c12ccf4c-5a87-4610-bbba-a5411ebfecda",
+        "text": "When using listCurrentOrders, if the order count is &gt; 1000, how is this handled, I don't have any markets with that many executed orders to check, but wanted to build this functionality in anyway as its bound to come up eventually.\n\nIf I call for market x (and no other parameters) then it will return y CurrentOrders, but lets say the moreavailable flag = True, how to I access these additional records?\n\nIs it a case of checking the number of the last record (i.e.  1 - 1000), then making a second call with 1001 as the start and keep repeating, or is there a slicker way?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "mbxB",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "When using listCurrentOrders, if the order count is > 1000, how is this handled, I don't have any markets with that many executed orders to check, but wanted to build this functionality in anyway as its bound to come up eventually.\n\nIf I call for market x (and no other parameters) then it will return y CurrentOrders, but lets say the moreavailable flag = True, how to I access these additional records?\n\nIs it a case of checking the number of the last record (i.e.  1 - 1000), then making a second call with 1001 as the start and keep repeating, or is there a slicker way?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1585569765.028400",
+        "client_msg_id": "55187db3-c9a5-4005-80b8-717460b01514",
+        "text": "```    def _get_cleared_orders(self, event, client):\n        from_record = 0\n        while True:\n            try:\n                cleared_orders = client.betting_client.betting.list_cleared_orders(\n                    bet_status=\"SETTLED\",\n                    from_record=from_record,\n                    market_ids=[event.market_id],\n                    customer_strategy_refs=[config.hostname],\n                )\n            except BetfairError as e:\n                logger.error(\n                    \"_get_cleared_orders error\",\n                    extra={\"trading_function\": \"list_cleared_orders\", \"response\": e},\n                    exc_info=True,\n                )\n                time.sleep(10)\n                self.equine.account_queue.put(event)\n                return\n\n            <http:\/\/logger.info|logger.info>(\n                \"{0} cleared orders found, more available: {1}\".format(\n                    len(cleared_orders.orders), cleared_orders.more_available\n                )\n            )\n\n            self.equine.log_control(ClearedOrdersEvent(event.market_id, cleared_orders))\n            self.equine.handler_queue.put(\n                ClearedOrdersEvent(event.market_id, cleared_orders)\n            )\n\n            from_record += 1000\n            if not cleared_orders.more_available:\n                break\n        return len(cleared_orders.orders)```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "gw0",
+                "elements": [
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "    def _get_cleared_orders(self, event, client):\n        from_record = 0\n        while True:\n            try:\n                cleared_orders = client.betting_client.betting.list_cleared_orders(\n                    bet_status=\"SETTLED\",\n                    from_record=from_record,\n                    market_ids=[event.market_id],\n                    customer_strategy_refs=[config.hostname],\n                )\n            except BetfairError as e:\n                logger.error(\n                    \"_get_cleared_orders error\",\n                    extra={\"trading_function\": \"list_cleared_orders\", \"response\": e},\n                    exc_info=True,\n                )\n                time.sleep(10)\n                self.equine.account_queue.put(event)\n                return\n\n            "
+                            },
+                            {
+                                "type": "link",
+                                "url": "http:\/\/logger.info",
+                                "text": "logger.info"
+                            },
+                            {
+                                "type": "text",
+                                "text": "(\n                \"{0} cleared orders found, more available: {1}\".format(\n                    len(cleared_orders.orders), cleared_orders.more_available\n                )\n            )\n\n            self.equine.log_control(ClearedOrdersEvent(event.market_id, cleared_orders))\n            self.equine.handler_queue.put(\n                ClearedOrdersEvent(event.market_id, cleared_orders)\n            )\n\n            from_record += 1000\n            if not cleared_orders.more_available:\n                break\n        return len(cleared_orders.orders)"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1585570620.028600",
+        "client_msg_id": "19bd0758-3e28-40be-9221-b61fc121d430",
+        "text": "much appreciated, thank you!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "kgJx",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "much appreciated, thank you!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1585570679.029300",
+        "client_msg_id": "4d548d55-6d68-4cb6-9137-42a44605b506",
+        "text": "just get rid of the crap, I would change `from_record += len(cleared_orders.orders)` to be a bit more dynamic",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "xmt",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "just get rid of the crap, I would change "
+                            },
+                            {
+                                "type": "text",
+                                "text": "from_record += len(cleared_orders.orders)",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " to be a bit more dynamic"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1585571849.029600",
+        "client_msg_id": "3b4a83fd-030c-46d3-87fb-ce956a46596f",
+        "text": "yep no worries, will tweak slightly to fit",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Pp3Qv",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "yep no worries, will tweak slightly to fit"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1585580192.031400",
+        "client_msg_id": "0eab2afa-0418-42d0-ad0c-09c70427e0d6",
+        "text": "Is the marketbook.total_matched always equal to the sum of runner.traded_volume (ignoring any minor rounding issues)?\n\nOr is it better to sum runner.traded_volume (just wondering if there is a significant lag or not)?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "HvAj",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Is the marketbook.total_matched always equal to the sum of runner.traded_volume (ignoring any minor rounding issues)?\n\nOr is it better to sum runner.traded_volume (just wondering if there is a significant lag or not)?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UV6F64HPG",
+        "type": "message",
+        "ts": "1585580632.032200",
+        "client_msg_id": "6a7bffec-3820-4616-989a-721372e5cbb7",
+        "text": "The same, the amount traded is double the amount matched.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "c268dc84f257",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-08-18\/1312781667300_c268dc84f257fee36619_72.png",
+            "first_name": "Amanda",
+            "real_name": "Amanda",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "amandahere2020",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "BenO",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "The same, the amount traded is double the amount matched."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UV6F64HPG",
+        "type": "message",
+        "ts": "1585580696.033200",
+        "client_msg_id": "2f57e74f-90e4-4ee3-8635-c5cb6f2830a9",
+        "text": "A £100 matched will show up as £200 in the amount traded",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "c268dc84f257",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-08-18\/1312781667300_c268dc84f257fee36619_72.png",
+            "first_name": "Amanda",
+            "real_name": "Amanda",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "amandahere2020",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "pZzE",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "A £100 matched will show up as £200 in the amount traded"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1585580705.033400",
+        "client_msg_id": "cd1b7659-f5bd-4e00-ab7b-ebb1283a8b46",
+        "text": "great tks",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "4MKcg",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "great tks"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1585580711.033600",
+        "client_msg_id": "a6d1a538-2e1b-4e9c-bb68-f73148893da3",
+        "text": "makes sense",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "yoN",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "makes sense"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UV6F64HPG",
+        "type": "message",
+        "ts": "1585580883.035400",
+        "client_msg_id": "63b1a6f5-4a4c-4a50-9a8e-fd8e389c33ea",
+        "text": "Not been on BetDaq for a some time but they used to inflate there traded volumes by multipying the amount matched times the price it was matched at.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "c268dc84f257",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-08-18\/1312781667300_c268dc84f257fee36619_72.png",
+            "first_name": "Amanda",
+            "real_name": "Amanda",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "amandahere2020",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "ug9V",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Not been on BetDaq for a some time but they used to inflate there traded volumes by multipying the amount matched times the price it was matched at."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1585580970.035900",
+        "client_msg_id": "0437e9e3-1a95-4e2a-9503-c99b843759da",
+        "text": "There is some logic to that, so long as its clear I guess, but not sure most people would be looking for it!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "CW8",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "There is some logic to that, so long as its clear I guess, but not sure most people would be looking for it!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "US2RWCWKY",
+        "type": "message",
+        "ts": "1585609287.036700",
+        "client_msg_id": "2B1BC303-7E44-4AA1-8572-539F53BA5F1D",
+        "text": "Smarkets do that too.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gf934fece8db",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/f934fece8db401123296fc3e9f70453a.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0009-72.png",
+            "first_name": "",
+            "real_name": "Alex A",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "alexander.abboud",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "w6Ajo",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Smarkets do that too."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

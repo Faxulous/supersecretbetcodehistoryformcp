@@ -1,0 +1,1848 @@
+[
+    {
+        "user": "UFPEU7URG",
+        "type": "message",
+        "ts": "1606733249.098200",
+        "client_msg_id": "73d7bd9d-441f-4ff5-ac75-34895f3bb320",
+        "text": "Beginners question, probably more Python related than bflw, as things stand I generally run scripts as they are to do what I want, and any processes that I need as \"daemons\" are running in loops, or via cron, now I've moved over to the streaming API I'd like to understand how I can have the streams running and then access the data from external other scripts (I currently have them running via a supervisord process which is a loop that connects to the stream and writes all of the market books to MySQL) I then query the MySQL database in my other Python scripts, I'd like to miss out that step if possible and just query the stream directly from my other python scripts, anyone have any pointers?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gad95b05e95e",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/cad95b05e95ed7575f487d75e10e36c2.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0025-72.png",
+            "first_name": "",
+            "real_name": "Chris Davidson",
+            "display_name": "Chris",
+            "team": "T4G9NBD2M",
+            "name": "chris",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "kQM",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Beginners question, probably more Python related than bflw, as things stand I generally run scripts as they are to do what I want, and any processes that I need as \"daemons\" are running in loops, or via cron, now I've moved over to the streaming API I'd like to understand how I can have the streams running and then access the data from external other scripts (I currently have them running via a supervisord process which is a loop that connects to the stream and writes all of the market books to MySQL) I then query the MySQL database in my other Python scripts, I'd like to miss out that step if possible and just query the stream directly from my other python scripts, anyone have any pointers?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1606733678.102000",
+        "client_msg_id": "7cec38c4-950e-47e1-9090-f702ac66c66c",
+        "text": "<@UFPEU7URG> Others are far more sophisticated than me, but one thing I'd say, is that for streaming I very quickly found a MySQL database impossibly slow to connect to for streaming purposes, so I would consider another option if you need to refer to external data sources (e.g. json, csv or Reddit as example).\n\nIn terms of accessing other scripts, with BFLW using multiple threads I think is probably the approach you need, but it may be worth considering Flumine as that has 'worker' threads built in by design which appear to be what you might need.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "hI8",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "user",
+                                "user_id": "UFPEU7URG"
+                            },
+                            {
+                                "type": "text",
+                                "text": " Others are far more sophisticated than me, but one thing I'd say, is that for streaming I very quickly found a MySQL database impossibly slow to connect to for streaming purposes, so I would consider another option if you need to refer to external data sources (e.g. json, csv or Reddit as example).\n\nIn terms of accessing other scripts, with BFLW using multiple threads I think is probably the approach you need, but it may be worth considering Flumine as that has 'worker' threads built in by design which appear to be what you might need."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1606733723.103000",
+        "client_msg_id": "A4BD608E-4FF6-459F-8910-1BD2C43CCD4A",
+        "text": "Streaming is super lightweight so just create a new stream per process, I don’t agree with the design of having a single stream that all your process use (unless you are running at a large scale.. <@UBS7QANF3> I think you disagree with me)",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "UXr",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Streaming is super lightweight so just create a new stream per process, I don’t agree with the design of having a single stream that all your process use (unless you are running at a large scale.. "
+                            },
+                            {
+                                "type": "user",
+                                "user_id": "UBS7QANF3"
+                            },
+                            {
+                                "type": "text",
+                                "text": " I think you disagree with me)"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U016535QCJ2",
+        "type": "message",
+        "ts": "1606733949.104400",
+        "client_msg_id": "7d07c9fe-6cde-4380-aa56-19431de3bc99",
+        "text": "The issue with monitoring too many markets with one thread is that the decision process has to be very efficient to be able to process all updates. So it all depends what you try to do with every price update",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "048f61bdc189",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-07-01\/1216267094995_048f61bdc189acecaafc_72.jpg",
+            "first_name": "Misha",
+            "real_name": "Misha Charrett",
+            "display_name": "Misha",
+            "team": "T4G9NBD2M",
+            "name": "misha",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "=fr95",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "The issue with monitoring too many markets with one thread is that the decision process has to be very efficient to be able to process all updates. So it all depends what you try to do with every price update"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U016535QCJ2",
+        "type": "message",
+        "ts": "1606734033.106100",
+        "client_msg_id": "c63267c2-e16e-4ed1-b2f9-ba4cd78139c3",
+        "text": "Also depends if you recheck markets on a timer as well - often there are things to do if the price is stable",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "048f61bdc189",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-07-01\/1216267094995_048f61bdc189acecaafc_72.jpg",
+            "first_name": "Misha",
+            "real_name": "Misha Charrett",
+            "display_name": "Misha",
+            "team": "T4G9NBD2M",
+            "name": "misha",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "ql0U+",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Also depends if you recheck markets on a timer as well - often there are things to do if the price is stable"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1606734095.107900",
+        "client_msg_id": "d429cac7-1c08-42bb-8602-c597427c57ea",
+        "text": "I use Redis pubsub",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "IGj",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I use Redis pubsub"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1606734098.108200",
+        "client_msg_id": "95DADC3C-4176-41AD-B6D5-5AECCB4B33E6",
+        "text": "Yeah I use a streaming timeout \/ snap (built into flumine) to give a constant update ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "zaci",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Yeah I use a streaming timeout \/ snap (built into flumine) to give a constant update "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFPEU7URG",
+        "type": "message",
+        "ts": "1606734993.109500",
+        "client_msg_id": "0b67089d-eb78-449b-9183-4630cc51d4a4",
+        "text": "Thanks all, some ideas to consider there",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gad95b05e95e",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/cad95b05e95ed7575f487d75e10e36c2.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0025-72.png",
+            "first_name": "",
+            "real_name": "Chris Davidson",
+            "display_name": "Chris",
+            "team": "T4G9NBD2M",
+            "name": "chris",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "IIbF",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Thanks all, some ideas to consider there"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U88ENUXN2",
+        "type": "message",
+        "ts": "1606736774.111300",
+        "client_msg_id": "d82c360b-f958-441b-a646-77746aca3782",
+        "text": "Hi everyone, Sorry to crash the party with what I'm sure is a pretty elementary question - I was surprised to see that the place_order()  function doesn't execute before the in-game delay has lapsed",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g2dfe76e32e7",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/62dfe76e32e70520fc529dd6ba96f3e4.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0005-72.png",
+            "first_name": "",
+            "real_name": "Lennart",
+            "display_name": "Lennart",
+            "team": "T4G9NBD2M",
+            "name": "lennartrehm91",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "NhkYY",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Hi everyone, Sorry to crash the party with what I'm sure is a pretty elementary question - I was surprised to see that the place_order()  function doesn't execute before the in-game delay has lapsed"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U88ENUXN2",
+        "type": "message",
+        "ts": "1606736872.113000",
+        "client_msg_id": "9f25c71c-9cdc-4556-be44-1da4377e42b5",
+        "text": "I was working on a strategy that would continue looking at prices during that delay period. Before trying to get around with some sort of parallel computation set-up, I thought I asked here whether there is a way around that.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g2dfe76e32e7",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/62dfe76e32e70520fc529dd6ba96f3e4.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0005-72.png",
+            "first_name": "",
+            "real_name": "Lennart",
+            "display_name": "Lennart",
+            "team": "T4G9NBD2M",
+            "name": "lennartrehm91",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "6F=z",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I was working on a strategy that would continue looking at prices during that delay period. Before trying to get around with some sort of parallel computation set-up, I thought I asked here whether there is a way around that."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1606736960.113200",
+        "client_msg_id": "e612810d-a029-4788-b03e-edb0d2d442be",
+        "text": "Run it in a separate thread",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "GXf0N",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Run it in a separate thread"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U88ENUXN2",
+        "type": "message",
+        "ts": "1606737034.114100",
+        "client_msg_id": "6652560d-4130-4aeb-ac8c-f5fce76b9c41",
+        "text": "Nice, thanks Mo. I thought that might be necessary! Never having done that, I thought I'd ask first before looking into that. Thanks a lot!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g2dfe76e32e7",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/62dfe76e32e70520fc529dd6ba96f3e4.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0005-72.png",
+            "first_name": "",
+            "real_name": "Lennart",
+            "display_name": "Lennart",
+            "team": "T4G9NBD2M",
+            "name": "lennartrehm91",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "lerKs",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Nice, thanks Mo. I thought that might be necessary! Never having done that, I thought I'd ask first before looking into that. Thanks a lot!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U016535QCJ2",
+        "type": "message",
+        "ts": "1606737134.114400",
+        "client_msg_id": "7bd5722a-4af9-47bb-a242-68dbbcdb86b7",
+        "text": "Place the bet with the async flag",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "048f61bdc189",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-07-01\/1216267094995_048f61bdc189acecaafc_72.jpg",
+            "first_name": "Misha",
+            "real_name": "Misha Charrett",
+            "display_name": "Misha",
+            "team": "T4G9NBD2M",
+            "name": "misha",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "kP\/",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Place the bet with the async flag"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1606737157.114600",
+        "edited": {
+            "user": "UBS7QANF3",
+            "ts": "1606737278.000000"
+        },
+        "client_msg_id": "aefb0532-f28e-49d4-9b31-3856182fabb9",
+        "text": "Still blocks for too long, HTTP request could time out, etc.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "6pH",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Still blocks for too long, HTTP request could time out, etc."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U88ENUXN2",
+        "type": "message",
+        "ts": "1606737191.114900",
+        "client_msg_id": "b6702e0e-0208-433d-9616-b6b77568213b",
+        "text": "I will try out both! thanks :slightly_smiling_face:",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g2dfe76e32e7",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/62dfe76e32e70520fc529dd6ba96f3e4.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0005-72.png",
+            "first_name": "",
+            "real_name": "Lennart",
+            "display_name": "Lennart",
+            "team": "T4G9NBD2M",
+            "name": "lennartrehm91",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "6VMbI",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I will try out both! thanks "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "slightly_smiling_face",
+                                "unicode": "1f642"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UUE6E1LA1",
+        "type": "message",
+        "ts": "1606737935.116700",
+        "client_msg_id": "59150016-80a1-477e-b1ea-205a157d51a9",
+        "text": "On the topic of Python and elementary questions, does Python have a decent and reliable asynchronous HTTPS client package\/library\/component?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gf53cae45edd",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/f53cae45edd7f7b67bbe98819597612e.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0017-72.png",
+            "first_name": "",
+            "real_name": "D C",
+            "display_name": "D C",
+            "team": "T4G9NBD2M",
+            "name": "oddsvantage",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1606737935.116700",
+        "reply_count": 1,
+        "reply_users_count": 1,
+        "latest_reply": "1606758078.135500",
+        "reply_users": [
+            "U01CTH7AWUB"
+        ],
+        "replies": [
+            {
+                "user": "U01CTH7AWUB",
+                "ts": "1606758078.135500"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": false,
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "H+et5",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "On the topic of Python and elementary questions, does Python have a decent and reliable asynchronous HTTPS client package\/library\/component?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1606738122.117600",
+        "client_msg_id": "8A8C6086-AF75-43CE-BBCC-20225BBF3ED8",
+        "text": "<https:\/\/github.com\/encode\/httpx|httpx> seems to be the most active and Tom C wrote django rest and is great ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "attachments": [
+            {
+                "fallback": "encode\/httpx",
+                "text": "A next generation HTTP client for Python. :butterfly:",
+                "title": "encode\/httpx",
+                "footer": "<https:\/\/github.com\/encode\/httpx|encode\/httpx>",
+                "id": 1,
+                "footer_icon": "https:\/\/github.githubassets.com\/favicon.ico",
+                "ts": 1554380820,
+                "color": "24292f",
+                "fields": [
+                    {
+                        "title": "Website",
+                        "value": "<https:\/\/www.python-httpx.org\/>",
+                        "short": true
+                    },
+                    {
+                        "title": "Stars",
+                        "value": "6066",
+                        "short": true
+                    }
+                ],
+                "mrkdwn_in": [
+                    "text",
+                    "fields"
+                ],
+                "bot_id": "B01144Z0734",
+                "app_unfurl_url": "https:\/\/github.com\/encode\/httpx",
+                "is_app_unfurl": true
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "8lT0w",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/encode\/httpx",
+                                "text": "httpx"
+                            },
+                            {
+                                "type": "text",
+                                "text": " seems to be the most active and Tom C wrote django rest and is great "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UUE6E1LA1",
+        "type": "message",
+        "ts": "1606738306.119500",
+        "client_msg_id": "69fc67a0-dddd-437e-b4ba-96bd049440d5",
+        "text": "Cheers Liam. Says currently to be regarded as in beta so I will keep an eye on it for sure.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gf53cae45edd",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/f53cae45edd7f7b67bbe98819597612e.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0017-72.png",
+            "first_name": "",
+            "real_name": "D C",
+            "display_name": "D C",
+            "team": "T4G9NBD2M",
+            "name": "oddsvantage",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "y0fV",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Cheers Liam. Says currently to be regarded as in beta so I will keep an eye on it for sure."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U0128E7BEHW",
+        "type": "message",
+        "ts": "1606744450.122300",
+        "client_msg_id": "1b6cb22c-64f1-4380-acea-eb5607b33749",
+        "text": "Scaling becomes super easy when you broadcast stuff internally via pubsub IMO, even if you aren't running a huge operation it makes things super convenient for very little effort. I implemented mine with zmq which is more primitive than Redis but still totally sufficient. Plus you can make sure _all_ your clients are seeing the same data so it makes reconciling things easier",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gb57a2bdd15a",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/b57a2bdd15acccdb845ce257f38940cc.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "Dave",
+            "real_name": "Dave R",
+            "display_name": "Dave",
+            "team": "T4G9NBD2M",
+            "name": "d7m",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "xM4",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Scaling becomes super easy when you broadcast stuff internally via pubsub IMO, even if you aren't running a huge operation it makes things super convenient for very little effort. I implemented mine with zmq which is more primitive than Redis but still totally sufficient. Plus you can make sure "
+                            },
+                            {
+                                "type": "text",
+                                "text": "all",
+                                "style": {
+                                    "italic": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " your clients are seeing the same data so it makes reconciling things easier"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "100",
+                "users": [
+                    "UBS7QANF3"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "U0128E7BEHW",
+        "type": "message",
+        "ts": "1606744491.123100",
+        "client_msg_id": "aa3041ca-79c1-4ac2-8ef3-5915e66895f4",
+        "text": "I.e. if I am broadcasting market X internally then I can write a simple gui client that visualises the exact same data that some strategy is currently using as input",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gb57a2bdd15a",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/b57a2bdd15acccdb845ce257f38940cc.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "Dave",
+            "real_name": "Dave R",
+            "display_name": "Dave",
+            "team": "T4G9NBD2M",
+            "name": "d7m",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "nxqT",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I.e. if I am broadcasting market X internally then I can write a simple gui client that visualises the exact same data that some strategy is currently using as input"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U0128E7BEHW",
+        "type": "message",
+        "ts": "1606744560.123600",
+        "client_msg_id": "df5d59fb-99ce-4d54-a8da-ad3949916683",
+        "text": "(pyqtchart is great for realtime market data visualization btw)",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gb57a2bdd15a",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/b57a2bdd15acccdb845ce257f38940cc.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "Dave",
+            "real_name": "Dave R",
+            "display_name": "Dave",
+            "team": "T4G9NBD2M",
+            "name": "d7m",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "SHu",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "(pyqtchart is great for realtime market data visualization btw)"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "ULDAVFDRP",
+        "type": "message",
+        "ts": "1606745437.126800",
+        "client_msg_id": "023cb495-11bc-4c78-8fbe-f7e295670c2c",
+        "text": "in terms of python web frameworks (and visualisation of raw data) does anyone have any favourites\/ recommendations? Currently just using basic Flask to serve json, for debugging, but likely to look to improve this a little more in the future.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g46fe1c1bf03",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/b46fe1c1bf03e18d951e7032fb494283.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0019-72.png",
+            "first_name": "",
+            "real_name": "Oliver Varney",
+            "display_name": "Oliver Varney",
+            "team": "T4G9NBD2M",
+            "name": "oliverashleyvarney",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "vPw",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "in terms of python web frameworks (and visualisation of raw data) does anyone have any favourites\/ recommendations? Currently just using basic Flask to serve json, for debugging, but likely to look to improve this a little more in the future."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1606746899.128000",
+        "client_msg_id": "E9D93661-AA05-40A0-A603-3B3B71489E48",
+        "text": "I use django \/ django rest deployed to api gateway using Zappa for a few dollars a month and make a lot of requests!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "KQHm2",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I use django \/ django rest deployed to api gateway using Zappa for a few dollars a month and make a lot of requests!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1606746912.128400",
+        "client_msg_id": "3F2F80D2-0FF8-4193-A1B5-73353110B928",
+        "text": "But nothing wrong with flask, big fan ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "XdtE",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "But nothing wrong with flask, big fan "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "ULDAVFDRP"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "UPMUFSGCR",
+        "type": "message",
+        "ts": "1606747859.129500",
+        "client_msg_id": "99f3c4fe-c8d9-4a50-b81e-4584afb7d548",
+        "text": "Suppose I place a BACK limit order on a greyhound, with persistence type MARKET_ON_CLOSE. Suppose there is a non-runner. Is there a possiblilty that my back bet gets cancelled?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "31c0bb5a442c",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2019-10-28\/812386967189_31c0bb5a442c5b8d2c61_72.png",
+            "first_name": "Jon",
+            "real_name": "Jon Jon Jon Jon Jon Jon Jon Jon",
+            "display_name": "Jonjonjon",
+            "team": "T4G9NBD2M",
+            "name": "fcmisc",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "EPo4b",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Suppose I place a BACK limit order on a greyhound, with persistence type MARKET_ON_CLOSE. Suppose there is a non-runner. Is there a possiblilty that my back bet gets cancelled?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U016TGY3676",
+        "type": "message",
+        "ts": "1606749013.131600",
+        "client_msg_id": "eb7c3418-208e-425b-ad3e-eafb0778eda6",
+        "text": "Not 100% sure on this, but I believe it CAN be cancelled. I know that if you place a MOC lay bet and it gets partially matched pre-closure, the remainder has to be &gt;£10 liability, otherwise it gets cancelled.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6a681220e11",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6a681220e11c1a2ed3685375d658dadb.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0001-72.png",
+            "first_name": "",
+            "real_name": "birchy",
+            "display_name": "birchy",
+            "team": "T4G9NBD2M",
+            "name": "birchy",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "KnOND",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Not 100% sure on this, but I believe it CAN be cancelled. I know that if you place a MOC lay bet and it gets partially matched pre-closure, the remainder has to be >£10 liability, otherwise it gets cancelled."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UPMUFSGCR",
+        "type": "message",
+        "ts": "1606749251.132200",
+        "client_msg_id": "e1d69c75-5b3d-4715-92bf-c7ebdea2a866",
+        "text": "Thanks for the suggestion, but it had more liability than £10. I recall reading something about Non Runners, but can't find it in the rules.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "31c0bb5a442c",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2019-10-28\/812386967189_31c0bb5a442c5b8d2c61_72.png",
+            "first_name": "Jon",
+            "real_name": "Jon Jon Jon Jon Jon Jon Jon Jon",
+            "display_name": "Jonjonjon",
+            "team": "T4G9NBD2M",
+            "name": "fcmisc",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "psdp",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Thanks for the suggestion, but it had more liability than £10. I recall reading something about Non Runners, but can't find it in the rules."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UUCD6P13J",
+        "type": "message",
+        "ts": "1606749381.132400",
+        "client_msg_id": "e2fa610b-bcbb-4ae0-943b-28b92d80600d",
+        "text": "is this what you're looking for? <https:\/\/docs.developer.betfair.com\/display\/1smk3cen4v3lu3yomq5qye0ni\/placeOrders#placeOrders-Marketversionparameter>",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6898272ab81",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6898272ab810e419c2c9ca9af1e53da8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0012-72.png",
+            "first_name": "Lee",
+            "real_name": "Lee U",
+            "display_name": "Lee",
+            "team": "T4G9NBD2M",
+            "name": "lunswor",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "rUoXQ",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "is this what you're looking for? "
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/docs.developer.betfair.com\/display\/1smk3cen4v3lu3yomq5qye0ni\/placeOrders#placeOrders-Marketversionparameter"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UPMUFSGCR",
+        "type": "message",
+        "ts": "1606749550.132800",
+        "client_msg_id": "7d574083-1ab0-41bd-a8d7-acced66f828a",
+        "text": "I wasn't using the market version parameter.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "31c0bb5a442c",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2019-10-28\/812386967189_31c0bb5a442c5b8d2c61_72.png",
+            "first_name": "Jon",
+            "real_name": "Jon Jon Jon Jon Jon Jon Jon Jon",
+            "display_name": "Jonjonjon",
+            "team": "T4G9NBD2M",
+            "name": "fcmisc",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "n31z",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I wasn't using the market version parameter."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UUCD6P13J",
+        "type": "message",
+        "ts": "1606749603.133300",
+        "client_msg_id": "3e0ede2c-ab51-4a51-a9b1-1df169d453c7",
+        "text": "I'm more thinking about if the market version changes i believe it cancels\/lapses the order",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6898272ab81",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6898272ab810e419c2c9ca9af1e53da8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0012-72.png",
+            "first_name": "Lee",
+            "real_name": "Lee U",
+            "display_name": "Lee",
+            "team": "T4G9NBD2M",
+            "name": "lunswor",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "p92fC",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I'm more thinking about if the market version changes i believe it cancels\/lapses the order"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1606754819.134500",
+        "client_msg_id": "9C1036B4-D26E-4F58-9109-BA93AD310C9B",
+        "text": "<https:\/\/forum.developer.betfair.com\/forum\/betfair-premium-newsletter\/29456-premium-newsletter?p=33644#post33644|November Premium Newsletter>\n\nLooks like they stole our idea..\n\n```Premium Webinar\nPlanning is underway within the Premium team to bring you a webinar in early 2021 to share exclusive insight into:\n• Exchange Liquidity\n• Developing Markets\n• New and existing API features\n• In-play feed suppliers\n• Historical data sources\nFurther communication with date and time to be finalised. Look out for this coming soon.```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1606754819.134500",
+        "reply_count": 1,
+        "reply_users_count": 1,
+        "latest_reply": "1606810059.145600",
+        "reply_users": [
+            "U01B8031PM1"
+        ],
+        "replies": [
+            {
+                "user": "U01B8031PM1",
+                "ts": "1606810059.145600"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": true,
+        "last_read": "1606810059.145600",
+        "attachments": [
+            {
+                "service_name": "Developer Program Forum",
+                "title": "              Premium Newsletter -              Developer Program Forum ",
+                "title_link": "https:\/\/forum.developer.betfair.com\/forum\/betfair-premium-newsletter\/29456-premium-newsletter?p=33644#post33644",
+                "text": "Please see attached the Premium Newsletter for August 2019 Betfair Premium Team",
+                "fallback": "Developer Program Forum:               Premium Newsletter -              Developer Program Forum ",
+                "from_url": "https:\/\/forum.developer.betfair.com\/forum\/betfair-premium-newsletter\/29456-premium-newsletter?p=33644#post33644",
+                "service_icon": "https:\/\/forum.developer.betfair.com\/favicon.ico",
+                "id": 1,
+                "original_url": "https:\/\/forum.developer.betfair.com\/forum\/betfair-premium-newsletter\/29456-premium-newsletter?p=33644#post33644"
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "K=KS",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "link",
+                                "url": "https:\/\/forum.developer.betfair.com\/forum\/betfair-premium-newsletter\/29456-premium-newsletter?p=33644#post33644",
+                                "text": "November Premium Newsletter"
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "Looks like they stole our idea..\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Premium Webinar\nPlanning is underway within the Premium team to bring you a webinar in early 2021 to share exclusive insight into:\n• Exchange Liquidity\n• Developing Markets\n• New and existing API features\n• In-play feed suppliers\n• Historical data sources\nFurther communication with date and time to be finalised. Look out for this coming soon."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U016TGY3676",
+        "type": "message",
+        "ts": "1606754899.135300",
+        "client_msg_id": "7cf4472e-a610-4b46-83a1-d4d774a4b971",
+        "text": "Get your screen recorder ready for the less fortunate among us. :wink:",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6a681220e11",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6a681220e11c1a2ed3685375d658dadb.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0001-72.png",
+            "first_name": "",
+            "real_name": "birchy",
+            "display_name": "birchy",
+            "team": "T4G9NBD2M",
+            "name": "birchy",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "vfF",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Get your screen recorder ready for the less fortunate among us. "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "wink",
+                                "unicode": "1f609"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01CTH7AWUB",
+        "type": "message",
+        "ts": "1606758078.135500",
+        "client_msg_id": "da7ee809-d726-4368-83c7-d106fa8ab267",
+        "text": "There’s also aiohttp (<https:\/\/docs.aiohttp.org\/en\/stable\/>) at the low level, and aiohttp-requests (<https:\/\/pypi.org\/project\/aiohttp-requests\/>) that offers a simplified interface.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "0dbca5a871a7",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-10-20\/1453752668001_0dbca5a871a7fbf997dc_72.jpg",
+            "first_name": "Richard",
+            "real_name": "Richard Leigh",
+            "display_name": "RichL",
+            "team": "T4G9NBD2M",
+            "name": "rich.leigh_betfairlig",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1606737935.116700",
+        "parent_user_id": "UUE6E1LA1",
+        "attachments": [
+            {
+                "service_name": "PyPI",
+                "title": "aiohttp-requests",
+                "title_link": "https:\/\/pypi.org\/project\/aiohttp-requests\/",
+                "text": "A thin wrapper for aiohttp client with Requests simplicity",
+                "fallback": "PyPI: aiohttp-requests",
+                "image_url": "https:\/\/pypi.org\/static\/images\/twitter.90915068.jpg",
+                "from_url": "https:\/\/pypi.org\/project\/aiohttp-requests\/",
+                "image_width": 250,
+                "image_height": 250,
+                "image_bytes": 13245,
+                "service_icon": "https:\/\/pypi.org\/static\/images\/favicon.6a76275d.ico",
+                "id": 1,
+                "original_url": "https:\/\/pypi.org\/project\/aiohttp-requests\/"
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "1MCwu",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "There’s also aiohttp ("
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/docs.aiohttp.org\/en\/stable\/"
+                            },
+                            {
+                                "type": "text",
+                                "text": ") at the low level, and aiohttp-requests ("
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/pypi.org\/project\/aiohttp-requests\/"
+                            },
+                            {
+                                "type": "text",
+                                "text": ") that offers a simplified interface."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "subtype": "channel_join",
+        "user": "U01FQH5FA8M",
+        "text": "<@U01FQH5FA8M> has joined the channel",
+        "type": "message",
+        "ts": "1606758332.135900"
+    },
+    {
+        "user": "U01FQH5FA8M",
+        "type": "message",
+        "ts": "1606758878.136400",
+        "client_msg_id": "e9f81d97-53a2-49f0-934b-1c3584116e11",
+        "text": ":raising_hand:",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "c2ad96dd9f4b",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-11-30\/1550305177569_c2ad96dd9f4b70daf43d_72.jpg",
+            "first_name": "Michael",
+            "real_name": "Michael Reiss",
+            "display_name": "Mick",
+            "team": "T4G9NBD2M",
+            "name": "reissgo",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "2LySp",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "emoji",
+                                "name": "raising_hand",
+                                "unicode": "1f64b"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1606758931.136600",
+        "client_msg_id": "C83B2A29-08C3-4E6F-BFAE-1AB102D3DF44",
+        "text": "Welcome",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "TeW",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Welcome"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U0135SLHQBW",
+        "type": "message",
+        "ts": "1606759294.137400",
+        "edited": {
+            "user": "U0135SLHQBW",
+            "ts": "1606759314.000000"
+        },
+        "client_msg_id": "417898a9-ab76-4737-ad80-a2a371cd5f78",
+        "text": "Re the convserations above, I use tornado to keep things async, single stream pushes data for consumption by multiple strats (I don't use flumine though - rolled my own)",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g316814ce896",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/316814ce896c34a9c72e2ddd6fa17b86.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0007-72.png",
+            "first_name": "",
+            "real_name": "MacrcoPolo",
+            "display_name": "MacrcoPolo",
+            "team": "T4G9NBD2M",
+            "name": "omverran",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "N\/q",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Re the convserations above, I use tornado to keep things async, single stream pushes data for consumption by multiple strats (I don't use flumine though - rolled my own)"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01C12ZEADQ",
+        "type": "message",
+        "ts": "1606759530.138100",
+        "client_msg_id": "691ef254-725e-4c04-a86f-aae749515ab7",
+        "text": "interesting, how do you put something like flumine into an asyncio framework? you have an asyncfunc that polls from it ?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "e3b7687b0ef8",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-10-06\/1432945617648_e3b7687b0ef86e4f28b8_72.png",
+            "first_name": "Alessio",
+            "real_name": "Alessio",
+            "display_name": "Alessio",
+            "team": "T4G9NBD2M",
+            "name": "alessio",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "9Af",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "interesting, how do you put something like flumine into an asyncio framework? you have an asyncfunc that polls from it ?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U0135SLHQBW",
+        "type": "message",
+        "ts": "1606759579.138900",
+        "client_msg_id": "67de6d24-ee30-4b0b-99fc-d6954a99a92f",
+        "text": "isolate the bits that need to be async run them on thread pool executors, keep as much sync as possible",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g316814ce896",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/316814ce896c34a9c72e2ddd6fa17b86.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0007-72.png",
+            "first_name": "",
+            "real_name": "MacrcoPolo",
+            "display_name": "MacrcoPolo",
+            "team": "T4G9NBD2M",
+            "name": "omverran",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Kye\/",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "isolate the bits that need to be async run them on thread pool executors, keep as much sync as possible"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U0135SLHQBW",
+        "type": "message",
+        "ts": "1606759633.139700",
+        "client_msg_id": "3ccb197c-e7c4-4ccf-9539-632e837bdb82",
+        "text": "Async in python is pretty tricky I find though, not a lot of great documentation out there...",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g316814ce896",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/316814ce896c34a9c72e2ddd6fa17b86.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0007-72.png",
+            "first_name": "",
+            "real_name": "MacrcoPolo",
+            "display_name": "MacrcoPolo",
+            "team": "T4G9NBD2M",
+            "name": "omverran",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "ggN\/g",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Async in python is pretty tricky I find though, not a lot of great documentation out there..."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01C12ZEADQ",
+        "type": "message",
+        "ts": "1606759654.140100",
+        "client_msg_id": "1b7e2b7b-8790-4ee8-9e84-3a952d97eb5d",
+        "text": "asyncio and co-routine based is also pretty new, and yes, the contract is aboslutely NOT well explained",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "e3b7687b0ef8",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-10-06\/1432945617648_e3b7687b0ef86e4f28b8_72.png",
+            "first_name": "Alessio",
+            "real_name": "Alessio",
+            "display_name": "Alessio",
+            "team": "T4G9NBD2M",
+            "name": "alessio",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "TgVL",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "asyncio and co-routine based is also pretty new, and yes, the contract is aboslutely NOT well explained"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U0135SLHQBW",
+        "type": "message",
+        "ts": "1606759726.142100",
+        "client_msg_id": "c0cc4627-2886-40fa-8d29-8cbcd3c9c18b",
+        "text": "I think in general, you have to read up on general async concepts from computer science (futures, promises and such) to understand how\/why it's done like that in python",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g316814ce896",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/316814ce896c34a9c72e2ddd6fa17b86.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0007-72.png",
+            "first_name": "",
+            "real_name": "MacrcoPolo",
+            "display_name": "MacrcoPolo",
+            "team": "T4G9NBD2M",
+            "name": "omverran",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "65v2O",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I think in general, you have to read up on general async concepts from computer science (futures, promises and such) to understand how\/why it's done like that in python"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01C12ZEADQ",
+        "type": "message",
+        "ts": "1606759737.142400",
+        "client_msg_id": "aee784f6-6d73-4879-a6d5-5056222ebcdd",
+        "text": "and also libraries are either for async or sync, like socketio\/engineio they have two different implementations ..",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "e3b7687b0ef8",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-10-06\/1432945617648_e3b7687b0ef86e4f28b8_72.png",
+            "first_name": "Alessio",
+            "real_name": "Alessio",
+            "display_name": "Alessio",
+            "team": "T4G9NBD2M",
+            "name": "alessio",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "lMqxD",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "and also libraries are either for async or sync, like socketio\/engineio they have two different implementations .."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01C12ZEADQ",
+        "type": "message",
+        "ts": "1606759767.143100",
+        "client_msg_id": "bfdfd597-affc-4c7f-ae90-94810cbcf2c0",
+        "text": "yes , that's true, but you can easily use futures without co-routines (processpoolexecutor -&gt; future -&gt; done)",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "e3b7687b0ef8",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-10-06\/1432945617648_e3b7687b0ef86e4f28b8_72.png",
+            "first_name": "Alessio",
+            "real_name": "Alessio",
+            "display_name": "Alessio",
+            "team": "T4G9NBD2M",
+            "name": "alessio",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "suovs",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "yes , that's true, but you can easily use futures without co-routines (processpoolexecutor -> future -> done)"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

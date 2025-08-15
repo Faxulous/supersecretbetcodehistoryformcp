@@ -1,0 +1,257 @@
+[
+    {
+        "user": "U025AFDS89H",
+        "type": "message",
+        "ts": "1660209469.515939",
+        "client_msg_id": "153c9986-de79-4de3-8346-f1e6a4ac034e",
+        "text": "I am trying to create a dataframe containing Teams\/Event Names, Event IDs, Competition Names and Competition IDs. I've managed to create one dataframe containing Teams\/Event Names and Event IDs and another containing Competition Names and Competition IDs. How can I match up Competition Names\/IDs with the Event IDs? Any help would be appreciated!\nHere's the code:\n```    # Create competition filter\n    competition_filter = betfairlightweight.filters.market_filter(\n        event_type_ids=[1],\n        market_start_time={\n            'to': (datetime.utcnow() + timedelta(days=7)).strftime(\"%Y-%m-%dT%TZ\")\n        })\n\n    # Get a list of competitions\n    competitions = trading.betting.list_competitions(\n        filter=competition_filter\n    )\n\n    # Create competition dataframe\n    competition_df = pd.DataFrame({\n        'Competition': [competition_object.competition.name for competition_object in competitions],\n        'ID': [competition_object.competition.id for competition_object in competitions]\n    })\n    print(competition_df)\n\n    comp_id_list = competition_df['ID'].tolist()\n    print(comp_id_list)\n\n    # Create event filter\n    event_filter = betfairlightweight.filters.market_filter(\n        event_type_ids=[1],\n        competition_ids=comp_id_list,\n        market_start_time={\n            'to': (datetime.utcnow() + timedelta(days=7)).strftime(\"%Y-%m-%dT%TZ\")\n        }\n    )\n\n    upcoming_events = trading.betting.list_events(\n        filter=event_filter\n    )\n\n    # Create event dataframe\n    events_df = pd.DataFrame({\n        'Teams': [event_object.event.name for event_object in upcoming_events],\n        'Event ID': [event_object.event.id for event_object in upcoming_events],\n    })\n    print(events_df)```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g7aa6fcd81d9",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/7aa6fcd81d9a81ea32dba8c2cbb235d5.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0000-72.png",
+            "first_name": "James",
+            "real_name": "James",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "james.armstrong35",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "VqsNM",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I am trying to create a dataframe containing Teams\/Event Names, Event IDs, Competition Names and Competition IDs. I've managed to create one dataframe containing Teams\/Event Names and Event IDs and another containing Competition Names and Competition IDs. How can I match up Competition Names\/IDs with the Event IDs? Any help would be appreciated!\nHere's the code:\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "    # Create competition filter\n    competition_filter = betfairlightweight.filters.market_filter(\n        event_type_ids=[1],\n        market_start_time={\n            'to': (datetime.utcnow() + timedelta(days=7)).strftime(\"%Y-%m-%dT%TZ\")\n        })\n\n    # Get a list of competitions\n    competitions = trading.betting.list_competitions(\n        filter=competition_filter\n    )\n\n    # Create competition dataframe\n    competition_df = pd.DataFrame({\n        'Competition': [competition_object.competition.name for competition_object in competitions],\n        'ID': [competition_object.competition.id for competition_object in competitions]\n    })\n    print(competition_df)\n\n    comp_id_list = competition_df['ID'].tolist()\n    print(comp_id_list)\n\n    # Create event filter\n    event_filter = betfairlightweight.filters.market_filter(\n        event_type_ids=[1],\n        competition_ids=comp_id_list,\n        market_start_time={\n            'to': (datetime.utcnow() + timedelta(days=7)).strftime(\"%Y-%m-%dT%TZ\")\n        }\n    )\n\n    upcoming_events = trading.betting.list_events(\n        filter=event_filter\n    )\n\n    # Create event dataframe\n    events_df = pd.DataFrame({\n        'Teams': [event_object.event.name for event_object in upcoming_events],\n        'Event ID': [event_object.event.id for event_object in upcoming_events],\n    })\n    print(events_df)"
+                            }
+                        ],
+                        "border": 0
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U02TG3K70KW",
+        "type": "message",
+        "ts": "1660235452.968539",
+        "edited": {
+            "user": "U02TG3K70KW",
+            "ts": "1660235526.000000"
+        },
+        "client_msg_id": "e17423ef-858e-4a8f-a950-bcd2462eadaa",
+        "text": "Hello, how can I get the runner name of a selection in flumine? Let's say I want to place orders only to Under selections\n```strategy = ExampleStrategy(\n    name=\"BackUnderSH\",\n    market_filter=streaming_market_filter(\n        event_type_ids=[\"1\"],\n        event_ids=[\"31653002\"],\n        market_types=[\"OVER_UNDER_05\", \"OVER_UNDER_15\", \"OVER_UNDER_25\", \"OVER_UNDER_35\", \"OVER_UNDER_45\",\n                           \"OVER_UNDER_55\", \"OVER_UNDER_65\"]\n    )\n)```\nI was trying then to skip Over selections in\n```def process_market_book(self, market: Market, market_book: MarketBook) -&gt; None:\n    # process marketBook object\n    for runner in market_book.runners:\n        skip_runner = False\n        for runner_info in market.market_catalogue.runners:\n            logger.debug(\"process_cleared_markets: %s\" % runner_info.runner_name)\n            if runner.selection_id == runner_info.selection_id:\n                if \"Ov\" in runner_info.runner_name:\n                    skip_runner = True\n...```\nBut I've found out that market.market_catalogue is None.\n\nDid somebody faced this problem?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "2642325545e6",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2022-01-10\/2931861446915_2642325545e6697d2fa4_72.png",
+            "first_name": "Dario",
+            "real_name": "Dario Scardina",
+            "display_name": "Dario Scardina",
+            "team": "T4G9NBD2M",
+            "name": "dario.scardina",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1660235452.968539",
+        "reply_count": 2,
+        "reply_users_count": 2,
+        "latest_reply": "1660236345.013419",
+        "reply_users": [
+            "UBS7QANF3",
+            "U02TG3K70KW"
+        ],
+        "replies": [
+            {
+                "user": "UBS7QANF3",
+                "ts": "1660235785.903379"
+            },
+            {
+                "user": "U02TG3K70KW",
+                "ts": "1660236345.013419"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": false,
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "J+Xu",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Hello, how can I get the runner name of a selection in flumine? Let's say I want to place orders only to Under selections\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "strategy = ExampleStrategy(\n    name=\"BackUnderSH\",\n    market_filter=streaming_market_filter(\n        event_type_ids=[\"1\"],\n        event_ids=[\"31653002\"],\n        market_types=[\"OVER_UNDER_05\", \"OVER_UNDER_15\", \"OVER_UNDER_25\", \"OVER_UNDER_35\", \"OVER_UNDER_45\",\n                           \"OVER_UNDER_55\", \"OVER_UNDER_65\"]\n    )\n)"
+                            }
+                        ],
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I was trying then to skip Over selections in\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "def process_market_book(self, market: Market, market_book: MarketBook) -> None:\n    # process marketBook object\n    for runner in market_book.runners:\n        skip_runner = False\n        for runner_info in market.market_catalogue.runners:\n            logger.debug(\"process_cleared_markets: %s\" % runner_info.runner_name)\n            if runner.selection_id == runner_info.selection_id:\n                if \"Ov\" in runner_info.runner_name:\n                    skip_runner = True\n..."
+                            }
+                        ],
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "But I've found out that market.market_catalogue is None.\n\nDid somebody faced this problem?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1660235785.903379",
+        "client_msg_id": "0ba2300c-bb63-4559-9d46-b2e45781b2b4",
+        "text": "I'll let someone else address your underlying problem but FYI:\n\n```selection_id,runner_name\n47972,Under 2.5 Goals\n47973,Over 2.5 Goals\n1221385,Under 1.5 Goals\n1221386,Over 1.5 Goals\n1222344,Under 3.5 Goals\n1222345,Over 3.5 Goals\n1222346,Over 4.5 Goals\n1222347,Under 4.5 Goals\n1485567,Under 5.5 Goals\n1485568,Over 5.5 Goals\n1485572,Under 7.5 Goals\n1485573,Over 7.5 Goals\n1485596,Under 9.5 Goals\n1485597,Over 9.5 Goals\n2407528,Under 8.5 Goals\n2407529,Over 8.5 Goals\n2542448,Under 6.5 Goals\n2542449,Over 6.5 Goals\n5851482,Under 0.5 Goals\n5851483,Over 0.5 Goals```\n",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1660235452.968539",
+        "parent_user_id": "U02TG3K70KW",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "q\/6",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I'll let someone else address your underlying problem but FYI:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "selection_id,runner_name\n47972,Under 2.5 Goals\n47973,Over 2.5 Goals\n1221385,Under 1.5 Goals\n1221386,Over 1.5 Goals\n1222344,Under 3.5 Goals\n1222345,Over 3.5 Goals\n1222346,Over 4.5 Goals\n1222347,Under 4.5 Goals\n1485567,Under 5.5 Goals\n1485568,Over 5.5 Goals\n1485572,Under 7.5 Goals\n1485573,Over 7.5 Goals\n1485596,Under 9.5 Goals\n1485597,Over 9.5 Goals\n2407528,Under 8.5 Goals\n2407529,Over 8.5 Goals\n2542448,Under 6.5 Goals\n2542449,Over 6.5 Goals\n5851482,Under 0.5 Goals\n5851483,Over 0.5 Goals"
+                            }
+                        ],
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": []
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "raised_hands",
+                "users": [
+                    "U02TG3K70KW"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "U02TG3K70KW",
+        "type": "message",
+        "ts": "1660236345.013419",
+        "client_msg_id": "dd82dddb-6d64-498b-a1bd-2a581e0df7d4",
+        "text": "<@UBS7QANF3> that's great! Thanks to you I realize now that selection ids are static!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "2642325545e6",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2022-01-10\/2931861446915_2642325545e6697d2fa4_72.png",
+            "first_name": "Dario",
+            "real_name": "Dario Scardina",
+            "display_name": "Dario Scardina",
+            "team": "T4G9NBD2M",
+            "name": "dario.scardina",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1660235452.968539",
+        "parent_user_id": "U02TG3K70KW",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "fGz",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "user",
+                                "user_id": "UBS7QANF3"
+                            },
+                            {
+                                "type": "text",
+                                "text": " that's great! Thanks to you I realize now that selection ids are static!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

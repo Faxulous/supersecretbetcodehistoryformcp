@@ -1,0 +1,1201 @@
+[
+    {
+        "user": "U01NJ85MP7F",
+        "type": "message",
+        "ts": "1614760808.371300",
+        "client_msg_id": "4b3ad691-d819-41e1-b30b-8ee2920afd13",
+        "text": "Morning, newbie question I'm afraid and apologies if this is covered somewhere in the docs, I couldn't find anything specific to this...  I'm trying to implement a simple scalping algorithm (as an exercise to get going with flumine) and am confused by the life-cycle of a Trade and the Orders within it, partly because there seems to be some conflation of the terms \"trade\" and \"order\" even though these are different objects within the framework.\nI had assumed that a \"live\" trade was one that had unmatched orders, but (at least during backtest) it appears to be live until the market is closed?\nAm I expected to manually call `complete_trade()` once the orders within it have been either matched or cancelled?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gfb00574694e",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/fb00574694e58d54a67f9eb0597865b0.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0018-72.png",
+            "first_name": "",
+            "real_name": "captainonionhead",
+            "display_name": "captainonionhead",
+            "team": "T4G9NBD2M",
+            "name": "jon_slack",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Hm926",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Morning, newbie question I'm afraid and apologies if this is covered somewhere in the docs, I couldn't find anything specific to this...  I'm trying to implement a simple scalping algorithm (as an exercise to get going with flumine) and am confused by the life-cycle of a Trade and the Orders within it, partly because there seems to be some conflation of the terms \"trade\" and \"order\" even though these are different objects within the framework.\nI had assumed that a \"live\" trade was one that had unmatched orders, but (at least during backtest) it appears to be live until the market is closed?\nAm I expected to manually call "
+                            },
+                            {
+                                "type": "text",
+                                "text": "complete_trade()",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " once the orders within it have been either matched or cancelled?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1614761218.372400",
+        "client_msg_id": "D25910C5-3D31-4EAC-8D0E-688EF6E21908",
+        "text": "Logic is <https:\/\/github.com\/liampauling\/flumine\/blob\/9a6ad8847c7e86129215d057888ba2b7b89ba0ac\/flumine\/order\/trade.py#L80|here>, tbh it’s not perfect and there are a few edge cases around it and I know a few have written their own trade classes instead ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "attachments": [
+            {
+                "fallback": "[liampauling\/flumine] flumine\/order\/trade.py:80",
+                "text": "```\n    def complete(self) -&gt; bool:\n```",
+                "title": "flumine\/order\/trade.py:80",
+                "footer": "<https:\/\/github.com\/liampauling\/flumine|liampauling\/flumine>",
+                "id": 1,
+                "title_link": "https:\/\/github.com\/liampauling\/flumine\/blob\/9a6ad8847c7e86129215d057888ba2b7b89ba0ac\/flumine\/order\/trade.py#L80",
+                "footer_icon": "https:\/\/github.githubassets.com\/favicon.ico",
+                "color": "24292f",
+                "mrkdwn_in": [
+                    "text"
+                ],
+                "bot_id": "B01144Z0734",
+                "app_unfurl_url": "https:\/\/github.com\/liampauling\/flumine\/blob\/9a6ad8847c7e86129215d057888ba2b7b89ba0ac\/flumine\/order\/trade.py#L80",
+                "is_app_unfurl": true
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "w1HEa",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Logic is "
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/liampauling\/flumine\/blob\/9a6ad8847c7e86129215d057888ba2b7b89ba0ac\/flumine\/order\/trade.py#L80",
+                                "text": "here"
+                            },
+                            {
+                                "type": "text",
+                                "text": ", tbh it’s not perfect and there are a few edge cases around it and I know a few have written their own trade classes instead "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01NJ85MP7F",
+        "type": "message",
+        "ts": "1614762077.376200",
+        "client_msg_id": "822ee26c-cbf8-45de-86db-d05518000d43",
+        "text": ":thumbsup: thanks - I've been looking through the code for this.  I guess my question boils down to: is the expected usage of this something like:\n\n• Create Trade()\n• Create Orders() from Trade\n• Use Market.transaction() to place orders\n• Call Trade.complete_trade() &lt;- i.e. call this explicitly to indicate no further orders to be created on this Trade object?\n&lt;elsewhere&gt;\n• Use the Trade.complete property to check whether the trade has actually completed",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gfb00574694e",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/fb00574694e58d54a67f9eb0597865b0.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0018-72.png",
+            "first_name": "",
+            "real_name": "captainonionhead",
+            "display_name": "captainonionhead",
+            "team": "T4G9NBD2M",
+            "name": "jon_slack",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "s1yV",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "emoji",
+                                "name": "thumbsup",
+                                "unicode": "1f44d"
+                            },
+                            {
+                                "type": "text",
+                                "text": " thanks - I've been looking through the code for this.  I guess my question boils down to: is the expected usage of this something like:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_list",
+                        "elements": [
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "Create Trade()"
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "Create Orders() from Trade"
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "Use Market.transaction() to place orders"
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "Call Trade.complete_trade() <- i.e. call this explicitly to indicate no further orders to be created on this Trade object?"
+                                    }
+                                ]
+                            }
+                        ],
+                        "style": "bullet",
+                        "indent": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\n<elsewhere>\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_list",
+                        "elements": [
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "Use the Trade.complete property to check whether the trade has actually completed"
+                                    }
+                                ]
+                            }
+                        ],
+                        "style": "bullet",
+                        "indent": 0
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1614762855.376900",
+        "client_msg_id": "bf503131-c091-4abc-8bda-7e72b5f66d30",
+        "text": "The trade will complete as whenever an order status is updated it checks, via this <https:\/\/github.com\/liampauling\/flumine\/blob\/9a6ad8847c7e86129215d057888ba2b7b89ba0ac\/flumine\/order\/order.py#L84|func> so the user shouldn't have to do it manually as such",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "attachments": [
+            {
+                "fallback": "[liampauling\/flumine] flumine\/order\/order.py:84",
+                "text": "```\n        if self.trade.complete and status != OrderStatus.VIOLATION:\n```",
+                "title": "flumine\/order\/order.py:84",
+                "footer": "<https:\/\/github.com\/liampauling\/flumine|liampauling\/flumine>",
+                "id": 1,
+                "title_link": "https:\/\/github.com\/liampauling\/flumine\/blob\/9a6ad8847c7e86129215d057888ba2b7b89ba0ac\/flumine\/order\/order.py#L84",
+                "footer_icon": "https:\/\/github.githubassets.com\/favicon.ico",
+                "color": "24292f",
+                "mrkdwn_in": [
+                    "text"
+                ],
+                "bot_id": "B01144Z0734",
+                "app_unfurl_url": "https:\/\/github.com\/liampauling\/flumine\/blob\/9a6ad8847c7e86129215d057888ba2b7b89ba0ac\/flumine\/order\/order.py#L84",
+                "is_app_unfurl": true
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "2\/1+",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "The trade will complete as whenever an order status is updated it checks, via this "
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/liampauling\/flumine\/blob\/9a6ad8847c7e86129215d057888ba2b7b89ba0ac\/flumine\/order\/order.py#L84",
+                                "text": "func"
+                            },
+                            {
+                                "type": "text",
+                                "text": " so the user shouldn't have to do it manually as such"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01NJ85MP7F",
+        "type": "message",
+        "ts": "1614763752.382100",
+        "client_msg_id": "130ccf22-4f4f-48d1-9365-fc21c98281fd",
+        "text": "Hmm, thanks, that fits with what I was expecting but I must be doing something wrong as I'm only ever getting one Trade of orders placed (because I check runner_context.live_trade_count in process_market_book() as per the example but it doesn't reset back to zero when the orders have matched).\nMore debugging to do - thanks for your help!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gfb00574694e",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/fb00574694e58d54a67f9eb0597865b0.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0018-72.png",
+            "first_name": "",
+            "real_name": "captainonionhead",
+            "display_name": "captainonionhead",
+            "team": "T4G9NBD2M",
+            "name": "jon_slack",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1614763752.382100",
+        "reply_count": 2,
+        "reply_users_count": 2,
+        "latest_reply": "1614764306.382400",
+        "reply_users": [
+            "U4H19D1D2",
+            "U01NJ85MP7F"
+        ],
+        "replies": [
+            {
+                "user": "U4H19D1D2",
+                "ts": "1614763974.382200"
+            },
+            {
+                "user": "U01NJ85MP7F",
+                "ts": "1614764306.382400"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": true,
+        "last_read": "1614764306.382400",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "V3WKE",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Hmm, thanks, that fits with what I was expecting but I must be doing something wrong as I'm only ever getting one Trade of orders placed (because I check runner_context.live_trade_count in process_market_book() as per the example but it doesn't reset back to zero when the orders have matched).\nMore debugging to do - thanks for your help!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1614763974.382200",
+        "client_msg_id": "156d512e-5dea-4643-8060-690c95b50c3f",
+        "text": "The logs should tell you what is going on in the `extra`",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1614763752.382100",
+        "parent_user_id": "U01NJ85MP7F",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "aiG",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "The logs should tell you what is going on in the "
+                            },
+                            {
+                                "type": "text",
+                                "text": "extra",
+                                "style": {
+                                    "code": true
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01NJ85MP7F",
+        "type": "message",
+        "ts": "1614764306.382400",
+        "client_msg_id": "44fd1b62-2e53-4ab2-96fa-8508c84456d4",
+        "text": "Thanks - I suspect it will turn out to be something stupid in my part, these things usually do!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gfb00574694e",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/fb00574694e58d54a67f9eb0597865b0.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0018-72.png",
+            "first_name": "",
+            "real_name": "captainonionhead",
+            "display_name": "captainonionhead",
+            "team": "T4G9NBD2M",
+            "name": "jon_slack",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1614763752.382100",
+        "parent_user_id": "U01NJ85MP7F",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "=hY",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Thanks - I suspect it will turn out to be something stupid in my part, these things usually do!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1614786909.384900",
+        "client_msg_id": "8ad8dfa5-4655-469a-b90c-2900e4706498",
+        "text": "Just in case anyone hadn't noticed:\n\n<https:\/\/twitter.com\/BetfairCS\/status\/1367138633506041862?s=20>",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "97dR",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Just in case anyone hadn't noticed:\n\n"
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/twitter.com\/BetfairCS\/status\/1367138633506041862?s=20"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "U01DVUAE2G1"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "U01B8031PM1",
+        "type": "message",
+        "ts": "1614786954.385200",
+        "client_msg_id": "69740624-61b9-4465-a0b4-c58d5d89bb21",
+        "text": "thanks",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6e482a0e41b",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6e482a0e41b232f48d801454006dfa56.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0016-72.png",
+            "first_name": "river_shah",
+            "real_name": "river_shah",
+            "display_name": "river_shah",
+            "team": "T4G9NBD2M",
+            "name": "ansar.sa",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "w7g",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "thanks"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01DVUAE2G1",
+        "type": "message",
+        "ts": "1614786973.385700",
+        "client_msg_id": "97edbbcc-f89d-41d0-9880-f17b67ad4b4f",
+        "text": "was wondering, thanks :smile:",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gd87aca58eae",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/d87aca58eaeabd0a953b4bc4204bbbaf.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Aaron Smith",
+            "display_name": "Aaron Smith",
+            "team": "T4G9NBD2M",
+            "name": "smiffyaaron",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "KafH3",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "was wondering, thanks "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "smile",
+                                "unicode": "1f604"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01B8031PM1",
+        "type": "message",
+        "ts": "1614787087.385900",
+        "edited": {
+            "user": "U01B8031PM1",
+            "ts": "1614787141.000000"
+        },
+        "client_msg_id": "779e0fcc-0821-4e5c-b675-d543f123935a",
+        "text": "anyone ever seen this?\n```2021-03-03 15:57:30.421 WARNING Order 225994163970 not present in blotter\n2021-03-03 15:57:30.421 WARNING Market not available to create order 138340796047390930```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6e482a0e41b",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6e482a0e41b232f48d801454006dfa56.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0016-72.png",
+            "first_name": "river_shah",
+            "real_name": "river_shah",
+            "display_name": "river_shah",
+            "team": "T4G9NBD2M",
+            "name": "ansar.sa",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "stCD",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "anyone ever seen this?\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "2021-03-03 15:57:30.421 WARNING Order 225994163970 not present in blotter\n2021-03-03 15:57:30.421 WARNING Market not available to create order 138340796047390930"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UPMUFSGCR",
+        "type": "message",
+        "ts": "1614787530.386800",
+        "client_msg_id": "f183eb49-06fb-4a3c-9a42-4ed9d0444191",
+        "text": "I've seen the first line. I've assumed it's because I'm running multiple bots against the say account. But I could be wrong.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "31c0bb5a442c",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2019-10-28\/812386967189_31c0bb5a442c5b8d2c61_72.png",
+            "first_name": "Jon",
+            "real_name": "Jon Jon Jon Jon Jon Jon Jon Jon",
+            "display_name": "Jonjonjon",
+            "team": "T4G9NBD2M",
+            "name": "fcmisc",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "wLXW",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I've seen the first line. I've assumed it's because I'm running multiple bots against the say account. But I could be wrong."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01DVUAE2G1",
+        "type": "message",
+        "ts": "1614788260.387900",
+        "client_msg_id": "ed987c5b-5cf7-4cfd-9dc5-646327bab6a5",
+        "text": "seen the first line for the same reason as jon, 2nd line i cant find in either flumine nor bflw (unless its new in v1.17 or higher)",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gd87aca58eae",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/d87aca58eaeabd0a953b4bc4204bbbaf.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Aaron Smith",
+            "display_name": "Aaron Smith",
+            "team": "T4G9NBD2M",
+            "name": "smiffyaaron",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "N8ZO",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "seen the first line for the same reason as jon, 2nd line i cant find in either flumine nor bflw (unless its new in v1.17 or higher)"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1614788342.389200",
+        "client_msg_id": "59a7fa9a-f346-453b-9cba-340f8aaa8794",
+        "text": "likely to be due to the above issue with market settlement, first line is saying an order has come through the stream but isn't present locally, second line is saying the market for said order isn't available locally (probably because it has closed and been removed from flumine)",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "wTB",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "likely to be due to the above issue with market settlement, first line is saying an order has come through the stream but isn't present locally, second line is saying the market for said order isn't available locally (probably because it has closed and been removed from flumine)"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UPMUFSGCR",
+        "type": "message",
+        "ts": "1614788363.389600",
+        "client_msg_id": "7312e338-ebb0-4c24-a0c7-c058c9c02cf6",
+        "text": "Is there a betfair problem now? I've had nothing settled since 15:07",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "31c0bb5a442c",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2019-10-28\/812386967189_31c0bb5a442c5b8d2c61_72.png",
+            "first_name": "Jon",
+            "real_name": "Jon Jon Jon Jon Jon Jon Jon Jon",
+            "display_name": "Jonjonjon",
+            "team": "T4G9NBD2M",
+            "name": "fcmisc",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "+t7qF",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Is there a betfair problem now? I've had nothing settled since 15:07"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01DVUAE2G1",
+        "type": "message",
+        "ts": "1614788399.390100",
+        "client_msg_id": "4571ef01-97bc-4c1a-87b0-35b5b9e22e5d",
+        "text": "<@UPMUFSGCR> look 6 posts above :smile:",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gd87aca58eae",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/d87aca58eaeabd0a953b4bc4204bbbaf.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Aaron Smith",
+            "display_name": "Aaron Smith",
+            "team": "T4G9NBD2M",
+            "name": "smiffyaaron",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "gTL",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "user",
+                                "user_id": "UPMUFSGCR"
+                            },
+                            {
+                                "type": "text",
+                                "text": " look 6 posts above "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "smile",
+                                "unicode": "1f604"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "laughing",
+                "users": [
+                    "UPMUFSGCR"
+                ],
+                "count": 1
+            },
+            {
+                "name": "heavy_check_mark",
+                "users": [
+                    "UPMUFSGCR"
+                ],
+                "count": 1
+            },
+            {
+                "name": "100",
+                "users": [
+                    "UPMUFSGCR"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1614788832.390700",
+        "client_msg_id": "754ac5ce-60e6-4fda-b9b6-6929abc50e3d",
+        "text": "exposures are starting to rise on my side :face_palm:",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1614788832.390700",
+        "reply_count": 3,
+        "reply_users_count": 2,
+        "latest_reply": "1614789174.392100",
+        "reply_users": [
+            "U01B8031PM1",
+            "UPMUFSGCR"
+        ],
+        "replies": [
+            {
+                "user": "U01B8031PM1",
+                "ts": "1614788898.391200"
+            },
+            {
+                "user": "U01B8031PM1",
+                "ts": "1614788999.391400"
+            },
+            {
+                "user": "UPMUFSGCR",
+                "ts": "1614789174.392100"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": true,
+        "last_read": "1614789174.392100",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "nh97",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "exposures are starting to rise on my side "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "face_palm",
+                                "unicode": "1f926"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01B8031PM1",
+        "type": "message",
+        "ts": "1614788847.391100",
+        "client_msg_id": "c2285224-b169-45ab-bc7e-c3da9e0bf840",
+        "text": "man i feel bad for the devs having to deal with this fireball",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6e482a0e41b",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6e482a0e41b232f48d801454006dfa56.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0016-72.png",
+            "first_name": "river_shah",
+            "real_name": "river_shah",
+            "display_name": "river_shah",
+            "team": "T4G9NBD2M",
+            "name": "ansar.sa",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "iXF",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "man i feel bad for the devs having to deal with this fireball"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01B8031PM1",
+        "type": "message",
+        "ts": "1614788898.391200",
+        "client_msg_id": "b57c9aaa-d8da-4e3a-9d46-fac00d9528ef",
+        "text": "likewise, luckily enough powder dry to keep betting",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6e482a0e41b",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6e482a0e41b232f48d801454006dfa56.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0016-72.png",
+            "first_name": "river_shah",
+            "real_name": "river_shah",
+            "display_name": "river_shah",
+            "team": "T4G9NBD2M",
+            "name": "ansar.sa",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1614788832.390700",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "wMG",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "likewise, luckily enough powder dry to keep betting"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01B8031PM1",
+        "type": "message",
+        "ts": "1614788999.391400",
+        "client_msg_id": "5d61091d-5466-4ae1-8237-fc84450175b7",
+        "text": "<@U4H19D1D2> maybe not bet so many 1.01 and 1000? :wink:",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6e482a0e41b",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6e482a0e41b232f48d801454006dfa56.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0016-72.png",
+            "first_name": "river_shah",
+            "real_name": "river_shah",
+            "display_name": "river_shah",
+            "team": "T4G9NBD2M",
+            "name": "ansar.sa",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1614788832.390700",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "EkWk",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "user",
+                                "user_id": "U4H19D1D2"
+                            },
+                            {
+                                "type": "text",
+                                "text": " maybe not bet so many 1.01 and 1000? "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "wink",
+                                "unicode": "1f609"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "sunglasses",
+                "users": [
+                    "U4H19D1D2"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "U01C12ZEADQ",
+        "type": "message",
+        "ts": "1614789068.391900",
+        "client_msg_id": "b41fc374-2625-4901-ba70-4240a5599aec",
+        "text": "lesson for today: realtime control to avoid entering new markets",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "e3b7687b0ef8",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-10-06\/1432945617648_e3b7687b0ef86e4f28b8_72.png",
+            "first_name": "Alessio",
+            "real_name": "Alessio",
+            "display_name": "Alessio",
+            "team": "T4G9NBD2M",
+            "name": "alessio",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "qzJL",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "lesson for today: realtime control to avoid entering new markets"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UPMUFSGCR",
+        "type": "message",
+        "ts": "1614789174.392100",
+        "client_msg_id": "82ba96b2-4953-4da6-9cf5-736fdf320724",
+        "text": "I've got a monster £45.33 exposure.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "31c0bb5a442c",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2019-10-28\/812386967189_31c0bb5a442c5b8d2c61_72.png",
+            "first_name": "Jon",
+            "real_name": "Jon Jon Jon Jon Jon Jon Jon Jon",
+            "display_name": "Jonjonjon",
+            "team": "T4G9NBD2M",
+            "name": "fcmisc",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1614788832.390700",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "WLh7V",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I've got a monster £45.33 exposure."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01B8031PM1",
+        "type": "message",
+        "ts": "1614790555.392400",
+        "client_msg_id": "b2cbb547-171a-4692-ae08-40786c314b4d",
+        "text": "settling",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6e482a0e41b",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6e482a0e41b232f48d801454006dfa56.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0016-72.png",
+            "first_name": "river_shah",
+            "real_name": "river_shah",
+            "display_name": "river_shah",
+            "team": "T4G9NBD2M",
+            "name": "ansar.sa",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "OCKCJ",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "settling"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UQL0QDEKA",
+        "type": "message",
+        "ts": "1614790570.392800",
+        "client_msg_id": "5465f572-0a4b-4045-a16c-b9571558161c",
+        "text": "They are starting to catch up now..",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g444d10128c0",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/444d10128c0aaf094041a52a76796602.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0005-72.png",
+            "first_name": "Peter",
+            "real_name": "Peter Lenagh",
+            "display_name": "PeterLe",
+            "team": "T4G9NBD2M",
+            "name": "lenagh",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "kF8e",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "They are starting to catch up now.."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

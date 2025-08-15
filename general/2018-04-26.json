@@ -1,0 +1,575 @@
+[
+    {
+        "user": "U8RT48D8X",
+        "type": "message",
+        "ts": "1524772019.000582",
+        "edited": {
+            "user": "U8RT48D8X",
+            "ts": "1524772054.000000"
+        },
+        "text": "hey guys, a while ago I asked about how best to use the stream in async mode, and Liam suggested I follow a pattern like <https:\/\/betfairlightweight.slack.com\/archives\/C4HL6EZTQ\/p1505305250000059>. Alternatively he pointed to <https:\/\/github.com\/liampauling\/flumine\/blob\/master\/flumine\/flumine.py#L77>. Broadly my implementation is to follow the example from agberk, where I run the `betfair_stream_run` in it's own thread. However, with that approach I can not call `stop` on the stream because that's inside of another thread. So how could I then disconnect from the betfair socket?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g29dec532584",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/029dec53258429504ca191457a7e747e.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0021-72.png",
+            "first_name": "",
+            "real_name": "mbk",
+            "display_name": "mbk",
+            "team": "T4G9NBD2M",
+            "name": "mbkroese",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "attachments": [
+            {
+                "from_url": "https:\/\/betfairlightweight.slack.com\/archives\/C4HL6EZTQ\/p1496411076282793",
+                "fallback": "[June 2nd, 2017 6:44 AM] agberk: The main read loop is in my own thread\n```\ndef betfair_stream_run(config, order_queue):\n    betfair_api = betfairlightweight.APIClient(\n        config['betfair_username'],\n        config['betfair_password'],\n        config['betfair_application_key'],\n        config['betfair_certificate_dir'])\n\n    while True:\n        try:\n            betfair_api.login()\n            betfair_stream_socket = betfair_api.streaming.create_stream(\n                unique_id=1,\n                description=config['description'],\n                listener=StreamListener(output_queue=order_queue)\n            )\n            betfair_stream_socket.subscribe_to_orders(\n                unique_id=12345,\n            )\n            betfair_stream_socket.start()\n        except betfairlightweight.exceptions.SocketError:\n            logger.warning('SocketError in betfair stream thread.')\n            time.sleep(5.0)\n        except betfairlightweight.exceptions.APIError as e:\n            logger.error(e, exc_info=True)\n            time.sleep(5.0)\n```",
+                "ts": "1496411076.282793",
+                "author_id": "U4H3EEV45",
+                "author_subname": "Aaron Berk",
+                "channel_id": "C4HL6EZTQ",
+                "is_msg_unfurl": true,
+                "text": "The main read loop is in my own thread\n```\ndef betfair_stream_run(config, order_queue):\n    betfair_api = betfairlightweight.APIClient(\n        config['betfair_username'],\n        config['betfair_password'],\n        config['betfair_application_key'],\n        config['betfair_certificate_dir'])\n\n    while True:\n        try:\n            betfair_api.login()\n            betfair_stream_socket = betfair_api.streaming.create_stream(\n                unique_id=1,\n                description=config['description'],\n                listener=StreamListener(output_queue=order_queue)\n            )\n            betfair_stream_socket.subscribe_to_orders(\n                unique_id=12345,\n            )\n            betfair_stream_socket.start()\n        except betfairlightweight.exceptions.SocketError:\n            logger.warning('SocketError in betfair stream thread.')\n            time.sleep(5.0)\n        except betfairlightweight.exceptions.APIError as e:\n            logger.error(e, exc_info=True)\n            time.sleep(5.0)\n```",
+                "author_name": "Aaron Berk",
+                "author_link": "https:\/\/betfairlightweight.slack.com\/team\/U4H3EEV45",
+                "author_icon": "https:\/\/secure.gravatar.com\/avatar\/ea8143e60fb603cad63a14bfd181f72d.jpg?s=48&d=https%3A%2F%2Fa.slack-edge.com%2F66f9%2Fimg%2Favatars%2Fava_0025-48.png",
+                "mrkdwn_in": [
+                    "text"
+                ],
+                "id": 1,
+                "footer": "Slack conversation",
+                "original_url": "https:\/\/betfairlightweight.slack.com\/archives\/C4HL6EZTQ\/p1505305250000059"
+            },
+            {
+                "service_name": "GitHub",
+                "title": "liampauling\/flumine",
+                "title_link": "https:\/\/github.com\/liampauling\/flumine\/blob\/master\/flumine\/flumine.py#L77",
+                "text": "flumine - flūmine - Betfair data record framework utilising streaming to create a simple data recorder",
+                "fallback": "GitHub: liampauling\/flumine",
+                "from_url": "https:\/\/github.com\/liampauling\/flumine\/blob\/master\/flumine\/flumine.py#L77",
+                "thumb_url": "https:\/\/avatars2.githubusercontent.com\/u\/12016537?s=400&v=4",
+                "thumb_width": 250,
+                "thumb_height": 250,
+                "service_icon": "https:\/\/a.slack-edge.com\/bfaba\/img\/unfurl_icons\/github.png",
+                "id": 2,
+                "original_url": "https:\/\/github.com\/liampauling\/flumine\/blob\/master\/flumine\/flumine.py#L77"
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "p80",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "hey guys, a while ago I asked about how best to use the stream in async mode, and Liam suggested I follow a pattern like "
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/betfairlightweight.slack.com\/archives\/C4HL6EZTQ\/p1505305250000059"
+                            },
+                            {
+                                "type": "text",
+                                "text": ". Alternatively he pointed to "
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/liampauling\/flumine\/blob\/master\/flumine\/flumine.py#L77"
+                            },
+                            {
+                                "type": "text",
+                                "text": ". Broadly my implementation is to follow the example from agberk, where I run the "
+                            },
+                            {
+                                "type": "text",
+                                "text": "betfair_stream_run",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " in it's own thread. However, with that approach I can not call "
+                            },
+                            {
+                                "type": "text",
+                                "text": "stop",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " on the stream because that's inside of another thread. So how could I then disconnect from the betfair socket?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U8RT48D8X",
+        "type": "message",
+        "ts": "1524772027.000165",
+        "text": "thanks in advance for your help :slightly_smiling_face:",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g29dec532584",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/029dec53258429504ca191457a7e747e.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0021-72.png",
+            "first_name": "",
+            "real_name": "mbk",
+            "display_name": "mbk",
+            "team": "T4G9NBD2M",
+            "name": "mbkroese",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "SqXHe",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "thanks in advance for your help "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "slightly_smiling_face",
+                                "unicode": "1f642"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1524772109.000698",
+        "client_msg_id": "52F9B0BA-66C7-4786-B5C9-1E33B6127CC7",
+        "text": "Threads share memory so you can still stop it from another thread ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "CVO",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Threads share memory so you can still stop it from another thread"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U8RT48D8X",
+        "type": "message",
+        "ts": "1524772282.000543",
+        "text": "would you mind explaining roughly how that would work?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g29dec532584",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/029dec53258429504ca191457a7e747e.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0021-72.png",
+            "first_name": "",
+            "real_name": "mbk",
+            "display_name": "mbk",
+            "team": "T4G9NBD2M",
+            "name": "mbkroese",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "5HwM",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "would you mind explaining roughly how that would work?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1524772411.000266",
+        "client_msg_id": "450E2BE2-42DA-4CEF-9FF2-DFCB4759CBE0",
+        "text": "Put that function into a class, store betfair_stream_socket as a class var then call class.betfair_stream_socket.stop() when required from another thread ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Yx\/N",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Put that function into a class, store betfair_stream_socket as a class var then call class.betfair_stream_socket.stop() when required from another thread"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1524772434.000257",
+        "client_msg_id": "6F5C73A1-138B-4AAA-962B-69BA1873794A",
+        "text": "Although why do you need to stop? ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "7rgO",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Although why do you need to stop?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U8RT48D8X",
+        "type": "message",
+        "ts": "1524772462.000551",
+        "text": "well at the end of the day I shutdown the server completely, and just want to make sure I disconnect from betfair properly",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g29dec532584",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/029dec53258429504ca191457a7e747e.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0021-72.png",
+            "first_name": "",
+            "real_name": "mbk",
+            "display_name": "mbk",
+            "team": "T4G9NBD2M",
+            "name": "mbkroese",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "gjU",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "well at the end of the day I shutdown the server completely, and just want to make sure I disconnect from betfair properly"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U8RT48D8X",
+        "type": "message",
+        "ts": "1524772504.000032",
+        "text": "that's an interesting idea btw, I will give that a shot :slightly_smiling_face:",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g29dec532584",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/029dec53258429504ca191457a7e747e.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0021-72.png",
+            "first_name": "",
+            "real_name": "mbk",
+            "display_name": "mbk",
+            "team": "T4G9NBD2M",
+            "name": "mbkroese",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Zo3u",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "that's an interesting idea btw, I will give that a shot "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "slightly_smiling_face",
+                                "unicode": "1f642"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1524772540.000649",
+        "client_msg_id": "826139E7-98BE-49F7-8501-2486F59BB4E7",
+        "text": "I don’t bother, I just let my program exit and let Betfair deal with closing the connection ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "yjED",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I don’t bother, I just let my program exit and let Betfair deal with closing the connection"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U8RT48D8X",
+        "type": "message",
+        "ts": "1524772714.000336",
+        "text": "right so after a certain amount of time Betfair closes the socket and the server resources on my end are freed up automatically?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g29dec532584",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/029dec53258429504ca191457a7e747e.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0021-72.png",
+            "first_name": "",
+            "real_name": "mbk",
+            "display_name": "mbk",
+            "team": "T4G9NBD2M",
+            "name": "mbkroese",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "TEt",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "right so after a certain amount of time Betfair closes the socket and the server resources on my end are freed up automatically?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U8RT48D8X",
+        "type": "message",
+        "ts": "1524772873.000661",
+        "text": "that sounds easiest, so I'll just go for that",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g29dec532584",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/029dec53258429504ca191457a7e747e.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0021-72.png",
+            "first_name": "",
+            "real_name": "mbk",
+            "display_name": "mbk",
+            "team": "T4G9NBD2M",
+            "name": "mbkroese",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Bb8iC",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "that sounds easiest, so I'll just go for that"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1524773270.000334",
+        "client_msg_id": "12E8A835-1EB6-4522-8E44-FC3AD5EEA91D",
+        "text": "Pretty much, but on your end there will be no issues your side, it’s just socket etiquette to shutdown and then close as .stop() does",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "uUQzT",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Pretty much, but on your end there will be no issues your side, it’s just socket etiquette to shutdown and then close as .stop() does"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U8RT48D8X",
+        "type": "message",
+        "ts": "1524773366.000289",
+        "text": "I see. Thanks again Liam",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g29dec532584",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/029dec53258429504ca191457a7e747e.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0021-72.png",
+            "first_name": "",
+            "real_name": "mbk",
+            "display_name": "mbk",
+            "team": "T4G9NBD2M",
+            "name": "mbkroese",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "uyEV",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I see. Thanks again Liam"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

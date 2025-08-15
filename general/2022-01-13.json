@@ -1,0 +1,1595 @@
+[
+    {
+        "user": "U010GM77S4W",
+        "type": "message",
+        "ts": "1642064276.059300",
+        "client_msg_id": "c247d35f-03b3-4d2f-8790-f9432a22b24b",
+        "text": "<@U9JHLMZB4> shared a script to help with that <https:\/\/betfairlightweight.slack.com\/archives\/C4HL6EZTQ\/p1639658642449300?thread_ts=1639652085.449000&amp;cid=C4HL6EZTQ>",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "66cae8f5399c",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-03-20\/1004508356769_66cae8f5399cf91a07ae_72.jpg",
+            "first_name": "",
+            "real_name": "mandelbot",
+            "display_name": "mandelbot",
+            "team": "T4G9NBD2M",
+            "name": "demhadbale",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1642024077.055900",
+        "parent_user_id": "U02TG3K70KW",
+        "attachments": [
+            {
+                "from_url": "https:\/\/betfairlightweight.slack.com\/archives\/C4HL6EZTQ\/p1639658642449300?thread_ts=1639652085.449000&amp;cid=C4HL6EZTQ",
+                "ts": "1639658642.449300",
+                "author_id": "U9JHLMZB4",
+                "channel_team": "T4G9NBD2M",
+                "channel_id": "C4HL6EZTQ",
+                "is_msg_unfurl": true,
+                "is_reply_unfurl": true,
+                "message_blocks": [
+                    {
+                        "team": "T4G9NBD2M",
+                        "channel": "C4HL6EZTQ",
+                        "ts": "1639658642.449300",
+                        "message": {
+                            "blocks": [
+                                {
+                                    "type": "rich_text",
+                                    "block_id": "Iid6L",
+                                    "elements": [
+                                        {
+                                            "type": "rich_text_section",
+                                            "elements": [
+                                                {
+                                                    "type": "text",
+                                                    "text": "I thought \"that can't be too difficult\" then took a look at the now very old script I have running as a daily cron job to do it. Hmmmm.\n\nI'll stick it up here in case it helps. Ignore references to workspaces and the database stuff that uses my custom helper. Also my \"trading\" == your \"client\". Hope it helps ...\n\n"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "type": "rich_text_preformatted",
+                                            "elements": [
+                                                {
+                                                    "type": "text",
+                                                    "text": "import os\nimport sys\nimport json\nimport betfairlightweight\nfrom datetime import datetime, timedelta\nfrom helpers.DatabaseHelpers import database\n\nWORKSPACE_PREFIX = os.getenv(\"WORKSPACE_PREFIX\")\nDATABASE_TABLE = \"betfair_statement_lines\"\nSQL = \"\"\"\n    INSERT INTO {}\n    (refId, amount, avgPrice, betSize, betType, betCategoryType, commissionRate, eventId, eventTypeId, fullMarketName, grossBetAmount, marketName, marketType, placedDate,\n     selectionId, selectionName, handicap, startDate, transactionType, transactionId, winLose, deadHeatPriceDivisor, avgPriceRaw)\n    VALUES ({})\n\"\"\".format(DATABASE_TABLE, ('%s,' * 23)[:-1])\n\ndef processing_date():\n    if len(sys.argv) > 1:\n        return sys.argv[1]\n    else:\n        return str(datetime.today() - timedelta(days=1))[:10] # returns date as a string without time\n\ndef download_account_statement(date_str):\n    db = database()\n    existing_lines = db.fetch_all('SELECT refId, winLose FROM {} where left(placedDate, 10) = \"{}\"'.format(DATABASE_TABLE, date_str))\n    process = True\n    from_record = 0\n    while process:\n        print(date_str, from_record, \"-\", from_record + 99)\n        start_time = date_str + \"T00:00:00Z\"\n        end_time = date_str + \"T23:59:59Z\"\n        time_range = betfairlightweight.filters.time_range(from_=start_time, to=end_time)\n        ast = trading.account.get_account_statement(\n            from_record=from_record,\n            item_date_range=time_range,\n            include_item=\"ALL\",\n        )\n        txns = []\n        for a in ast.account_statement:\n            line = json.loads(a.item_class_data[\"unknownStatementItem\"])\n            if (int(a.ref_id), line[\"winLose\"]) not in existing_lines:\n                txns.append(list({**{\"refId\": a.ref_id, \"amount\": a.amount}, **line}.values()))\n        result = db.execute_many(SQL, txns)\n        if result: print(result)\n        from_record += 100\n        process = ast.more_available\n    db.close()\n\ntrading = betfairlightweight.APIClient(os.getenv(\"BETFAIR_USERNAME\"), os.getenv(\"BETFAIR_PASSWORD\"), app_key=os.getenv(\"BETFAIR_LIVE_KEY\"), certs=WORKSPACE_PREFIX + \"certs\")\ntrading.login()\n\ndownload_account_statement(processing_date())"
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "id": 1,
+                "original_url": "https:\/\/betfairlightweight.slack.com\/archives\/C4HL6EZTQ\/p1639658642449300?thread_ts=1639652085.449000&amp;cid=C4HL6EZTQ",
+                "fallback": "[December 16th, 2021 4:44 AM] peter: I thought \"that can't be too difficult\" then took a look at the now very old script I have running as a daily cron job to do it. Hmmmm.\n\nI'll stick it up here in case it helps. Ignore references to workspaces and the database stuff that uses my custom helper. Also my \"trading\" == your \"client\". Hope it helps ...\n\n```import os\nimport sys\nimport json\nimport betfairlightweight\nfrom datetime import datetime, timedelta\nfrom helpers.DatabaseHelpers import database\n\nWORKSPACE_PREFIX = os.getenv(\"WORKSPACE_PREFIX\")\nDATABASE_TABLE = \"betfair_statement_lines\"\nSQL = \"\"\"\n    INSERT INTO {}\n    (refId, amount, avgPrice, betSize, betType, betCategoryType, commissionRate, eventId, eventTypeId, fullMarketName, grossBetAmount, marketName, marketType, placedDate,\n     selectionId, selectionName, handicap, startDate, transactionType, transactionId, winLose, deadHeatPriceDivisor, avgPriceRaw)\n    VALUES ({})\n\"\"\".format(DATABASE_TABLE, ('%s,' * 23)[:-1])\n\ndef processing_date():\n    if len(sys.argv) &gt; 1:\n        return sys.argv[1]\n    else:\n        return str(datetime.today() - timedelta(days=1))[:10] # returns date as a string without time\n\ndef download_account_statement(date_str):\n    db = database()\n    existing_lines = db.fetch_all('SELECT refId, winLose FROM {} where left(placedDate, 10) = \"{}\"'.format(DATABASE_TABLE, date_str))\n    process = True\n    from_record = 0\n    while process:\n        print(date_str, from_record, \"-\", from_record + 99)\n        start_time = date_str + \"T00:00:00Z\"\n        end_time = date_str + \"T23:59:59Z\"\n        time_range = betfairlightweight.filters.time_range(from_=start_time, to=end_time)\n        ast = trading.account.get_account_statement(\n            from_record=from_record,\n            item_date_range=time_range,\n            include_item=\"ALL\",\n        )\n        txns = []\n        for a in ast.account_statement:\n            line = json.loads(a.item_class_data[\"unknownStatementItem\"])\n            if (int(a.ref_id), line[\"winLose\"]) not in existing_lines:\n                txns.append(list({**{\"refId\": a.ref_id, \"amount\": a.amount}, **line}.values()))\n        result = db.execute_many(SQL, txns)\n        if result: print(result)\n        from_record += 100\n        process = ast.more_available\n    db.close()\n\ntrading = betfairlightweight.APIClient(os.getenv(\"BETFAIR_USERNAME\"), os.getenv(\"BETFAIR_PASSWORD\"), app_key=os.getenv(\"BETFAIR_LIVE_KEY\"), certs=WORKSPACE_PREFIX + \"certs\")\ntrading.login()\n\ndownload_account_statement(processing_date())```",
+                "text": "I thought \"that can't be too difficult\" then took a look at the now very old script I have running as a daily cron job to do it. Hmmmm.\n\nI'll stick it up here in case it helps. Ignore references to workspaces and the database stuff that uses my custom helper. Also my \"trading\" == your \"client\". Hope it helps ...\n\n```import os\nimport sys\nimport json\nimport betfairlightweight\nfrom datetime import datetime, timedelta\nfrom helpers.DatabaseHelpers import database\n\nWORKSPACE_PREFIX = os.getenv(\"WORKSPACE_PREFIX\")\nDATABASE_TABLE = \"betfair_statement_lines\"\nSQL = \"\"\"\n    INSERT INTO {}\n    (refId, amount, avgPrice, betSize, betType, betCategoryType, commissionRate, eventId, eventTypeId, fullMarketName, grossBetAmount, marketName, marketType, placedDate,\n     selectionId, selectionName, handicap, startDate, transactionType, transactionId, winLose, deadHeatPriceDivisor, avgPriceRaw)\n    VALUES ({})\n\"\"\".format(DATABASE_TABLE, ('%s,' * 23)[:-1])\n\ndef processing_date():\n    if len(sys.argv) &gt; 1:\n        return sys.argv[1]\n    else:\n        return str(datetime.today() - timedelta(days=1))[:10] # returns date as a string without time\n\ndef download_account_statement(date_str):\n    db = database()\n    existing_lines = db.fetch_all('SELECT refId, winLose FROM {} where left(placedDate, 10) = \"{}\"'.format(DATABASE_TABLE, date_str))\n    process = True\n    from_record = 0\n    while process:\n        print(date_str, from_record, \"-\", from_record + 99)\n        start_time = date_str + \"T00:00:00Z\"\n        end_time = date_str + \"T23:59:59Z\"\n        time_range = betfairlightweight.filters.time_range(from_=start_time, to=end_time)\n        ast = trading.account.get_account_statement(\n            from_record=from_record,\n            item_date_range=time_range,\n            include_item=\"ALL\",\n        )\n        txns = []\n        for a in ast.account_statement:\n            line = json.loads(a.item_class_data[\"unknownStatementItem\"])\n            if (int(a.ref_id), line[\"winLose\"]) not in existing_lines:\n                txns.append(list({**{\"refId\": a.ref_id, \"amount\": a.amount}, **line}.values()))\n        result = db.execute_many(SQL, txns)\n        if result: print(result)\n        from_record += 100\n        process = ast.more_available\n    db.close()\n\ntrading = betfairlightweight.APIClient(os.getenv(\"BETFAIR_USERNAME\"), os.getenv(\"BETFAIR_PASSWORD\"), app_key=os.getenv(\"BETFAIR_LIVE_KEY\"), certs=WORKSPACE_PREFIX + \"certs\")\ntrading.login()\n\ndownload_account_statement(processing_date())```",
+                "author_name": "Peter Coles",
+                "author_link": "https:\/\/betfairlightweight.slack.com\/team\/U9JHLMZB4",
+                "author_icon": "https:\/\/secure.gravatar.com\/avatar\/3951ddcb43e788a387d6daf330dad5ca.jpg?s=48&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0018-48.png",
+                "author_subname": "Peter Coles",
+                "mrkdwn_in": [
+                    "text"
+                ],
+                "footer": "Thread in Slack conversation"
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "+K2",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "user",
+                                "user_id": "U9JHLMZB4"
+                            },
+                            {
+                                "type": "text",
+                                "text": " shared a script to help with that "
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/betfairlightweight.slack.com\/archives\/C4HL6EZTQ\/p1639658642449300?thread_ts=1639652085.449000&cid=C4HL6EZTQ"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "eyes",
+                "users": [
+                    "U02TG3K70KW"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "U010GM77S4W",
+        "type": "message",
+        "ts": "1642067000.059800",
+        "client_msg_id": "dab4fa23-6d84-4e63-8b71-51cc2f04c6b8",
+        "text": "<@U4H19D1D2> will voided bets be taken out of the blotter?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "66cae8f5399c",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-03-20\/1004508356769_66cae8f5399cf91a07ae_72.jpg",
+            "first_name": "",
+            "real_name": "mandelbot",
+            "display_name": "mandelbot",
+            "team": "T4G9NBD2M",
+            "name": "demhadbale",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "ATJY",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "user",
+                                "user_id": "U4H19D1D2"
+                            },
+                            {
+                                "type": "text",
+                                "text": " will voided bets be taken out of the blotter?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1642067034.060200",
+        "client_msg_id": "b81dbd0c-cef2-4025-bb83-190f92064b4e",
+        "text": "nothing ever gets removed from the blotter, if thats what you mean?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1642067034.060200",
+        "reply_count": 3,
+        "reply_users_count": 2,
+        "latest_reply": "1642072096.060700",
+        "reply_users": [
+            "U010GM77S4W",
+            "U4H19D1D2"
+        ],
+        "replies": [
+            {
+                "user": "U010GM77S4W",
+                "ts": "1642071923.060300"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1642072095.060500"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1642072096.060700"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": true,
+        "last_read": "1642072096.060700",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "dw\/",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "nothing ever gets removed from the blotter, if thats what you mean?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U010GM77S4W",
+        "type": "message",
+        "ts": "1642071923.060300",
+        "client_msg_id": "f464f6e1-fb5a-46cc-b0bb-023186a5ee64",
+        "text": "ah, anyway to recognize when a bet has been voided then?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "66cae8f5399c",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-03-20\/1004508356769_66cae8f5399cf91a07ae_72.jpg",
+            "first_name": "",
+            "real_name": "mandelbot",
+            "display_name": "mandelbot",
+            "team": "T4G9NBD2M",
+            "name": "demhadbale",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1642067034.060200",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "UhHS1",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "ah, anyway to recognize when a bet has been voided then?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1642072095.060500",
+        "client_msg_id": "a2719874-517c-428c-89fd-6fd823ca4ea3",
+        "text": "the obvious? `order.size_voided`",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1642067034.060200",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "03VPe",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "the obvious? "
+                            },
+                            {
+                                "type": "text",
+                                "text": "order.size_voided",
+                                "style": {
+                                    "code": true
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1642072096.060700",
+        "client_msg_id": "8ba9a688-3d33-4acf-a458-3d51ba111721",
+        "text": "<https:\/\/github.com\/liampauling\/flumine\/blob\/770fcf967dab590cba63350dd2ee46839363f8d1\/flumine\/order\/order.py#L457>",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1642067034.060200",
+        "parent_user_id": "U4H19D1D2",
+        "attachments": [
+            {
+                "id": 1,
+                "footer_icon": "https:\/\/slack.github.com\/static\/img\/favicon-neutral.png",
+                "color": "24292f",
+                "bot_id": "B021ZJYSBMW",
+                "app_unfurl_url": "https:\/\/github.com\/liampauling\/flumine\/blob\/770fcf967dab590cba63350dd2ee46839363f8d1\/flumine\/order\/order.py#L457",
+                "is_app_unfurl": true,
+                "app_id": "A01BP7R4KNY",
+                "fallback": "<https:\/\/github.com\/liampauling\/flumine\/blob\/770fcf967dab590cba63350dd2ee46839363f8d1\/flumine\/order\/order.py | order.py>",
+                "text": "```\n    def size_voided(self) -&gt; float:\n```",
+                "title": "<https:\/\/github.com\/liampauling\/flumine\/blob\/770fcf967dab590cba63350dd2ee46839363f8d1\/flumine\/order\/order.py | order.py>",
+                "footer": "<https:\/\/github.com\/liampauling\/flumine|liampauling\/flumine>",
+                "mrkdwn_in": [
+                    "text"
+                ]
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "REU8",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/liampauling\/flumine\/blob\/770fcf967dab590cba63350dd2ee46839363f8d1\/flumine\/order\/order.py#L457"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "U010GM77S4W"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "subtype": "channel_join",
+        "user": "U02TVNZQDPV",
+        "text": "<@U02TVNZQDPV> has joined the channel",
+        "type": "message",
+        "ts": "1642072182.061100"
+    },
+    {
+        "user": "U02TVNZQDPV",
+        "type": "message",
+        "ts": "1642072447.063300",
+        "client_msg_id": "2285a120-ef9d-4861-823a-69ead84c1be0",
+        "text": "Hi guys, I am trying to put together a simple script to print current prices for in play matches. The problem I am having is that my script is not getting the current prices, it just keeps printing the same prices over and over. Can anyone see what I've done wrong? Thanks",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "ge82f91f3690",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/e82f91f36900aec46a2097987592769d.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0020-72.png",
+            "first_name": "rob",
+            "real_name": "rob smith",
+            "display_name": "rob smith",
+            "team": "T4G9NBD2M",
+            "name": "rob51852",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "u4B",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Hi guys, I am trying to put together a simple script to print current prices for in play matches. The problem I am having is that my script is not getting the current prices, it just keeps printing the same prices over and over. Can anyone see what I've done wrong? Thanks"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U02TVNZQDPV",
+        "type": "message",
+        "ts": "1642072461.063600",
+        "client_msg_id": "9ee6d4c0-8cf8-4e3a-9610-33bbcb726927",
+        "text": "`import betfairlightweight`\n`import datetime`\n`import pandas as pd`\n`from betfairlightweight import filters`\n`from time import sleep`\n`from datetime import datetime`\n`from datetime import timedelta`\n\n`username = \"\"`\n`password = \"\"`\n`api_key = \"\"`\n`pd.set_option('display.max_rows', 1000)`\n\n`def current_time(message):`\n    `current_time = datetime.now()`\n    `current_time = current_time.strftime('%H:%M:%S:%f')`\n    `print(f'{current_time}: {message}')`\n\n`def get_todays_games():`\n\n    `trading = betfairlightweight.APIClient(`\n            `username, password, app_key=api_key`\n        `)`\n    `trading.login_interactive()`\n    `print(\"Logged in\")`\n\n    `trading.keep_alive()`\n\n    `t20_filter = betfairlightweight.filters.market_filter(`\n        `event_type_ids=[4],`\n        `market_type_codes=[\"MATCH_ODDS\"],`\n        `market_start_time={`\n            `'to': (datetime.utcnow() + timedelta(days=1)).strftime(\"%Y-%m-%dT%TZ\")`\n        `}`\n    `)`\n    `t20_events = trading.betting.list_events(`\n        `filter=t20_filter`\n    `)`\n\n    `t20_events_today = pd.DataFrame({`\n        `'Event Name': [event_object.event.name for event_object in t20_events],`\n        `'Event ID': [event_object.event.id for event_object in t20_events],`\n    `})`\n\n    `print(t20_events_today)`\n\n    `print()`\n    `event_id = input(\"Input Event ID:  \")`\n    `print()`\n\n    `market_catalogue_filter = betfairlightweight.filters.market_filter(event_ids=[event_id])`\n\n    `market_catalogues = trading.betting.list_market_catalogue(`\n        `filter=market_catalogue_filter,`\n        `max_results='100',`\n        `sort='FIRST_TO_START'`\n    `)`\n\n    `market_types_mooney_valley = pd.DataFrame({`\n        `'Market Name': [market_cat_object.market_name for market_cat_object in market_catalogues],`\n        `'Market ID': [market_cat_object.market_id for market_cat_object in market_catalogues],`\n        `'Total Matched': [market_cat_object.total_matched for market_cat_object in market_catalogues],`\n    `})`\n    `print(market_types_mooney_valley)`\n\n    `print()`\n    `market_id = input(\"Input Market ID:  \")`\n    `print()`\n\n    `market_books = trading.betting.list_market_book(`\n            `market_ids=[market_id],`\n            `price_projection=filters.price_projection(`\n                `price_data=filters.price_data(ex_all_offers=True)`\n            `),`\n        `)`\n\n    `while True:`\n        `for market_book in market_books:`\n            `print(` \n                `market_book.market_id,`\n                `market_book.inplay,`\n                `market_book.status,`\n                `market_book.total_matched,`\n            `)`\n        `sleep(1)`\n\n        `if market_book.inplay == True:`\n\n            `while True:`\n                `for runner in market_book.runners:`\n                    `print(`  \n                        `runner.selection_id,`\n                        `runner.status,`\n                        `runner.last_price_traded,`\n                        `runner.total_matched,`\n                    `)`\n                `sleep(1)`\n\n`get_todays_games()`",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "ge82f91f3690",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/e82f91f36900aec46a2097987592769d.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0020-72.png",
+            "first_name": "rob",
+            "real_name": "rob smith",
+            "display_name": "rob smith",
+            "team": "T4G9NBD2M",
+            "name": "rob51852",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "lOoCL",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "import betfairlightweight",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "import datetime",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "import pandas as pd",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "from betfairlightweight import filters",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "from time import sleep",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "from datetime import datetime",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "from datetime import timedelta",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "username = \"\"",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "password = \"\"",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "api_key = \"\"",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "pd.set_option('display.max_rows', 1000)",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "def current_time(message):",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "    current_time = datetime.now()",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "    current_time = current_time.strftime('%H:%M:%S:%f')",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "    print(f'{current_time}: {message}')",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "def get_todays_games():",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "    trading = betfairlightweight.APIClient(",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "            username, password, app_key=api_key",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "        )",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "    trading.login_interactive()",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "    print(\"Logged in\")",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "    trading.keep_alive()",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "    t20_filter = betfairlightweight.filters.market_filter(",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "        event_type_ids=[4],",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "        market_type_codes=[\"MATCH_ODDS\"],",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "        market_start_time={",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "            'to': (datetime.utcnow() + timedelta(days=1)).strftime(\"%Y-%m-%dT%TZ\")",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "        }",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "    )",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "    t20_events = trading.betting.list_events(",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "        filter=t20_filter",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "    )",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "    t20_events_today = pd.DataFrame({",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "        'Event Name': [event_object.event.name for event_object in t20_events],",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "        'Event ID': [event_object.event.id for event_object in t20_events],",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "    })",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "    print(t20_events_today)",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "    print()",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "    event_id = input(\"Input Event ID:  \")",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "    print()",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "    market_catalogue_filter = betfairlightweight.filters.market_filter(event_ids=[event_id])",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "    market_catalogues = trading.betting.list_market_catalogue(",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "        filter=market_catalogue_filter,",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "        max_results='100',",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "        sort='FIRST_TO_START'",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "    )",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "    market_types_mooney_valley = pd.DataFrame({",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "        'Market Name': [market_cat_object.market_name for market_cat_object in market_catalogues],",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "        'Market ID': [market_cat_object.market_id for market_cat_object in market_catalogues],",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "        'Total Matched': [market_cat_object.total_matched for market_cat_object in market_catalogues],",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "    })",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "    print(market_types_mooney_valley)",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "    print()",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "    market_id = input(\"Input Market ID:  \")",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "    print()",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "    market_books = trading.betting.list_market_book(",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "            market_ids=[market_id],",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "            price_projection=filters.price_projection(",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "                price_data=filters.price_data(ex_all_offers=True)",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "            ),",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "        )",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "    while True:",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "        for market_book in market_books:",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "            print( ",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "                market_book.market_id,",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "                market_book.inplay,",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "                market_book.status,",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "                market_book.total_matched,",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "            )",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "        sleep(1)",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "        if market_book.inplay == True:",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "            while True:",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "                for runner in market_book.runners:",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "                    print(  ",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "                        runner.selection_id,",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "                        runner.status,",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "                        runner.last_price_traded,",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "                        runner.total_matched,",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "                    )",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "                sleep(1)",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "get_todays_games()",
+                                "style": {
+                                    "code": true
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1642072487.063800",
+        "client_msg_id": "60e8e6f6-3bfe-4298-bbec-11335ffca3b8",
+        "text": "Welcome!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "zIoSZ",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Welcome!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1642072498.064100",
+        "client_msg_id": "e1e5215c-63d6-4fdf-a42d-bc479e6819e9",
+        "text": "this line\n\n```    market_books = trading.betting.list_market_book(\n            market_ids=[market_id],\n            price_projection=filters.price_projection(\n                price_data=filters.price_data(ex_all_offers=True)\n            ),\n        )```\nNeeds to be in the while loop",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "srv",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "this line\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "    market_books = trading.betting.list_market_book(\n            market_ids=[market_id],\n            price_projection=filters.price_projection(\n                price_data=filters.price_data(ex_all_offers=True)\n            ),\n        )"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\nNeeds to be in the while loop"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1642072509.064400",
+        "client_msg_id": "a5c95614-cf83-4a81-a02f-fc08fb6bd0e6",
+        "text": "Better still use streaming instead",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "yv8YG",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Better still use streaming instead"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U02TVNZQDPV",
+        "type": "message",
+        "ts": "1642072678.064800",
+        "client_msg_id": "0d1caf1e-925f-410d-a2e0-8a6d49eee683",
+        "text": "Faster than flumine that response Liam!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "ge82f91f3690",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/e82f91f36900aec46a2097987592769d.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0020-72.png",
+            "first_name": "rob",
+            "real_name": "rob smith",
+            "display_name": "rob smith",
+            "team": "T4G9NBD2M",
+            "name": "rob51852",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "yuylt",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Faster than flumine that response Liam!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U02TVNZQDPV",
+        "type": "message",
+        "ts": "1642072689.065100",
+        "client_msg_id": "d98ea6f8-ff38-4de8-81c2-58395542c68b",
+        "text": "Thanks very much and doh!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "ge82f91f3690",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/e82f91f36900aec46a2097987592769d.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0020-72.png",
+            "first_name": "rob",
+            "real_name": "rob smith",
+            "display_name": "rob smith",
+            "team": "T4G9NBD2M",
+            "name": "rob51852",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "jqg",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Thanks very much and doh!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1642072706.065500",
+        "client_msg_id": "9ea340ba-199e-436a-af33-9eab0c793dac",
+        "text": "ironically not, only replying as I am waiting for a backtest and bored",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Z0y=",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "ironically not, only replying as I am waiting for a backtest and bored"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "subtype": "channel_join",
+        "user": "U02TUAF02DC",
+        "text": "<@U02TUAF02DC> has joined the channel",
+        "type": "message",
+        "ts": "1642144031.000200"
+    }
+]

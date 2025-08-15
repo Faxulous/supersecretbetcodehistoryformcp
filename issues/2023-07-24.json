@@ -1,0 +1,557 @@
+[
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1690184224.684429",
+        "client_msg_id": "3a54db16-c794-46df-b173-49b9dd377958",
+        "text": "<https:\/\/github.com\/betcode-org\/betfair\/issues\/523|This> is why open source sucks, not sure it even deserves a response tbh",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1690184224.684429",
+        "reply_count": 7,
+        "reply_users_count": 3,
+        "latest_reply": "1690189220.658999",
+        "reply_users": [
+            "UBS7QANF3",
+            "U4H19D1D2",
+            "U02RN7YDRQ9"
+        ],
+        "replies": [
+            {
+                "user": "UBS7QANF3",
+                "ts": "1690185003.522909"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1690185186.026259"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1690185459.050759"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1690185691.779999"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1690186258.733859"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1690186781.160499"
+            },
+            {
+                "user": "U02RN7YDRQ9",
+                "ts": "1690189220.658999"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": true,
+        "last_read": "1690189220.658999",
+        "attachments": [
+            {
+                "id": 1,
+                "footer_icon": "https:\/\/slack.github.com\/static\/img\/favicon-neutral.png",
+                "ts": 1687431721,
+                "color": "36a64f",
+                "bot_id": "B021ZJYSBMW",
+                "app_unfurl_url": "https:\/\/github.com\/betcode-org\/betfair\/issues\/523",
+                "is_app_unfurl": true,
+                "app_id": "A01BP7R4KNY",
+                "fallback": "#523  SSLV3_ALERT_HANDSHAKE_FAILURE",
+                "text": "intermittent: SSLV3_ALERT_HANDSHAKE_FAILURE\n\nMy evolving system, would be working OK, if it was not for the system crash which seem to send betfairlight python into a loop doing unlimited trades, until I run out of money\n\nOf the last three months , all my problems have been down server issue, which has for one reason or another caused a silly loop doing multi-orders, severally damaging my bank\n\nI don't think Customer_ref would bounce duplications ?\n\nBelow I enclosed some of the console log from python betfairlight , as you can see has given SSLV3_ALERT_HANDSHAKE_FAILURE, however unfortunately if this happens to be when placing a trade betfairlight keeps trying without passing control back to my code, also I don’t have the knowledge to dive into betfairlight to stop this\n\nThis SSLV3_ALERT_HANDSHAKE_FAILURE error does not happen very often & not always in placeOrders function , so its difficult to know what to do , however over the last few months I would I have had it 4-5 times and mostly on very busy trading days\n\nToday I have improved my code , to say if sys.last_value as been set by python eg. My code or betfairlight then stop the whole program , sledge hammer to crack a nut, but I can’t have it doing this muti-order looping, I hope this stops it, else I will have stop my system and stop with betfair completely\n\nI hope you will take the time to advise & help , as I cant continue with my program , if I run in the fear of this happening, any suggestion would be very welcome to eradicate this.\n\nBecause I not low level programmer , I have use betfairlight python to get what I want , but cant find any documentation to help me in this matter further\n\nThanks\n\npip show betfairlightweight  \nVersion: 2.2.0\n\nNote  \nFile \"betfairlightweight\\endpoints\\baseendpoint.py\", line 43, in request  \nI have added this into here “if sys.last_value is not None “, now will not do request or post anything more to betfair, but its not the best answer\n\n“\n\nTraceback (most recent call last):  \nFile \"urllib3\\connectionpool.py\", line 665, in urlopen  \nFile \"urllib3\\connectionpool.py\", line 376, in _make_request  \nFile \"urllib3\\connectionpool.py\", line 994, in _validate_conn  \nFile \"urllib3\\connection.py\", line 352, in connect  \nFile \"urllib3\\util\\ssl_.py\", line 370, in ssl_wrap_socket  \nFile \"ssl.py\", line 500, in wrap_socket  \nFile \"ssl.py\", line 1040, in _create  \nFile \"ssl.py\", line 1309, in do_handshake  \nssl.SSLError: [SSL: SSLV3_ALERT_HANDSHAKE_FAILURE] sslv3 alert handshake failure (_ssl.c:1108)\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):  \nFile \"requests\\adapters.py\", line 439, in send  \nFile \"urllib3\\connectionpool.py\", line 719, in urlopen  \nFile \"urllib3\\util\\retry.py\", line 436, in increment  \nurllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='<http:\/\/api.betfair.com|api.betfair.com>', port=443): Max retries exceeded with url: \/exchange\/betting\/json-rpc\/v1 (Caused by SSLError(SSLError(1, '[SSL: SSLV3_ALERT_HANDSHAKE_FAILURE] sslv3 alert handshake failure (_ssl.c:1108)')))\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):  \nFile \"betfairlightweight\\endpoints\\baseendpoint.py\", line 36, in request  \nFile \"requests\\api.py\", line 119, in post  \nFile \"requests\\api.py\", line 61, in request  \nFile \"requests\\sessions.py\", line 530, in request  \nFile \"requests\\sessions.py\", line 643, in send  \nFile \"requests\\adapters.py\", line 514, in send  \nrequests.exceptions.SSLError: HTTPSConnectionPool(host='<http:\/\/api.betfair.com|api.betfair.com>', port=443): Max retries exceeded with url: \/exchange\/betting\/json-rpc\/v1 (Caused by SSLError(SSLError(1, '[SSL: SSLV3_ALERT_HANDSHAKE_FAILURE] sslv3 alert handshake failure (_ssl.c:1108)')))\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):  \nFile \"Betfair\\trader\\Trader_Betfair_PyAuto40.py\", line 883, in m_timer3OnTimer  \nFile \"Betfair\\trader\\Trader_Betfair_PyAuto40.py\", line 1088, in ScanDoB  \nFile \"myBetfair.py\", line 352, in place_ord  \nFile \"betfairlightweight\\endpoints\\betting.py\", line 507, in place_orders  \nFile \"betfairlightweight\\endpoints\\baseendpoint.py\", line 43, in request  \nbe",
+                "title": "#523  SSLV3_ALERT_HANDSHAKE_FAILURE",
+                "title_link": "https:\/\/github.com\/betcode-org\/betfair\/issues\/523",
+                "footer": "<https:\/\/github.com\/betcode-org\/betfair|betcode-org\/betfair>",
+                "mrkdwn_in": [
+                    "text"
+                ]
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Kp9",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/betcode-org\/betfair\/issues\/523",
+                                "text": "This"
+                            },
+                            {
+                                "type": "text",
+                                "text": " is why open source sucks, not sure it even deserves a response tbh"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1690185003.522909",
+        "client_msg_id": "39d631fa-f4ce-455e-962c-517348f68859",
+        "text": "I think a simple response along the lines of:\n\n&gt; If you are unable or unwilling to implement robust error handling in your code I suggest you look at flumine which is a fully featured trading framework sitting atop betfairlightweight\nwould go a long way",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1690184224.684429",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "q1ro",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I think a simple response along the lines of:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_quote",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "If you are unable or unwilling to implement robust error handling in your code I suggest you look at flumine which is a fully featured trading framework sitting atop betfairlightweight"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\nwould go a long way"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1690185186.026259",
+        "client_msg_id": "b4437cd5-ef18-4943-a5d8-f36f93ad5762",
+        "text": "Perfect, very difficult to not respond aggressively when someone is happy to use something for free but then starts pointing fingers when they use it incorrectly",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1690184224.684429",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "NLU",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Perfect, very difficult to not respond aggressively when someone is happy to use something for free but then starts pointing fingers when they use it incorrectly"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1690185459.050759",
+        "client_msg_id": "f8386c49-3dd2-40ed-9f4a-798e1d0f9e3c",
+        "text": "I think you're too close to it - I don't read it as that accusatory. Just incredibly naive\/ignorant :sweat_smile:",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1690184224.684429",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "ND6f",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I think you're too close to it - I don't read it as that accusatory. Just incredibly naive\/ignorant "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "sweat_smile",
+                                "unicode": "1f605"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "heavy_plus_sign",
+                "users": [
+                    "U9JHLMZB4"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1690185691.779999",
+        "client_msg_id": "d65c7dab-e216-4daa-a4a9-c47b8a9f2176",
+        "text": "Probably, just find it amazing that someone can go to the effort of writing all of that but not fix there shitty code",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1690184224.684429",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "rcdr",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Probably, just find it amazing that someone can go to the effort of writing all of that but not fix there shitty code"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1690186258.733859",
+        "client_msg_id": "fda6fdae-4279-4cab-a46a-c608519fb090",
+        "text": "They're just clueless - sounds like they don't know about exception handling so rather than using try\/except they are looking at sys.last_value which I have never heard of before?!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1690184224.684429",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "s0J9",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "They're just clueless - sounds like they don't know about exception handling so rather than using try\/except they are looking at sys.last_value which I have never heard of before?!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1690186781.160499",
+        "client_msg_id": "69981430-c6a4-4987-809f-a8226cb79ab8",
+        "text": "Yeah I have no idea what that is",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1690184224.684429",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "7lyhE",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Yeah I have no idea what that is"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U02RN7YDRQ9",
+        "type": "message",
+        "ts": "1690189220.658999",
+        "edited": {
+            "user": "U02RN7YDRQ9",
+            "ts": "1690189462.000000"
+        },
+        "client_msg_id": "10a85d12-69b0-4481-a71f-1ac77c1e75f9",
+        "text": "Amazing lol. And to know of such a system field when the explanation of its use is for when an unhandled exception occurs :joy: `sys.last_type sys.last_value sys.last_traceback These three variables are not always defined; they are set when an exception is not handled and the interpreter prints an error message and a stack traceback.`\nEdit: Never heard of it either and had to look it up",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "ge46f1f8b708",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/e46f1f8b708a630e3191de7b2c42b1d1.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0023-72.png",
+            "first_name": "edblock",
+            "real_name": "edblock",
+            "display_name": "foxwood",
+            "team": "T4G9NBD2M",
+            "name": "eanb",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1690184224.684429",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "4l=i",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Amazing lol. And to know of such a system field when the explanation of its use is for when an unhandled exception occurs "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "joy",
+                                "unicode": "1f602"
+                            },
+                            {
+                                "type": "text",
+                                "text": " "
+                            },
+                            {
+                                "type": "text",
+                                "text": "sys.last_type sys.last_value sys.last_traceback These three variables are not always defined; they are set when an exception is not handled and the interpreter prints an error message and a stack traceback.",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\nEdit: Never heard of it either and had to look it up"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "joy",
+                "users": [
+                    "U4H19D1D2"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "UNW8Q88EL",
+        "type": "message",
+        "ts": "1690205131.865739",
+        "client_msg_id": "d48822cd-9a53-4e80-b405-bbdbb2c0f999",
+        "text": "Hi <@U4H19D1D2> <@UUCD6P13J> - i was out of the office in the latter part of last week but let me know if you're still experiencing issues.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "cc2c2669d548",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2021-10-21\/2643683806753_cc2c2669d548a3476e65_72.jpg",
+            "first_name": "Neil",
+            "real_name": "Neil T (Betfair)",
+            "display_name": "Neil T (Betfair)",
+            "team": "T4G9NBD2M",
+            "name": "neil.thomas",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1689854904.914879",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "utC=a",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Hi "
+                            },
+                            {
+                                "type": "user",
+                                "user_id": "U4H19D1D2"
+                            },
+                            {
+                                "type": "text",
+                                "text": " "
+                            },
+                            {
+                                "type": "user",
+                                "user_id": "UUCD6P13J"
+                            },
+                            {
+                                "type": "text",
+                                "text": " - i was out of the office in the latter part of last week but let me know if you're still experiencing issues."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1690205816.989779",
+        "client_msg_id": "15f77a0e-7985-4880-9aa4-5da2bca02ca0",
+        "text": "Np, haven't seen anything since that day",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1689854904.914879",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "7IIwp",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Np, haven't seen anything since that day"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "UNW8Q88EL"
+                ],
+                "count": 1
+            }
+        ]
+    }
+]

@@ -1,0 +1,194 @@
+[
+    {
+        "user": "U01A5GVTBST",
+        "type": "message",
+        "ts": "1703525960.656789",
+        "edited": {
+            "user": "U01A5GVTBST",
+            "ts": "1703535417.000000"
+        },
+        "client_msg_id": "f10a76f2-0ad3-4118-bd35-3878b94c7135",
+        "text": "Hi all,\n\nI am looking for guidance to implement properly in Flumine what I have done below in a hacky way. I would be grateful for any help on how to leverage flumine constructs as opposed to the hacks I have in place. Thank you in advance!\n\nThe purpose is to run a simulation in tennis with scores and marketdata.\n\nThe historical file that is being streamed has both mb and score\n\nExample:\n```[...]\n\n\"op\": \"mb\", \"clk\": \"APTx4AcAw63\/BgDA8+cH\", \"pt\": 1698962123328, \"mc\": [{\"id\": \"1.220368399\", \"rc\": [{\"atb\": [[1.55, 133.58]], \"id\": 51718172}]}]}\n\n{\"op\": \"score\", \"clk\": \"\", \"pt\": 1698962127237, \"mc\": [{\"eventTypeId\": 2, \"eventId\": 32753994, \"score\": {\"home\": {\"name\": \"Hunter\/Mertens\", \"score\": \"15\", \"halfTimeScore\": \"\", \"fullTimeScore\": \"\", \"penaltiesScore\": \"\", \"penaltiesSequence\": [], \"games\": \"0\", \"sets\": \"0\", \"gameSequence\": [], \"isServing\": true, \"highlight\": true, \"serviceBreaks\": 0}, \"away\": {\"name\": \"Krawczyk\/Schuurs\", \"score\": \"15\", \"halfTimeScore\": \"\", \"fullTimeScore\": \"\", \"penaltiesScore\": \"\", \"penaltiesSequence\": [], \"games\": \"1\", \"sets\": \"0\", \"gameSequence\": [], \"isServing\": false, \"highlight\": false, \"serviceBreaks\": 0}}, \"currentSet\": 1, \"currentGame\": 2, \"fullTimeElapsed\": {\"hour\": 0, \"min\": 0, \"sec\": 0}}]}\n\n{\"op\": \"mb\", \"clk\": \"AJv04AcA+a\/\/BgC29ucH\", \"pt\": 1698962128901, \"mc\": [{\"id\": \"1.220368399\", \"rc\": [{\"trd\": [[2.82, 66.15]], \"ltp\": 2.82, \"tv\": 916.22, \"id\": 43352014}, {\"atb\": [[1.55, 13.23]], \"trd\": [[1.55, 120.35]], \"ltp\": 1.55, \"tv\": 1413.85, \"id\": 51718172}], \"tv\": 2330.07}]}\n\n[...]```\nAnd the strategy is the example of the tennis strategy in flumine\n\n```class ExampleStrategy(BaseStrategy):\n  def process_market_book(self, market, market_book):\n        # process marketBook object\n        if \"score\" in market.context:\n            score = market.context[\"score\"]\n            print(\n                score.match_status,\n                score.current_game,\n                score.current_set,\n                score.current_point,\n                score.score.home.score,\n                score.score.away.score,\n            )```\n\nI have the following hacks in place\n\nIn `historicalstream.py`, I combine the lines mb and score lines so I get the score in the mb message\n```[...]\n    def on_data(self, raw_data: bytes) -> Optional[bool]:\n        try:\n            data = json.loads(raw_data)\n        except ValueError:\n            logger.error(\"value error: %s\" % raw_data)\n            return\n\n        # remove error handler \/ operation check\n\n        # skip on_change \/ on_update as we know it is always an update\n        publish_time = data[\"pt\"]\n        if data[\"op\"] == \"score\":\n            self.last_score = data\n        if data[\"op\"] == \"mb\" and self.last_score:\n            data[\"mc\"][0][\"score\"] = self.last_score[\"mc\"][0]\n            self.last_score = None\n        return self.stream._process(data[self.stream._lookup], publish_time)\n\n[...]```\n\nIn `simulation.py`, I attach the score to the context of the market\n\n```def _process_market_books(self, event: events.MarketBookEvent) -> None:\n[...]\n            # process market\n            market(market_book)\n\n            if \"score\" in market_book[\"streaming_update\"]:\n                market.context[\"score\"] = Scores(\n                    eventId=market_book[\"streaming_update\"][\"score\"][\"eventId\"],\n                    eventTypeId=market_book[\"streaming_update\"][\"score\"][\"eventTypeId\"],\n                    currentGame=market_book[\"streaming_update\"][\"score\"][\"currentGame\"],\n                    currentSet=market_book[\"streaming_update\"][\"score\"][\"currentSet\"],\n                    fullTimeElapsed={\"hour\": 0, \"min\": 0, \"sec\": 0},\n                    score=market_book[\"streaming_update\"][\"score\"][\"score\"],\n                )\n[..]```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "2b9b6916d876",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-09-13\/1357224664949_2b9b6916d8763fd7e1bc_72.png",
+            "first_name": "",
+            "real_name": "Matthieu Labour",
+            "display_name": "Matthieu Labour",
+            "team": "T4G9NBD2M",
+            "name": "matthieu.labour",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1703525960.656789",
+        "reply_count": 2,
+        "reply_users_count": 2,
+        "latest_reply": "1703636498.732609",
+        "reply_users": [
+            "U4H19D1D2",
+            "U01A5GVTBST"
+        ],
+        "replies": [
+            {
+                "user": "U4H19D1D2",
+                "ts": "1703573317.554389"
+            },
+            {
+                "user": "U01A5GVTBST",
+                "ts": "1703636498.732609"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": true,
+        "last_read": "1703636498.732609",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "oP257",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Hi all,\n\nI am looking for guidance to implement properly in Flumine what I have done below in a hacky way. I would be grateful for any help on how to leverage flumine constructs as opposed to the hacks I have in place. Thank you in advance!\n\nThe purpose is to run a simulation in tennis with scores and marketdata.\n\nThe historical file that is being streamed has both mb and score\n\nExample:\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "[...]\n\n\"op\": \"mb\", \"clk\": \"APTx4AcAw63\/BgDA8+cH\", \"pt\": 1698962123328, \"mc\": [{\"id\": \"1.220368399\", \"rc\": [{\"atb\": [[1.55, 133.58]], \"id\": 51718172}]}]}\n\n{\"op\": \"score\", \"clk\": \"\", \"pt\": 1698962127237, \"mc\": [{\"eventTypeId\": 2, \"eventId\": 32753994, \"score\": {\"home\": {\"name\": \"Hunter\/Mertens\", \"score\": \"15\", \"halfTimeScore\": \"\", \"fullTimeScore\": \"\", \"penaltiesScore\": \"\", \"penaltiesSequence\": [], \"games\": \"0\", \"sets\": \"0\", \"gameSequence\": [], \"isServing\": true, \"highlight\": true, \"serviceBreaks\": 0}, \"away\": {\"name\": \"Krawczyk\/Schuurs\", \"score\": \"15\", \"halfTimeScore\": \"\", \"fullTimeScore\": \"\", \"penaltiesScore\": \"\", \"penaltiesSequence\": [], \"games\": \"1\", \"sets\": \"0\", \"gameSequence\": [], \"isServing\": false, \"highlight\": false, \"serviceBreaks\": 0}}, \"currentSet\": 1, \"currentGame\": 2, \"fullTimeElapsed\": {\"hour\": 0, \"min\": 0, \"sec\": 0}}]}\n\n{\"op\": \"mb\", \"clk\": \"AJv04AcA+a\/\/BgC29ucH\", \"pt\": 1698962128901, \"mc\": [{\"id\": \"1.220368399\", \"rc\": [{\"trd\": [[2.82, 66.15]], \"ltp\": 2.82, \"tv\": 916.22, \"id\": 43352014}, {\"atb\": [[1.55, 13.23]], \"trd\": [[1.55, 120.35]], \"ltp\": 1.55, \"tv\": 1413.85, \"id\": 51718172}], \"tv\": 2330.07}]}\n\n[...]"
+                            }
+                        ],
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\nAnd the strategy is the example of the tennis strategy in flumine\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "class ExampleStrategy(BaseStrategy):\n  def process_market_book(self, market, market_book):\n        # process marketBook object\n        if \"score\" in market.context:\n            score = market.context[\"score\"]\n            print(\n                score.match_status,\n                score.current_game,\n                score.current_set,\n                score.current_point,\n                score.score.home.score,\n                score.score.away.score,\n            )"
+                            }
+                        ],
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\n\nI have the following hacks in place\n\nIn "
+                            },
+                            {
+                                "type": "text",
+                                "text": "historicalstream.py",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": ", I combine the lines mb and score lines so I get the score in the mb message\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "[...]\n    def on_data(self, raw_data: bytes) -> Optional[bool]:\n        try:\n            data = json.loads(raw_data)\n        except ValueError:\n            logger.error(\"value error: %s\" % raw_data)\n            return\n\n        # remove error handler \/ operation check\n\n        # skip on_change \/ on_update as we know it is always an update\n        publish_time = data[\"pt\"]\n        if data[\"op\"] == \"score\":\n            self.last_score = data\n        if data[\"op\"] == \"mb\" and self.last_score:\n            data[\"mc\"][0][\"score\"] = self.last_score[\"mc\"][0]\n            self.last_score = None\n        return self.stream._process(data[self.stream._lookup], publish_time)\n\n[...]"
+                            }
+                        ],
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\n\nIn "
+                            },
+                            {
+                                "type": "text",
+                                "text": "simulation.py",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": ", I attach the score to the context of the market\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "def _process_market_books(self, event: events.MarketBookEvent) -> None:\n[...]\n            # process market\n            market(market_book)\n\n            if \"score\" in market_book[\"streaming_update\"]:\n                market.context[\"score\"] = Scores(\n                    eventId=market_book[\"streaming_update\"][\"score\"][\"eventId\"],\n                    eventTypeId=market_book[\"streaming_update\"][\"score\"][\"eventTypeId\"],\n                    currentGame=market_book[\"streaming_update\"][\"score\"][\"currentGame\"],\n                    currentSet=market_book[\"streaming_update\"][\"score\"][\"currentSet\"],\n                    fullTimeElapsed={\"hour\": 0, \"min\": 0, \"sec\": 0},\n                    score=market_book[\"streaming_update\"][\"score\"][\"score\"],\n                )\n[..]"
+                            }
+                        ],
+                        "border": 0
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1703573317.554389",
+        "client_msg_id": "851D4CAE-F1A7-4BA9-BBAF-FF13539D2F54",
+        "text": "Have you looked at the example \/ middleware for this?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1703525960.656789",
+        "parent_user_id": "U01A5GVTBST",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "kOpQl",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Have you looked at the example \/ middleware for this?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

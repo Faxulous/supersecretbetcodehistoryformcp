@@ -1,0 +1,1995 @@
+[
+    {
+        "user": "U02CYRC190R",
+        "type": "message",
+        "ts": "1700228257.546549",
+        "client_msg_id": "ed0d8256-142a-4177-96f4-7fded5008bd6",
+        "text": "Just come back to Flumine and have been recording some data — trying to set up a simulation using the data. Based it off the WOM example <@U4H19D1D2> shared: <https:\/\/github.com\/liampauling\/flumine-strategy-development\/blob\/master\/main.py>\n\nHits this error when I chuck a few files at it:\n\n```  File \"path removed\", line 68, in &lt;module&gt;\n    framework.run()\n  File \"\/flumine\/venv\/lib\/python3.11\/site-packages\/flumine\/simulation\/simulation.py\", line 96, in run\n    for event in stream_gen():\n  File \"\/flumine\/venv\/lib\/python3.11\/site-packages\/flumine\/streams\/historicalstream.py\", line 224, in _read_loop\n    if listener_on_data(update):\n       ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"\/flumine\/venv\/lib\/python3.11\/site-packages\/flumine\/streams\/historicalstream.py\", line 209, in on_data\n    publish_time = data[\"pt\"]\n\nKeyError: 'pt'```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g1eb70ee9874",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/1eb70ee9874cc4b2e32a68a0b743d4d5.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0014-72.png",
+            "first_name": "Jimmy",
+            "real_name": "Jimmy",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "james",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "attachments": [
+            {
+                "id": 1,
+                "footer_icon": "https:\/\/slack.github.com\/static\/img\/favicon-neutral.png",
+                "color": "24292f",
+                "bot_id": "B021ZJYSBMW",
+                "app_unfurl_url": "https:\/\/github.com\/liampauling\/flumine-strategy-development\/blob\/master\/main.py",
+                "is_app_unfurl": true,
+                "app_id": "A01BP7R4KNY",
+                "fallback": "<https:\/\/github.com\/liampauling\/flumine-strategy-development\/blob\/master\/main.py | main.py>",
+                "text": "```\nfrom os import listdir\nfrom os.path import isfile, join\nimport smart_open\nfrom unittest.mock import patch as mock_patch\nfrom flumine import FlumineBacktest, clients\nfrom strategies.datacollectwom import DataCollectWOM\n\nfrom utils import setup_logging\n\n\"\"\"\nWOM data collection script\nRestricted to final 300s before start of race\nData saved to context[\"filename\"]\nCollects data every 5s\n\n# todo multiprocessing to speed up processing\n\"\"\"\n\nsetup_logging(level=\"CRITICAL\")\n\nclient = clients.BacktestClient()\n\nframework = FlumineBacktest(client=client)\n\ndirectory = \"\/Users\/liampauling\/Desktop\/marketdata-day\"  # update to market data dir\nmarkets = [\n    join(directory, f)\n    for f in listdir(directory)\n    if isfile(join(directory, f)) and f.endswith(\".gz\")\n]\n\nwith mock_patch(\"builtins.open\", smart_open.open):\n    framework.add_strategy(\n        DataCollectWOM(\n            market_filter={\n                \"markets\": markets,\n                \"listener_kwargs\": {\"seconds_to_start\": 300},\n            },\n            context={\n                \"filename\": \"\/tmp\/datacollect-all.csv\",\n                \"update_seconds\": 5,  # seconds\n            },\n        )\n    )\n    framework.run()\n\n```",
+                "title": "<https:\/\/github.com\/liampauling\/flumine-strategy-development\/blob\/master\/main.py | main.py>",
+                "footer": "<https:\/\/github.com\/liampauling\/flumine-strategy-development|liampauling\/flumine-strategy-development>",
+                "mrkdwn_in": [
+                    "text"
+                ]
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "rEe5t",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Just come back to Flumine and have been recording some data — trying to set up a simulation using the data. Based it off the WOM example "
+                            },
+                            {
+                                "type": "user",
+                                "user_id": "U4H19D1D2"
+                            },
+                            {
+                                "type": "text",
+                                "text": " shared: "
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/liampauling\/flumine-strategy-development\/blob\/master\/main.py"
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n\nHits this error when I chuck a few files at it:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "  File \"path removed\", line 68, in <module>\n    framework.run()\n  File \"\/flumine\/venv\/lib\/python3.11\/site-packages\/flumine\/simulation\/simulation.py\", line 96, in run\n    for event in stream_gen():\n  File \"\/flumine\/venv\/lib\/python3.11\/site-packages\/flumine\/streams\/historicalstream.py\", line 224, in _read_loop\n    if listener_on_data(update):\n       ^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"\/flumine\/venv\/lib\/python3.11\/site-packages\/flumine\/streams\/historicalstream.py\", line 209, in on_data\n    publish_time = data[\"pt\"]\n\nKeyError: 'pt'"
+                            }
+                        ],
+                        "border": 0
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U02CYRC190R",
+        "type": "message",
+        "ts": "1700228289.707479",
+        "client_msg_id": "c45fe430-7042-4d09-a149-afc4a850320f",
+        "text": "Tried a few files — so is my data recording not working properly? (Also based on the examples)",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g1eb70ee9874",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/1eb70ee9874cc4b2e32a68a0b743d4d5.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0014-72.png",
+            "first_name": "Jimmy",
+            "real_name": "Jimmy",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "james",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1700228289.707479",
+        "reply_count": 32,
+        "reply_users_count": 3,
+        "latest_reply": "1700230111.408519",
+        "reply_users": [
+            "U4H19D1D2",
+            "U02CYRC190R",
+            "U02RN7YDRQ9"
+        ],
+        "replies": [
+            {
+                "user": "U4H19D1D2",
+                "ts": "1700228309.874979"
+            },
+            {
+                "user": "U02CYRC190R",
+                "ts": "1700228348.017559"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1700228383.886309"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1700228385.285239"
+            },
+            {
+                "user": "U02CYRC190R",
+                "ts": "1700228410.442649"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1700228420.833169"
+            },
+            {
+                "user": "U02CYRC190R",
+                "ts": "1700228440.172559"
+            },
+            {
+                "user": "U02CYRC190R",
+                "ts": "1700228476.547049"
+            },
+            {
+                "user": "U02CYRC190R",
+                "ts": "1700228501.349769"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1700228547.504169"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1700228565.965579"
+            },
+            {
+                "user": "U02CYRC190R",
+                "ts": "1700228593.909119"
+            },
+            {
+                "user": "U02CYRC190R",
+                "ts": "1700228596.389249"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1700228635.674949"
+            },
+            {
+                "user": "U02CYRC190R",
+                "ts": "1700228665.888499"
+            },
+            {
+                "user": "U02CYRC190R",
+                "ts": "1700228690.275589"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1700228710.612009"
+            },
+            {
+                "user": "U02CYRC190R",
+                "ts": "1700228743.266729"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1700228756.472619"
+            },
+            {
+                "user": "U02CYRC190R",
+                "ts": "1700228768.672029"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1700228769.702069"
+            },
+            {
+                "user": "U02CYRC190R",
+                "ts": "1700228802.333539"
+            },
+            {
+                "user": "U02CYRC190R",
+                "ts": "1700228807.057879"
+            },
+            {
+                "user": "U02CYRC190R",
+                "ts": "1700228815.855149"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1700228832.514209"
+            },
+            {
+                "user": "U02CYRC190R",
+                "ts": "1700228851.640099"
+            },
+            {
+                "user": "U02CYRC190R",
+                "ts": "1700228855.572939"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1700228892.019979"
+            },
+            {
+                "user": "U02CYRC190R",
+                "ts": "1700228997.072499"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1700229081.438229"
+            },
+            {
+                "user": "U02CYRC190R",
+                "ts": "1700229097.055639"
+            },
+            {
+                "user": "U02RN7YDRQ9",
+                "ts": "1700230111.408519"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": true,
+        "last_read": "1700230111.408519",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "BbumB",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Tried a few files — so is my data recording not working properly? (Also based on the examples)"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1700228309.874979",
+        "client_msg_id": "2083a0b3-4a52-4b10-8216-b1ac22b21a85",
+        "text": "Can you share a file that errors?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1700228289.707479",
+        "parent_user_id": "U02CYRC190R",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "rMPAS",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Can you share a file that errors?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "text": "Straight from the server…",
+        "files": [
+            {
+                "id": "F0668DVEZHR",
+                "mode": "hidden_by_limit"
+            },
+            {
+                "id": "F0661TDK24W",
+                "mode": "hidden_by_limit"
+            }
+        ],
+        "upload": false,
+        "user": "U02CYRC190R",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "moPIy",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Straight from the server…"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "type": "message",
+        "ts": "1700228348.017559",
+        "edited": {
+            "user": "U02CYRC190R",
+            "ts": "1700228365.000000"
+        },
+        "client_msg_id": "783a4cbc-f12d-49da-a2ea-96b4864329b4",
+        "thread_ts": "1700228289.707479",
+        "parent_user_id": "U02CYRC190R"
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1700228383.886309",
+        "client_msg_id": "53b2b5ad-7aaf-46ee-8dc8-9e2a372597a7",
+        "text": "`FlumineBacktest`? How old is your version?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1700228289.707479",
+        "parent_user_id": "U02CYRC190R",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "ylkTL",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "FlumineBacktest",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "? How old is your version?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1700228385.285239",
+        "client_msg_id": "db585bf1-959d-4ec8-8008-e5f3377e8ed1",
+        "text": "upgrade",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1700228289.707479",
+        "parent_user_id": "U02CYRC190R",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "XuiH7",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "upgrade"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U02CYRC190R",
+        "type": "message",
+        "ts": "1700228410.442649",
+        "client_msg_id": "ea6c3017-51e5-43a8-983b-6bc3583557fc",
+        "text": "Was a recent project set up - hang on, will check",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g1eb70ee9874",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/1eb70ee9874cc4b2e32a68a0b743d4d5.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0014-72.png",
+            "first_name": "Jimmy",
+            "real_name": "Jimmy",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "james",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1700228289.707479",
+        "parent_user_id": "U02CYRC190R",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "JpFs3",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Was a recent project set up - hang on, will check"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1700228420.833169",
+        "client_msg_id": "c06c2cf4-364f-46fe-a623-b11781185992",
+        "text": "nah thats very old",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1700228289.707479",
+        "parent_user_id": "U02CYRC190R",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Vc6QI",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "nah thats very old"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U02CYRC190R",
+        "type": "message",
+        "ts": "1700228440.172559",
+        "client_msg_id": "9c9f46c9-6534-4f33-ba83-362c1c96dac0",
+        "text": "must have ballsed something up",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g1eb70ee9874",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/1eb70ee9874cc4b2e32a68a0b743d4d5.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0014-72.png",
+            "first_name": "Jimmy",
+            "real_name": "Jimmy",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "james",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1700228289.707479",
+        "parent_user_id": "U02CYRC190R",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "qtsyL",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "must have ballsed something up"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U02CYRC190R",
+        "type": "message",
+        "ts": "1700228476.547049",
+        "client_msg_id": "82166a3e-5908-4602-a49b-cecf93e9a294",
+        "text": "```    client = clients.SimulatedClient()\n    framework = FlumineSimulation(client=client)```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g1eb70ee9874",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/1eb70ee9874cc4b2e32a68a0b743d4d5.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0014-72.png",
+            "first_name": "Jimmy",
+            "real_name": "Jimmy",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "james",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1700228289.707479",
+        "parent_user_id": "U02CYRC190R",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "+SUWQ",
+                "elements": [
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "    client = clients.SimulatedClient()\n    framework = FlumineSimulation(client=client)"
+                            }
+                        ],
+                        "border": 0
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U02CYRC190R",
+        "type": "message",
+        "ts": "1700228501.349769",
+        "client_msg_id": "36506d1e-5a26-454d-886e-373ca032234e",
+        "text": "flumine==2.5.2",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g1eb70ee9874",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/1eb70ee9874cc4b2e32a68a0b743d4d5.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0014-72.png",
+            "first_name": "Jimmy",
+            "real_name": "Jimmy",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "james",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1700228289.707479",
+        "parent_user_id": "U02CYRC190R",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "X+kd8",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "flumine==2.5.2"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1700228547.504169",
+        "client_msg_id": "d21031d7-38c3-48ec-814e-5ecfa6ec4309",
+        "text": "not possible for your script to work if that is the case",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1700228289.707479",
+        "parent_user_id": "U02CYRC190R",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "1je\/l",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "not possible for your script to work if that is the case"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1700228565.965579",
+        "client_msg_id": "5497bb08-de97-462e-ae67-c9b68e975cf1",
+        "text": "`FlumineBacktest` was removed in Feb 22",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1700228289.707479",
+        "parent_user_id": "U02CYRC190R",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "PMbzx",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "FlumineBacktest",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " was removed in Feb 22"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U02CYRC190R",
+        "type": "message",
+        "ts": "1700228593.909119",
+        "client_msg_id": "9dc57a3d-1970-4245-b351-cb97c3462228",
+        "text": "I cant see a reference to Backtest in the code being ran",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g1eb70ee9874",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/1eb70ee9874cc4b2e32a68a0b743d4d5.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0014-72.png",
+            "first_name": "Jimmy",
+            "real_name": "Jimmy",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "james",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1700228289.707479",
+        "parent_user_id": "U02CYRC190R",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "E9oPg",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I cant see a reference to Backtest in the code being ran"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U02CYRC190R",
+        "type": "message",
+        "ts": "1700228596.389249",
+        "client_msg_id": "2ebcbd44-df2f-41a9-83c6-5cd4b98a6f70",
+        "text": "Looking now",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g1eb70ee9874",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/1eb70ee9874cc4b2e32a68a0b743d4d5.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0014-72.png",
+            "first_name": "Jimmy",
+            "real_name": "Jimmy",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "james",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1700228289.707479",
+        "parent_user_id": "U02CYRC190R",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "FUWAa",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Looking now"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1700228635.674949",
+        "client_msg_id": "1a220f45-43eb-4c21-b76d-db0616d5bc6f",
+        "text": "right, the link to the code was showing",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1700228289.707479",
+        "parent_user_id": "U02CYRC190R",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "0TmGX",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "right, the link to the code was showing"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U02CYRC190R",
+        "type": "message",
+        "ts": "1700228665.888499",
+        "edited": {
+            "user": "U02CYRC190R",
+            "ts": "1700228679.000000"
+        },
+        "client_msg_id": "7216656b-3748-4300-bd26-87ed87362098",
+        "text": "That’s the github link — I updated that reference to Simulation",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g1eb70ee9874",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/1eb70ee9874cc4b2e32a68a0b743d4d5.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0014-72.png",
+            "first_name": "Jimmy",
+            "real_name": "Jimmy",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "james",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1700228289.707479",
+        "parent_user_id": "U02CYRC190R",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "mOZks",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "That’s the github link — I updated that reference to Simulation"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U02CYRC190R",
+        "type": "message",
+        "ts": "1700228690.275589",
+        "client_msg_id": "632bd509-1c4b-4935-8fb9-5d9b1e2f9d69",
+        "text": "And just ran the rest of the example",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g1eb70ee9874",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/1eb70ee9874cc4b2e32a68a0b743d4d5.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0014-72.png",
+            "first_name": "Jimmy",
+            "real_name": "Jimmy",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "james",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1700228289.707479",
+        "parent_user_id": "U02CYRC190R",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "2zdJ8",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "And just ran the rest of the example"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1700228710.612009",
+        "client_msg_id": "f583220a-d7d9-43e4-8bbf-4398a7dd1fd2",
+        "text": "can you share your code then?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1700228289.707479",
+        "parent_user_id": "U02CYRC190R",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "hjJX\/",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "can you share your code then?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U02CYRC190R",
+        "type": "message",
+        "ts": "1700228743.266729",
+        "client_msg_id": "b6637c78-915e-4ab5-83f4-9b3f0279ece5",
+        "text": "the strat?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g1eb70ee9874",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/1eb70ee9874cc4b2e32a68a0b743d4d5.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0014-72.png",
+            "first_name": "Jimmy",
+            "real_name": "Jimmy",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "james",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1700228289.707479",
+        "parent_user_id": "U02CYRC190R",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "zB8Ft",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "the strat?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1700228756.472619",
+        "client_msg_id": "cda27d8b-06be-464c-be0e-1964c00866dc",
+        "text": "the first file is fine, the second is a market catalogue",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1700228289.707479",
+        "parent_user_id": "U02CYRC190R",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "sO5TJ",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "the first file is fine, the second is a market catalogue"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U02CYRC190R",
+        "type": "message",
+        "ts": "1700228768.672029",
+        "client_msg_id": "e7429e02-af50-4803-977d-8c25699ecb7c",
+        "text": "it’s literally the same as that repo btw",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g1eb70ee9874",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/1eb70ee9874cc4b2e32a68a0b743d4d5.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0014-72.png",
+            "first_name": "Jimmy",
+            "real_name": "Jimmy",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "james",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1700228289.707479",
+        "parent_user_id": "U02CYRC190R",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "O0dw+",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "it’s literally the same as that repo btw"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1700228769.702069",
+        "client_msg_id": "66db2fe8-574e-44e1-8a6a-aceb033861a7",
+        "text": "looks like you are passing that in as per a market file which then gives the error",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1700228289.707479",
+        "parent_user_id": "U02CYRC190R",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "xo\/7c",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "looks like you are passing that in as per a market file which then gives the error"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U02CYRC190R",
+        "type": "message",
+        "ts": "1700228802.333539",
+        "client_msg_id": "f3282395-a9b0-47d6-8390-4a6cdb8c91ce",
+        "text": "Ah…",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g1eb70ee9874",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/1eb70ee9874cc4b2e32a68a0b743d4d5.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0014-72.png",
+            "first_name": "Jimmy",
+            "real_name": "Jimmy",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "james",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1700228289.707479",
+        "parent_user_id": "U02CYRC190R",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "y+iLF",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Ah…"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U02CYRC190R",
+        "type": "message",
+        "ts": "1700228807.057879",
+        "client_msg_id": "a2ebc836-22b6-41ba-b0f7-679474f3611a",
+        "text": "```    markets = [\n        join(directory, f)\n        for f in listdir(directory)\n        if isfile(join(directory, f)) and f.endswith(\".gz\")\n    ]```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g1eb70ee9874",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/1eb70ee9874cc4b2e32a68a0b743d4d5.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0014-72.png",
+            "first_name": "Jimmy",
+            "real_name": "Jimmy",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "james",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1700228289.707479",
+        "parent_user_id": "U02CYRC190R",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Gptrl",
+                "elements": [
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "    markets = [\n        join(directory, f)\n        for f in listdir(directory)\n        if isfile(join(directory, f)) and f.endswith(\".gz\")\n    ]"
+                            }
+                        ],
+                        "border": 0
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U02CYRC190R",
+        "type": "message",
+        "ts": "1700228815.855149",
+        "client_msg_id": "1b2e2a5b-38ba-43fb-b511-e41f154e87cf",
+        "text": "So this is failing? (that’s from the example)",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g1eb70ee9874",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/1eb70ee9874cc4b2e32a68a0b743d4d5.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0014-72.png",
+            "first_name": "Jimmy",
+            "real_name": "Jimmy",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "james",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1700228289.707479",
+        "parent_user_id": "U02CYRC190R",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "fBTfQ",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "So this is failing? (that’s from the example)"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1700228832.514209",
+        "client_msg_id": "c808652f-1e69-4457-8672-fa8f50cc1ae7",
+        "text": "Yeah I wouldn't have market and catalogue files in the same directory",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1700228289.707479",
+        "parent_user_id": "U02CYRC190R",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "JETrE",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Yeah I wouldn't have market and catalogue files in the same directory"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U02CYRC190R",
+        "type": "message",
+        "ts": "1700228851.640099",
+        "client_msg_id": "181ed012-d488-40b4-b661-0b978bb26d69",
+        "text": "Righto. Just as a learning exercise then, why not?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g1eb70ee9874",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/1eb70ee9874cc4b2e32a68a0b743d4d5.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0014-72.png",
+            "first_name": "Jimmy",
+            "real_name": "Jimmy",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "james",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1700228289.707479",
+        "parent_user_id": "U02CYRC190R",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "8YFt7",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Righto. Just as a learning exercise then, why not?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U02CYRC190R",
+        "type": "message",
+        "ts": "1700228855.572939",
+        "client_msg_id": "a3c21dcd-afe5-4b9d-b8e9-32f3f7eb66e2",
+        "text": "(if you dont mind me asking)",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g1eb70ee9874",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/1eb70ee9874cc4b2e32a68a0b743d4d5.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0014-72.png",
+            "first_name": "Jimmy",
+            "real_name": "Jimmy",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "james",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1700228289.707479",
+        "parent_user_id": "U02CYRC190R",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "BfbBY",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "(if you dont mind me asking)"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1700228892.019979",
+        "client_msg_id": "f9a2fefc-77a0-4d32-b33b-ce10ce1e0080",
+        "text": "just keeps things simple",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1700228289.707479",
+        "parent_user_id": "U02CYRC190R",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "3Nm+S",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "just keeps things simple"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "white_check_mark",
+                "users": [
+                    "U02CYRC190R"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "U02CYRC190R",
+        "type": "message",
+        "ts": "1700228997.072499",
+        "client_msg_id": "5e6b2027-ad0c-4d00-8f99-a3f7c1372e59",
+        "text": "Thanks <@U4H19D1D2>",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g1eb70ee9874",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/1eb70ee9874cc4b2e32a68a0b743d4d5.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0014-72.png",
+            "first_name": "Jimmy",
+            "real_name": "Jimmy",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "james",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1700228289.707479",
+        "parent_user_id": "U02CYRC190R",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "EZeRf",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Thanks "
+                            },
+                            {
+                                "type": "user",
+                                "user_id": "U4H19D1D2"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1700229081.438229",
+        "client_msg_id": "b3def691-78d4-4c5f-871f-9835173da138",
+        "text": "np, if i remember I will put some error handling on this, FYI don't use version 2.5.2 as it has a bug when placing orders",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1700228289.707479",
+        "parent_user_id": "U02CYRC190R",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "O13jr",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "np, if i remember I will put some error handling on this, FYI don't use version 2.5.2 as it has a bug when placing orders"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U02CYRC190R",
+        "type": "message",
+        "ts": "1700229097.055639",
+        "client_msg_id": "c2981cee-f674-496f-a946-2986d14f4483",
+        "text": "Will update!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g1eb70ee9874",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/1eb70ee9874cc4b2e32a68a0b743d4d5.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0014-72.png",
+            "first_name": "Jimmy",
+            "real_name": "Jimmy",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "james",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1700228289.707479",
+        "parent_user_id": "U02CYRC190R",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "+V5ud",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Will update!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U02RN7YDRQ9",
+        "type": "message",
+        "ts": "1700230111.408519",
+        "client_msg_id": "88e379c4-7d50-4446-93a7-02423e1e582c",
+        "text": "I keep the catalogue files in the same folder as the data files - seems simpler to me - you can build list of data files to be fed to strategy filtered out something like this\n`for d in dataDir:`\n    `files = listdir(d)`\n    `for f in files:`\n        `fullName = join(d, f)`\n        `if isfile(fullName) and f.endswith(\".gz\") and f.find(\"json\") == -1 :`\n\t\t        `marketFiles.append(fullName)`",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "ge46f1f8b708",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/e46f1f8b708a630e3191de7b2c42b1d1.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0023-72.png",
+            "first_name": "edblock",
+            "real_name": "edblock",
+            "display_name": "foxwood",
+            "team": "T4G9NBD2M",
+            "name": "eanb",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1700228289.707479",
+        "parent_user_id": "U02CYRC190R",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Ol3vU",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I keep the catalogue files in the same folder as the data files - seems simpler to me - you can build list of data files to be fed to strategy filtered out something like this\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "for d in dataDir:",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "    files = listdir(d)",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "    for f in files:",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "        fullName = join(d, f)",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "        if isfile(fullName) and f.endswith(\".gz\") and f.find(\"json\") == -1 :",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "\t\t        marketFiles.append(fullName)",
+                                "style": {
+                                    "code": true
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01PJ5YMFBJ",
+        "type": "message",
+        "ts": "1700248979.169979",
+        "edited": {
+            "user": "U01PJ5YMFBJ",
+            "ts": "1700249051.000000"
+        },
+        "client_msg_id": "daf28921-b7f8-4c77-a744-bd31b28b2fbc",
+        "text": "<@U4H19D1D2> thanks Liam, yes, I think i've worked it out, it's not a memory leak per-se. Basically since I added PLACE to the listener, I am now subscribing GB,IE and WIN,PLACE for this one strategy, and it actively trades from 3hours out from startTime. What I see is a gradual increase in CPU towards mid-day when the main afternoon races fall within that 3hour window. I roughly calculated the market processing thread will be going around 50 markets, and my strategy code is probably not as efficient as it could be... My VM CPU then hits 50% in a 2vCPU box, which then starts to limit it, the affect it had was to cause the market update processing to lag the live updates, causing a steady progression of increase in latency, eventually towards a latency of 30mins!!! My trading  logic once the latency hit around 5mins was starting to put orders in for markets that were now closed! Thus getting lots of BF errors, and what made things worse for my hedge bets I was rather stupidly immediately re-placing the failed hedge causing yet more of a race......and eventually bang!\nWhat i've learned:\n1. I need to profile my strategy code more to try and make it more efficient. I've already done a good set of fixes...\n2. I'm perhaps pushing my luck adding PLACE and doubling the number of active markets in that 3hour trade window, running on a single Flumine instance....\n3. Importantly I need to monitor \"latency\" to prevent this sort of CPU race condition\nI've done a set of fixes for 1 & 3 and I'm testing them now.....",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g819c7f591cc",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/819c7f591cc888486f19b3f2f49f2011.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0014-72.png",
+            "first_name": "AndyL",
+            "real_name": "AndyL",
+            "display_name": "AndyL",
+            "team": "T4G9NBD2M",
+            "name": "andrew_m_leonard",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1700156757.225609",
+        "parent_user_id": "U01PJ5YMFBJ",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "GmGKI",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "user",
+                                "user_id": "U4H19D1D2"
+                            },
+                            {
+                                "type": "text",
+                                "text": " thanks Liam, yes, I think i've worked it out, it's not a memory leak per-se. Basically since I added PLACE to the listener, I am now subscribing GB,IE and WIN,PLACE for this one strategy, and it actively trades from 3hours out from startTime. What I see is a gradual increase in CPU towards mid-day when the main afternoon races fall within that 3hour window. I roughly calculated the market processing thread will be going around 50 markets, and my strategy code is probably not as efficient as it could be... My VM CPU then hits 50% in a 2vCPU box, which then starts to limit it, the affect it had was to cause the market update processing to lag the live updates, causing a steady progression of increase in latency, eventually towards a latency of 30mins!!! My trading  logic once the latency hit around 5mins was starting to put orders in for markets that were now closed! Thus getting lots of BF errors, and what made things worse for my hedge bets I was rather stupidly immediately re-placing the failed hedge causing yet more of a race......and eventually bang!\nWhat i've learned:\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_list",
+                        "elements": [
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "I need to profile my strategy code more to try and make it more efficient. I've already done a good set of fixes..."
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "I'm perhaps pushing my luck adding PLACE and doubling the number of active markets in that 3hour trade window, running on a single Flumine instance...."
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "Importantly I need to monitor \"latency\" to prevent this sort of CPU race condition"
+                                    }
+                                ]
+                            }
+                        ],
+                        "style": "ordered",
+                        "indent": 0,
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I've done a set of fixes for 1 & 3 and I'm testing them now....."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1700249316.920169",
+        "client_msg_id": "51D2FC79-15A0-4A23-927F-87A15FB2157C",
+        "text": "Yeah fixing your code is the easy fix, the warning logs normally hint at this but as you have found out things tend to escalate rather quickly ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1700156757.225609",
+        "parent_user_id": "U01PJ5YMFBJ",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Thicw",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Yeah fixing your code is the easy fix, the warning logs normally hint at this but as you have found out things tend to escalate rather quickly "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1700249351.794849",
+        "client_msg_id": "62B4CC5F-5E37-471E-B308-E06F7EE88F16",
+        "text": "Do you need the full book? Limiting the data filter can sometimes help",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1700156757.225609",
+        "parent_user_id": "U01PJ5YMFBJ",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "ROItZ",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Do you need the full book? Limiting the data filter can sometimes help"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "U01PJ5YMFBJ"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "U01PJ5YMFBJ",
+        "type": "message",
+        "ts": "1700249474.648409",
+        "client_msg_id": "0bac6c1c-8e72-4e52-bfd4-ece72d2f6469",
+        "text": "possibly not.... Can you point me at a data filter example please?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g819c7f591cc",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/819c7f591cc888486f19b3f2f49f2011.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0014-72.png",
+            "first_name": "AndyL",
+            "real_name": "AndyL",
+            "display_name": "AndyL",
+            "team": "T4G9NBD2M",
+            "name": "andrew_m_leonard",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1700156757.225609",
+        "parent_user_id": "U01PJ5YMFBJ",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "XuclZ",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "possibly not.... Can you point me at a data filter example please?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01PJ5YMFBJ",
+        "type": "message",
+        "ts": "1700250503.683649",
+        "client_msg_id": "46e18b18-1a04-4514-9e33-498be0d848c4",
+        "text": "<https:\/\/github.com\/betcode-org\/flumine\/blob\/3d697cdb4d186b66af574afcf8001f18776f331d\/flumine\/strategy\/strategy.py#L13C1-L23C2>",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g819c7f591cc",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/819c7f591cc888486f19b3f2f49f2011.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0014-72.png",
+            "first_name": "AndyL",
+            "real_name": "AndyL",
+            "display_name": "AndyL",
+            "team": "T4G9NBD2M",
+            "name": "andrew_m_leonard",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1700156757.225609",
+        "parent_user_id": "U01PJ5YMFBJ",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "1e5cC",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/betcode-org\/flumine\/blob\/3d697cdb4d186b66af574afcf8001f18776f331d\/flumine\/strategy\/strategy.py#L13C1-L23C2"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U04NWADNCFR",
+        "type": "message",
+        "ts": "1700253071.098019",
+        "edited": {
+            "user": "U04NWADNCFR",
+            "ts": "1700253422.000000"
+        },
+        "client_msg_id": "fe37a9ba-9e1d-4a3f-8f43-353972bdc329",
+        "text": "I'm having a problem using middleware in Flumine. Based on the  example: _examples\/middleware\/marketcatalogue.py,_ I want to populate market catalogues in a simulation. The trouble is that I store the market catalogue files on AWS S3 and the calls to AWS get rejected because the API call is using the monkey-patched version  of datetime.utcnow() in the request, causing AWS to reject the request.\n\nThe AWS error message is:\n>  _\"botocore.exceptions.ClientError: An error occurred (RequestTimeTooSkewed) when calling the GetObject operation: The difference between the request time and the current time is too large.\"_\nSo my question is - how can I use a middleware class without the monkey-patch?\n\nI've tried using the SimulatedDateTime class but I'm stumped.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g3c4e33a28db",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/3c4e33a28dbfc1fe70799f8e243bf305.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0026-72.png",
+            "first_name": "Derek",
+            "real_name": "Derek C",
+            "display_name": "Derek C",
+            "team": "T4G9NBD2M",
+            "name": "dataexmachinazzzzz",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1700253071.098019",
+        "reply_count": 2,
+        "reply_users_count": 2,
+        "latest_reply": "1700306749.014579",
+        "reply_users": [
+            "U9JHLMZB4",
+            "U04NWADNCFR"
+        ],
+        "replies": [
+            {
+                "user": "U9JHLMZB4",
+                "ts": "1700305821.830379"
+            },
+            {
+                "user": "U04NWADNCFR",
+                "ts": "1700306749.014579"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": false,
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "VKqoW",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I'm having a problem using middleware in Flumine. Based on the  example: "
+                            },
+                            {
+                                "type": "text",
+                                "text": "examples\/middleware\/marketcatalogue.py, ",
+                                "style": {
+                                    "italic": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "I want to populate market catalogues in a simulation. The trouble is that I store the market catalogue files on AWS S3 and the calls to AWS get rejected because the API call is using the monkey-patched version  of datetime.utcnow() in the request, causing AWS to reject the request.\n\nThe AWS error message is:\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_quote",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": " \"botocore.exceptions.ClientError: An error occurred (RequestTimeTooSkewed) when calling the GetObject operation: The difference between the request time and the current time is too large.\"",
+                                "style": {
+                                    "italic": true
+                                }
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\nSo my question is - how can I use a middleware class without the monkey-patch?\n\nI've tried using the SimulatedDateTime class but I'm stumped."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

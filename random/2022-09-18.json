@@ -1,0 +1,914 @@
+[
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1663492579.719369",
+        "client_msg_id": "0bd39f4a-2c9e-45b3-acdf-242a4f12768f",
+        "text": "Sorry just 1 more question on the subject, as it has got me (and I believe a couple of others too) in a bit of a muddle.\n\nIgnoring back-testing for a second and only considering LIVE, when (and why) is it appropriate to use middleware instead of a worker?\n\nI'm thinking of use cases along the following lines:\n\na) Performing calculations across multiple market types (e.g. WIN \/ PLACE or OVER_UNDER_X \/ OVER_UNDER_Y)\nb) Receiving live score data from a 3rd party provider and performing some sort of operations on this",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "thZqg",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Sorry just 1 more question on the subject, as it has got me (and I believe a couple of others too) in a bit of a muddle.\n\nIgnoring back-testing for a second and only considering LIVE, when (and why) is it appropriate to use middleware instead of a worker?\n\nI'm thinking of use cases along the following lines:\n\na) Performing calculations across multiple market types (e.g. WIN \/ PLACE or OVER_UNDER_X \/ OVER_UNDER_Y)\nb) Receiving live score data from a 3rd party provider and performing some sort of operations on this"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U9JHLMZB4",
+        "type": "message",
+        "ts": "1663493786.207089",
+        "edited": {
+            "user": "U9JHLMZB4",
+            "ts": "1663494165.000000"
+        },
+        "client_msg_id": "f660bf46-f42f-4950-8453-40064e2c5ccc",
+        "text": "Bringing this back to basic principles, workers are executed on a schedule \/ frequency that you determine and (normally) in a different thread hopefully on a different processor so have minimal impact on your strategy's processing time. Whereas middleware will be triggered with each market update and will delay \/ extend your strategy's processing.\n\nSo which is appropriate is going to depend on the CPU resources needed for your processing and the criticality of having it done for every market update, and oftentimes there won't be a clear answer.\n\nTo put this into context with your examples, for a) if your processing is quick and needs updating every time the prices move, you probably want middleware (though you may also want to cache the prices and check that the update has moved the ones you're interested in before executing the bulk of your processing). For b) if you're ingesting and processing a lot of data from an API and\/or dealing with its latency and\/or are not allowed to make up to 20 calls to it per second, then a worker is likely to be a better solution.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g951ddcb43e7",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/3951ddcb43e788a387d6daf330dad5ca.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0018-72.png",
+            "first_name": "",
+            "real_name": "Peter Coles",
+            "display_name": "Peter",
+            "team": "T4G9NBD2M",
+            "name": "peter",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1663493786.207089",
+        "reply_count": 4,
+        "reply_users_count": 3,
+        "latest_reply": "1663513571.295019",
+        "reply_users": [
+            "UPMUFSGCR",
+            "U9JHLMZB4",
+            "U4H19D1D2"
+        ],
+        "replies": [
+            {
+                "user": "UPMUFSGCR",
+                "ts": "1663501694.468249"
+            },
+            {
+                "user": "U9JHLMZB4",
+                "ts": "1663501941.934489"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1663513430.427659"
+            },
+            {
+                "user": "U9JHLMZB4",
+                "ts": "1663513571.295019"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": true,
+        "last_read": "1663513571.295019",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "fS8",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Bringing this back to basic principles, workers are executed on a schedule \/ frequency that you determine and (normally) in a different thread hopefully on a different processor so have minimal impact on your strategy's processing time. Whereas middleware will be triggered with each market update and will delay \/ extend your strategy's processing.\n\nSo which is appropriate is going to depend on the CPU resources needed for your processing and the criticality of having it done for every market update, and oftentimes there won't be a clear answer.\n\nTo put this into context with your examples, for a) if your processing is quick and needs updating every time the prices move, you probably want middleware (though you may also want to cache the prices and check that the update has moved the ones you're interested in before executing the bulk of your processing). For b) if you're ingesting and processing a lot of data from an API and\/or dealing with its latency and\/or are not allowed to make up to 20 calls to it per second, then a worker is likely to be a better solution."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "U4H19D1D2"
+                ],
+                "count": 1
+            },
+            {
+                "name": "rocket",
+                "users": [
+                    "UPMUFSGCR"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1663495986.076649",
+        "client_msg_id": "e1cc4de8-4808-4c9a-a2e2-089b83ac4f12",
+        "text": "Cool thanks, that is in line with what I suspected, but wanted to make sure, appreciate the clear explanation that is a great help.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "vtL",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Cool thanks, that is in line with what I suspected, but wanted to make sure, appreciate the clear explanation that is a great help."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UPMUFSGCR",
+        "type": "message",
+        "ts": "1663501694.468249",
+        "client_msg_id": "e5d6f02d-efe1-4ae2-a464-fa4d590612a1",
+        "text": "Great post <@U9JHLMZB4>. Can workers be used when backtesting?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "31c0bb5a442c",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2019-10-28\/812386967189_31c0bb5a442c5b8d2c61_72.png",
+            "first_name": "Jon",
+            "real_name": "Jon Jon Jon Jon Jon Jon Jon Jon",
+            "display_name": "Jonjonjon",
+            "team": "T4G9NBD2M",
+            "name": "fcmisc",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1663493786.207089",
+        "parent_user_id": "U9JHLMZB4",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "G9hDS",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Great post "
+                            },
+                            {
+                                "type": "user",
+                                "user_id": "U9JHLMZB4"
+                            },
+                            {
+                                "type": "text",
+                                "text": ". Can workers be used when backtesting?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U9JHLMZB4",
+        "type": "message",
+        "ts": "1663501941.934489",
+        "client_msg_id": "cd435cc7-4161-427d-96fb-ab2713a20818",
+        "text": "Not easily. <@U4H19D1D2> recently explained that because backtesting requires patching utcnow() and workers run in a different thread, it's difficult to sync the time. So for backtesting you'll probably need to throw your worker code into middleware instead.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g951ddcb43e7",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/3951ddcb43e788a387d6daf330dad5ca.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0018-72.png",
+            "first_name": "",
+            "real_name": "Peter Coles",
+            "display_name": "Peter",
+            "team": "T4G9NBD2M",
+            "name": "peter",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1663493786.207089",
+        "parent_user_id": "U9JHLMZB4",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "=6L1o",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Not easily. "
+                            },
+                            {
+                                "type": "user",
+                                "user_id": "U4H19D1D2"
+                            },
+                            {
+                                "type": "text",
+                                "text": " recently explained that because backtesting requires patching utcnow() and workers run in a different thread, it's difficult to sync the time. So for backtesting you'll probably need to throw your worker code into middleware instead."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1::skin-tone-6",
+                "users": [
+                    "UPMUFSGCR"
+                ],
+                "count": 1
+            },
+            {
+                "name": "+1",
+                "users": [
+                    "U4H19D1D2"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "U9JHLMZB4",
+        "type": "message",
+        "ts": "1663510587.621649",
+        "edited": {
+            "user": "U9JHLMZB4",
+            "ts": "1663510922.000000"
+        },
+        "client_msg_id": "3f53b721-ddde-4249-bd91-134a94ef81a6",
+        "text": "Lists are just as good as tuples. It's really about what your run_process function can handle.\n\nmap() is expecting iterators. Function definition:\n`*map*(_func_, _*iterables_, _timeout=None_, _chunksize=1_)`\n\nbut it feels to me as though it would be better to bring your non-market parameters inside your statup() function rather than trying to pass them in from outside.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g951ddcb43e7",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/3951ddcb43e788a387d6daf330dad5ca.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0018-72.png",
+            "first_name": "",
+            "real_name": "Peter Coles",
+            "display_name": "Peter",
+            "team": "T4G9NBD2M",
+            "name": "peter",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1663340593.295379",
+        "parent_user_id": "U9JHLMZB4",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "K\/mq",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Lists are just as good as tuples. It's really about what your run_process function can handle.\n\nmap() is expecting iterators. Function definition:\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "map",
+                                "style": {
+                                    "bold": true,
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "(",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "func",
+                                "style": {
+                                    "italic": true,
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": ", ",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "*iterables",
+                                "style": {
+                                    "italic": true,
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": ", ",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "timeout=None",
+                                "style": {
+                                    "italic": true,
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": ", ",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "chunksize=1",
+                                "style": {
+                                    "italic": true,
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": ")",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n\nbut it feels to me as though it would be better to bring your non-market parameters inside your statup() function rather than trying to pass them in from outside."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1663513330.604599",
+        "client_msg_id": "30B44352-C6DD-4EFF-9E08-624C22BC6A00",
+        "text": "Yep, that's essentially what I did (hardcoded just to test) so will re-write properly with that in mind.\n\nOnce again thank you for your help on this, I think I've got a much better understanding now!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1663340593.295379",
+        "parent_user_id": "U9JHLMZB4",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Ya\/g=",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Yep, that's essentially what I did (hardcoded just to test) so will re-write properly with that in mind."
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "\nOnce again thank you for your help on this, I think I've got a much better understanding now!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1663513430.427659",
+        "client_msg_id": "72AB9AFB-AD66-43ED-874C-DA12C571ED0B",
+        "text": "I will add this to the docs <@U9JHLMZB4> if you don't mind the plagiarism",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1663493786.207089",
+        "parent_user_id": "U9JHLMZB4",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "RhKH",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I will add this to the docs "
+                            },
+                            {
+                                "type": "user",
+                                "user_id": "U9JHLMZB4"
+                            },
+                            {
+                                "type": "text",
+                                "text": " if you don't mind the plagiarism"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U9JHLMZB4",
+        "type": "message",
+        "ts": "1663513571.295019",
+        "client_msg_id": "be199d9e-f904-47f7-ac98-a75d18b7471e",
+        "text": "Not at all :slightly_smiling_face:",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g951ddcb43e7",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/3951ddcb43e788a387d6daf330dad5ca.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0018-72.png",
+            "first_name": "",
+            "real_name": "Peter Coles",
+            "display_name": "Peter",
+            "team": "T4G9NBD2M",
+            "name": "peter",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1663493786.207089",
+        "parent_user_id": "U9JHLMZB4",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "rjIzG",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Not at all "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "slightly_smiling_face",
+                                "unicode": "1f642"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "U4H19D1D2"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1663520698.329529",
+        "client_msg_id": "bd4805d2-a3a1-470d-98e2-10eefa4b1b5b",
+        "text": "One more random question, lets say you are looking at 2 market types (E.g. WIN, PLACE) and lets say there are 500 markets on each, presumably you would just have 1 connection and not worry about it.\n\nBut if say there are 4000 markets in total, split evenly as 2000 for each (I know that's unrealistic for these two market types, but I'm just using those as an example), is there any benefit in splitting things out across multiple connections (E.g. WIN on connection 1 and PLACE on connection 2), or does it simply not matter (i.e. all that matters is what you actually do in terms of processing, how many markets per connection is not really relevant compared to the number of markets overall).",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "mVI8",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "One more random question, lets say you are looking at 2 market types (E.g. WIN, PLACE) and lets say there are 500 markets on each, presumably you would just have 1 connection and not worry about it.\n\nBut if say there are 4000 markets in total, split evenly as 2000 for each (I know that's unrealistic for these two market types, but I'm just using those as an example), is there any benefit in splitting things out across multiple connections (E.g. WIN on connection 1 and PLACE on connection 2), or does it simply not matter (i.e. all that matters is what you actually do in terms of processing, how many markets per connection is not really relevant compared to the number of markets overall)."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U9JHLMZB4",
+        "type": "message",
+        "ts": "1663521194.835019",
+        "client_msg_id": "f97784e8-dc88-465b-8012-49abaf194e7e",
+        "text": "Are we talking backtesting, in which case, connections aren't relevant, or live processing, in which case you wouldn't get up to 2000 each for WIN or PLACE markets?\n\nIf you're talking live processing then running separate instances of Flumine to achieve separate connections means that you won't be able to link different markets from the same event as they won't be on the same instance.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g951ddcb43e7",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/3951ddcb43e788a387d6daf330dad5ca.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0018-72.png",
+            "first_name": "",
+            "real_name": "Peter Coles",
+            "display_name": "Peter",
+            "team": "T4G9NBD2M",
+            "name": "peter",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Ba5ty",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Are we talking backtesting, in which case, connections aren't relevant, or live processing, in which case you wouldn't get up to 2000 each for WIN or PLACE markets?\n\nIf you're talking live processing then running separate instances of Flumine to achieve separate connections means that you won't be able to link different markets from the same event as they won't be on the same instance."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1663528256.898159",
+        "client_msg_id": "613ae7d2-d512-41c6-b194-331bf9312683",
+        "text": "Only talking about LIVE here, just picking random markets as an example, perhaps more realistically if we look at football, lets say we have a single Flumine instance and the market types are:\n\nMATCH_ODDS\nOVER_UNDER_25\nOVER_UNDER_15\nOVER_UNDER_05\n\nThat could be circa 4000 markets some days, so I'm just wondering if there is a preferred way to structure that, i.e. 1 connection with all 4, or perhaps 2 connections with 2 market types each. Or does it simply not matter as you're dealing with 4000 markets either way (appreciate its not always that many, just picking a big number as an example in case it makes a difference)",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "CBMq",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Only talking about LIVE here, just picking random markets as an example, perhaps more realistically if we look at football, lets say we have a single Flumine instance and the market types are:\n\nMATCH_ODDS\nOVER_UNDER_25\nOVER_UNDER_15\nOVER_UNDER_05\n\nThat could be circa 4000 markets some days, so I'm just wondering if there is a preferred way to structure that, i.e. 1 connection with all 4, or perhaps 2 connections with 2 market types each. Or does it simply not matter as you're dealing with 4000 markets either way (appreciate its not always that many, just picking a big number as an example in case it makes a difference)"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U9JHLMZB4",
+        "type": "message",
+        "ts": "1663528870.709439",
+        "client_msg_id": "cb3fae6f-be0f-4f3c-b62f-9907972135c0",
+        "text": "Same response. If your strategy requires you to access data from multiple markets on the same event, they all have to be accessed by the same instance of Flumine, i.e. the same market connection. So if the number of markets (or the processing time) requires splitting them, country codes would be a better splitter than market type.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g951ddcb43e7",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/3951ddcb43e788a387d6daf330dad5ca.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0018-72.png",
+            "first_name": "",
+            "real_name": "Peter Coles",
+            "display_name": "Peter",
+            "team": "T4G9NBD2M",
+            "name": "peter",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "3Jg",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Same response. If your strategy requires you to access data from multiple markets on the same event, they all have to be accessed by the same instance of Flumine, i.e. the same market connection. So if the number of markets (or the processing time) requires splitting them, country codes would be a better splitter than market type."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1663529152.609729",
+        "client_msg_id": "7e42b105-e994-42ed-9cc0-ecf8874a8e21",
+        "text": "Sorry, I should have clarified this is completely separate to me asking previously about linking markets, assume here that isn't necessary, its purely whether there is any value in splitting at all",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "i0a2",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Sorry, I should have clarified this is completely separate to me asking previously about linking markets, assume here that isn't necessary, its purely whether there is any value in splitting at all"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1663529176.038149",
+        "client_msg_id": "2add7538-01ac-4253-9870-7b611afde341",
+        "text": "(by any means, as you say market_type may not be the best way)",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "ay3zt",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "(by any means, as you say market_type may not be the best way)"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U9JHLMZB4",
+        "type": "message",
+        "ts": "1663530000.063809",
+        "client_msg_id": "a5f9ea5c-db1c-4e1e-93d1-7309132e9f80",
+        "text": "In that case, I think you're way overthinking this. If you're going to process each market individually, then it doesn't really matter how you split them across connections. Sure there are some minor load balancing differences depending on volume of data in different markets and the processing time for the associated strategies them, but they are all comprehensively trumped by just having a powerful enough server to handle it all with some headroom for contingency.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g951ddcb43e7",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/3951ddcb43e788a387d6daf330dad5ca.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0018-72.png",
+            "first_name": "",
+            "real_name": "Peter Coles",
+            "display_name": "Peter",
+            "team": "T4G9NBD2M",
+            "name": "peter",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "0prE7",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "In that case, I think you're way overthinking this. If you're going to process each market individually, then it doesn't really matter how you split them across connections. Sure there are some minor load balancing differences depending on volume of data in different markets and the processing time for the associated strategies them, but they are all comprehensively trumped by just having a powerful enough server to handle it all with some headroom for contingency."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "100",
+                "users": [
+                    "UBS7QANF3"
+                ],
+                "count": 1
+            },
+            {
+                "name": "white_check_mark",
+                "users": [
+                    "U013ZS16QJZ"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1663531173.980389",
+        "client_msg_id": "9a8757bf-2f95-43fd-be69-8e86633102a5",
+        "text": "Cool yep, that makes sense, I suspected I was being overly concerned about things that don't matter!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Vzqh",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Cool yep, that makes sense, I suspected I was being overly concerned about things that don't matter!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1663531201.411659",
+        "client_msg_id": "9e4bb137-f751-4d8b-a2b6-c7025231df0f",
+        "text": "Appreciate the help (again :slightly_smiling_face:",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "3AP",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Appreciate the help (again "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "slightly_smiling_face",
+                                "unicode": "1f642"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

@@ -1,0 +1,124 @@
+[
+    {
+        "user": "UPMUFSGCR",
+        "type": "message",
+        "ts": "1688588509.034749",
+        "client_msg_id": "e3f8785b-aa6b-462a-a91a-720543afa653",
+        "text": "Does anyone have a version of this function that can be used on a Pandas Series?\n\n```def get_nearest_price(price, cutoffs=CUTOFFS):\n    if price &lt;= MIN_PRICE:\n        return MIN_PRICE\n    if price &gt; MAX_PRICE:\n        return MAX_PRICE\n    price = as_dec(price)\n    for cutoff, step in cutoffs:\n        if price &lt; cutoff:\n            break\n    step = as_dec(step)\n    return float((price * step).quantize(2, ROUND_HALF_UP) \/ step)```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "31c0bb5a442c",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2019-10-28\/812386967189_31c0bb5a442c5b8d2c61_72.png",
+            "first_name": "Jon",
+            "real_name": "Jon Jon Jon Jon Jon Jon Jon Jon",
+            "display_name": "Jonjonjon",
+            "team": "T4G9NBD2M",
+            "name": "fcmisc",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1688588509.034749",
+        "reply_count": 3,
+        "reply_users_count": 2,
+        "latest_reply": "1688631867.694759",
+        "reply_users": [
+            "UPMUFSGCR",
+            "U04NWADNCFR"
+        ],
+        "replies": [
+            {
+                "user": "UPMUFSGCR",
+                "ts": "1688590430.909009"
+            },
+            {
+                "user": "U04NWADNCFR",
+                "ts": "1688629268.391529"
+            },
+            {
+                "user": "UPMUFSGCR",
+                "ts": "1688631867.694759"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": false,
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "CFap1",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Does anyone have a version of this function that can be used on a Pandas Series?\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "def get_nearest_price(price, cutoffs=CUTOFFS):\n    if price <= MIN_PRICE:\n        return MIN_PRICE\n    if price > MAX_PRICE:\n        return MAX_PRICE\n    price = as_dec(price)\n    for cutoff, step in cutoffs:\n        if price < cutoff:\n            break\n    step = as_dec(step)\n    return float((price * step).quantize(2, ROUND_HALF_UP) \/ step)"
+                            }
+                        ],
+                        "border": 0
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UPMUFSGCR",
+        "type": "message",
+        "ts": "1688590430.909009",
+        "client_msg_id": "98125e16-67e9-4805-b66e-434f79775681",
+        "text": "As a first hack, I've attempted this:\n\n```def get_nearest_price_ps(ps_price):\n    lowest_idx = ps_prices_float.index[0]\n    highest_idx = ps_prices_float.index[-1]\n\n    idx = ps_prices_float.searchsorted(ps_price)-1\n\n    bfilter = (lowest_idx&lt;idx) &amp; (idx&lt;highest_idx)\n    idx[~bfilter] = 0\n    lower_prices = ps_prices_float[idx]\n    upper_prices = ps_prices_float[idx+1]\n\n    diff0 = ps_price[bfilter].values-lower_prices[bfilter].values\n    diff1 = upper_prices[bfilter].values - ps_price[bfilter].values\n\n    choose_lo = diff1&gt;diff0\n    choose_hi = ~choose_lo\n\n    nearest_price = ps_price.copy()\n    assign_to_min = nearest_price&lt;MIN_PRICE\n    assign_to_max = nearest_price&gt;=MAX_PRICE\n\n\n    nearest_price = np.empty_like(ps_price)\n    nearest_price[choose_lo] = lower_prices[choose_lo]\n    nearest_price[choose_hi] = upper_prices[choose_hi]\n    nearest_price[assign_to_min] = MIN_PRICE\n    nearest_price[assign_to_max] = MAX_PRICE\n    return nearest_price```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "31c0bb5a442c",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2019-10-28\/812386967189_31c0bb5a442c5b8d2c61_72.png",
+            "first_name": "Jon",
+            "real_name": "Jon Jon Jon Jon Jon Jon Jon Jon",
+            "display_name": "Jonjonjon",
+            "team": "T4G9NBD2M",
+            "name": "fcmisc",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1688588509.034749",
+        "parent_user_id": "UPMUFSGCR",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "ItfAW",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "As a first hack, I've attempted this:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "def get_nearest_price_ps(ps_price):\n    lowest_idx = ps_prices_float.index[0]\n    highest_idx = ps_prices_float.index[-1]\n\n    idx = ps_prices_float.searchsorted(ps_price)-1\n\n    bfilter = (lowest_idx<idx) & (idx<highest_idx)\n    idx[~bfilter] = 0\n    lower_prices = ps_prices_float[idx]\n    upper_prices = ps_prices_float[idx+1]\n\n    diff0 = ps_price[bfilter].values-lower_prices[bfilter].values\n    diff1 = upper_prices[bfilter].values - ps_price[bfilter].values\n\n    choose_lo = diff1>diff0\n    choose_hi = ~choose_lo\n\n    nearest_price = ps_price.copy()\n    assign_to_min = nearest_price<MIN_PRICE\n    assign_to_max = nearest_price>=MAX_PRICE\n\n\n    nearest_price = np.empty_like(ps_price)\n    nearest_price[choose_lo] = lower_prices[choose_lo]\n    nearest_price[choose_hi] = upper_prices[choose_hi]\n    nearest_price[assign_to_min] = MIN_PRICE\n    nearest_price[assign_to_max] = MAX_PRICE\n    return nearest_price"
+                            }
+                        ],
+                        "border": 0
+                    }
+                ]
+            }
+        ]
+    }
+]

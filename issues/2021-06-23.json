@@ -1,0 +1,444 @@
+[
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1624436991.184800",
+        "client_msg_id": "fb64e109-12c8-45fe-b92f-6e5d6f5d3818",
+        "text": "<@U4H19D1D2> I've noticed something else about the Replace function (I'm guessing most people just cancel and place a new order, which perhaps I should do!), below the replace fails as the bet has already had an action on it, that error makes sense, however after this the order is never removed from the blotter and the status remains as OrderStatus.REPLACING until I kill the process. This of course means no further orders can be placed on this runner as the blotter thinks there is 1 order remaining. This is obviously a pretty rare occurrence, but I've noticed it a few times and I think the below shows the process flow, but at the end presumably a better outcome would be that the order is removed (i.e. set to EXECUTION_COMPLETE) instead?\n\nThis is going to be very tricky to replicate, but if you agree its a bug I'll raise an issue (this is in live btw not simulation).\n\n```{\"asctime\": \"2021-06-22 18:50:10,695\", \"levelname\": \"INFO\", \"message\": \"execute_replace\", \"trading_function\": \"replace\", \"elapsed_time\": 0.05340576171875, \"response\": {\"customerRef\": \"abcf9b20d38a11ebbbac02054918c7c6\", \"status\": \"FAILURE\", \"errorCode\": \"BET_ACTION_ERROR\", \"marketId\": \"1.183248116\", \"instructionReports\": [{\"status\": \"FAILURE\", \"errorCode\": \"BET_TAKEN_OR_LAPSED\", \"cancelInstructionReport\": {\"status\": \"FAILURE\", \"errorCode\": \"BET_TAKEN_OR_LAPSED\", \"instruction\": {\"betId\": \"236404314713\"}}, \"placeInstructionReport\": {\"status\": \"FAILURE\", \"errorCode\": \"RELATED_ACTION_FAILED\"}}]}, \"order_package\": {\"id\": \"abcf9b20-d38a-11eb-bbac-02054918c7c6\", \"client\": \"&lt;flumine.clients.betfairclient.BetfairClient object at 0x7f148822e790&gt;\", \"market_id\": \"1.183248116\", \"orders\": [\"236404314713\"], \"order_count\": 1, \"package_type\": \"Replace\", \"customer_strategy_ref\": \"ip-172-31-4-105\", \"bet_delay\": 0, \"market_version\": null, \"retry\": true, \"retry_count\": 0, \"async\": false}}\n{\"asctime\": \"2021-06-22 18:50:10,701\", \"levelname\": \"INFO\", \"message\": \"Trade status update: Pending\", \"id\": \"511443a4-d388-11eb-bbac-02054918c7c6\", \"strategy\": \"politics_lay_mm\", \"place_reset_seconds\": 0.0, \"reset_seconds\": 0.0, \"orders\": [\"236404314713\"], \"offset_orders\": [], \"notes\": \"\", \"market_notes\": null, \"status\": \"Pending\", \"status_log\": \"Pending, Live, Pending, Live, Pending, Live, Pending\"}\n{\"asctime\": \"2021-06-22 18:50:10,707\", \"levelname\": \"INFO\", \"message\": \"Order status update: Executable\", \"market_id\": \"1.183248116\", \"selection_id\": 5191378, \"handicap\": 0.0, \"id\": \"236404314713\", \"customer_order_ref\": \"3203239236f2d-236404314713\", \"bet_id\": \"236404314713\", \"date_time_created\": \"2021-06-22 18:33:19.422805\", \"publish_time\": null, \"trade\": {\"id\": \"511443a4-d388-11eb-bbac-02054918c7c6\", \"strategy\": \"politics_lay_mm\", \"place_reset_seconds\": 0.0, \"reset_seconds\": 0.0, \"orders\": [\"236404314713\"], \"offset_orders\": [], \"notes\": \"\", \"market_notes\": null, \"status\": \"Pending\", \"status_log\": \"Pending, Live, Pending, Live, Pending, Live, Pending\"}, \"order_type\": {\"order_type\": \"Limit\", \"price\": 1000.0, \"size\": 0.09, \"persistence_type\": \"PERSIST\", \"time_in_force\": null, \"min_fill_size\": null, \"bet_target_type\": null, \"bet_target_size\": null}, \"info\": {\"side\": \"LAY\", \"size_matched\": 0.0, \"size_remaining\": 0.09, \"size_cancelled\": 0.0, \"size_lapsed\": 0.0, \"size_voided\": 0.0, \"average_price_matched\": 0.0}, \"responses\": {\"date_time_placed\": null, \"elapsed_seconds_executable\": null}, \"runner_status\": null, \"status\": \"Executable\", \"status_log\": \"Executable, Replacing, Executable, Replacing, Executable, Replacing, Executable, Replacing, Executable\", \"violation_msg\": null, \"simulated\": {\"profit\": 0.0, \"piq\": 0.0, \"matched\": []}, \"notes\": \"\", \"market_notes\": null}\n{\"asctime\": \"2021-06-22 18:50:10,718\", \"levelname\": \"INFO\", \"message\": \"Order status update: Replacing\", \"market_id\": \"1.183248116\", \"selection_id\": 5191378, \"handicap\": 0.0, \"id\": \"236404314713\", \"customer_order_ref\": \"3203239236f2d-236404314713\", \"bet_id\": \"236404314713\", \"date_time_created\": \"2021-06-22 18:33:19.422805\", \"publish_time\": null, \"trade\": {\"id\": \"511443a4-d388-11eb-bbac-02054918c7c6\", \"strategy\": \"politics_lay_mm\", \"place_reset_seconds\": 0.0, \"reset_seconds\": 0.0, \"orders\": [\"236404314713\"], \"offset_orders\": [], \"notes\": \"\", \"market_notes\": null, \"status\": \"Pending\", \"status_log\": \"Pending, Live, Pending, Live, Pending, Live, Pending\"}, \"order_type\": {\"order_type\": \"Limit\", \"price\": 1000.0, \"size\": 0.09, \"persistence_type\": \"PERSIST\", \"time_in_force\": null, \"min_fill_size\": null, \"bet_target_type\": null, \"bet_target_size\": null}, \"info\": {\"side\": \"LAY\", \"size_matched\": 0.0, \"size_remaining\": 0.09, \"size_cancelled\": 0.0, \"size_lapsed\": 0.0, \"size_voided\": 0.0, \"average_price_matched\": 0.0}, \"responses\": {\"date_time_placed\": null, \"elapsed_seconds_executable\": null}, \"runner_status\": null, \"status\": \"Replacing\", \"status_log\": \"Executable, Replacing, Executable, Replacing, Executable, Replacing, Executable, Replacing, Executable, Replacing\", \"violation_msg\": null, \"simulated\": {\"profit\": 0.0, \"piq\": 0.0, \"matched\": []}, \"notes\": \"\", \"market_notes\": null}\n{\"asctime\": \"2021-06-22 18:50:10,718\", \"levelname\": \"INFO\", \"message\": \"Trade status update: Live\", \"id\": \"511443a4-d388-11eb-bbac-02054918c7c6\", \"strategy\": \"politics_lay_mm\", \"place_reset_seconds\": 0.0, \"reset_seconds\": 0.0, \"orders\": [\"236404314713\"], \"offset_orders\": [], \"notes\": \"\", \"market_notes\": null, \"status\": \"Live\", \"status_log\": \"Pending, Live, Pending, Live, Pending, Live, Pending, Live\"}\n{\"asctime\": \"2021-06-22 18:50:10,719\", \"levelname\": \"INFO\", \"message\": \"Thread pool submit\", \"trading_function\": \"execute_replace\", \"session\": \"&lt;requests.sessions.Session object at 0x7f144b600050&gt;\", \"latency\": 0.0001, \"order_package\": {\"id\": \"abdbd200-d38a-11eb-bbac-02054918c7c6\", \"client\": \"&lt;flumine.clients.betfairclient.BetfairClient object at 0x7f148822e790&gt;\", \"market_id\": \"1.183248116\", \"orders\": [\"236404314713\"], \"order_count\": 1, \"package_type\": \"Replace\", \"customer_strategy_ref\": \"ip-172-31-4-105\", \"bet_delay\": 0, \"market_version\": null, \"retry\": true, \"retry_count\": 0, \"async\": false}, \"thread_pool\": {\"num_threads\": 32, \"work_queue_size\": 1}}\n{\"asctime\": \"2021-06-22 18:50:10,719\", \"levelname\": \"CRITICAL\", \"message\": \"Execution unknown error\", \"exc_info\": \"Traceback (most recent call last):\\n  File \\\"\/home\/ec2-user\/trading\/env\/lib64\/python3.7\/site-packages\/flumine\/execution\/betfairexecution.py\\\", line 243, in _execution_helper\\n    response = trading_function(order_package, http_session)\\n  File \\\"\/home\/ec2-user\/trading\/env\/lib64\/python3.7\/site-packages\/flumine\/execution\/betfairexecution.py\\\", line 214, in replace\\n    instructions=order_package.replace_instructions,\\n  File \\\"\/home\/ec2-user\/trading\/env\/lib64\/python3.7\/site-packages\/flumine\/order\/orderpackage.py\\\", line 152, in replace_instructions\\n    return [order.create_replace_instruction() for order in self]\\n  File \\\"\/home\/ec2-user\/trading\/env\/lib64\/python3.7\/site-packages\/flumine\/order\/orderpackage.py\\\", line 152, in &lt;listcomp&gt;\\n    return [order.create_replace_instruction() for order in self]\\n  File \\\"\/home\/ec2-user\/trading\/env\/lib64\/python3.7\/site-packages\/flumine\/order\/order.py\\\", line 394, in create_replace_instruction\\n    bet_id=self.bet_id, new_price=self.update_data[\\\"new_price\\\"]\\nKeyError: 'new_price'\", \"trading_function\": \"replace\", \"exception\": \"'new_price'\", \"order_package\": {\"id\": \"abdbd200-d38a-11eb-bbac-02054918c7c6\", \"client\": \"&lt;flumine.clients.betfairclient.BetfairClient object at 0x7f148822e790&gt;\", \"market_id\": \"1.183248116\", \"orders\": [\"236404314713\"], \"order_count\": 1, \"package_type\": \"Replace\", \"customer_strategy_ref\": \"ip-172-31-4-105\", \"bet_delay\": 0, \"market_version\": null, \"retry\": true, \"retry_count\": 0, \"async\": false}}\n{\"asctime\": \"2021-06-22 18:50:10,719\", \"levelname\": \"INFO\", \"message\": \"1 order packages executed in transaction\", \"market_id\": \"1.183248116\", \"order_packages\": [{\"id\": \"abdbd200-d38a-11eb-bbac-02054918c7c6\", \"client\": \"&lt;flumine.clients.betfairclient.BetfairClient object at 0x7f148822e790&gt;\", \"market_id\": \"1.183248116\", \"orders\": [\"236404314713\"], \"order_count\": 1, \"package_type\": \"Replace\", \"customer_strategy_ref\": \"ip-172-31-4-105\", \"bet_delay\": 0, \"market_version\": null, \"retry\": true, \"retry_count\": 0, \"async\": false}], \"transaction_id\": 10}\n{\"asctime\": \"2021-06-22 18:50:10,722\", \"levelname\": \"INFO\", \"message\": \"Deleting requests.Session\", \"sessions_created\": 14, \"session\": \"&lt;requests.sessions.Session object at 0x7f144b600050&gt;\", \"session_time_created\": 1624387784.7466655, \"session_time_returned\": 1624387810.701893, \"live_sessions_count\": 0, \"err\": true}```\n",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "oDy",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "user",
+                                "user_id": "U4H19D1D2"
+                            },
+                            {
+                                "type": "text",
+                                "text": " I've noticed something else about the Replace function (I'm guessing most people just cancel and place a new order, which perhaps I should do!), below the replace fails as the bet has already had an action on it, that error makes sense, however after this the order is never removed from the blotter and the status remains as OrderStatus.REPLACING until I kill the process. This of course means no further orders can be placed on this runner as the blotter thinks there is 1 order remaining. This is obviously a pretty rare occurrence, but I've noticed it a few times and I think the below shows the process flow, but at the end presumably a better outcome would be that the order is removed (i.e. set to EXECUTION_COMPLETE) instead?\n\nThis is going to be very tricky to replicate, but if you agree its a bug I'll raise an issue (this is in live btw not simulation).\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "{\"asctime\": \"2021-06-22 18:50:10,695\", \"levelname\": \"INFO\", \"message\": \"execute_replace\", \"trading_function\": \"replace\", \"elapsed_time\": 0.05340576171875, \"response\": {\"customerRef\": \"abcf9b20d38a11ebbbac02054918c7c6\", \"status\": \"FAILURE\", \"errorCode\": \"BET_ACTION_ERROR\", \"marketId\": \"1.183248116\", \"instructionReports\": [{\"status\": \"FAILURE\", \"errorCode\": \"BET_TAKEN_OR_LAPSED\", \"cancelInstructionReport\": {\"status\": \"FAILURE\", \"errorCode\": \"BET_TAKEN_OR_LAPSED\", \"instruction\": {\"betId\": \"236404314713\"}}, \"placeInstructionReport\": {\"status\": \"FAILURE\", \"errorCode\": \"RELATED_ACTION_FAILED\"}}]}, \"order_package\": {\"id\": \"abcf9b20-d38a-11eb-bbac-02054918c7c6\", \"client\": \"<flumine.clients.betfairclient.BetfairClient object at 0x7f148822e790>\", \"market_id\": \"1.183248116\", \"orders\": [\"236404314713\"], \"order_count\": 1, \"package_type\": \"Replace\", \"customer_strategy_ref\": \"ip-172-31-4-105\", \"bet_delay\": 0, \"market_version\": null, \"retry\": true, \"retry_count\": 0, \"async\": false}}\n{\"asctime\": \"2021-06-22 18:50:10,701\", \"levelname\": \"INFO\", \"message\": \"Trade status update: Pending\", \"id\": \"511443a4-d388-11eb-bbac-02054918c7c6\", \"strategy\": \"politics_lay_mm\", \"place_reset_seconds\": 0.0, \"reset_seconds\": 0.0, \"orders\": [\"236404314713\"], \"offset_orders\": [], \"notes\": \"\", \"market_notes\": null, \"status\": \"Pending\", \"status_log\": \"Pending, Live, Pending, Live, Pending, Live, Pending\"}\n{\"asctime\": \"2021-06-22 18:50:10,707\", \"levelname\": \"INFO\", \"message\": \"Order status update: Executable\", \"market_id\": \"1.183248116\", \"selection_id\": 5191378, \"handicap\": 0.0, \"id\": \"236404314713\", \"customer_order_ref\": \"3203239236f2d-236404314713\", \"bet_id\": \"236404314713\", \"date_time_created\": \"2021-06-22 18:33:19.422805\", \"publish_time\": null, \"trade\": {\"id\": \"511443a4-d388-11eb-bbac-02054918c7c6\", \"strategy\": \"politics_lay_mm\", \"place_reset_seconds\": 0.0, \"reset_seconds\": 0.0, \"orders\": [\"236404314713\"], \"offset_orders\": [], \"notes\": \"\", \"market_notes\": null, \"status\": \"Pending\", \"status_log\": \"Pending, Live, Pending, Live, Pending, Live, Pending\"}, \"order_type\": {\"order_type\": \"Limit\", \"price\": 1000.0, \"size\": 0.09, \"persistence_type\": \"PERSIST\", \"time_in_force\": null, \"min_fill_size\": null, \"bet_target_type\": null, \"bet_target_size\": null}, \"info\": {\"side\": \"LAY\", \"size_matched\": 0.0, \"size_remaining\": 0.09, \"size_cancelled\": 0.0, \"size_lapsed\": 0.0, \"size_voided\": 0.0, \"average_price_matched\": 0.0}, \"responses\": {\"date_time_placed\": null, \"elapsed_seconds_executable\": null}, \"runner_status\": null, \"status\": \"Executable\", \"status_log\": \"Executable, Replacing, Executable, Replacing, Executable, Replacing, Executable, Replacing, Executable\", \"violation_msg\": null, \"simulated\": {\"profit\": 0.0, \"piq\": 0.0, \"matched\": []}, \"notes\": \"\", \"market_notes\": null}\n{\"asctime\": \"2021-06-22 18:50:10,718\", \"levelname\": \"INFO\", \"message\": \"Order status update: Replacing\", \"market_id\": \"1.183248116\", \"selection_id\": 5191378, \"handicap\": 0.0, \"id\": \"236404314713\", \"customer_order_ref\": \"3203239236f2d-236404314713\", \"bet_id\": \"236404314713\", \"date_time_created\": \"2021-06-22 18:33:19.422805\", \"publish_time\": null, \"trade\": {\"id\": \"511443a4-d388-11eb-bbac-02054918c7c6\", \"strategy\": \"politics_lay_mm\", \"place_reset_seconds\": 0.0, \"reset_seconds\": 0.0, \"orders\": [\"236404314713\"], \"offset_orders\": [], \"notes\": \"\", \"market_notes\": null, \"status\": \"Pending\", \"status_log\": \"Pending, Live, Pending, Live, Pending, Live, Pending\"}, \"order_type\": {\"order_type\": \"Limit\", \"price\": 1000.0, \"size\": 0.09, \"persistence_type\": \"PERSIST\", \"time_in_force\": null, \"min_fill_size\": null, \"bet_target_type\": null, \"bet_target_size\": null}, \"info\": {\"side\": \"LAY\", \"size_matched\": 0.0, \"size_remaining\": 0.09, \"size_cancelled\": 0.0, \"size_lapsed\": 0.0, \"size_voided\": 0.0, \"average_price_matched\": 0.0}, \"responses\": {\"date_time_placed\": null, \"elapsed_seconds_executable\": null}, \"runner_status\": null, \"status\": \"Replacing\", \"status_log\": \"Executable, Replacing, Executable, Replacing, Executable, Replacing, Executable, Replacing, Executable, Replacing\", \"violation_msg\": null, \"simulated\": {\"profit\": 0.0, \"piq\": 0.0, \"matched\": []}, \"notes\": \"\", \"market_notes\": null}\n{\"asctime\": \"2021-06-22 18:50:10,718\", \"levelname\": \"INFO\", \"message\": \"Trade status update: Live\", \"id\": \"511443a4-d388-11eb-bbac-02054918c7c6\", \"strategy\": \"politics_lay_mm\", \"place_reset_seconds\": 0.0, \"reset_seconds\": 0.0, \"orders\": [\"236404314713\"], \"offset_orders\": [], \"notes\": \"\", \"market_notes\": null, \"status\": \"Live\", \"status_log\": \"Pending, Live, Pending, Live, Pending, Live, Pending, Live\"}\n{\"asctime\": \"2021-06-22 18:50:10,719\", \"levelname\": \"INFO\", \"message\": \"Thread pool submit\", \"trading_function\": \"execute_replace\", \"session\": \"<requests.sessions.Session object at 0x7f144b600050>\", \"latency\": 0.0001, \"order_package\": {\"id\": \"abdbd200-d38a-11eb-bbac-02054918c7c6\", \"client\": \"<flumine.clients.betfairclient.BetfairClient object at 0x7f148822e790>\", \"market_id\": \"1.183248116\", \"orders\": [\"236404314713\"], \"order_count\": 1, \"package_type\": \"Replace\", \"customer_strategy_ref\": \"ip-172-31-4-105\", \"bet_delay\": 0, \"market_version\": null, \"retry\": true, \"retry_count\": 0, \"async\": false}, \"thread_pool\": {\"num_threads\": 32, \"work_queue_size\": 1}}\n{\"asctime\": \"2021-06-22 18:50:10,719\", \"levelname\": \"CRITICAL\", \"message\": \"Execution unknown error\", \"exc_info\": \"Traceback (most recent call last):\\n  File \\\"\/home\/ec2-user\/trading\/env\/lib64\/python3.7\/site-packages\/flumine\/execution\/betfairexecution.py\\\", line 243, in _execution_helper\\n    response = trading_function(order_package, http_session)\\n  File \\\"\/home\/ec2-user\/trading\/env\/lib64\/python3.7\/site-packages\/flumine\/execution\/betfairexecution.py\\\", line 214, in replace\\n    instructions=order_package.replace_instructions,\\n  File \\\"\/home\/ec2-user\/trading\/env\/lib64\/python3.7\/site-packages\/flumine\/order\/orderpackage.py\\\", line 152, in replace_instructions\\n    return [order.create_replace_instruction() for order in self]\\n  File \\\"\/home\/ec2-user\/trading\/env\/lib64\/python3.7\/site-packages\/flumine\/order\/orderpackage.py\\\", line 152, in <listcomp>\\n    return [order.create_replace_instruction() for order in self]\\n  File \\\"\/home\/ec2-user\/trading\/env\/lib64\/python3.7\/site-packages\/flumine\/order\/order.py\\\", line 394, in create_replace_instruction\\n    bet_id=self.bet_id, new_price=self.update_data[\\\"new_price\\\"]\\nKeyError: 'new_price'\", \"trading_function\": \"replace\", \"exception\": \"'new_price'\", \"order_package\": {\"id\": \"abdbd200-d38a-11eb-bbac-02054918c7c6\", \"client\": \"<flumine.clients.betfairclient.BetfairClient object at 0x7f148822e790>\", \"market_id\": \"1.183248116\", \"orders\": [\"236404314713\"], \"order_count\": 1, \"package_type\": \"Replace\", \"customer_strategy_ref\": \"ip-172-31-4-105\", \"bet_delay\": 0, \"market_version\": null, \"retry\": true, \"retry_count\": 0, \"async\": false}}\n{\"asctime\": \"2021-06-22 18:50:10,719\", \"levelname\": \"INFO\", \"message\": \"1 order packages executed in transaction\", \"market_id\": \"1.183248116\", \"order_packages\": [{\"id\": \"abdbd200-d38a-11eb-bbac-02054918c7c6\", \"client\": \"<flumine.clients.betfairclient.BetfairClient object at 0x7f148822e790>\", \"market_id\": \"1.183248116\", \"orders\": [\"236404314713\"], \"order_count\": 1, \"package_type\": \"Replace\", \"customer_strategy_ref\": \"ip-172-31-4-105\", \"bet_delay\": 0, \"market_version\": null, \"retry\": true, \"retry_count\": 0, \"async\": false}], \"transaction_id\": 10}\n{\"asctime\": \"2021-06-22 18:50:10,722\", \"levelname\": \"INFO\", \"message\": \"Deleting requests.Session\", \"sessions_created\": 14, \"session\": \"<requests.sessions.Session object at 0x7f144b600050>\", \"session_time_created\": 1624387784.7466655, \"session_time_returned\": 1624387810.701893, \"live_sessions_count\": 0, \"err\": true}"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": []
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1624438707.185600",
+        "client_msg_id": "6986D9D6-81F1-4A99-98F6-470DC234238B",
+        "text": "I think there might be an issue already? If you can create a strategy to replicate would be helpful ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "c6arm",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I think there might be an issue already? If you can create a strategy to replicate would be helpful "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1624439824.186500",
+        "client_msg_id": "e24b814d-92e2-4c90-8cd6-2b758df5b9f2",
+        "text": "May be tricky, I think this occurs when a replace fails due to BPE being off and the price having moved...its difficult to replicate",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "PDDXc",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "May be tricky, I think this occurs when a replace fails due to BPE being off and the price having moved...its difficult to replicate"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1624439912.187300",
+        "client_msg_id": "f5c543c6-bcec-4012-8bca-682067905a7f",
+        "text": "I think we did raise this a while back, but if I recall correctly you couldn't replicate it so it got closed. Which makes sense as its a bit niche, but its definitely still occuring.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "CsYB",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I think we did raise this a while back, but if I recall correctly you couldn't replicate it so it got closed. Which makes sense as its a bit niche, but its definitely still occuring."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1624441479.188700",
+        "client_msg_id": "e70d6bfe-cdc5-4ebc-9171-3fe6e184a386",
+        "text": "I tried replicating, with the replacement price lower than the best back price, but that produces a 'BET_LAPSED_PRICE_IMPROVEMENT_TOO_LARGE' and it works fine, the above is slightly different, in that its a BET_TAKEN_OR_LAPSED error I need to replicate, which is tough! I'll create a placeholder issue and will add if I can come up with more\/better info.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "oL0",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I tried replicating, with the replacement price lower than the best back price, but that produces a 'BET_LAPSED_PRICE_IMPROVEMENT_TOO_LARGE' and it works fine, the above is slightly different, in that its a BET_TAKEN_OR_LAPSED error I need to replicate, which is tough! I'll create a placeholder issue and will add if I can come up with more\/better info."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1624441724.189100",
+        "client_msg_id": "992f9b3b-4a2c-41f9-83cb-6bd2dd62a36b",
+        "text": "<https:\/\/github.com\/liampauling\/flumine\/issues\/455#issue-928070153>\n\nWill update once I've been able to replicate.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "050y",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/liampauling\/flumine\/issues\/455#issue-928070153"
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n\nWill update once I've been able to replicate."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1624441753.189600",
+        "client_msg_id": "BF07844B-7A55-43C4-B085-9D156CF4D187",
+        "text": "The issues are starting to build up :man-facepalming: ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "qz9",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "The issues are starting to build up "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "man-facepalming",
+                                "unicode": "1f926-200d-2642-fe0f"
+                            },
+                            {
+                                "type": "text",
+                                "text": " "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1624441775.190300",
+        "client_msg_id": "4D221F00-F949-4F6F-8FC1-1AC11483610A",
+        "text": "Currently taking some time off so might be a delay but can merge stuff ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Fm9",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Currently taking some time off so might be a delay but can merge stuff "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1624442169.190700",
+        "client_msg_id": "44ded554-84b5-450c-8395-c29a8cbc70bb",
+        "text": "Time off...I thought that concept didn't exist on this slack :wink:",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "k9uq",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Time off...I thought that concept didn't exist on this slack "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "wink",
+                                "unicode": "1f609"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UGV299K6H",
+        "type": "message",
+        "ts": "1624442217.191200",
+        "client_msg_id": "f5c232fb-f544-455a-a8a8-7d85332aff53",
+        "text": "I believe time off to be the sole purpose of this slack.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g3a262a3cfba",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/b3a262a3cfba292c18acf5777f65908a.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0006-72.png",
+            "first_name": "Michael",
+            "real_name": "Michael C",
+            "display_name": "Michael",
+            "team": "T4G9NBD2M",
+            "name": "michael",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "5CGvL",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I believe time off to be the sole purpose of this slack."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "joy",
+                "users": [
+                    "U9JHLMZB4",
+                    "U01DCR5PXDY",
+                    "U4H19D1D2",
+                    "U0122TPQABW",
+                    "U0160E9HS2G"
+                ],
+                "count": 5
+            },
+            {
+                "name": "raised_hands",
+                "users": [
+                    "U01DVUAE2G1"
+                ],
+                "count": 1
+            },
+            {
+                "name": "100",
+                "users": [
+                    "U016TGY3676"
+                ],
+                "count": 1
+            }
+        ]
+    }
+]

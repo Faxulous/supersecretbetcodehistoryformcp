@@ -1,0 +1,902 @@
+[
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1598600490.166300",
+        "client_msg_id": "ff6b2e1c-aa4d-4555-9047-621909c9ec07",
+        "text": "really not sure on this, if you can try changing logging to debug there might be some more info (you will get a lot of logs!)",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1598541685.153000",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "aAF",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "really not sure on this, if you can try changing logging to debug there might be some more info (you will get a lot of logs!)"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "text": "<@U4H19D1D2>, with regards to the pending orders that disappear saga, I've attached a log from the 16:40 today (Curragh- WIN market), now interestingly when the market suspends at the end the pending orders (placed approx 2 mins before the scheduled start) all fail (which looks to be correct as the market is suspended)....but the bigger question is, why did they sit in pending for the entire race, I can't work it out from the logs tbh, but hopefully you might spot something I've missed which may shed some light on it (I didn't receive any high latency warnings, but then given the timeframe, I don't think it can be a pure latency issue anyway)?",
+        "files": [
+            {
+                "id": "F019Q4JNA03",
+                "created": 1598629588,
+                "timestamp": 1598629588,
+                "name": "1.172434118.txt",
+                "title": "1.172434118.txt",
+                "mimetype": "text\/plain",
+                "filetype": "text",
+                "pretty_type": "Plain Text",
+                "user": "UFTBRB3F1",
+                "user_team": "T4G9NBD2M",
+                "editable": true,
+                "size": 529079,
+                "mode": "snippet",
+                "is_external": false,
+                "external_type": "",
+                "is_public": true,
+                "public_url_shared": false,
+                "display_as_bot": false,
+                "username": "",
+                "url_private": "https:\/\/files.slack.com\/files-pri\/T4G9NBD2M-F019Q4JNA03\/1.172434118.txt?t=xoxe-152328387089-8357743338709-8373272928225-dfe8ebcd8ca3d2f633bcafeb95191840",
+                "url_private_download": "https:\/\/files.slack.com\/files-pri\/T4G9NBD2M-F019Q4JNA03\/download\/1.172434118.txt?t=xoxe-152328387089-8357743338709-8373272928225-dfe8ebcd8ca3d2f633bcafeb95191840",
+                "permalink": "https:\/\/betcode-org.slack.com\/files\/UFTBRB3F1\/F019Q4JNA03\/1.172434118.txt",
+                "permalink_public": "https:\/\/slack-files.com\/T4G9NBD2M-F019Q4JNA03-c9b2567af3",
+                "edit_link": "https:\/\/betcode-org.slack.com\/files\/UFTBRB3F1\/F019Q4JNA03\/1.172434118.txt\/edit",
+                "is_starred": false,
+                "has_rich_preview": false,
+                "file_access": "visible"
+            }
+        ],
+        "upload": false,
+        "user": "UFTBRB3F1",
+        "display_as_bot": false,
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "gPy",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "user",
+                                "user_id": "U4H19D1D2"
+                            },
+                            {
+                                "type": "text",
+                                "text": ", with regards to the pending orders that disappear saga, I've attached a log from the 16:40 today (Curragh- WIN market), now interestingly when the market suspends at the end the pending orders (placed approx 2 mins before the scheduled start) all fail (which looks to be correct as the market is suspended)....but the bigger question is, why did they sit in pending for the entire race, I can't work it out from the logs tbh, but hopefully you might spot something I've missed which may shed some light on it (I didn't receive any high latency warnings, but then given the timeframe, I don't think it can be a pure latency issue anyway)?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "type": "message",
+        "ts": "1598629974.172000"
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1598632965.175300",
+        "client_msg_id": "8120186f-e8b5-4d77-bc90-f7b9202100ad",
+        "text": "Looking at these logs I think your queue is full of data i.e. you are not processing the market data quick enough. Do you have some slow code in the main loop?\n\nCan you compare the current time to the time to the `MarketBook.publish_time`  when you place an order?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Z+y",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Looking at these logs I think your queue is full of data i.e. you are not processing the market data quick enough. Do you have some slow code in the main loop?\n\nCan you compare the current time to the time to the "
+                            },
+                            {
+                                "type": "text",
+                                "text": "MarketBook.publish_time",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "  when you place an order?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1598633033.176500",
+        "client_msg_id": "d34a1b1f-2424-4ba8-b8e1-6e64b3bb52cc",
+        "text": "So the order gets chucked in the handler queue to be processed but the queue is already full so has to be processed before it gets to it. I am thinking about a priority queue for orders to prevent this but it might hide issues like you are probably seeing",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "PNHD",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "So the order gets chucked in the handler queue to be processed but the queue is already full so has to be processed before it gets to it. I am thinking about a priority queue for orders to prevent this but it might hide issues like you are probably seeing"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1598633079.177000",
+        "client_msg_id": "67602eb4-bea4-449c-a690-aec1aab31b66",
+        "text": "okay cool, will have a play around and report back...",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "VrkRj",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "okay cool, will have a play around and report back..."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1598633110.177700",
+        "client_msg_id": "7820cbee-2788-4f50-975c-6e0197fcaf5e",
+        "text": "that does make sense actually, I do process a lot, so it is plausible, but the length of the lag (and randomness of it, i.e. why some markets not others), seems very odd.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "IBS",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "that does make sense actually, I do process a lot, so it is plausible, but the length of the lag (and randomness of it, i.e. why some markets not others), seems very odd."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1598634406.180000",
+        "client_msg_id": "7FE43135-F953-4701-81B5-338F45B3826C",
+        "text": "I can’t see another reason for it, not sure what you are doing \/ instance size coupled with the number updates varying depending on time of day it just has to be the queue. Priority queue and\/or a warning when MarketBooks are stale might be in order ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "PN=K",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I can’t see another reason for it, not sure what you are doing \/ instance size coupled with the number updates varying depending on time of day it just has to be the queue. Priority queue and\/or a warning when MarketBooks are stale might be in order "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U011VL3CA2Y",
+        "type": "message",
+        "ts": "1598634565.180800",
+        "client_msg_id": "5216c4c8-2047-4217-83dc-ad007e98a7a2",
+        "text": "maybe you could try logging the size of the queue as well, to see if it actually happens when the queue is full",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g1ec6e88d1e4",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/1ec6e88d1e4dd0bff349d83e9edba6bd.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0005-72.png",
+            "first_name": "Ruben",
+            "real_name": "Ruben",
+            "display_name": "Ruben",
+            "team": "T4G9NBD2M",
+            "name": "tduqruqtgtpiioibww",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "p\/X",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "maybe you could try logging the size of the queue as well, to see if it actually happens when the queue is full"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1598634930.181800",
+        "client_msg_id": "C779646A-C668-49A7-8DF8-1D5654FEC9BC",
+        "text": "From memory getting a queue size isn’t very accurate, no idea why or if this has been improved in later versions of Py ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Z99D",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "From memory getting a queue size isn’t very accurate, no idea why or if this has been improved in later versions of Py "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1598635725.182600",
+        "client_msg_id": "df577f20-8574-425c-9f0f-5534ecf7a4cc",
+        "text": "Initial tests would suggest you are spot on btw....its a bit random as to why, but some markets are super laggy, I can see a couple of loops I can tidy up, so will do that.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "n1nw",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Initial tests would suggest you are spot on btw....its a bit random as to why, but some markets are super laggy, I can see a couple of loops I can tidy up, so will do that."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1598635941.182900",
+        "client_msg_id": "4260bef9-be90-409b-92fa-fe697f346ee6",
+        "text": "will have a look at queue size too just in case",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "+sn4F",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "will have a look at queue size too just in case"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1598636261.183600",
+        "client_msg_id": "D4E441C7-06A0-4591-89AF-4D2CD2122830",
+        "text": "Progress, I use <https:\/\/github.com\/ymichael\/cprofilev|cprofilev> as you can profile ‘live’",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1598636261.183600",
+        "reply_count": 2,
+        "reply_users_count": 1,
+        "latest_reply": "1641250084.349000",
+        "reply_users": [
+            "U011VL3CA2Y"
+        ],
+        "replies": [
+            {
+                "user": "U011VL3CA2Y",
+                "ts": "1641250071.348800"
+            },
+            {
+                "user": "U011VL3CA2Y",
+                "ts": "1641250084.349000"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": true,
+        "last_read": "1641250084.349000",
+        "attachments": [
+            {
+                "fallback": "ymichael\/cprofilev",
+                "text": ":fire: An easier way to use cProfile",
+                "title": "ymichael\/cprofilev",
+                "footer": "<https:\/\/github.com\/ymichael\/cprofilev|ymichael\/cprofilev>",
+                "id": 1,
+                "footer_icon": "https:\/\/github.githubassets.com\/favicon.ico",
+                "ts": 1394082526,
+                "color": "24292f",
+                "fields": [
+                    {
+                        "title": "Website",
+                        "value": "<https:\/\/pypi.python.org\/pypi\/CProfileV>",
+                        "short": true
+                    },
+                    {
+                        "title": "Stars",
+                        "value": "372",
+                        "short": true
+                    }
+                ],
+                "mrkdwn_in": [
+                    "text",
+                    "fields"
+                ],
+                "bot_id": "B01144Z0734",
+                "app_unfurl_url": "https:\/\/github.com\/ymichael\/cprofilev",
+                "is_app_unfurl": true
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "kWq",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Progress, I use "
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/ymichael\/cprofilev",
+                                "text": "cprofilev"
+                            },
+                            {
+                                "type": "text",
+                                "text": " as you can profile ‘live’"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "UPCNDMPSN"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "subtype": "channel_join",
+        "user": "U019HMPCQT0",
+        "text": "<@U019HMPCQT0> has joined the channel",
+        "type": "message",
+        "ts": "1598643529.183900"
+    },
+    {
+        "user": "U016TGY3676",
+        "type": "message",
+        "ts": "1598647726.191400",
+        "client_msg_id": "2b9ed536-ffa9-4c71-a326-a4f721578d80",
+        "text": "<@U4H19D1D2> just read your comment above regarding \"slow\" code... what's the recommended way to implement strategies that do a lot of number crunching\/processing? The problem I can foresee is that by the time the calculation process is completed, the market may have updated several times, thus making any calculation results obsolete.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6a681220e11",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6a681220e11c1a2ed3685375d658dadb.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0001-72.png",
+            "first_name": "",
+            "real_name": "birchy",
+            "display_name": "birchy",
+            "team": "T4G9NBD2M",
+            "name": "birchy",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "3mV",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "user",
+                                "user_id": "U4H19D1D2"
+                            },
+                            {
+                                "type": "text",
+                                "text": " just read your comment above regarding \"slow\" code... what's the recommended way to implement strategies that do a lot of number crunching\/processing? The problem I can foresee is that by the time the calculation process is completed, the market may have updated several times, thus making any calculation results obsolete."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U0198BFR9GR",
+        "type": "message",
+        "ts": "1598650412.211800",
+        "edited": {
+            "user": "U0198BFR9GR",
+            "ts": "1598650466.000000"
+        },
+        "client_msg_id": "37e0a3c3-5810-4197-b069-2e8ee9859178",
+        "text": "Would be interested in Liam's perspective here as well. Particularly w\/r\/t any architectural or Python-specific implementation details but I think in general the guideline is to ensure you have efficient one-pass (O(1)) implementations for any stats \/ math \/ decision making that you are doing on each market update",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "f51a11a92c59",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-08-19\/1311796831155_f51a11a92c590d48d96c_72.png",
+            "first_name": "Christopher",
+            "real_name": "Christopher",
+            "display_name": "Chris",
+            "team": "T4G9NBD2M",
+            "name": "christopherlanctot",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "uTr",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Would be interested in Liam's perspective here as well. Particularly w\/r\/t any architectural or Python-specific implementation details but I think in general the guideline is to ensure you have efficient one-pass (O(1)) implementations for any stats \/ math \/ decision making that you are doing on each market update"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UGV299K6H",
+        "type": "message",
+        "ts": "1598651289.219100",
+        "edited": {
+            "user": "UGV299K6H",
+            "ts": "1598651639.000000"
+        },
+        "client_msg_id": "036f0ef2-3189-4119-aa73-ebadc13fcc83",
+        "text": "I would look for a solution that wasn't faster code - rather I would ask myself whether all that maths was justified and whether I could dump it for some kind of dirty approximation even at the cost of it being less accurate or mathematically 'correct.'  It's also worth asking yourself whether the data you're using justifies the use of a complex calculation, there's no use applying complex analysis to crappy data - and do you need a result that good in any case? You only need a mathematical microscope if you're looking for very small margins - do you want bets with tiny margins? I don't. Finally - can you ditch your calculations all together by calculating every permutation in advance and using a lookup? Possible in some situations and not others of course.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g3a262a3cfba",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/b3a262a3cfba292c18acf5777f65908a.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0006-72.png",
+            "first_name": "Michael",
+            "real_name": "Michael C",
+            "display_name": "Michael",
+            "team": "T4G9NBD2M",
+            "name": "michael",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "35So",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I would look for a solution that wasn't faster code - rather I would ask myself whether all that maths was justified and whether I could dump it for some kind of dirty approximation even at the cost of it being less accurate or mathematically 'correct.'  It's also worth asking yourself whether the data you're using justifies the use of a complex calculation, there's no use applying complex analysis to crappy data - and do you need a result that good in any case? You only need a mathematical microscope if you're looking for very small margins - do you want bets with tiny margins? I don't. Finally - can you ditch your calculations all together by calculating every permutation in advance and using a lookup? Possible in some situations and not others of course."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "UUE6E1LA1"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "UQL0QDEKA",
+        "type": "message",
+        "ts": "1598652679.221800",
+        "edited": {
+            "user": "UQL0QDEKA",
+            "ts": "1598652971.000000"
+        },
+        "client_msg_id": "D98905BD-460C-4838-B1F7-277F44B15A13",
+        "text": "An interesting slant on it by <@UGV299K6H>  reminds me of a saying my dad would often quote; he’d say “a good guess is better than a bad measure” I’d agree with that too!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g444d10128c0",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/444d10128c0aaf094041a52a76796602.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0005-72.png",
+            "first_name": "Peter",
+            "real_name": "Peter Lenagh",
+            "display_name": "PeterLe",
+            "team": "T4G9NBD2M",
+            "name": "lenagh",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "DeF",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "An interesting slant on it by "
+                            },
+                            {
+                                "type": "user",
+                                "user_id": "UGV299K6H"
+                            },
+                            {
+                                "type": "text",
+                                "text": "  reminds me of a saying my dad would often quote; he’d say “a good guess is better than a bad measure” I’d agree with that too!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "UBS7QANF3"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "U016535QCJ2",
+        "type": "message",
+        "ts": "1598668483.223000",
+        "client_msg_id": "f5e8fa0d-920d-4468-8bfb-6098317c3b6f",
+        "text": "My rule of thumb is that I want an absolute maximum of 1 ms per market calculation\/decision, ideally a lot quicker than that",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "048f61bdc189",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-07-01\/1216267094995_048f61bdc189acecaafc_72.jpg",
+            "first_name": "Misha",
+            "real_name": "Misha Charrett",
+            "display_name": "Misha",
+            "team": "T4G9NBD2M",
+            "name": "misha",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "iSEy",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "My rule of thumb is that I want an absolute maximum of 1 ms per market calculation\/decision, ideally a lot quicker than that"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U016535QCJ2",
+        "type": "message",
+        "ts": "1598668654.225200",
+        "client_msg_id": "21b4720f-e5c8-4982-bcb4-1c485483a066",
+        "text": "That means I have a system that is capable of processing all updates for any collection of markets. In my case it would be all updates for all markets for all current and upcoming tennis matches (both pre-play and in-play). The US Open is a good stress test :wink:",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "048f61bdc189",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-07-01\/1216267094995_048f61bdc189acecaafc_72.jpg",
+            "first_name": "Misha",
+            "real_name": "Misha Charrett",
+            "display_name": "Misha",
+            "team": "T4G9NBD2M",
+            "name": "misha",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "ASv",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "That means I have a system that is capable of processing all updates for any collection of markets. In my case it would be all updates for all markets for all current and upcoming tennis matches (both pre-play and in-play). The US Open is a good stress test "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "wink",
+                                "unicode": "1f609"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1598679794.226400",
+        "client_msg_id": "F29980EB-A8C0-4032-9D70-9462378B252F",
+        "text": "Yep agree with all of that however you can adjust the streaming `conflate` to reduce the amount of updates if required ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "UHfw",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Yep agree with all of that however you can adjust the streaming "
+                            },
+                            {
+                                "type": "text",
+                                "text": "conflate",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " to reduce the amount of updates if required "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "U016535QCJ2"
+                ],
+                "count": 1
+            }
+        ]
+    }
+]

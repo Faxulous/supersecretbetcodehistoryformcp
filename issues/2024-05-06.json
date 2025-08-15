@@ -1,0 +1,150 @@
+[
+    {
+        "user": "U053KV09FKP",
+        "type": "message",
+        "ts": "1715064424.152759",
+        "client_msg_id": "bb38cde5-ee46-473d-9c69-87659c9dfae0",
+        "text": "Is this supposed to do something other than load up the Jupyter launcher screen?\n<https:\/\/github.com\/betcode-org\/flumine\/blob\/master\/examples\/controls\/jupyterloggingcontrol.py>\nI put it in my backtest like this:\n```control = jupyterloggingcontrol.JupyterLoggingControl()\n...\nframework.add_strategy(strategy)\nframework.add_logging_control(control)\n\nframework.run()\ncontrol.launch()```\nThe backtest runs fine but when control.launch() opens up JL it just sits at the launcher screen doing nothing. There is no \/tmp\/orders.json output anywhere either",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "ge686f0ebeb0",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/e686f0ebeb0b76b2f1e9e3cd9758e4eb.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0018-72.png",
+            "first_name": "Shado",
+            "real_name": "Shado",
+            "display_name": "Adrian",
+            "team": "T4G9NBD2M",
+            "name": "dualitynonduality_171",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1715064424.152759",
+        "reply_count": 13,
+        "reply_users_count": 2,
+        "latest_reply": "1715072155.746519",
+        "reply_users": [
+            "U4H19D1D2",
+            "U053KV09FKP"
+        ],
+        "replies": [
+            {
+                "user": "U4H19D1D2",
+                "ts": "1715068540.724739"
+            },
+            {
+                "user": "U053KV09FKP",
+                "ts": "1715070779.520279"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1715070934.520399"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1715070995.855269"
+            },
+            {
+                "user": "U053KV09FKP",
+                "ts": "1715071087.427869"
+            },
+            {
+                "user": "U053KV09FKP",
+                "ts": "1715071109.803949"
+            },
+            {
+                "user": "U053KV09FKP",
+                "ts": "1715071589.553539"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1715071606.155419"
+            },
+            {
+                "user": "U053KV09FKP",
+                "ts": "1715071814.626639"
+            },
+            {
+                "user": "U053KV09FKP",
+                "ts": "1715071913.164959"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1715071983.752949"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1715071991.949899"
+            },
+            {
+                "user": "U053KV09FKP",
+                "ts": "1715072155.746519"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": true,
+        "last_read": "1715072155.746519",
+        "attachments": [
+            {
+                "id": 1,
+                "footer_icon": "https:\/\/slack.github.com\/static\/img\/favicon-neutral.png",
+                "color": "24292f",
+                "bot_id": "B021ZJYSBMW",
+                "app_unfurl_url": "https:\/\/github.com\/betcode-org\/flumine\/blob\/master\/examples\/controls\/jupyterloggingcontrol.py",
+                "is_app_unfurl": true,
+                "app_id": "A01BP7R4KNY",
+                "fallback": "<https:\/\/github.com\/betcode-org\/flumine\/blob\/master\/examples\/controls\/jupyterloggingcontrol.py | jupyterloggingcontrol.py>",
+                "text": "```\nimport os\nimport json\nimport logging\nfrom flumine.controls.loggingcontrols import LoggingControl\nfrom flumine import __version__\n\nlogger = logging.getLogger(__name__)\n\n\"\"\"\nLogging control that allows analysis\nof backtesting results once complete.\n\nrequirements: jupyterlab, pandas, seaborn\n\nuse:\n    control = JupyterLoggingControl()\n    framework.add_logging_control(control)\n    ...\n    control.launch()\n\"\"\"\n\n\nclass JupyterLoggingControl(LoggingControl):\n    NAME = \"JUPYTER_LOGGING_CONTROL\"\n\n    def __init__(\n        self, file_name: str = \"orders.json\", directory: str = \"\/tmp\", *args, **kwargs\n    ):\n        super(JupyterLoggingControl, self).__init__(*args, **kwargs)\n        self.file_name = os.path.join(directory, file_name)\n\n    def _process_end_flumine(self, event):\n        framework = event.event\n        # order data\n        orders = []\n        for market in framework.markets:\n            for order in market.blotter:\n                info = <http:\/\/order.info|order.info>\n                # <http:\/\/info.info|info.info>\n                _info = info.pop(\"info\")\n                for k, v in _info.items():\n                    info[\"info__{0}\".format(k)] = v\n                # info.trade\n                trade = info.pop(\"trade\")\n                for k, v in trade.items():\n                    info[\"trade__{0}\".format(k)] = v\n                # info.order_type\n                order_type = info.pop(\"order_type\")\n                for k, v in order_type.items():\n                    info[\"order_type__{0}\".format(k)] = v\n                # info.simulated\n                simulated = info.pop(\"simulated\")\n                for k, v in simulated.items():\n                    info[\"simulated__{0}\".format(k)] = v\n                # info.responses\n                responses = info.pop(\"responses\")\n                for k, v in responses.items():\n                    info[\"responses__{0}\".format(k)] = v\n                orders.append(info)\n        # create data\n        data = {\n            \"framework\": {\"title\": \"flumine\", \"version\": __version__},\n            \"strategies\": [<http:\/\/strategy.info|strategy.info> for strategy in framework.strategies],\n            \"markets\": [\n                self._create_market_info(market) for market in framework.markets\n            ],\n            \"orders\": orders,\n        }\n        self._create_json(data)\n\n    @staticmethod\n    def _create_market_info(market) -> dict:\n        data = <http:\/\/market.info|market.info>\n        # add runner info\n        data[\"runners\"] = []\n        for runner in market.market_book.runners:\n            data[\"runners\"].append(\n                {\n                    \"selection_id\": runner.selection_id,\n                    \"handicap\": runner.handicap,\n                    \"status\": runner.status,\n                    \"actual_sp\": runner.sp.actual_sp,\n                }\n            )\n        return data\n\n    def _create_json(self, data):\n        # save json to file\n        with open(self.file_name, \"w\") as f:\n            json.dump(data, f, separators=(\",\", \":\"))\n\n    @staticmethod\n    def launch(self, argv=None, **kwargs):\n        from jupyterlab.labapp import LabApp\n\n        app = LabApp()\n        app.launch_instance(argv=argv, **kwargs)\n\n```",
+                "title": "<https:\/\/github.com\/betcode-org\/flumine\/blob\/master\/examples\/controls\/jupyterloggingcontrol.py | jupyterloggingcontrol.py>",
+                "footer": "<https:\/\/github.com\/betcode-org\/flumine|betcode-org\/flumine>",
+                "mrkdwn_in": [
+                    "text"
+                ]
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Krs6J",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Is this supposed to do something other than load up the Jupyter launcher screen?\n"
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/betcode-org\/flumine\/blob\/master\/examples\/controls\/jupyterloggingcontrol.py"
+                            },
+                            {
+                                "type": "text",
+                                "text": "\nI put it in my backtest like this:\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "control = jupyterloggingcontrol.JupyterLoggingControl()\n...\nframework.add_strategy(strategy)\nframework.add_logging_control(control)\n\nframework.run()\ncontrol.launch()"
+                            }
+                        ],
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "The backtest runs fine but when control.launch() opens up JL it just sits at the launcher screen doing nothing. There is no \/tmp\/orders.json output anywhere either"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

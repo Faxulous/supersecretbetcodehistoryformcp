@@ -1,0 +1,803 @@
+[
+    {
+        "user": "U9JHLMZB4",
+        "type": "message",
+        "ts": "1583401162.150000",
+        "edited": {
+            "user": "U9JHLMZB4",
+            "ts": "1583401204.000000"
+        },
+        "client_msg_id": "0a73a829-b58f-4cbd-b8d0-f1e0e9ebb383",
+        "text": "<@U4H19D1D2> I'm trying to understand how unique IDs are used for streaming in BFLW. Although the streaming error handling example shows a class that initialises a unique ID and can overwrite that with a received parameter when the class is instantiated, I'm not seeing anywhere that these are actually used. Instead the streaming subscribe methods (market and order) both start by creating their own unique IDs which are then added to the subscribe message and returned to the streaming error handling class overwriting any that was passed in or initialised when when the class was instantiated. Or am I misunderstanding?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g951ddcb43e7",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/3951ddcb43e788a387d6daf330dad5ca.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0018-72.png",
+            "first_name": "",
+            "real_name": "Peter Coles",
+            "display_name": "Peter",
+            "team": "T4G9NBD2M",
+            "name": "peter",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "FSQ7",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "user",
+                                "user_id": "U4H19D1D2"
+                            },
+                            {
+                                "type": "text",
+                                "text": " I'm trying to understand how unique IDs are used for streaming in BFLW. Although the streaming error handling example shows a class that initialises a unique ID and can overwrite that with a received parameter when the class is instantiated, I'm not seeing anywhere that these are actually used. Instead the streaming subscribe methods (market and order) both start by creating their own unique IDs which are then added to the subscribe message and returned to the streaming error handling class overwriting any that was passed in or initialised when when the class was instantiated. Or am I misunderstanding?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1583401673.151700",
+        "edited": {
+            "user": "U4H19D1D2",
+            "ts": "1583401891.000000"
+        },
+        "client_msg_id": "087d22db-9383-4064-8d4e-496e4ae925e5",
+        "text": "Each stream has a unique id, this is incremented per subscribe\/resubscribe, anything that comes out of that stream (marketBook\/orderBook) has that streaming id as a variable. Of course this could start off as 1001 but end up as 1456 if it has to constantly resubscribe but the streaming class gets the updated id.\n\nNote that betfair send back this unique id in each update <https:\/\/github.com\/liampauling\/betfair\/blob\/master\/betfairlightweight\/streaming\/listener.py#L109>",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "jZn",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Each stream has a unique id, this is incremented per subscribe\/resubscribe, anything that comes out of that stream (marketBook\/orderBook) has that streaming id as a variable. Of course this could start off as 1001 but end up as 1456 if it has to constantly resubscribe but the streaming class gets the updated id.\n\nNote that betfair send back this unique id in each update "
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/liampauling\/betfair\/blob\/master\/betfairlightweight\/streaming\/listener.py#L109"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U9JHLMZB4",
+        "type": "message",
+        "ts": "1583402094.153300",
+        "client_msg_id": "b72d4631-71a2-4401-ac17-7eb75425b3ff",
+        "text": "LOL. That was actually my starting point. I saw in the raw data that the stream IDs that I was passing into my streaming class (based on the error handling example) were being ignored, so worked backwards through the code to see why.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g951ddcb43e7",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/3951ddcb43e788a387d6daf330dad5ca.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0018-72.png",
+            "first_name": "",
+            "real_name": "Peter Coles",
+            "display_name": "Peter",
+            "team": "T4G9NBD2M",
+            "name": "peter",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "08t",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "LOL. That was actually my starting point. I saw in the raw data that the stream IDs that I was passing into my streaming class (based on the error handling example) were being ignored, so worked backwards through the code to see why."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U9JHLMZB4",
+        "type": "message",
+        "ts": "1583402220.155200",
+        "client_msg_id": "9c75fc30-41a6-483f-9acf-362dac16cd81",
+        "text": "I was (indeed am) also a bit puzzled as to why, if a unique ID was important to Betfair, it was OK for me to create parallel streams that all had the same starting ID of 1001.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g951ddcb43e7",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/3951ddcb43e788a387d6daf330dad5ca.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0018-72.png",
+            "first_name": "",
+            "real_name": "Peter Coles",
+            "display_name": "Peter",
+            "team": "T4G9NBD2M",
+            "name": "peter",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "c6j",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I was (indeed am) also a bit puzzled as to why, if a unique ID was important to Betfair, it was OK for me to create parallel streams that all had the same starting ID of 1001."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1583402601.155600",
+        "client_msg_id": "313d9196-8345-4a58-b914-ec798b35f696",
+        "text": "unique id is for the user connectionId is their unique id",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Ki1rQ",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "unique id is for the user connectionId is their unique id"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U9JHLMZB4",
+        "type": "message",
+        "ts": "1583402713.156400",
+        "client_msg_id": "a9415f98-93fd-4f80-841e-8058c7495900",
+        "text": "Makes sense. Thanks. And I guess I should just let BFLW handle setting the user ID rather than trying to construct my own.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g951ddcb43e7",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/3951ddcb43e788a387d6daf330dad5ca.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0018-72.png",
+            "first_name": "",
+            "real_name": "Peter Coles",
+            "display_name": "Peter",
+            "team": "T4G9NBD2M",
+            "name": "peter",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "tOIT",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Makes sense. Thanks. And I guess I should just let BFLW handle setting the user ID rather than trying to construct my own."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1583402827.157100",
+        "client_msg_id": "2a8fdf20-d459-4742-a0a2-b6ecb9068f68",
+        "text": "i typically start at 1000 and increment per 1000 <https:\/\/github.com\/liampauling\/flumine\/blob\/master\/flumine\/streams\/streams.py#L63>",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "attachments": [
+            {
+                "service_name": "GitHub",
+                "title": "liampauling\/flumine",
+                "title_link": "https:\/\/github.com\/liampauling\/flumine\/blob\/master\/flumine\/streams\/streams.py#L63",
+                "text": "flūmine - Betfair trading framework. Contribute to liampauling\/flumine development by creating an account on GitHub.",
+                "fallback": "GitHub: liampauling\/flumine",
+                "thumb_url": "https:\/\/avatars2.githubusercontent.com\/u\/12016537?s=400&v=4",
+                "from_url": "https:\/\/github.com\/liampauling\/flumine\/blob\/master\/flumine\/streams\/streams.py#L63",
+                "thumb_width": 392,
+                "thumb_height": 392,
+                "service_icon": "https:\/\/a.slack-edge.com\/80588\/img\/unfurl_icons\/github.png",
+                "id": 1,
+                "original_url": "https:\/\/github.com\/liampauling\/flumine\/blob\/master\/flumine\/streams\/streams.py#L63"
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "q2Of",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "i typically start at 1000 and increment per 1000 "
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/liampauling\/flumine\/blob\/master\/flumine\/streams\/streams.py#L63"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U9JHLMZB4",
+        "type": "message",
+        "ts": "1583403130.159700",
+        "edited": {
+            "user": "U9JHLMZB4",
+            "ts": "1583403163.000000"
+        },
+        "client_msg_id": "8acfa09f-178a-49dc-b0ce-a039cfc49ffd",
+        "text": "Oh. I think a penny just dropped. Are you using a single application, and therefore one instance of the class subscribing to streams? I run separate processes on different servers triggered by cron, so I have multiple independent processes all starting at the same place. However, it's on my todo list for today to dive deeper into flumine, so that may change how I go about this.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g951ddcb43e7",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/3951ddcb43e788a387d6daf330dad5ca.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0018-72.png",
+            "first_name": "",
+            "real_name": "Peter Coles",
+            "display_name": "Peter",
+            "team": "T4G9NBD2M",
+            "name": "peter",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Tqbtu",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Oh. I think a penny just dropped. Are you using a single application, and therefore one instance of the class subscribing to streams? I run separate processes on different servers triggered by cron, so I have multiple independent processes all starting at the same place. However, it's on my todo list for today to dive deeper into flumine, so that may change how I go about this."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1583403190.160700",
+        "client_msg_id": "07f0617d-a6fb-447f-9fe7-070f1ca8824e",
+        "text": "yeah single, streaming is so lightweight there is no need to have multiple servers unless you are subscribing to a lot of markets \/ like dealing with dist systems, kiss",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Bvf",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "yeah single, streaming is so lightweight there is no need to have multiple servers unless you are subscribing to a lot of markets \/ like dealing with dist systems, kiss"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U9JHLMZB4",
+        "type": "message",
+        "ts": "1583403313.161400",
+        "client_msg_id": "a416de79-0d41-4991-b325-420eb75540f3",
+        "text": "That's what I'm learning. Many thanks for your help (and of course for BFLW!)",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g951ddcb43e7",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/3951ddcb43e788a387d6daf330dad5ca.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0018-72.png",
+            "first_name": "",
+            "real_name": "Peter Coles",
+            "display_name": "Peter",
+            "team": "T4G9NBD2M",
+            "name": "peter",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "vvJ2s",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "That's what I'm learning. Many thanks for your help (and of course for BFLW!)"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "U4H19D1D2"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1583403537.163000",
+        "edited": {
+            "user": "U4H19D1D2",
+            "ts": "1583403922.000000"
+        },
+        "client_msg_id": "4a0b6085-3314-46cf-bfff-d925ac757566",
+        "text": "I use something very similar to flumine and handle 500-1000 markets per instance with 20-50 strategies, 3+ order streams, 5+ market streams placing 10's of thousands of bets per hour all off a single server (single cpu \/ 2gb ram)",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Grq",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I use something very similar to flumine and handle 500-1000 markets per instance with 20-50 strategies, 3+ order streams, 5+ market streams placing 10's of thousands of bets per hour all off a single server (single cpu \/ 2gb ram)"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U9JHLMZB4",
+        "type": "message",
+        "ts": "1583403634.164100",
+        "client_msg_id": "49e722d5-68fc-4e1a-96c7-de4ee2ff30b5",
+        "text": "WOW. I have been being way too conservative. Very useful insight. I'll be spending more time developing strategies and a lot less managing servers.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g951ddcb43e7",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/3951ddcb43e788a387d6daf330dad5ca.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0018-72.png",
+            "first_name": "",
+            "real_name": "Peter Coles",
+            "display_name": "Peter",
+            "team": "T4G9NBD2M",
+            "name": "peter",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "fBzU",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "WOW. I have been being way too conservative. Very useful insight. I'll be spending more time developing strategies and a lot less managing servers."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UUCD6P13J",
+        "type": "message",
+        "ts": "1583404194.165000",
+        "client_msg_id": "389AB56F-EF45-4795-88DB-B900266CFD1D",
+        "text": "Wowza, 10’s of thousands of bets per hour ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6898272ab81",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6898272ab810e419c2c9ca9af1e53da8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0012-72.png",
+            "first_name": "Lee",
+            "real_name": "Lee U",
+            "display_name": "Lee",
+            "team": "T4G9NBD2M",
+            "name": "lunswor",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "1t3S",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Wowza, 10’s of thousands of bets per hour "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1583404214.165300",
+        "client_msg_id": "20aa0316-4a40-4fe8-a38a-8f5dec3b044b",
+        "text": "thats nothing enter <@USYQKE5HN>",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Cov",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "thats nothing enter "
+                            },
+                            {
+                                "type": "user",
+                                "user_id": "USYQKE5HN"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "USYQKE5HN",
+        "type": "message",
+        "ts": "1583405093.172800",
+        "client_msg_id": "E28F9B48-7459-4406-8885-176D88BDC741",
+        "text": "Haha, yeah, I do more than that, but I do trade a lot of markets across racing, greyhounds and football. Doing a couple thousand transactions per runner while market making throughout a day can add up to a lot since I must trade over 1000 runners across all those sports. Also I’ve had pressure to cut down on my transactions recently, but I find that hard to do with this sort of trading style.\n\nAs an aside, I recently looked into how much profit I make from high volume transactions strategies vs my low volume transaction strategies and it turns out it’s about 55% vs 45% so I make a lot more from my lower volume ones than I thought.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "89331cf13b68",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2021-10-31\/2692940154832_89331cf13b6863f06791_72.jpg",
+            "first_name": "James",
+            "real_name": "James T",
+            "display_name": "James T",
+            "team": "T4G9NBD2M",
+            "name": "jhttan",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Dj2",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Haha, yeah, I do more than that, but I do trade a lot of markets across racing, greyhounds and football. Doing a couple thousand transactions per runner while market making throughout a day can add up to a lot since I must trade over 1000 runners across all those sports. Also I’ve had pressure to cut down on my transactions recently, but I find that hard to do with this sort of trading style.\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "As an aside, I recently looked into how much profit I make from high volume transactions strategies vs my low volume transaction strategies and it turns out it’s about 55% vs 45% so I make a lot more from my lower volume ones than I thought."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UUCD6P13J",
+        "type": "message",
+        "ts": "1583406517.175900",
+        "edited": {
+            "user": "UUCD6P13J",
+            "ts": "1583406619.000000"
+        },
+        "client_msg_id": "cb37a6b4-9488-44f1-a604-818f27a6695c",
+        "text": "It's interesting how closely matched profit is from completely different strategies. Guessing you need a large bank for market making to work?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6898272ab81",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6898272ab810e419c2c9ca9af1e53da8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0012-72.png",
+            "first_name": "Lee",
+            "real_name": "Lee U",
+            "display_name": "Lee",
+            "team": "T4G9NBD2M",
+            "name": "lunswor",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "s=M",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "It's interesting how closely matched profit is from completely different strategies. Guessing you need a large bank for market making to work?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UUCD6P13J",
+        "type": "message",
+        "ts": "1583406675.177400",
+        "client_msg_id": "f9fe23aa-b2dc-43df-ab6d-6a928917d969",
+        "text": "I'm still quite new here so working on getting my first profit from automated trading",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6898272ab81",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6898272ab810e419c2c9ca9af1e53da8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0012-72.png",
+            "first_name": "Lee",
+            "real_name": "Lee U",
+            "display_name": "Lee",
+            "team": "T4G9NBD2M",
+            "name": "lunswor",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "VGL",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I'm still quite new here so working on getting my first profit from automated trading"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "subtype": "channel_join",
+        "user": "UUX1L88MC",
+        "text": "<@UUX1L88MC> has joined the channel",
+        "type": "message",
+        "ts": "1583409409.177500"
+    },
+    {
+        "user": "USYQKE5HN",
+        "type": "message",
+        "ts": "1583413392.183400",
+        "client_msg_id": "9EBDA755-F742-4B31-BB9B-FE6335346FD0",
+        "text": "Yes, offering prices on a lot of runners at once especially hours before events complete can add up to a lot of exposure. I seem to remember Betfair saying they were looking into changing to the way exposure was calculated, potentially only locking up funds once you are matched or something. \n\nBut I’ve also found in recent years that my exposure isn’t as high as it used to be. And I think part of that is that I’m seeing less favourable opportunities to offer which might suggest the market is more efficient in the way that I trade it. \n\nAnyway, we should probably move this conversation to the Strategies channel for any further discussion. ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "89331cf13b68",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2021-10-31\/2692940154832_89331cf13b6863f06791_72.jpg",
+            "first_name": "James",
+            "real_name": "James T",
+            "display_name": "James T",
+            "team": "T4G9NBD2M",
+            "name": "jhttan",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "fwa",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Yes, offering prices on a lot of runners at once especially hours before events complete can add up to a lot of exposure. I seem to remember Betfair saying they were looking into changing to the way exposure was calculated, potentially only locking up funds once you are matched or something. \n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "But I’ve also found in recent years that my exposure isn’t as high as it used to be. And I think part of that is that I’m seeing less favourable opportunities to offer which might suggest the market is more efficient in the way that I trade it. \n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "Anyway, we should probably move this conversation to the Strategies channel for any further discussion. "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "UUCD6P13J",
+                    "UBS7QANF3",
+                    "U9JHLMZB4"
+                ],
+                "count": 3
+            }
+        ]
+    },
+    {
+        "subtype": "channel_join",
+        "user": "UUJNUELCV",
+        "text": "<@UUJNUELCV> has joined the channel",
+        "type": "message",
+        "ts": "1583418049.183700"
+    },
+    {
+        "subtype": "channel_join",
+        "user": "UUYCNUZ0D",
+        "text": "<@UUYCNUZ0D> has joined the channel",
+        "type": "message",
+        "ts": "1583439358.184200"
+    }
+]

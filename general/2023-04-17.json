@@ -1,0 +1,1170 @@
+[
+    {
+        "user": "U0155J92A7Q",
+        "type": "message",
+        "ts": "1681725093.906739",
+        "client_msg_id": "657777a4-aa8b-4a25-9490-94a2eb74322d",
+        "text": "Hi guys, I'm having an issue with my flumine Strategy. I save the details of every order I place, after it goes to EXECUTION_COMPLETE status, using:\n```def save_completed_bets_data(self, market, selection_id):\n    \"\"\"\n    Saves data from bets after an order in EXECUTION_COMPLETE.\n    Note that an order can be partially matched many times before going to EXECUTION_COMPLETE status.\n\n    \"\"\"\n    for order in market.blotter._orders.values():\n        if order.size_matched &gt; 0:\n            if order.status == OrderStatus.EXECUTION_COMPLETE:\n                if order.selection_id == selection_id:\n                    if order.date_time_execution_complete:\n                        if order.bet_id not in self.completed_bets_dict:\n                            self.completed_bets_dict[order.bet_id] = {\n                                'market_id': market.market_id,\n                                'selection_id': selection_id,\n                                'side': order.side,\n                                'average_price_matched': order.average_price_matched,\n                                'size_matched': order.size_matched,\n                                'execution_complete_ts': order.date_time_execution_complete,\n                            }\n\n                            df = pd.DataFrame.from_dict(self.completed_bets_dict, orient=\"index\")\n                            df.to_csv(self.completed_bets_csv_path)```\nMy issue is that for some orders (5% of them) the size_matched does not match the stake I get quering `list_cleared_orders`. Moreover, the stake from `list_cleared_orders` is always bigger than the one I recorded. Anyone has any clue why this would happen?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gde8c5d51af5",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/de8c5d51af54a5ac7b501f416ddb262c.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0016-72.png",
+            "first_name": "",
+            "real_name": "Jorge",
+            "display_name": "Jorge",
+            "team": "T4G9NBD2M",
+            "name": "jgarciam95",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "WDos",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Hi guys, I'm having an issue with my flumine Strategy. I save the details of every order I place, after it goes to EXECUTION_COMPLETE status, using:\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "def save_completed_bets_data(self, market, selection_id):\n    \"\"\"\n    Saves data from bets after an order in EXECUTION_COMPLETE.\n    Note that an order can be partially matched many times before going to EXECUTION_COMPLETE status.\n\n    \"\"\"\n    for order in market.blotter._orders.values():\n        if order.size_matched > 0:\n            if order.status == OrderStatus.EXECUTION_COMPLETE:\n                if order.selection_id == selection_id:\n                    if order.date_time_execution_complete:\n                        if order.bet_id not in self.completed_bets_dict:\n                            self.completed_bets_dict[order.bet_id] = {\n                                'market_id': market.market_id,\n                                'selection_id': selection_id,\n                                'side': order.side,\n                                'average_price_matched': order.average_price_matched,\n                                'size_matched': order.size_matched,\n                                'execution_complete_ts': order.date_time_execution_complete,\n                            }\n\n                            df = pd.DataFrame.from_dict(self.completed_bets_dict, orient=\"index\")\n                            df.to_csv(self.completed_bets_csv_path)"
+                            }
+                        ],
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "My issue is that for some orders (5% of them) the size_matched does not match the stake I get quering "
+                            },
+                            {
+                                "type": "text",
+                                "text": "list_cleared_orders",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": ". Moreover, the stake from "
+                            },
+                            {
+                                "type": "text",
+                                "text": "list_cleared_orders",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " is always bigger than the one I recorded. Anyone has any clue why this would happen?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U0476CG183A",
+        "type": "message",
+        "ts": "1681729008.418249",
+        "client_msg_id": "336F291E-419E-4830-8615-C1D1F34DDCD2",
+        "text": "Which markets are you getting the increased size from? My first thought is currency. If you’re betting into markets that are in Australian dollars",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g9cca9b61659",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/9cca9b616592f1b8e24755f8591d2049.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0019-72.png",
+            "first_name": "GrimReaper",
+            "real_name": "GrimReaper",
+            "display_name": "Herugrim",
+            "team": "T4G9NBD2M",
+            "name": "mitchell.motyka",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "K2h",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Which markets are you getting the increased size from? My first thought is currency. If "
+                            },
+                            {
+                                "type": "text",
+                                "text": "you’re"
+                            },
+                            {
+                                "type": "text",
+                                "text": " betting into markets that are in Australian dollars"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U0155J92A7Q",
+        "type": "message",
+        "ts": "1681729312.254289",
+        "client_msg_id": "1e569f1c-a35b-4f04-8862-1ae22348a00f",
+        "text": "The markets are not special, in the same market most of the orders' size_matched matches the one from `list_cleared_orders` but some don't. Currency is not causing the difference",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gde8c5d51af5",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/de8c5d51af54a5ac7b501f416ddb262c.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0016-72.png",
+            "first_name": "",
+            "real_name": "Jorge",
+            "display_name": "Jorge",
+            "team": "T4G9NBD2M",
+            "name": "jgarciam95",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "T5mM",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "The markets are not special, in the same market most of the orders' size_matched matches the one from "
+                            },
+                            {
+                                "type": "text",
+                                "text": "list_cleared_orders",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " but some don't. Currency is not causing the difference"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U0155J92A7Q",
+        "type": "message",
+        "ts": "1681729446.570129",
+        "client_msg_id": "c6c3ad90-e604-43e5-adb6-e3360c5d8ec2",
+        "text": "My guess is that my code has some bug...",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gde8c5d51af5",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/de8c5d51af54a5ac7b501f416ddb262c.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0016-72.png",
+            "first_name": "",
+            "real_name": "Jorge",
+            "display_name": "Jorge",
+            "team": "T4G9NBD2M",
+            "name": "jgarciam95",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "p\/o",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "My guess is that my code has some bug..."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U0155J92A7Q",
+        "type": "message",
+        "ts": "1681729633.317809",
+        "client_msg_id": "c6b5f3d7-f155-431a-9cc6-1e9ccb35b341",
+        "text": "Am I right assuming this is true?\n1. I send order X with stake=10.\n2. It gets partially matched with stake=5, and the left stake is still there remaining. The order status is EXECUTABLE.\n3. It gets matched again with stake=5, so fully matched. The order status is now EXECUTION_COMPLETE, and order.size_matched=10.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gde8c5d51af5",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/de8c5d51af54a5ac7b501f416ddb262c.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0016-72.png",
+            "first_name": "",
+            "real_name": "Jorge",
+            "display_name": "Jorge",
+            "team": "T4G9NBD2M",
+            "name": "jgarciam95",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "gSQ",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Am I right assuming this is true?\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_list",
+                        "elements": [
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "I send order X with stake=10."
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "It gets partially matched with stake=5, and the left stake is still there remaining. The order status is EXECUTABLE."
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "It gets matched again with stake=5, so fully matched. The order status is now EXECUTION_COMPLETE, and order.size_matched=10."
+                                    }
+                                ]
+                            }
+                        ],
+                        "style": "ordered",
+                        "indent": 0,
+                        "border": 0
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U03B4S0K1T2",
+        "type": "message",
+        "ts": "1681780367.598099",
+        "client_msg_id": "68691d80-5c59-4875-adae-b599528eda7b",
+        "text": "Hey guys, my name is Andrey and I'm starting to use Flumine.\nI want to run my strategies on a Django server and be able to activate and deactivate them using Flumine's API.\nCurrently, I'm using Django and Celery to start an asynchronous task when I call an API. Once this task initializes, Flumine starts running for a strategy that is passed in the body of the API request. However, the issue with this approach is that every time I call the API to start a strategy, I need to run another Flumine instance. I'm not sure if this is the best approach for my situation. Does anyone have a similar infrastructure or any ideas on how I can handle running my strategies on a server?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "cc253c3f37f9",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2022-04-06\/3348480972038_cc253c3f37f9d424c465_72.png",
+            "first_name": "Andrey",
+            "real_name": "Andrey Luiz Malheiros",
+            "display_name": "Andrey Luiz Malheiros",
+            "team": "T4G9NBD2M",
+            "name": "andreylcj",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1681780367.598099",
+        "reply_count": 11,
+        "reply_users_count": 3,
+        "latest_reply": "1682030632.446389",
+        "reply_users": [
+            "UBS7QANF3",
+            "U4H19D1D2",
+            "U03B4S0K1T2"
+        ],
+        "replies": [
+            {
+                "user": "UBS7QANF3",
+                "ts": "1681793528.900109"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1681794336.736449"
+            },
+            {
+                "user": "U03B4S0K1T2",
+                "ts": "1681844302.766929"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1681878720.860649"
+            },
+            {
+                "user": "U03B4S0K1T2",
+                "ts": "1681924708.672689"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1681928278.103389"
+            },
+            {
+                "user": "U03B4S0K1T2",
+                "ts": "1681928908.021179"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1681965460.825389"
+            },
+            {
+                "user": "U03B4S0K1T2",
+                "ts": "1682016021.765599"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1682018277.243189"
+            },
+            {
+                "user": "U03B4S0K1T2",
+                "ts": "1682030632.446389"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": true,
+        "last_read": "1682030632.446389",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "WP8X",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Hey guys, my name is Andrey and I'm starting to use Flumine.\nI want to run my strategies on a Django server and be able to activate and deactivate them using Flumine's API.\nCurrently, I'm using Django and Celery to start an asynchronous task when I call an API. Once this task initializes, Flumine starts running for a strategy that is passed in the body of the API request. However, the issue with this approach is that every time I call the API to start a strategy, I need to run another Flumine instance. I'm not sure if this is the best approach for my situation. Does anyone have a similar infrastructure or any ideas on how I can handle running my strategies on a server?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U053KV09FKP",
+        "type": "message",
+        "ts": "1681783447.635529",
+        "client_msg_id": "ed2b1de1-7d9c-4ef8-8941-21baecb154ec",
+        "text": "Hi guys, I'm back after a break and see that the app is renamed betcode. Happy to see everyone here from bflw again",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "ge686f0ebeb0",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/e686f0ebeb0b76b2f1e9e3cd9758e4eb.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0018-72.png",
+            "first_name": "Shado",
+            "real_name": "Shado",
+            "display_name": "Adrian",
+            "team": "T4G9NBD2M",
+            "name": "dualitynonduality_171",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "SEo",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Hi guys, I'm back after a break and see that the app is renamed betcode. Happy to see everyone here from bflw again"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U053KV09FKP",
+        "type": "message",
+        "ts": "1681783634.186799",
+        "client_msg_id": "ad91e57e-8e94-4ef1-8df4-f9fa233b1f37",
+        "text": "feeling like a total newb and wondering how to get the bz2 files from betfair into the correct format or if theres a helper function that can work directly with these files? would be grateful if someone could point me in the right direction. thank you!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "ge686f0ebeb0",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/e686f0ebeb0b76b2f1e9e3cd9758e4eb.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0018-72.png",
+            "first_name": "Shado",
+            "real_name": "Shado",
+            "display_name": "Adrian",
+            "team": "T4G9NBD2M",
+            "name": "dualitynonduality_171",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1681783634.186799",
+        "reply_count": 10,
+        "reply_users_count": 2,
+        "latest_reply": "1681800714.930989",
+        "reply_users": [
+            "UBS7QANF3",
+            "U053KV09FKP"
+        ],
+        "replies": [
+            {
+                "user": "UBS7QANF3",
+                "ts": "1681793320.803579"
+            },
+            {
+                "user": "U053KV09FKP",
+                "ts": "1681795443.560539"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1681795822.475229"
+            },
+            {
+                "user": "U053KV09FKP",
+                "ts": "1681796932.277569"
+            },
+            {
+                "user": "U053KV09FKP",
+                "ts": "1681797021.395989"
+            },
+            {
+                "user": "U053KV09FKP",
+                "ts": "1681797153.844309"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1681797350.286879"
+            },
+            {
+                "user": "U053KV09FKP",
+                "ts": "1681800643.142419"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1681800659.930379"
+            },
+            {
+                "user": "U053KV09FKP",
+                "ts": "1681800714.930989"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": false,
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "6Pj",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "feeling like a total newb and wondering how to get the bz2 files from betfair into the correct format or if theres a helper function that can work directly with these files? would be grateful if someone could point me in the right direction. thank you!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1681793320.803579",
+        "client_msg_id": "e9a9e74b-d0d2-4cc1-9022-3a1b28a3a259",
+        "text": "Standard practice is to patch `open` with `smart_open.open` and then `flumine` can read the `bz2` files directly: <https:\/\/betcode-org.github.io\/flumine\/performance\/#file-location>",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1681783634.186799",
+        "parent_user_id": "U053KV09FKP",
+        "attachments": [
+            {
+                "from_url": "https:\/\/betcode-org.github.io\/flumine\/performance\/#file-location",
+                "service_icon": "https:\/\/betcode-org.github.io\/flumine\/images\/logo.png",
+                "id": 1,
+                "original_url": "https:\/\/betcode-org.github.io\/flumine\/performance\/#file-location",
+                "fallback": "Performance - flumine",
+                "text": "Betting trading framework",
+                "title": "Performance - flumine",
+                "title_link": "https:\/\/betcode-org.github.io\/flumine\/performance\/#file-location",
+                "service_name": "betcode-org.github.io"
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "7wC",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Standard practice is to patch "
+                            },
+                            {
+                                "type": "text",
+                                "text": "open",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " with "
+                            },
+                            {
+                                "type": "text",
+                                "text": "smart_open.open",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " and then "
+                            },
+                            {
+                                "type": "text",
+                                "text": "flumine",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " can read the "
+                            },
+                            {
+                                "type": "text",
+                                "text": "bz2",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " files directly: "
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/betcode-org.github.io\/flumine\/performance\/#file-location"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "U053KV09FKP"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1681793528.900109",
+        "client_msg_id": "23689417-d100-4d1f-abe7-e003866f370a",
+        "text": "Depends how many strategies you're planning on running. If it's a lot then you might run into the limits on number of streaming connections Betfair allows",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1681780367.598099",
+        "parent_user_id": "U03B4S0K1T2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "nQJy3",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Depends how many strategies you're planning on running. If it's a lot then you might run into the limits on number of streaming connections Betfair allows"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1681794336.736449",
+        "client_msg_id": "A98E657F-4DD2-429E-AB12-22F6F5B818F4",
+        "text": "First question is why? Do you see the need to start \/ stop strategies? ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1681780367.598099",
+        "parent_user_id": "U03B4S0K1T2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "y52P",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "First "
+                            },
+                            {
+                                "type": "text",
+                                "text": "question"
+                            },
+                            {
+                                "type": "text",
+                                "text": " is why? Do you see the need to start \/ stop strategies? "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U053KV09FKP",
+        "type": "message",
+        "ts": "1681795443.560539",
+        "client_msg_id": "a8bbf4fe-f9af-464c-8ed5-8966a1880c61",
+        "text": "thank you Mo. I will try to implement some code that Liam created but it looks like there might be problems with the historical data",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "ge686f0ebeb0",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/e686f0ebeb0b76b2f1e9e3cd9758e4eb.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0018-72.png",
+            "first_name": "Shado",
+            "real_name": "Shado",
+            "display_name": "Adrian",
+            "team": "T4G9NBD2M",
+            "name": "dualitynonduality_171",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1681783634.186799",
+        "parent_user_id": "U053KV09FKP",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "vQ542",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "thank you Mo. I will try to implement some code that Liam created but it looks like there might be problems with the historical data"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1681795822.475229",
+        "client_msg_id": "7ab7b926-7740-4c88-8907-94784c535965",
+        "text": "What kind of problems?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1681783634.186799",
+        "parent_user_id": "U053KV09FKP",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Zer",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "What kind of problems?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U053KV09FKP",
+        "type": "message",
+        "ts": "1681796932.277569",
+        "client_msg_id": "cf0a2fca-3162-4661-9de3-5acdece7dfc7",
+        "text": "<https:\/\/betcode-org.slack.com\/archives\/C4HL6EZTQ\/p1678458389624609?thread_ts=1678265787.998179&amp;cid=C4HL6EZTQ>",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "ge686f0ebeb0",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/e686f0ebeb0b76b2f1e9e3cd9758e4eb.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0018-72.png",
+            "first_name": "Shado",
+            "real_name": "Shado",
+            "display_name": "Adrian",
+            "team": "T4G9NBD2M",
+            "name": "dualitynonduality_171",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1681783634.186799",
+        "parent_user_id": "U053KV09FKP",
+        "attachments": [
+            {
+                "from_url": "https:\/\/betcode-org.slack.com\/archives\/C4HL6EZTQ\/p1678458389624609?thread_ts=1678265787.998179&amp;cid=C4HL6EZTQ",
+                "ts": "1678458389.624609",
+                "author_id": "U4H19D1D2",
+                "channel_id": "C4HL6EZTQ",
+                "channel_team": "T4G9NBD2M",
+                "is_msg_unfurl": true,
+                "is_reply_unfurl": true,
+                "message_blocks": [
+                    {
+                        "team": "T4G9NBD2M",
+                        "channel": "C4HL6EZTQ",
+                        "ts": "1678458389.624609",
+                        "message": {
+                            "blocks": [
+                                {
+                                    "type": "rich_text",
+                                    "block_id": "pM+",
+                                    "elements": [
+                                        {
+                                            "type": "rich_text_section",
+                                            "elements": [
+                                                {
+                                                    "type": "text",
+                                                    "text": "You can just copy the original code\n\n"
+                                                }
+                                            ]
+                                        },
+                                        {
+                                            "type": "rich_text_preformatted",
+                                            "elements": [
+                                                {
+                                                    "type": "text",
+                                                    "text": "with mock_patch(\"builtins.open\", smart_open.open):\n    for path in glob.iglob(file_path + \"**\/**\/*.bz2\", recursive=True):\n        # create generator\n        stream = trading.streaming.create_historical_generator_stream(\n            file_path=path,\n            listener=listener,\n        )\n        ..."
+                                                }
+                                            ],
+                                            "border": 0
+                                        },
+                                        {
+                                            "type": "rich_text_section",
+                                            "elements": [
+                                                {
+                                                    "type": "text",
+                                                    "text": "\nOne thing to note is that this will write the data once complete so if there is an error it won't have recorded anything, you might want to refactor to write to file after each market"
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    }
+                ],
+                "id": 1,
+                "original_url": "https:\/\/betcode-org.slack.com\/archives\/C4HL6EZTQ\/p1678458389624609?thread_ts=1678265787.998179&amp;cid=C4HL6EZTQ",
+                "fallback": "[March 10th, 2023 6:26 AM] liam: You can just copy the original code\n\n```with mock_patch(\"builtins.open\", smart_open.open):\n    for path in glob.iglob(file_path + \"**\/**\/*.bz2\", recursive=True):\n        # create generator\n        stream = trading.streaming.create_historical_generator_stream(\n            file_path=path,\n            listener=listener,\n        )\n        ...```\nOne thing to note is that this will write the data once complete so if there is an error it won't have recorded anything, you might want to refactor to write to file after each market",
+                "text": "You can just copy the original code\n\n```with mock_patch(\"builtins.open\", smart_open.open):\n    for path in glob.iglob(file_path + \"**\/**\/*.bz2\", recursive=True):\n        # create generator\n        stream = trading.streaming.create_historical_generator_stream(\n            file_path=path,\n            listener=listener,\n        )\n        ...```\nOne thing to note is that this will write the data once complete so if there is an error it won't have recorded anything, you might want to refactor to write to file after each market",
+                "author_name": "liam",
+                "author_link": "https:\/\/betcode-org.slack.com\/team\/U4H19D1D2",
+                "author_icon": "https:\/\/secure.gravatar.com\/avatar\/cebcb7a36736d2bfe25c0fcb2d1dcc66.jpg?s=48&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0023-48.png",
+                "author_subname": "liam",
+                "mrkdwn_in": [
+                    "text"
+                ],
+                "footer": "Thread in Slack conversation"
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "vRHm",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "link",
+                                "url": "https:\/\/betcode-org.slack.com\/archives\/C4HL6EZTQ\/p1678458389624609?thread_ts=1678265787.998179&cid=C4HL6EZTQ"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U053KV09FKP",
+        "type": "message",
+        "ts": "1681797021.395989",
+        "client_msg_id": "9376820e-dbe7-4c6b-b7ca-92826b48aa78",
+        "text": "i was going to try running this but it's just going to take some time to understand it and if there's issues it will take me longer",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "ge686f0ebeb0",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/e686f0ebeb0b76b2f1e9e3cd9758e4eb.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0018-72.png",
+            "first_name": "Shado",
+            "real_name": "Shado",
+            "display_name": "Adrian",
+            "team": "T4G9NBD2M",
+            "name": "dualitynonduality_171",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1681783634.186799",
+        "parent_user_id": "U053KV09FKP",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "z+S",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "i was going to try running this but it's just going to take some time to understand it and if there's issues it will take me longer"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U053KV09FKP",
+        "type": "message",
+        "ts": "1681797153.844309",
+        "client_msg_id": "6b754b63-8218-4ff4-a1a8-b8626c187439",
+        "text": "i think i actually wrote some code a couple years back to make the historical data work with flumine but can't remember. i know there was an issue with the cumulative volume being calculated differently",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "ge686f0ebeb0",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/e686f0ebeb0b76b2f1e9e3cd9758e4eb.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0018-72.png",
+            "first_name": "Shado",
+            "real_name": "Shado",
+            "display_name": "Adrian",
+            "team": "T4G9NBD2M",
+            "name": "dualitynonduality_171",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1681783634.186799",
+        "parent_user_id": "U053KV09FKP",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "QRI",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "i think i actually wrote some code a couple years back to make the historical data work with flumine but can't remember. i know there was an issue with the cumulative volume being calculated differently"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1681797350.286879",
+        "client_msg_id": "750ce976-b0b9-4a0e-a910-406663b079a3",
+        "text": "Just set your listener arguments appropriately: <https:\/\/github.com\/betcode-org\/betfair\/blob\/00e9abb2b4d228408eea1620cbeb55cbaed0e0c6\/betfairlightweight\/streaming\/listener.py#L107-L108>",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1681783634.186799",
+        "parent_user_id": "U053KV09FKP",
+        "attachments": [
+            {
+                "id": 1,
+                "footer_icon": "https:\/\/slack.github.com\/static\/img\/favicon-neutral.png",
+                "color": "24292f",
+                "bot_id": "B021ZJYSBMW",
+                "app_unfurl_url": "https:\/\/github.com\/betcode-org\/betfair\/blob\/00e9abb2b4d228408eea1620cbeb55cbaed0e0c6\/betfairlightweight\/streaming\/listener.py#L107-L108",
+                "is_app_unfurl": true,
+                "app_id": "A01BP7R4KNY",
+                "fallback": "<https:\/\/github.com\/betcode-org\/betfair\/blob\/00e9abb2b4d228408eea1620cbeb55cbaed0e0c6\/betfairlightweight\/streaming\/listener.py | listener.py>",
+                "text": "```\n        :param bool calculate_market_tv: Calculate market traded volume from runner traded (should be True if using betfair PRO data)\n        :param bool cumulative_runner_tv: Cumulative runner traded volume (should be True if using betfair purchased data)\n```",
+                "title": "<https:\/\/github.com\/betcode-org\/betfair\/blob\/00e9abb2b4d228408eea1620cbeb55cbaed0e0c6\/betfairlightweight\/streaming\/listener.py | listener.py>",
+                "footer": "<https:\/\/github.com\/betcode-org\/betfair|betcode-org\/betfair>",
+                "mrkdwn_in": [
+                    "text"
+                ]
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "2Py",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Just set your listener arguments appropriately: "
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/betcode-org\/betfair\/blob\/00e9abb2b4d228408eea1620cbeb55cbaed0e0c6\/betfairlightweight\/streaming\/listener.py#L107-L108"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U053KV09FKP",
+        "type": "message",
+        "ts": "1681800643.142419",
+        "client_msg_id": "2695db23-03b2-47f4-9f23-cde6ed8bc17e",
+        "text": "thanks again Mo. i got it working by just decompressing the files first.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "ge686f0ebeb0",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/e686f0ebeb0b76b2f1e9e3cd9758e4eb.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0018-72.png",
+            "first_name": "Shado",
+            "real_name": "Shado",
+            "display_name": "Adrian",
+            "team": "T4G9NBD2M",
+            "name": "dualitynonduality_171",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1681783634.186799",
+        "parent_user_id": "U053KV09FKP",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "WjIGX",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "thanks again Mo. i got it working by just decompressing the files first."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1681800659.930379",
+        "client_msg_id": "213bc6f9-bbe5-4757-aff0-500c72340d1c",
+        "text": ":face_with_rolling_eyes:",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1681783634.186799",
+        "parent_user_id": "U053KV09FKP",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "yoe",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "emoji",
+                                "name": "face_with_rolling_eyes",
+                                "unicode": "1f644"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U053KV09FKP",
+        "type": "message",
+        "ts": "1681800714.930989",
+        "client_msg_id": "e9846bed-21ad-4a18-a7ea-5a0a084f5c50",
+        "text": "i'm a newb and sometimes the simplest things are better for my mental health :melting_face::joy:",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "ge686f0ebeb0",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/e686f0ebeb0b76b2f1e9e3cd9758e4eb.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0018-72.png",
+            "first_name": "Shado",
+            "real_name": "Shado",
+            "display_name": "Adrian",
+            "team": "T4G9NBD2M",
+            "name": "dualitynonduality_171",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1681783634.186799",
+        "parent_user_id": "U053KV09FKP",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "6ocYB",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "i'm a newb and sometimes the simplest things are better for my mental health "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "melting_face",
+                                "unicode": "1fae0"
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "joy",
+                                "unicode": "1f602"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

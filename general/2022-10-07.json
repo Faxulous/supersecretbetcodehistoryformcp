@@ -1,0 +1,119 @@
+[
+    {
+        "user": "U042PP6NAHM",
+        "type": "message",
+        "ts": "1665169777.946449",
+        "client_msg_id": "44b9a9d0-d5dd-45ac-89ba-a14986c6e1ef",
+        "text": "Could anyone tell me how to calculate \/ save the final price, please? I want it for greyhounds to help me see if I'm getting value. Its not live, it's back testing.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "1db70df1cc88",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2022-10-07\/4216302579616_1db70df1cc884ef5a188_72.jpg",
+            "first_name": "Faye",
+            "real_name": "Faye",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "bentapparel01",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "TYN",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Could anyone tell me how to calculate \/ save the final price, please? I want it for greyhounds to help me see if I'm getting value. Its not live, it's back testing."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U016TGY3676",
+        "type": "message",
+        "ts": "1665180832.460699",
+        "edited": {
+            "user": "U016TGY3676",
+            "ts": "1665181908.000000"
+        },
+        "client_msg_id": "d536a918-848a-4d5c-96be-5bc009bc9465",
+        "text": "<@U042PP6NAHM> I'm going to assume you're using Flumine...what I would do is use the `market.context` dict to save the price of each runner on each update while inplay=False, then retrieve those prices in `process_closed_market()`\n\n`class ClosingPriceStrategy(BaseStrategy):\n\n    def check_market_book(self, market, market_book):\n        if market_book.inplay: return\n        return True\n\n    def process_market_book(self, market, market_book):\n        market.context['closing_prices'] = {\n            r.selection_id: r.last_price_traded\n            for r in market_book.runners\n            if r.last_price_traded\n        }\n\n    def process_closed_market(self, market, market_book):\n        # save to csv or whatever...\n        for k, v in market.context['closing_prices'].items():\n            print(k, v)`\n\nThis can be used for either backtesting or live",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6a681220e11",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6a681220e11c1a2ed3685375d658dadb.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0001-72.png",
+            "first_name": "",
+            "real_name": "birchy",
+            "display_name": "birchy",
+            "team": "T4G9NBD2M",
+            "name": "birchy",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "oI80a",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "user",
+                                "user_id": "U042PP6NAHM"
+                            },
+                            {
+                                "type": "text",
+                                "text": " I'm going to assume you're using Flumine...what I would do is use the "
+                            },
+                            {
+                                "type": "text",
+                                "text": "market.context",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " dict to save the price of each runner on each update while inplay=False, then retrieve those prices in "
+                            },
+                            {
+                                "type": "text",
+                                "text": "process_closed_market()\n",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "class ClosingPriceStrategy(BaseStrategy):\n\n    def check_market_book(self, market, market_book):\n        if market_book.inplay: return\n        return True\n\n    def process_market_book(self, market, market_book):\n        market.context['closing_prices'] = {\n            r.selection_id: r.last_price_traded\n            for r in market_book.runners\n            if r.last_price_traded\n        }\n\n    def process_closed_market(self, market, market_book):\n        # save to csv or whatever...\n        for k, v in market.context['closing_prices'].items():\n            print(k, v)\n",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\nThis can be used for either backtesting or live"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

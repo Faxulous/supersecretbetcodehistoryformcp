@@ -1,0 +1,804 @@
+[
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1550679106.002900",
+        "client_msg_id": "b5361033-aefe-400a-92a5-2f8014766e99",
+        "text": "Ok...I think I've figured out why it hangs now...it is to do with output_queue.get() returning an empty value.\n\nI am trying to structure the below to catch (and ignore) an empty outcome (if there are values the queue works fine, which is why it always works first time), however the below returns the error shown in the logs below (which I think confirms my logic is correct, but the way I try to catch it is incorrect):\n\n```\n@socketio.on('ping')\ndef handle_message(*_args, **_kwargs):\n    try:\n            market_books = output_queue.get(False)\n    except output_queue.empty:\n            pass\n    else:\n        for market_book in market_books:\n            emit('my_response2', {'message': 'update', 'mb': market_book.streaming_update})\n```\n\nServer logs (which I believe confirm my suspicion):\n\n```\nERROR:engineio.server:message handler error\nTraceback (most recent call last):\n  File \"D:\/Python37\/webpages\/betfair_flaskio.py\", line 51, in handle_message\n    market_books = output_queue.get(False)\n  File \"D:\\Python37\\lib\\queue.py\", line 167, in get\n    raise Empty\n_queue.Empty\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"D:\\Python37\\lib\\site-packages\\engineio\\server.py\", line 505, in _trigger_event\n    return self.handlers[event](*args)\n  File \"D:\\Python37\\lib\\site-packages\\socketio\\server.py\", line 590, in _handle_eio_message\n    self._handle_event(sid, pkt.namespace, pkt.id, pkt.data)\n  File \"D:\\Python37\\lib\\site-packages\\socketio\\server.py\", line 526, in _handle_event\n    self._handle_event_internal(self, sid, data, namespace, id)\n  File \"D:\\Python37\\lib\\site-packages\\socketio\\server.py\", line 529, in _handle_event_internal\n    r = server._trigger_event(data[0], namespace, sid, *data[1:])\n  File \"D:\\Python37\\lib\\site-packages\\socketio\\server.py\", line 558, in _trigger_event\n    return self.handlers[namespace][event](*args)\n  File \"D:\\Python37\\lib\\site-packages\\flask_socketio\\__init__.py\", line 258, in _handler\n    *args)\n  File \"D:\\Python37\\lib\\site-packages\\flask_socketio\\__init__.py\", line 641, in _handle_event\n    ret = handler(*args)\n  File \"D:\/Python37\/webpages\/betfair_flaskio.py\", line 54, in handle_message\n    except output_queue.empty:\nTypeError: catching classes that do not inherit from BaseException is not allowed\n\n```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "R9Ov",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Ok...I think I've figured out why it hangs now...it is to do with output_queue.get() returning an empty value.\n\nI am trying to structure the below to catch (and ignore) an empty outcome (if there are values the queue works fine, which is why it always works first time), however the below returns the error shown in the logs below (which I think confirms my logic is correct, but the way I try to catch it is incorrect):\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "@socketio.on('ping')\ndef handle_message(*_args, **_kwargs):\n    try:\n            market_books = output_queue.get(False)\n    except output_queue.empty:\n            pass\n    else:\n        for market_book in market_books:\n            emit('my_response2', {'message': 'update', 'mb': market_book.streaming_update})\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\n\nServer logs (which I believe confirm my suspicion):\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "ERROR:engineio.server:message handler error\nTraceback (most recent call last):\n  File \"D:\/Python37\/webpages\/betfair_flaskio.py\", line 51, in handle_message\n    market_books = output_queue.get(False)\n  File \"D:\\Python37\\lib\\queue.py\", line 167, in get\n    raise Empty\n_queue.Empty\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"D:\\Python37\\lib\\site-packages\\engineio\\server.py\", line 505, in _trigger_event\n    return self.handlers[event](*args)\n  File \"D:\\Python37\\lib\\site-packages\\socketio\\server.py\", line 590, in _handle_eio_message\n    self._handle_event(sid, pkt.namespace, pkt.id, pkt.data)\n  File \"D:\\Python37\\lib\\site-packages\\socketio\\server.py\", line 526, in _handle_event\n    self._handle_event_internal(self, sid, data, namespace, id)\n  File \"D:\\Python37\\lib\\site-packages\\socketio\\server.py\", line 529, in _handle_event_internal\n    r = server._trigger_event(data[0], namespace, sid, *data[1:])\n  File \"D:\\Python37\\lib\\site-packages\\socketio\\server.py\", line 558, in _trigger_event\n    return self.handlers[namespace][event](*args)\n  File \"D:\\Python37\\lib\\site-packages\\flask_socketio\\__init__.py\", line 258, in _handler\n    *args)\n  File \"D:\\Python37\\lib\\site-packages\\flask_socketio\\__init__.py\", line 641, in _handle_event\n    ret = handler(*args)\n  File \"D:\/Python37\/webpages\/betfair_flaskio.py\", line 54, in handle_message\n    except output_queue.empty:\nTypeError: catching classes that do not inherit from BaseException is not allowed\n\n"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "subtype": "channel_join",
+        "user": "UGDFCLXM4",
+        "text": "<@UGDFCLXM4> has joined the channel",
+        "type": "message",
+        "ts": "1550680113.003100"
+    },
+    {
+        "subtype": "channel_join",
+        "user": "UGD4U4CP9",
+        "text": "<@UGD4U4CP9> has joined the channel",
+        "type": "message",
+        "ts": "1550680303.003300"
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1550683887.004600",
+        "client_msg_id": "f78c2557-1069-4243-8b94-94ba0b1e578b",
+        "text": "Tidied up a bit, this appears to work (most of the time), occasionally though I do get an error showing on the client side:\n\n```\n@socketio.on('ping')\ndef handle_message(*_args, **_kwargs):\n    try:\n            market_books = output_queue.get(False)\n    except Exception:\n        socketio.sleep(1)\n        emit('my_response', {'message': 'pong', 'mb': 'pong'})\n    else:\n        for market_book in market_books:\n            emit('my_response', {'message': 'update', 'mb': market_book.streaming_update})\n```\n\nError messages (client side):\n\n```\nGET <http:\/\/localhost:3000\/socket.io\/?EIO=3&amp;transport=polling&amp;t=1550683800805-630&amp;sid=0d06865666e74657b6a369ca38adb5f4> 400 (BAD REQUEST)\nPOST <http:\/\/localhost:3000\/socket.io\/?EIO=3&amp;transport=polling&amp;t=1550683801633-631&amp;sid=0d06865666e74657b6a369ca38adb5f4> 400 (BAD REQUEST)\n```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "XwU",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Tidied up a bit, this appears to work (most of the time), occasionally though I do get an error showing on the client side:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "@socketio.on('ping')\ndef handle_message(*_args, **_kwargs):\n    try:\n            market_books = output_queue.get(False)\n    except Exception:\n        socketio.sleep(1)\n        emit('my_response', {'message': 'pong', 'mb': 'pong'})\n    else:\n        for market_book in market_books:\n            emit('my_response', {'message': 'update', 'mb': market_book.streaming_update})\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\n\nError messages (client side):\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "GET "
+                            },
+                            {
+                                "type": "link",
+                                "url": "http:\/\/localhost:3000\/socket.io\/?EIO=3&amp;transport=polling&amp;t=1550683800805-630&amp;sid=0d06865666e74657b6a369ca38adb5f4",
+                                "text": "http:\/\/localhost:3000\/socket.io\/?EIO=3&transport=polling&t=1550683800805-630&sid=0d06865666e74657b6a369ca38adb5f4"
+                            },
+                            {
+                                "type": "text",
+                                "text": " 400 (BAD REQUEST)\nPOST "
+                            },
+                            {
+                                "type": "link",
+                                "url": "http:\/\/localhost:3000\/socket.io\/?EIO=3&amp;transport=polling&amp;t=1550683801633-631&amp;sid=0d06865666e74657b6a369ca38adb5f4",
+                                "text": "http:\/\/localhost:3000\/socket.io\/?EIO=3&transport=polling&t=1550683801633-631&sid=0d06865666e74657b6a369ca38adb5f4"
+                            },
+                            {
+                                "type": "text",
+                                "text": " 400 (BAD REQUEST)\n"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U5D4ZBEAG",
+        "type": "message",
+        "ts": "1550684718.004900",
+        "client_msg_id": "ef932dbf-57e1-49f0-ac64-d39b8c03abf7",
+        "text": "try and a blank exception grabber is the boldest of bold a developer can do... :smile: At least log what the exception is!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g147ed91a398",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/7147ed91a39866d363a9cfa66ef64cb8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0015-72.png",
+            "first_name": "",
+            "real_name": "seaders",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "seaders",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "57KU",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "try and a blank exception grabber is the boldest of bold a developer can do... "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "smile",
+                                "unicode": "1f604"
+                            },
+                            {
+                                "type": "text",
+                                "text": " At least log what the exception is!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1550685922.005500",
+        "client_msg_id": "d3e09307-2c87-4970-a8d1-3278175b16ae",
+        "text": "haha, the problem I come up against is logging the empty, I can catch other errors, but couldn't work out how to catch the Empty!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "XIAT",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "haha, the problem I come up against is logging the empty, I can catch other errors, but couldn't work out how to catch the Empty!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U5D4ZBEAG",
+        "type": "message",
+        "ts": "1550687072.006100",
+        "client_msg_id": "ec802f8d-c5d4-4495-99f7-1b9022a0cf06",
+        "text": "`except Queue.Empty:`",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g147ed91a398",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/7147ed91a39866d363a9cfa66ef64cb8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0015-72.png",
+            "first_name": "",
+            "real_name": "seaders",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "seaders",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "GvNfb",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "except Queue.Empty:",
+                                "style": {
+                                    "code": true
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1550687567.007000",
+        "client_msg_id": "29637e23-24bf-4e91-b600-d177d293126a",
+        "text": "I tried that initially, but for some reason I get an error (I've played around with variants too just to see if I could work it out):\n\n```\nERROR:engineio.server:message handler error\nTraceback (most recent call last):\n  File \"D:\/Python37\/webpages\/betfair_flaskio.py\", line 51, in handle_message\n    market_books = output_queue.get(False)\n  File \"D:\\Python37\\lib\\queue.py\", line 167, in get\n    raise Empty\n_queue.Empty\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"D:\\Python37\\lib\\site-packages\\engineio\\server.py\", line 505, in _trigger_event\n    return self.handlers[event](*args)\n  File \"D:\\Python37\\lib\\site-packages\\socketio\\server.py\", line 590, in _handle_eio_message\n    self._handle_event(sid, pkt.namespace, pkt.id, pkt.data)\n  File \"D:\\Python37\\lib\\site-packages\\socketio\\server.py\", line 526, in _handle_event\n    self._handle_event_internal(self, sid, data, namespace, id)\n  File \"D:\\Python37\\lib\\site-packages\\socketio\\server.py\", line 529, in _handle_event_internal\n    r = server._trigger_event(data[0], namespace, sid, *data[1:])\n  File \"D:\\Python37\\lib\\site-packages\\socketio\\server.py\", line 558, in _trigger_event\n    return self.handlers[namespace][event](*args)\n  File \"D:\\Python37\\lib\\site-packages\\flask_socketio\\__init__.py\", line 258, in _handler\n    *args)\n  File \"D:\\Python37\\lib\\site-packages\\flask_socketio\\__init__.py\", line 641, in _handle_event\n    ret = handler(*args)\n  File \"D:\/Python37\/webpages\/betfair_flaskio.py\", line 52, in handle_message\n    except queue.empty:\nAttributeError: module 'queue' has no attribute 'empty'\n```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "bNfW",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I tried that initially, but for some reason I get an error (I've played around with variants too just to see if I could work it out):\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "ERROR:engineio.server:message handler error\nTraceback (most recent call last):\n  File \"D:\/Python37\/webpages\/betfair_flaskio.py\", line 51, in handle_message\n    market_books = output_queue.get(False)\n  File \"D:\\Python37\\lib\\queue.py\", line 167, in get\n    raise Empty\n_queue.Empty\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"D:\\Python37\\lib\\site-packages\\engineio\\server.py\", line 505, in _trigger_event\n    return self.handlers[event](*args)\n  File \"D:\\Python37\\lib\\site-packages\\socketio\\server.py\", line 590, in _handle_eio_message\n    self._handle_event(sid, pkt.namespace, pkt.id, pkt.data)\n  File \"D:\\Python37\\lib\\site-packages\\socketio\\server.py\", line 526, in _handle_event\n    self._handle_event_internal(self, sid, data, namespace, id)\n  File \"D:\\Python37\\lib\\site-packages\\socketio\\server.py\", line 529, in _handle_event_internal\n    r = server._trigger_event(data[0], namespace, sid, *data[1:])\n  File \"D:\\Python37\\lib\\site-packages\\socketio\\server.py\", line 558, in _trigger_event\n    return self.handlers[namespace][event](*args)\n  File \"D:\\Python37\\lib\\site-packages\\flask_socketio\\__init__.py\", line 258, in _handler\n    *args)\n  File \"D:\\Python37\\lib\\site-packages\\flask_socketio\\__init__.py\", line 641, in _handle_event\n    ret = handler(*args)\n  File \"D:\/Python37\/webpages\/betfair_flaskio.py\", line 52, in handle_message\n    except queue.empty:\nAttributeError: module 'queue' has no attribute 'empty'\n"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U5D4ZBEAG",
+        "type": "message",
+        "ts": "1550687602.007400",
+        "client_msg_id": "a308569f-4a59-4876-ad16-41908de0110a",
+        "text": "No",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g147ed91a398",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/7147ed91a39866d363a9cfa66ef64cb8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0015-72.png",
+            "first_name": "",
+            "real_name": "seaders",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "seaders",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "ZDQX",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "No"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U5D4ZBEAG",
+        "type": "message",
+        "ts": "1550687621.007900",
+        "client_msg_id": "97faf7c2-7f34-4f2a-b3a5-2a10db30e33f",
+        "text": "Not queue.empty, Queue.Empty",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g147ed91a398",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/7147ed91a39866d363a9cfa66ef64cb8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0015-72.png",
+            "first_name": "",
+            "real_name": "seaders",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "seaders",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "iw\/",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Not queue.empty, Queue.Empty"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U5D4ZBEAG",
+        "type": "message",
+        "ts": "1550687638.008400",
+        "client_msg_id": "f7604ea7-b3ab-4999-93bb-2e52dd0b5ee0",
+        "text": "Those two things are not the same",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g147ed91a398",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/7147ed91a39866d363a9cfa66ef64cb8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0015-72.png",
+            "first_name": "",
+            "real_name": "seaders",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "seaders",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "5wx",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Those two things are not the same"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1550687783.008700",
+        "client_msg_id": "bde9c39f-bba7-442e-be92-ce1bbaa63fc8",
+        "text": "I still get: ```NameError: name 'Queue' is not defined```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "A5Bn",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I still get: "
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "NameError: name 'Queue' is not defined"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U5D4ZBEAG",
+        "type": "message",
+        "ts": "1550690931.010000",
+        "client_msg_id": "a4612624-7854-460a-91c8-fc9273038cf9",
+        "text": "you not have auto-complete on yer PyCharm there...?  I was on me mobile, it's in `queue` (as in `queue.py`, so you get to it with `import queue; queue.Empty`)",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g147ed91a398",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/7147ed91a39866d363a9cfa66ef64cb8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0015-72.png",
+            "first_name": "",
+            "real_name": "seaders",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "seaders",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "culF",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "you not have auto-complete on yer PyCharm there...?  I was on me mobile, it's in "
+                            },
+                            {
+                                "type": "text",
+                                "text": "queue",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " (as in "
+                            },
+                            {
+                                "type": "text",
+                                "text": "queue.py",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": ", so you get to it with "
+                            },
+                            {
+                                "type": "text",
+                                "text": "import queue; queue.Empty",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": ")"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1550692507.011400",
+        "client_msg_id": "4d2ecfe0-21b0-442f-934b-bbe29257d8b8",
+        "text": "I think its now working, although some unexpected behaviour in PyCharm:\n\n```from queue import Empty``` reports Unused import statement, which is odd because:\n\n```except queue.Empty:``` appears to be fine (note lowercase q)",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "0=a",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I think its now working, although some unexpected behaviour in PyCharm:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "from queue import Empty"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": " reports Unused import statement, which is odd because:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "except queue.Empty:"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": " appears to be fine (note lowercase q)"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U5D4ZBEAG",
+        "type": "message",
+        "ts": "1550692546.011800",
+        "client_msg_id": "05369fc6-adc9-44e4-b583-60c9b344266a",
+        "text": "if you do `from queue import Empty`, you use it as `except Empty:`",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g147ed91a398",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/7147ed91a39866d363a9cfa66ef64cb8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0015-72.png",
+            "first_name": "",
+            "real_name": "seaders",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "seaders",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "FBp",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "if you do "
+                            },
+                            {
+                                "type": "text",
+                                "text": "from queue import Empty",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": ", you use it as "
+                            },
+                            {
+                                "type": "text",
+                                "text": "except Empty:",
+                                "style": {
+                                    "code": true
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U5D4ZBEAG",
+        "type": "message",
+        "ts": "1550692577.012600",
+        "client_msg_id": "535a4222-c91f-4584-af44-ce8dd25b3745",
+        "text": "if you do `import queue`, or `import queue.Empty`, you use it as `except queue.Empty`",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g147ed91a398",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/7147ed91a39866d363a9cfa66ef64cb8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0015-72.png",
+            "first_name": "",
+            "real_name": "seaders",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "seaders",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "VUczg",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "if you do "
+                            },
+                            {
+                                "type": "text",
+                                "text": "import queue",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": ", or "
+                            },
+                            {
+                                "type": "text",
+                                "text": "import queue.Empty",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": ", you use it as "
+                            },
+                            {
+                                "type": "text",
+                                "text": "except queue.Empty",
+                                "style": {
+                                    "code": true
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1550692727.013700",
+        "client_msg_id": "a41e7ba0-f38f-4cbf-a44b-61b3592dae71",
+        "text": "cool okay, so (I think) that means it should be catching anything correctly (was just confused by the upper or lowercase Q but I think I was misunderstanding the emphasis there, you were referring to the Empty)",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "+ri",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "cool okay, so (I think) that means it should be catching anything correctly (was just confused by the upper or lowercase Q but I think I was misunderstanding the emphasis there, you were referring to the Empty)"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

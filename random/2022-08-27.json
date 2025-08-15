@@ -1,0 +1,154 @@
+[
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1661603650.244479",
+        "client_msg_id": "49c43c6a-95b8-4a0b-8675-8a9b856a0a37",
+        "text": "When backtesting, I'm getting some unexpected behaviour using market.event.get.\n\nJust using a simple worker as follows (purely to see whats coming through for now, obviously this doesn't actually do anything as such):\n\n```def each_way_and_place(context: dict, flumine) -&gt; None:\n    for market in [m for m in flumine.markets if m.event_type_id == '7' and m.market_catalogue is not None and m.market_book.status not in ['CLOSED', 'SUSPENDED']]:\n        check_market_type(market)\n\ndef check_market_type(market):\n\n    if market.market_type == 'WIN':\n        place_market = market.event.get(\"PLACE\")\n        if place_market is not None:\n            print({'main_market_id': market.market_id,\n                   'main_market_type':market.market_type,\n                   'main_market_status': market.market_book.status,\n                   'get_market_id': place_market[0].market_id,\n                   'get_market_type': place_market[0].market_type,\n                   'get_market_status': place_market[0].market_book.status})\n        else:\n            print({'main_market_id': market.market_id,\n                   'main_market_type':market.market_type,\n                   'main_market_status': market.market_book.status})\n    elif market.market_type in ['PLACE', 'OTHER_PLACE']:\n        win_market = market.event.get(\"WIN\")\n        print({'main_market_id': market.market_id,\n            'main_market_type':market.market_type,\n               'main_market_status': market.market_book.status,\n               'get_market_id': win_market[0].market_id,\n               'get_market_type': win_market[0].market_type,\n               'get_market_status': win_market[0].market_book.status})```\nI just get the following:\n\n```1.200622960 added\n1.200652220 added\n1.200652755 added\n1.200622608 added\n1.200626498 added\n1.200622877 added\n1.200652046 added\n1.200652131 added\n1.200652756 added\n1.200652047 added\n1.200622609 added\n{'main_market_id': '1.200652756', 'main_market_type': 'PLACE', 'main_market_status': 'OPEN', 'get_market_id': '1.200652755', 'get_market_type': 'WIN', 'get_market_status': 'CLOSED'}\n{'main_market_id': '1.200652047', 'main_market_type': 'PLACE', 'main_market_status': 'OPEN', 'get_market_id': '1.200652046', 'get_market_type': 'WIN', 'get_market_status': 'CLOSED'}\n{'main_market_id': '1.200652756', 'main_market_type': 'PLACE', 'main_market_status': 'OPEN', 'get_market_id': '1.200652755', 'get_market_type': 'WIN', 'get_market_status': 'CLOSED'}\n{'main_market_id': '1.200622609', 'main_market_type': 'PLACE', 'main_market_status': 'OPEN', 'get_market_id': '1.200622608', 'get_market_type': 'WIN', 'get_market_status': 'CLOSED'}\n1.200652133 added\n{'main_market_id': '1.200652047', 'main_market_type': 'PLACE', 'main_market_status': 'OPEN', 'get_market_id': '1.200652046', 'get_market_type': 'WIN', 'get_market_status': 'CLOSED'}\n{'main_market_id': '1.200652756', 'main_market_type': 'PLACE', 'main_market_status': 'OPEN', 'get_market_id': '1.200652755', 'get_market_type': 'WIN', 'get_market_status': 'CLOSED'}\n{'main_market_id': '1.200622609', 'main_market_type': 'PLACE', 'main_market_status': 'OPEN', 'get_market_id': '1.200622608', 'get_market_type': 'WIN', 'get_market_status': 'CLOSED'}\n{'main_market_id': '1.200652047', 'main_market_type': 'PLACE', 'main_market_status': 'OPEN', 'get_market_id': '1.200652046', 'get_market_type': 'WIN', 'get_market_status': 'CLOSED'}\n1.200652135 added\n1.200622880 added\n1.200622965 added\n1.200652050 added\n{'main_market_id': '1.200652756', 'main_market_type': 'PLACE', 'main_market_status': 'OPEN', 'get_market_id': '1.200652755', 'get_market_type': 'WIN', 'get_market_status': 'CLOSED'}\n{'main_market_id': '1.200622609', 'main_market_type': 'PLACE', 'main_market_status': 'OPEN', 'get_market_id': '1.200622608', 'get_market_type': 'WIN', 'get_market_status': 'CLOSED'}\n1.200626500 added\n1.200652225 added\n{'main_market_id': '1.200652756', 'main_market_type': 'PLACE', 'main_market_status': 'OPEN', 'get_market_id': '1.200652755', 'get_market_type': 'WIN', 'get_market_status': 'CLOSED'}\n{'main_market_id': '1.200626500', 'main_market_type': 'WIN', 'main_market_status': 'OPEN'}\n{'main_market_id': '1.200622609', 'main_market_type': 'PLACE', 'main_market_status': 'OPEN', 'get_market_id': '1.200622608', 'get_market_type': 'WIN', 'get_market_status': 'CLOSED'}\n{'main_market_id': '1.200652225', 'main_market_type': 'WIN', 'main_market_status': 'OPEN'}\n1.200626501 added\n1.200622882 added\n1.200652136 added\n1.200652226 added\n1.200652052 added\n1.200622883 added\n1.200622966 added\n{'main_market_id': '1.200652756', 'main_market_type': 'PLACE', 'main_market_status': 'OPEN', 'get_market_id': '1.200652755', 'get_market_type': 'WIN', 'get_market_status': 'CLOSED'}\n{'main_market_id': '1.200626501', 'main_market_type': 'PLACE', 'main_market_status': 'OPEN', 'get_market_id': '1.200626500', 'get_market_type': 'WIN', 'get_market_status': 'CLOSED'}{'main_market_id': '1.200622609', 'main_market_type': 'PLACE', 'main_market_status': 'OPEN', 'get_market_id': '1.200622608', 'get_market_type': 'WIN', 'get_market_status': 'CLOSED'}\n\n{'main_market_id': '1.200652226', 'main_market_type': 'PLACE', 'main_market_status': 'OPEN', 'get_market_id': '1.200652225', 'get_market_type': 'WIN', 'get_market_status': 'CLOSED'}\n{'main_market_id': '1.200622883', 'main_market_type': 'PLACE', 'main_market_status': 'OPEN', 'get_market_id': '1.200622882', 'get_market_type': 'WIN', 'get_market_status': 'CLOSED'}\n{'main_market_id': '1.200652052', 'main_market_type': 'WIN', 'main_market_status': 'OPEN'}\n{'main_market_id': '1.200652136', 'main_market_type': 'WIN', 'main_market_status': 'OPEN'}\n1.200652137 added\n1.200652758 added\n1.200652053 added\n1.200622967 added\n{'main_market_id': '1.200622609', 'main_market_type': 'PLACE', 'main_market_status': 'OPEN', 'get_market_id': '1.200622608', 'get_market_type': 'WIN', 'get_market_status': 'CLOSED'}{'main_market_id': '1.200626501', 'main_market_type': 'PLACE', 'main_market_status': 'OPEN', 'get_market_id': '1.200626500', 'get_market_type': 'WIN', 'get_market_status': 'CLOSED'}\n\n{'main_market_id': '1.200652226', 'main_market_type': 'PLACE', 'main_market_status': 'OPEN', 'get_market_id': '1.200652225', 'get_market_type': 'WIN', 'get_market_status': 'CLOSED'}\n{'main_market_id': '1.200622883', 'main_market_type': 'PLACE', 'main_market_status': 'OPEN', 'get_market_id': '1.200622882', 'get_market_type': 'WIN', 'get_market_status': 'CLOSED'}\n{'main_market_id': '1.200652053', 'main_market_type': 'PLACE', 'main_market_status': 'OPEN', 'get_market_id': '1.200652052', 'get_market_type': 'WIN', 'get_market_status': 'CLOSED'}\n{'main_market_id': '1.200652137', 'main_market_type': 'PLACE', 'main_market_status': 'OPEN', 'get_market_id': '1.200652136', 'get_market_type': 'WIN', 'get_market_status': 'CLOSED'}\n{'main_market_id': '1.200622967', 'main_market_type': 'PLACE', 'main_market_status': 'OPEN', 'get_market_id': '1.200622966', 'get_market_type': 'WIN', 'get_market_status': 'CLOSED'}\n{'main_market_id': '1.200626501', 'main_market_type': 'PLACE', 'main_market_status': 'OPEN', 'get_market_id': '1.200626500', 'get_market_type': 'WIN', 'get_market_status': 'CLOSED'}{'main_market_id': '1.200622609', 'main_market_type': 'PLACE', 'main_market_status': 'OPEN', 'get_market_id': '1.200622608', 'get_market_type': 'WIN', 'get_market_status': 'CLOSED'}\n\n{'main_market_id': '1.200652226', 'main_market_type': 'PLACE', 'main_market_status': 'OPEN', 'get_market_id': '1.200652225', 'get_market_type': 'WIN', 'get_market_status': 'CLOSED'}\n{'main_market_id': '1.200622883', 'main_market_type': 'PLACE', 'main_market_status': 'OPEN', 'get_market_id': '1.200622882', 'get_market_type': 'WIN', 'get_market_status': 'CLOSED'}\n{'main_market_id': '1.200652053', 'main_market_type': 'PLACE', 'main_market_status': 'OPEN', 'get_market_id': '1.200652052', 'get_market_type': 'WIN', 'get_market_status': 'CLOSED'}\n{'main_market_id': '1.200652137', 'main_market_type': 'PLACE', 'main_market_status': 'OPEN', 'get_market_id': '1.200652136', 'get_market_type': 'WIN', 'get_market_status': 'CLOSED'}```\nWhich seems very odd (i.e. it always shows no PLACE market when checking from the WIN market and when checking from the PLACE market, the WIN market is always closed.\n\nInterestingly, when paper trading this works as expected, i.e. the markets are all open etc.\n\nI'm wondering therefore, has anyone else had issues using this functionality when backtesting (all self recorded files via Flumine, randomly selected dates in June, July and August, the above markets are all GB &amp; IE on 1st or 2nd of July)?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "IXZ",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "When backtesting, I'm getting some unexpected behaviour using market.event.get.\n\nJust using a simple worker as follows (purely to see whats coming through for now, obviously this doesn't actually do anything as such):\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "def each_way_and_place(context: dict, flumine) -> None:\n    for market in [m for m in flumine.markets if m.event_type_id == '7' and m.market_catalogue is not None and m.market_book.status not in ['CLOSED', 'SUSPENDED']]:\n        check_market_type(market)\n\ndef check_market_type(market):\n\n    if market.market_type == 'WIN':\n        place_market = market.event.get(\"PLACE\")\n        if place_market is not None:\n            print({'main_market_id': market.market_id,\n                   'main_market_type':market.market_type,\n                   'main_market_status': market.market_book.status,\n                   'get_market_id': place_market[0].market_id,\n                   'get_market_type': place_market[0].market_type,\n                   'get_market_status': place_market[0].market_book.status})\n        else:\n            print({'main_market_id': market.market_id,\n                   'main_market_type':market.market_type,\n                   'main_market_status': market.market_book.status})\n    elif market.market_type in ['PLACE', 'OTHER_PLACE']:\n        win_market = market.event.get(\"WIN\")\n        print({'main_market_id': market.market_id,\n            'main_market_type':market.market_type,\n               'main_market_status': market.market_book.status,\n               'get_market_id': win_market[0].market_id,\n               'get_market_type': win_market[0].market_type,\n               'get_market_status': win_market[0].market_book.status})"
+                            }
+                        ],
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\nI just get the following:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "1.200622960 added\n1.200652220 added\n1.200652755 added\n1.200622608 added\n1.200626498 added\n1.200622877 added\n1.200652046 added\n1.200652131 added\n1.200652756 added\n1.200652047 added\n1.200622609 added\n{'main_market_id': '1.200652756', 'main_market_type': 'PLACE', 'main_market_status': 'OPEN', 'get_market_id': '1.200652755', 'get_market_type': 'WIN', 'get_market_status': 'CLOSED'}\n{'main_market_id': '1.200652047', 'main_market_type': 'PLACE', 'main_market_status': 'OPEN', 'get_market_id': '1.200652046', 'get_market_type': 'WIN', 'get_market_status': 'CLOSED'}\n{'main_market_id': '1.200652756', 'main_market_type': 'PLACE', 'main_market_status': 'OPEN', 'get_market_id': '1.200652755', 'get_market_type': 'WIN', 'get_market_status': 'CLOSED'}\n{'main_market_id': '1.200622609', 'main_market_type': 'PLACE', 'main_market_status': 'OPEN', 'get_market_id': '1.200622608', 'get_market_type': 'WIN', 'get_market_status': 'CLOSED'}\n1.200652133 added\n{'main_market_id': '1.200652047', 'main_market_type': 'PLACE', 'main_market_status': 'OPEN', 'get_market_id': '1.200652046', 'get_market_type': 'WIN', 'get_market_status': 'CLOSED'}\n{'main_market_id': '1.200652756', 'main_market_type': 'PLACE', 'main_market_status': 'OPEN', 'get_market_id': '1.200652755', 'get_market_type': 'WIN', 'get_market_status': 'CLOSED'}\n{'main_market_id': '1.200622609', 'main_market_type': 'PLACE', 'main_market_status': 'OPEN', 'get_market_id': '1.200622608', 'get_market_type': 'WIN', 'get_market_status': 'CLOSED'}\n{'main_market_id': '1.200652047', 'main_market_type': 'PLACE', 'main_market_status': 'OPEN', 'get_market_id': '1.200652046', 'get_market_type': 'WIN', 'get_market_status': 'CLOSED'}\n1.200652135 added\n1.200622880 added\n1.200622965 added\n1.200652050 added\n{'main_market_id': '1.200652756', 'main_market_type': 'PLACE', 'main_market_status': 'OPEN', 'get_market_id': '1.200652755', 'get_market_type': 'WIN', 'get_market_status': 'CLOSED'}\n{'main_market_id': '1.200622609', 'main_market_type': 'PLACE', 'main_market_status': 'OPEN', 'get_market_id': '1.200622608', 'get_market_type': 'WIN', 'get_market_status': 'CLOSED'}\n1.200626500 added\n1.200652225 added\n{'main_market_id': '1.200652756', 'main_market_type': 'PLACE', 'main_market_status': 'OPEN', 'get_market_id': '1.200652755', 'get_market_type': 'WIN', 'get_market_status': 'CLOSED'}\n{'main_market_id': '1.200626500', 'main_market_type': 'WIN', 'main_market_status': 'OPEN'}\n{'main_market_id': '1.200622609', 'main_market_type': 'PLACE', 'main_market_status': 'OPEN', 'get_market_id': '1.200622608', 'get_market_type': 'WIN', 'get_market_status': 'CLOSED'}\n{'main_market_id': '1.200652225', 'main_market_type': 'WIN', 'main_market_status': 'OPEN'}\n1.200626501 added\n1.200622882 added\n1.200652136 added\n1.200652226 added\n1.200652052 added\n1.200622883 added\n1.200622966 added\n{'main_market_id': '1.200652756', 'main_market_type': 'PLACE', 'main_market_status': 'OPEN', 'get_market_id': '1.200652755', 'get_market_type': 'WIN', 'get_market_status': 'CLOSED'}\n{'main_market_id': '1.200626501', 'main_market_type': 'PLACE', 'main_market_status': 'OPEN', 'get_market_id': '1.200626500', 'get_market_type': 'WIN', 'get_market_status': 'CLOSED'}{'main_market_id': '1.200622609', 'main_market_type': 'PLACE', 'main_market_status': 'OPEN', 'get_market_id': '1.200622608', 'get_market_type': 'WIN', 'get_market_status': 'CLOSED'}\n\n{'main_market_id': '1.200652226', 'main_market_type': 'PLACE', 'main_market_status': 'OPEN', 'get_market_id': '1.200652225', 'get_market_type': 'WIN', 'get_market_status': 'CLOSED'}\n{'main_market_id': '1.200622883', 'main_market_type': 'PLACE', 'main_market_status': 'OPEN', 'get_market_id': '1.200622882', 'get_market_type': 'WIN', 'get_market_status': 'CLOSED'}\n{'main_market_id': '1.200652052', 'main_market_type': 'WIN', 'main_market_status': 'OPEN'}\n{'main_market_id': '1.200652136', 'main_market_type': 'WIN', 'main_market_status': 'OPEN'}\n1.200652137 added\n1.200652758 added\n1.200652053 added\n1.200622967 added\n{'main_market_id': '1.200622609', 'main_market_type': 'PLACE', 'main_market_status': 'OPEN', 'get_market_id': '1.200622608', 'get_market_type': 'WIN', 'get_market_status': 'CLOSED'}{'main_market_id': '1.200626501', 'main_market_type': 'PLACE', 'main_market_status': 'OPEN', 'get_market_id': '1.200626500', 'get_market_type': 'WIN', 'get_market_status': 'CLOSED'}\n\n{'main_market_id': '1.200652226', 'main_market_type': 'PLACE', 'main_market_status': 'OPEN', 'get_market_id': '1.200652225', 'get_market_type': 'WIN', 'get_market_status': 'CLOSED'}\n{'main_market_id': '1.200622883', 'main_market_type': 'PLACE', 'main_market_status': 'OPEN', 'get_market_id': '1.200622882', 'get_market_type': 'WIN', 'get_market_status': 'CLOSED'}\n{'main_market_id': '1.200652053', 'main_market_type': 'PLACE', 'main_market_status': 'OPEN', 'get_market_id': '1.200652052', 'get_market_type': 'WIN', 'get_market_status': 'CLOSED'}\n{'main_market_id': '1.200652137', 'main_market_type': 'PLACE', 'main_market_status': 'OPEN', 'get_market_id': '1.200652136', 'get_market_type': 'WIN', 'get_market_status': 'CLOSED'}\n{'main_market_id': '1.200622967', 'main_market_type': 'PLACE', 'main_market_status': 'OPEN', 'get_market_id': '1.200622966', 'get_market_type': 'WIN', 'get_market_status': 'CLOSED'}\n{'main_market_id': '1.200626501', 'main_market_type': 'PLACE', 'main_market_status': 'OPEN', 'get_market_id': '1.200626500', 'get_market_type': 'WIN', 'get_market_status': 'CLOSED'}{'main_market_id': '1.200622609', 'main_market_type': 'PLACE', 'main_market_status': 'OPEN', 'get_market_id': '1.200622608', 'get_market_type': 'WIN', 'get_market_status': 'CLOSED'}\n\n{'main_market_id': '1.200652226', 'main_market_type': 'PLACE', 'main_market_status': 'OPEN', 'get_market_id': '1.200652225', 'get_market_type': 'WIN', 'get_market_status': 'CLOSED'}\n{'main_market_id': '1.200622883', 'main_market_type': 'PLACE', 'main_market_status': 'OPEN', 'get_market_id': '1.200622882', 'get_market_type': 'WIN', 'get_market_status': 'CLOSED'}\n{'main_market_id': '1.200652053', 'main_market_type': 'PLACE', 'main_market_status': 'OPEN', 'get_market_id': '1.200652052', 'get_market_type': 'WIN', 'get_market_status': 'CLOSED'}\n{'main_market_id': '1.200652137', 'main_market_type': 'PLACE', 'main_market_status': 'OPEN', 'get_market_id': '1.200652136', 'get_market_type': 'WIN', 'get_market_status': 'CLOSED'}"
+                            }
+                        ],
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\nWhich seems very odd (i.e. it always shows no PLACE market when checking from the WIN market and when checking from the PLACE market, the WIN market is always closed.\n\nInterestingly, when paper trading this works as expected, i.e. the markets are all open etc.\n\nI'm wondering therefore, has anyone else had issues using this functionality when backtesting (all self recorded files via Flumine, randomly selected dates in June, July and August, the above markets are all GB & IE on 1st or 2nd of July)?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1661607090.347879",
+        "client_msg_id": "0C6A0689-1590-4EAA-B9B3-B91BD2278E0F",
+        "text": "Looks like you want to use event_processing? For this to work the files need to be in a single file, check the docs ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "2LhR",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Looks like you want to use event_processing? For this to work the files need to be in a single file, check the docs "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1661607888.734959",
+        "client_msg_id": "6a0b027a-2f34-4548-a5fd-83b82e1d87bb",
+        "text": "Ah yes I see, cool tks!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "4aDx0",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Ah yes I see, cool tks!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

@@ -1,0 +1,515 @@
+[
+    {
+        "user": "U0155J92A7Q",
+        "type": "message",
+        "ts": "1602152194.129600",
+        "client_msg_id": "0afa7d8c-00d5-4030-8466-ece02ec08dd8",
+        "text": "Hi guys, do you know of any tool to monitor RAM usage by a Python process? I am wondering if it's the API calls what is using most of my RAM memory, or maybe it is that I am saving a row to pandas DataFrame every 10 secs with the state of the bot and I keep this dataframe in memory...",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gde8c5d51af5",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/de8c5d51af54a5ac7b501f416ddb262c.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0016-72.png",
+            "first_name": "",
+            "real_name": "Jorge",
+            "display_name": "Jorge",
+            "team": "T4G9NBD2M",
+            "name": "jgarciam95",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Mw6",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Hi guys, do you know of any tool to monitor RAM usage by a Python process? I am wondering if it's the API calls what is using most of my RAM memory, or maybe it is that I am saving a row to pandas DataFrame every 10 secs with the state of the bot and I keep this dataframe in memory..."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1602154456.130000",
+        "client_msg_id": "94c2f56b-bceb-4eb9-8b72-9570680b1e95",
+        "text": "How big is the df?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "BiPm",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "How big is the df?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U0155J92A7Q",
+        "type": "message",
+        "ts": "1602154799.130700",
+        "client_msg_id": "add07dbd-9207-4f4e-bb2e-ec7fd1e8eced",
+        "text": "Up to 1MB when the bot stops running (it runs for 24 hours approx)",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gde8c5d51af5",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/de8c5d51af54a5ac7b501f416ddb262c.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0016-72.png",
+            "first_name": "",
+            "real_name": "Jorge",
+            "display_name": "Jorge",
+            "team": "T4G9NBD2M",
+            "name": "jgarciam95",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "dr6F",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Up to 1MB when the bot stops running (it runs for 24 hours approx)"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "subtype": "channel_join",
+        "user": "U01C3LUD5UM",
+        "text": "<@U01C3LUD5UM> has joined the channel",
+        "type": "message",
+        "ts": "1602156350.130800"
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1602168934.132000",
+        "edited": {
+            "user": "U4H19D1D2",
+            "ts": "1602168961.000000"
+        },
+        "client_msg_id": "58c7807b-1fa7-4b55-b78a-6803e6fecb7e",
+        "text": "I have tried almost everything in finding memory leaks and this is what I did to find the above in flumine\/bflw using `pympler`\n\n```from pympler import summary, muppy\nfrom pympler.util import stringutils\n\ndef get_pympler_memory():\n    mem_summary = summary.summarize(muppy.get_objects())\n    mem_summary = [\n        [i[0], i[1], i[2], stringutils.pp(i[2]).lstrip()] for i in mem_summary\n    ]\n    mem_sorted = sorted(mem_summary, key=itemgetter(2), reverse=True)\n    mem_sum_bytes = sum([i[2] for i in mem_sorted])\n    mem_sum_human = stringutils.pp(mem_sum_bytes).lstrip()\n    return mem_sum_bytes, mem_sum_human, mem_sorted```\nUsed like so:\n\n```mem_sum_bytes, mem_sum_human, mem_sorted = get_pympler_memory()\n<http:\/\/logger.info|logger.info>(\n    \"pympler\",\n    extra={\n        \"total_bytes\": mem_sum_bytes,\n        \"total\": mem_sum_human,\n        \"memory\": mem_sorted[:64],\n    },\n)```\nYou can then plot or just look to see which objects are increasing in size or count.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "ZmRaB",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I have tried almost everything in finding memory leaks and this is what I did to find the above in flumine\/bflw using "
+                            },
+                            {
+                                "type": "text",
+                                "text": "pympler",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "from pympler import summary, muppy\nfrom pympler.util import stringutils\n\ndef get_pympler_memory():\n    mem_summary = summary.summarize(muppy.get_objects())\n    mem_summary = [\n        [i[0], i[1], i[2], stringutils.pp(i[2]).lstrip()] for i in mem_summary\n    ]\n    mem_sorted = sorted(mem_summary, key=itemgetter(2), reverse=True)\n    mem_sum_bytes = sum([i[2] for i in mem_sorted])\n    mem_sum_human = stringutils.pp(mem_sum_bytes).lstrip()\n    return mem_sum_bytes, mem_sum_human, mem_sorted"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\nUsed like so:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "mem_sum_bytes, mem_sum_human, mem_sorted = get_pympler_memory()\nlogger.info(\n    \"pympler\",\n    extra={\n        \"total_bytes\": mem_sum_bytes,\n        \"total\": mem_sum_human,\n        \"memory\": mem_sorted[:64],\n    },\n)"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\nYou can then plot or just look to see which objects are increasing in size or count."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "star",
+                "users": [
+                    "U01C9MGREQY"
+                ],
+                "count": 1
+            },
+            {
+                "name": "+1",
+                "users": [
+                    "U0155J92A7Q"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "text": "I was looking for memory leaks in my bot using tracemalloc, and found (I think) some big ones in bflw. This is a little over my head, and I'm not sure what I'm looking at. But basicaly I made empty bflw bot that only subscribes to all UK\/AU\/US racing markets, also to order stream from my live bots (~50k bets a week) and counts currenty open markets. Ran this for a 7-8 days, dumping memory snapshots every 10minutes, graphed it. Red line is resident memory, blue currenty subscribed open markets. bflw 2.8.0. Hope this helps",
+        "files": [
+            {
+                "id": "F01CM4XBUV7",
+                "mode": "hidden_by_limit"
+            }
+        ],
+        "upload": false,
+        "user": "U5R89SMJ5",
+        "display_as_bot": false,
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "DaYek",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I was looking for memory leaks in my bot using tracemalloc, and found (I think) some big ones in bflw. This is a little over my head, and I'm not sure what I'm looking at. But basicaly I made empty bflw bot that only subscribes to all UK\/AU\/US racing markets, also to order stream from my live bots (~50k bets a week) and counts currenty open markets. Ran this for a 7-8 days, dumping memory snapshots every 10minutes, graphed it. Red line is resident memory, blue currenty subscribed open markets. bflw 2.8.0. Hope this helps"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "type": "message",
+        "ts": "1602181531.132200",
+        "thread_ts": "1602054869.123300",
+        "parent_user_id": "U4H19D1D2"
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1602181658.133300",
+        "client_msg_id": "A6470F3D-F0FA-4FAA-9FC6-94408748249F",
+        "text": "Yeah that looks the same as what I am seeing, plan on having a fix in beta soon ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1602054869.123300",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "RT7ME",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Yeah that looks the same as what I am seeing, plan on having a fix in beta soon "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U5R89SMJ5",
+        "type": "message",
+        "ts": "1602181704.133500",
+        "client_msg_id": "9b2f289c-d4bf-4488-85ca-f80aee22150c",
+        "text": "great! I wont need to restart my bots every 2 weeks :slightly_smiling_face:",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "ga2b550f5926",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/8a2b550f5926a9c0fd5aad6516d2a55a.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0010-72.png",
+            "first_name": "Evaldas",
+            "real_name": "Evaldas",
+            "display_name": "Evaldas",
+            "team": "T4G9NBD2M",
+            "name": "poklius",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1602054869.123300",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "35l",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "great! I wont need to restart my bots every 2 weeks "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "slightly_smiling_face",
+                                "unicode": "1f642"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1602181730.134100",
+        "client_msg_id": "0E2515D1-D113-489A-8DB5-EBC9E69B8007",
+        "text": "Join the club! Will post on here when I have a beta ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1602054869.123300",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "fk0+Z",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Join the club! Will post on here when I have a beta "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U0155J92A7Q",
+        "type": "message",
+        "ts": "1602187716.134800",
+        "client_msg_id": "4d36b527-98a6-41eb-b4ef-738a926d50d3",
+        "text": "Thanks so much <@U4H19D1D2>, I will try it and let you know!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gde8c5d51af5",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/de8c5d51af54a5ac7b501f416ddb262c.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0016-72.png",
+            "first_name": "",
+            "real_name": "Jorge",
+            "display_name": "Jorge",
+            "team": "T4G9NBD2M",
+            "name": "jgarciam95",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "bKlA",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Thanks so much "
+                            },
+                            {
+                                "type": "user",
+                                "user_id": "U4H19D1D2"
+                            },
+                            {
+                                "type": "text",
+                                "text": ", I will try it and let you know!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1602193257.136200",
+        "client_msg_id": "bd3ed83a-eb8b-47ed-9c6d-24ab97bcb936",
+        "text": "```{\"asctime\": \"2020-10-08 21:05:56,243\", \"levelname\": \"ERROR\", \"message\": \"_get_cleared_markets error\", \"exc_info\": \"Traceback (most recent call last):\\n  File \\\"D:\\\\Python38\\\\lib\\\\site-packages\\\\urllib3\\\\connectionpool.py\\\", line 381, in _make_request\\n    self._validate_conn(conn)\\n  File \\\"D:\\\\Python38\\\\lib\\\\site-packages\\\\urllib3\\\\connectionpool.py\\\", line 978, in _validate_conn\\n    conn.connect()\\n  File \\\"D:\\\\Python38\\\\lib\\\\site-packages\\\\urllib3\\\\connection.py\\\", line 362, in connect\\n    self.sock = ssl_wrap_socket(\\n  File \\\"D:\\\\Python38\\\\lib\\\\site-packages\\\\urllib3\\\\util\\\\ssl_.py\\\", line 384, in ssl_wrap_socket\\n    return context.wrap_socket(sock, server_hostname=server_hostname)\\n  File \\\"D:\\\\Python38\\\\lib\\\\ssl.py\\\", line 500, in wrap_socket\\n    return self.sslsocket_class._create(\\n  File \\\"D:\\\\Python38\\\\lib\\\\ssl.py\\\", line 1040, in _create\\n    self.do_handshake()\\n  File \\\"D:\\\\Python38\\\\lib\\\\ssl.py\\\", line 1309, in do_handshake\\n    self._sslobj.do_handshake()\\nsocket.timeout: _ssl.c:1106: The handshake operation timed out\\n\\nDuring handling of the above exception, another exception occurred:\\n\\nTraceback (most recent call last):\\n  File \\\"D:\\\\Python38\\\\lib\\\\site-packages\\\\requests\\\\adapters.py\\\", line 439, in send\\n    resp = conn.urlopen(\\n  File \\\"D:\\\\Python38\\\\lib\\\\site-packages\\\\urllib3\\\\connectionpool.py\\\", line 726, in urlopen\\n    retries = retries.increment(\\n  File \\\"D:\\\\Python38\\\\lib\\\\site-packages\\\\urllib3\\\\util\\\\retry.py\\\", line 403, in increment\\n    raise six.reraise(type(error), error, _stacktrace)\\n  File \\\"D:\\\\Python38\\\\lib\\\\site-packages\\\\urllib3\\\\packages\\\\six.py\\\", line 735, in reraise\\n    raise value\\n  File \\\"D:\\\\Python38\\\\lib\\\\site-packages\\\\urllib3\\\\connectionpool.py\\\", line 670, in urlopen\\n    httplib_response = self._make_request(\\n  File \\\"D:\\\\Python38\\\\lib\\\\site-packages\\\\urllib3\\\\connectionpool.py\\\", line 384, in _make_request\\n    self._raise_timeout(err=e, url=url, timeout_value=conn.timeout)\\n  File \\\"D:\\\\Python38\\\\lib\\\\site-packages\\\\urllib3\\\\connectionpool.py\\\", line 335, in _raise_timeout\\n    raise ReadTimeoutError(\\nurllib3.exceptions.ReadTimeoutError: HTTPSConnectionPool(host='<http:\/\/api.betfair.com|api.betfair.com>', port=443): Read timed out. (read timeout=3.05)\\n\\nDuring handling of the above exception, another exception occurred:\\n\\nTraceback (most recent call last):\\n  File \\\"D:\\\\Python38\\\\lib\\\\site-packages\\\\betfairlightweight\\\\endpoints\\\\baseendpoint.py\\\", line 36, in request\\n    response = <http:\/\/session.post|session.post>(\\n  File \\\"D:\\\\Python38\\\\lib\\\\site-packages\\\\requests\\\\api.py\\\", line 119, in post\\n    return request('post', url, data=data, json=json, **kwargs)\\n  File \\\"D:\\\\Python38\\\\lib\\\\site-packages\\\\requests\\\\api.py\\\", line 61, in request\\n    return session.request(method=method, url=url, **kwargs)\\n  File \\\"D:\\\\Python38\\\\lib\\\\site-packages\\\\requests\\\\sessions.py\\\", line 530, in request\\n    resp = self.send(prep, **send_kwargs)\\n  File \\\"D:\\\\Python38\\\\lib\\\\site-packages\\\\requests\\\\sessions.py\\\", line 643, in send\\n    r = adapter.send(request, **kwargs)\\n  File \\\"D:\\\\Python38\\\\lib\\\\site-packages\\\\requests\\\\adapters.py\\\", line 529, in send\\n    raise ReadTimeout(e, request=request)\\nrequests.exceptions.ReadTimeout: HTTPSConnectionPool(host='<http:\/\/api.betfair.com|api.betfair.com>', port=443): Read timed out. (read timeout=3.05)\\n\\nDuring handling of the above exception, another exception occurred:\\n\\nTraceback (most recent call last):\\n  File \\\"D:\\\\Python38\\\\lib\\\\site-packages\\\\flumine\\\\worker.py\\\", line 200, in _get_cleared_market\\n    cleared_markets = betting_client.betting.list_cleared_orders(\\n  File \\\"D:\\\\Python38\\\\lib\\\\site-packages\\\\betfairlightweight\\\\endpoints\\\\betting.py\\\", line 432, in list_cleared_orders\\n    (response, response_json, elapsed_time) = self.request(method, params, session)\\n  File \\\"D:\\\\Python38\\\\lib\\\\site-packages\\\\betfairlightweight\\\\endpoints\\\\baseendpoint.py\\\", line 45, in request\\n    raise APIError(None, method, params, e)\\nbetfairlightweight.exceptions.APIError: SportsAPING\/v1.0\/listClearedOrders \\nParams: {'betStatus': 'SETTLED', 'marketIds': ['1.173991824'], 'customerStrategyRefs': ['BlueOcean'], 'settledDateRange': {'from': None, 'to': None}, 'groupBy': 'MARKET'} \\nException: HTTPSConnectionPool(host='<http:\/\/api.betfair.com|api.betfair.com>', port=443): Read timed out. (read timeout=3.05)\", \"trading_function\": \"list_cleared_orders\", \"response\": \"SportsAPING\/v1.0\/listClearedOrders \\nParams: {'betStatus': 'SETTLED', 'marketIds': ['1.173991824'], 'customerStrategyRefs': ['BlueOcean'], 'settledDateRange': {'from': None, 'to': None}, 'groupBy': 'MARKET'} \\nException: HTTPSConnectionPool(host='<http:\/\/api.betfair.com|api.betfair.com>', port=443): Read timed out. (read timeout=3.05)\"}\n\n{\"asctime\": \"2020-10-08 21:12:32,721\", \"levelname\": \"ERROR\", \"message\": \"get_account_funds error\", \"exc_info\": \"Traceback (most recent call last):\\n  File \\\"D:\\\\Python38\\\\lib\\\\site-packages\\\\urllib3\\\\connectionpool.py\\\", line 381, in _make_request\\n    self._validate_conn(conn)\\n  File \\\"D:\\\\Python38\\\\lib\\\\site-packages\\\\urllib3\\\\connectionpool.py\\\", line 978, in _validate_conn\\n    conn.connect()\\n  File \\\"D:\\\\Python38\\\\lib\\\\site-packages\\\\urllib3\\\\connection.py\\\", line 362, in connect\\n    self.sock = ssl_wrap_socket(\\n  File \\\"D:\\\\Python38\\\\lib\\\\site-packages\\\\urllib3\\\\util\\\\ssl_.py\\\", line 384, in ssl_wrap_socket\\n    return context.wrap_socket(sock, server_hostname=server_hostname)\\n  File \\\"D:\\\\Python38\\\\lib\\\\ssl.py\\\", line 500, in wrap_socket\\n    return self.sslsocket_class._create(\\n  File \\\"D:\\\\Python38\\\\lib\\\\ssl.py\\\", line 1040, in _create\\n    self.do_handshake()\\n  File \\\"D:\\\\Python38\\\\lib\\\\ssl.py\\\", line 1309, in do_handshake\\n    self._sslobj.do_handshake()\\nsocket.timeout: _ssl.c:1106: The handshake operation timed out\\n\\nDuring handling of the above exception, another exception occurred:\\n\\nTraceback (most recent call last):\\n  File \\\"D:\\\\Python38\\\\lib\\\\site-packages\\\\requests\\\\adapters.py\\\", line 439, in send\\n    resp = conn.urlopen(\\n  File \\\"D:\\\\Python38\\\\lib\\\\site-packages\\\\urllib3\\\\connectionpool.py\\\", line 726, in urlopen\\n    retries = retries.increment(\\n  File \\\"D:\\\\Python38\\\\lib\\\\site-packages\\\\urllib3\\\\util\\\\retry.py\\\", line 403, in increment\\n    raise six.reraise(type(error), error, _stacktrace)\\n  File \\\"D:\\\\Python38\\\\lib\\\\site-packages\\\\urllib3\\\\packages\\\\six.py\\\", line 735, in reraise\\n    raise value\\n  File \\\"D:\\\\Python38\\\\lib\\\\site-packages\\\\urllib3\\\\connectionpool.py\\\", line 670, in urlopen\\n    httplib_response = self._make_request(\\n  File \\\"D:\\\\Python38\\\\lib\\\\site-packages\\\\urllib3\\\\connectionpool.py\\\", line 384, in _make_request\\n    self._raise_timeout(err=e, url=url, timeout_value=conn.timeout)\\n  File \\\"D:\\\\Python38\\\\lib\\\\site-packages\\\\urllib3\\\\connectionpool.py\\\", line 335, in _raise_timeout\\n    raise ReadTimeoutError(\\nurllib3.exceptions.ReadTimeoutError: HTTPSConnectionPool(host='<http:\/\/api.betfair.com|api.betfair.com>', port=443): Read timed out. (read timeout=6.05)\\n\\nDuring handling of the above exception, another exception occurred:\\n\\nTraceback (most recent call last):\\n  File \\\"D:\\\\Python38\\\\lib\\\\site-packages\\\\betfairlightweight\\\\endpoints\\\\baseendpoint.py\\\", line 36, in request\\n    response = <http:\/\/session.post|session.post>(\\n  File \\\"D:\\\\Python38\\\\lib\\\\site-packages\\\\requests\\\\api.py\\\", line 119, in post\\n    return request('post', url, data=data, json=json, **kwargs)\\n  File \\\"D:\\\\Python38\\\\lib\\\\site-packages\\\\requests\\\\api.py\\\", line 61, in request\\n    return session.request(method=method, url=url, **kwargs)\\n  File \\\"D:\\\\Python38\\\\lib\\\\site-packages\\\\requests\\\\sessions.py\\\", line 530, in request\\n    resp = self.send(prep, **send_kwargs)\\n  File \\\"D:\\\\Python38\\\\lib\\\\site-packages\\\\requests\\\\sessions.py\\\", line 643, in send\\n    r = adapter.send(request, **kwargs)\\n  File \\\"D:\\\\Python38\\\\lib\\\\site-packages\\\\requests\\\\adapters.py\\\", line 529, in send\\n    raise ReadTimeout(e, request=request)\\nrequests.exceptions.ReadTimeout: HTTPSConnectionPool(host='<http:\/\/api.betfair.com|api.betfair.com>', port=443): Read timed out. (read timeout=6.05)\\n\\nDuring handling of the above exception, another exception occurred:\\n\\nTraceback (most recent call last):\\n  File \\\"D:\\\\Python38\\\\lib\\\\site-packages\\\\flumine\\\\clients\\\\betfairclient.py\\\", line 56, in _get_account_funds\\n    return self.betting_client.account.get_account_funds()\\n  File \\\"D:\\\\Python38\\\\lib\\\\site-packages\\\\betfairlightweight\\\\endpoints\\\\account.py\\\", line 35, in get_account_funds\\n    (response, response_json, elapsed_time) = self.request(method, params, session)\\n  File \\\"D:\\\\Python38\\\\lib\\\\site-packages\\\\betfairlightweight\\\\endpoints\\\\baseendpoint.py\\\", line 45, in request\\n    raise APIError(None, method, params, e)\\nbetfairlightweight.exceptions.APIError: AccountAPING\/v1.0\/getAccountFunds \\nParams: {} \\nException: HTTPSConnectionPool(host='<http:\/\/api.betfair.com|api.betfair.com>', port=443): Read timed out. (read timeout=6.05)\", \"error\": \"AccountAPING\/v1.0\/getAccountFunds \\nParams: {} \\nException: HTTPSConnectionPool(host='<http:\/\/api.betfair.com|api.betfair.com>', port=443): Read timed out. (read timeout=6.05)\"}```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "pug",
+                "elements": [
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "{\"asctime\": \"2020-10-08 21:05:56,243\", \"levelname\": \"ERROR\", \"message\": \"_get_cleared_markets error\", \"exc_info\": \"Traceback (most recent call last):\\n  File \\\"D:\\\\Python38\\\\lib\\\\site-packages\\\\urllib3\\\\connectionpool.py\\\", line 381, in _make_request\\n    self._validate_conn(conn)\\n  File \\\"D:\\\\Python38\\\\lib\\\\site-packages\\\\urllib3\\\\connectionpool.py\\\", line 978, in _validate_conn\\n    conn.connect()\\n  File \\\"D:\\\\Python38\\\\lib\\\\site-packages\\\\urllib3\\\\connection.py\\\", line 362, in connect\\n    self.sock = ssl_wrap_socket(\\n  File \\\"D:\\\\Python38\\\\lib\\\\site-packages\\\\urllib3\\\\util\\\\ssl_.py\\\", line 384, in ssl_wrap_socket\\n    return context.wrap_socket(sock, server_hostname=server_hostname)\\n  File \\\"D:\\\\Python38\\\\lib\\\\ssl.py\\\", line 500, in wrap_socket\\n    return self.sslsocket_class._create(\\n  File \\\"D:\\\\Python38\\\\lib\\\\ssl.py\\\", line 1040, in _create\\n    self.do_handshake()\\n  File \\\"D:\\\\Python38\\\\lib\\\\ssl.py\\\", line 1309, in do_handshake\\n    self._sslobj.do_handshake()\\nsocket.timeout: _ssl.c:1106: The handshake operation timed out\\n\\nDuring handling of the above exception, another exception occurred:\\n\\nTraceback (most recent call last):\\n  File \\\"D:\\\\Python38\\\\lib\\\\site-packages\\\\requests\\\\adapters.py\\\", line 439, in send\\n    resp = conn.urlopen(\\n  File \\\"D:\\\\Python38\\\\lib\\\\site-packages\\\\urllib3\\\\connectionpool.py\\\", line 726, in urlopen\\n    retries = retries.increment(\\n  File \\\"D:\\\\Python38\\\\lib\\\\site-packages\\\\urllib3\\\\util\\\\retry.py\\\", line 403, in increment\\n    raise six.reraise(type(error), error, _stacktrace)\\n  File \\\"D:\\\\Python38\\\\lib\\\\site-packages\\\\urllib3\\\\packages\\\\six.py\\\", line 735, in reraise\\n    raise value\\n  File \\\"D:\\\\Python38\\\\lib\\\\site-packages\\\\urllib3\\\\connectionpool.py\\\", line 670, in urlopen\\n    httplib_response = self._make_request(\\n  File \\\"D:\\\\Python38\\\\lib\\\\site-packages\\\\urllib3\\\\connectionpool.py\\\", line 384, in _make_request\\n    self._raise_timeout(err=e, url=url, timeout_value=conn.timeout)\\n  File \\\"D:\\\\Python38\\\\lib\\\\site-packages\\\\urllib3\\\\connectionpool.py\\\", line 335, in _raise_timeout\\n    raise ReadTimeoutError(\\nurllib3.exceptions.ReadTimeoutError: HTTPSConnectionPool(host='api.betfair.com', port=443): Read timed out. (read timeout=3.05)\\n\\nDuring handling of the above exception, another exception occurred:\\n\\nTraceback (most recent call last):\\n  File \\\"D:\\\\Python38\\\\lib\\\\site-packages\\\\betfairlightweight\\\\endpoints\\\\baseendpoint.py\\\", line 36, in request\\n    response = session.post(\\n  File \\\"D:\\\\Python38\\\\lib\\\\site-packages\\\\requests\\\\api.py\\\", line 119, in post\\n    return request('post', url, data=data, json=json, **kwargs)\\n  File \\\"D:\\\\Python38\\\\lib\\\\site-packages\\\\requests\\\\api.py\\\", line 61, in request\\n    return session.request(method=method, url=url, **kwargs)\\n  File \\\"D:\\\\Python38\\\\lib\\\\site-packages\\\\requests\\\\sessions.py\\\", line 530, in request\\n    resp = self.send(prep, **send_kwargs)\\n  File \\\"D:\\\\Python38\\\\lib\\\\site-packages\\\\requests\\\\sessions.py\\\", line 643, in send\\n    r = adapter.send(request, **kwargs)\\n  File \\\"D:\\\\Python38\\\\lib\\\\site-packages\\\\requests\\\\adapters.py\\\", line 529, in send\\n    raise ReadTimeout(e, request=request)\\nrequests.exceptions.ReadTimeout: HTTPSConnectionPool(host='api.betfair.com', port=443): Read timed out. (read timeout=3.05)\\n\\nDuring handling of the above exception, another exception occurred:\\n\\nTraceback (most recent call last):\\n  File \\\"D:\\\\Python38\\\\lib\\\\site-packages\\\\flumine\\\\worker.py\\\", line 200, in _get_cleared_market\\n    cleared_markets = betting_client.betting.list_cleared_orders(\\n  File \\\"D:\\\\Python38\\\\lib\\\\site-packages\\\\betfairlightweight\\\\endpoints\\\\betting.py\\\", line 432, in list_cleared_orders\\n    (response, response_json, elapsed_time) = self.request(method, params, session)\\n  File \\\"D:\\\\Python38\\\\lib\\\\site-packages\\\\betfairlightweight\\\\endpoints\\\\baseendpoint.py\\\", line 45, in request\\n    raise APIError(None, method, params, e)\\nbetfairlightweight.exceptions.APIError: SportsAPING\/v1.0\/listClearedOrders \\nParams: {'betStatus': 'SETTLED', 'marketIds': ['1.173991824'], 'customerStrategyRefs': ['BlueOcean'], 'settledDateRange': {'from': None, 'to': None}, 'groupBy': 'MARKET'} \\nException: HTTPSConnectionPool(host='api.betfair.com', port=443): Read timed out. (read timeout=3.05)\", \"trading_function\": \"list_cleared_orders\", \"response\": \"SportsAPING\/v1.0\/listClearedOrders \\nParams: {'betStatus': 'SETTLED', 'marketIds': ['1.173991824'], 'customerStrategyRefs': ['BlueOcean'], 'settledDateRange': {'from': None, 'to': None}, 'groupBy': 'MARKET'} \\nException: HTTPSConnectionPool(host='api.betfair.com', port=443): Read timed out. (read timeout=3.05)\"}\n\n{\"asctime\": \"2020-10-08 21:12:32,721\", \"levelname\": \"ERROR\", \"message\": \"get_account_funds error\", \"exc_info\": \"Traceback (most recent call last):\\n  File \\\"D:\\\\Python38\\\\lib\\\\site-packages\\\\urllib3\\\\connectionpool.py\\\", line 381, in _make_request\\n    self._validate_conn(conn)\\n  File \\\"D:\\\\Python38\\\\lib\\\\site-packages\\\\urllib3\\\\connectionpool.py\\\", line 978, in _validate_conn\\n    conn.connect()\\n  File \\\"D:\\\\Python38\\\\lib\\\\site-packages\\\\urllib3\\\\connection.py\\\", line 362, in connect\\n    self.sock = ssl_wrap_socket(\\n  File \\\"D:\\\\Python38\\\\lib\\\\site-packages\\\\urllib3\\\\util\\\\ssl_.py\\\", line 384, in ssl_wrap_socket\\n    return context.wrap_socket(sock, server_hostname=server_hostname)\\n  File \\\"D:\\\\Python38\\\\lib\\\\ssl.py\\\", line 500, in wrap_socket\\n    return self.sslsocket_class._create(\\n  File \\\"D:\\\\Python38\\\\lib\\\\ssl.py\\\", line 1040, in _create\\n    self.do_handshake()\\n  File \\\"D:\\\\Python38\\\\lib\\\\ssl.py\\\", line 1309, in do_handshake\\n    self._sslobj.do_handshake()\\nsocket.timeout: _ssl.c:1106: The handshake operation timed out\\n\\nDuring handling of the above exception, another exception occurred:\\n\\nTraceback (most recent call last):\\n  File \\\"D:\\\\Python38\\\\lib\\\\site-packages\\\\requests\\\\adapters.py\\\", line 439, in send\\n    resp = conn.urlopen(\\n  File \\\"D:\\\\Python38\\\\lib\\\\site-packages\\\\urllib3\\\\connectionpool.py\\\", line 726, in urlopen\\n    retries = retries.increment(\\n  File \\\"D:\\\\Python38\\\\lib\\\\site-packages\\\\urllib3\\\\util\\\\retry.py\\\", line 403, in increment\\n    raise six.reraise(type(error), error, _stacktrace)\\n  File \\\"D:\\\\Python38\\\\lib\\\\site-packages\\\\urllib3\\\\packages\\\\six.py\\\", line 735, in reraise\\n    raise value\\n  File \\\"D:\\\\Python38\\\\lib\\\\site-packages\\\\urllib3\\\\connectionpool.py\\\", line 670, in urlopen\\n    httplib_response = self._make_request(\\n  File \\\"D:\\\\Python38\\\\lib\\\\site-packages\\\\urllib3\\\\connectionpool.py\\\", line 384, in _make_request\\n    self._raise_timeout(err=e, url=url, timeout_value=conn.timeout)\\n  File \\\"D:\\\\Python38\\\\lib\\\\site-packages\\\\urllib3\\\\connectionpool.py\\\", line 335, in _raise_timeout\\n    raise ReadTimeoutError(\\nurllib3.exceptions.ReadTimeoutError: HTTPSConnectionPool(host='api.betfair.com', port=443): Read timed out. (read timeout=6.05)\\n\\nDuring handling of the above exception, another exception occurred:\\n\\nTraceback (most recent call last):\\n  File \\\"D:\\\\Python38\\\\lib\\\\site-packages\\\\betfairlightweight\\\\endpoints\\\\baseendpoint.py\\\", line 36, in request\\n    response = session.post(\\n  File \\\"D:\\\\Python38\\\\lib\\\\site-packages\\\\requests\\\\api.py\\\", line 119, in post\\n    return request('post', url, data=data, json=json, **kwargs)\\n  File \\\"D:\\\\Python38\\\\lib\\\\site-packages\\\\requests\\\\api.py\\\", line 61, in request\\n    return session.request(method=method, url=url, **kwargs)\\n  File \\\"D:\\\\Python38\\\\lib\\\\site-packages\\\\requests\\\\sessions.py\\\", line 530, in request\\n    resp = self.send(prep, **send_kwargs)\\n  File \\\"D:\\\\Python38\\\\lib\\\\site-packages\\\\requests\\\\sessions.py\\\", line 643, in send\\n    r = adapter.send(request, **kwargs)\\n  File \\\"D:\\\\Python38\\\\lib\\\\site-packages\\\\requests\\\\adapters.py\\\", line 529, in send\\n    raise ReadTimeout(e, request=request)\\nrequests.exceptions.ReadTimeout: HTTPSConnectionPool(host='api.betfair.com', port=443): Read timed out. (read timeout=6.05)\\n\\nDuring handling of the above exception, another exception occurred:\\n\\nTraceback (most recent call last):\\n  File \\\"D:\\\\Python38\\\\lib\\\\site-packages\\\\flumine\\\\clients\\\\betfairclient.py\\\", line 56, in _get_account_funds\\n    return self.betting_client.account.get_account_funds()\\n  File \\\"D:\\\\Python38\\\\lib\\\\site-packages\\\\betfairlightweight\\\\endpoints\\\\account.py\\\", line 35, in get_account_funds\\n    (response, response_json, elapsed_time) = self.request(method, params, session)\\n  File \\\"D:\\\\Python38\\\\lib\\\\site-packages\\\\betfairlightweight\\\\endpoints\\\\baseendpoint.py\\\", line 45, in request\\n    raise APIError(None, method, params, e)\\nbetfairlightweight.exceptions.APIError: AccountAPING\/v1.0\/getAccountFunds \\nParams: {} \\nException: HTTPSConnectionPool(host='api.betfair.com', port=443): Read timed out. (read timeout=6.05)\", \"error\": \"AccountAPING\/v1.0\/getAccountFunds \\nParams: {} \\nException: HTTPSConnectionPool(host='api.betfair.com', port=443): Read timed out. (read timeout=6.05)\"}"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1602193257.136300",
+        "client_msg_id": "bd3ed83a-eb8b-47ed-9c6d-24ab97bcb936",
+        "text": "\nHave been getting these errors over the last 24 hours (using Flumine live), has anyone else seen similar, or is it just likely to be a timeout caused by a network issue from my end?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "pug-tjYZ4",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\nHave been getting these errors over the last 24 hours (using Flumine live), has anyone else seen similar, or is it just likely to be a timeout caused by a network issue from my end?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "subtype": "channel_join",
+        "user": "U01CYUVFEF2",
+        "text": "<@U01CYUVFEF2> has joined the channel",
+        "type": "message",
+        "ts": "1602196948.136500"
+    }
+]

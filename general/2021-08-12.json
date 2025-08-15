@@ -1,0 +1,3332 @@
+[
+    {
+        "subtype": "channel_join",
+        "user": "U02BNU1HYJC",
+        "text": "<@U02BNU1HYJC> has joined the channel",
+        "type": "message",
+        "ts": "1628757254.174300"
+    },
+    {
+        "user": "U01U24AG35W",
+        "type": "message",
+        "ts": "1628760481.176000",
+        "client_msg_id": "69ea13b9-6fb6-4ad3-ba05-ed65a2795dab",
+        "text": "I've been doing the Flumingo Tango and the Middleware step has my head in a complete spin. My dance partner is Ms Historical Data from the Backtest Lowestlayer school. :smile:\n\nPART A\nSo a Trade\/Order Package is created and placed in the backtest handler queue.\nAfter the appropriate delay the code winds it's way down to `class Simulated &gt; def place &gt; elif available_to_lay &lt;= price` which is where the matched\/not-matched decision is made.\nIf a match occurs then that order is not looked at again from a matching perspective. All good.\n\nPART B\nBut if a match does not occur then that order has a size_remaining != 0 and Middleware takes an interest.\nFor every marketbook update, Middleware calculates RunnerAnalytics, and I will focus on 'traded'.\nIn `class RunnerAnalytics &gt; def _calculate_traded` the traded values are calculated as deltas compared to prior marketbook update (or empty {} if runner is not included in latest marketbook update).\nAfter RunnerAnalytics, because `order.status == OrderStatus.EXECUTABLE` and `size_remaining != 0`, the code ends up in `class Simulated &gt; def _calculate_process_traded`, which is where I get totally bamboozled.\n\n`_traded_size_ = _traded_size_ \/ 2`\n        `if _self_._piq - _traded_size_ &lt; 0:`\n            `size = _traded_size_ - _self_._piq`\n            `size = round(min(_self_.size_remaining, size), 2)`\n            `if size:`\n`                _self_._update_matched(`\n                    `[`\n`                        _publish_time_,`\n`                        _self_.order.order_type.price,`\n                        `size,`\n                    `]  # todo takes the worst price, i.e what was asked`\n                `)`\n`            _self_._piq = 0`\n        `else:`\n`            _self_._piq -= _traded_size_`\n            `logger.debug(`\n                `\"Simulated order {0} PIQ: {1}\".format(_self_.order.id, _self_._piq)`\n            `)`\n\n1. Why are unmatched orders not just left in the backtest handler queue to wait for a match, or of course killed after 2 secs?\n2. No doubt there is a good answer for Q1 so can someone please explain how the trade deltas matching works in middleware.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "d12d00b0e337",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2021-04-05\/1930559079267_d12d00b0e33706cb4bbd_72.png",
+            "first_name": "Thomas",
+            "real_name": "Thomas Jakubauskas",
+            "display_name": "ThomasJ",
+            "team": "T4G9NBD2M",
+            "name": "thomasaj05",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "LPJ3D",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I've been doing the Flumingo Tango and the Middleware step has my head in a complete spin. My dance partner is Ms Historical Data from the Backtest Lowestlayer school. "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "smile",
+                                "unicode": "1f604"
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n\nPART A\nSo a Trade\/Order Package is created and placed in the backtest handler queue.\nAfter the appropriate delay the code winds it's way down to "
+                            },
+                            {
+                                "type": "text",
+                                "text": "class Simulated > def place > elif available_to_lay <= price",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " which is where the matched\/not-matched decision is made.\nIf a match occurs then that order is not looked at again from a matching perspective. All good.\n\nPART B\nBut if a match does not occur then that order has a size_remaining != 0 and Middleware takes an interest.\nFor every marketbook update, Middleware calculates RunnerAnalytics, and I will focus on 'traded'.\nIn "
+                            },
+                            {
+                                "type": "text",
+                                "text": "class RunnerAnalytics > def _calculate_traded",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " the traded values are calculated as deltas compared to prior marketbook update (or empty {} if runner is not included in latest marketbook update).\nAfter RunnerAnalytics, because "
+                            },
+                            {
+                                "type": "text",
+                                "text": "order.status == OrderStatus.EXECUTABLE",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " and "
+                            },
+                            {
+                                "type": "text",
+                                "text": "size_remaining != 0",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": ", the code ends up in "
+                            },
+                            {
+                                "type": "text",
+                                "text": "class Simulated > def _calculate_process_traded",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": ", which is where I get totally bamboozled.\n\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "traded_size",
+                                "style": {
+                                    "italic": true,
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " = ",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "traded_size",
+                                "style": {
+                                    "italic": true,
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " \/ 2",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "        if ",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "self",
+                                "style": {
+                                    "italic": true,
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "._piq - ",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "traded_size",
+                                "style": {
+                                    "italic": true,
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " < 0:",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "            size = ",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "traded_size",
+                                "style": {
+                                    "italic": true,
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " - ",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "self",
+                                "style": {
+                                    "italic": true,
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "._piq",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "            size = round(min(",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "self",
+                                "style": {
+                                    "italic": true,
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": ".size_remaining, size), 2)",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "            if size:",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "                ",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "self",
+                                "style": {
+                                    "italic": true,
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "._update_matched(",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "                    [",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "                        ",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "publish_time",
+                                "style": {
+                                    "italic": true,
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": ",",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "                        ",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "self",
+                                "style": {
+                                    "italic": true,
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": ".order.order_type.price,",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "                        size,",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "                    ]  # todo takes the worst price, i.e what was asked",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "                )",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "            ",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "self",
+                                "style": {
+                                    "italic": true,
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "._piq = 0",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "        else:",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "            ",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "self",
+                                "style": {
+                                    "italic": true,
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "._piq -= ",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "traded_size",
+                                "style": {
+                                    "italic": true,
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "            logger.debug(",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "                \"Simulated order {0} PIQ: {1}\".format(",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "self",
+                                "style": {
+                                    "italic": true,
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": ".order.id, ",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "self",
+                                "style": {
+                                    "italic": true,
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "._piq)",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "            )",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n\n1. Why are unmatched orders not just left in the backtest handler queue to wait for a match, or of course killed after 2 secs?\n2. No doubt there is a good answer for Q1 so can someone please explain how the trade deltas matching works in middleware."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1628760894.178000",
+        "client_msg_id": "6224d69b-7118-4d89-bf90-71efa3ac5ade",
+        "text": "tbh I don't really understand your question, however when simulating orders you have two parts, the initial place and check if a match occurs and then the constant check to see if an updated marketBook results in a match on the executable order\n\nthe code `_calculate_process_traded` is doing the latter, checking the piq (position in queue) and then the size remaining to see if `update_matched` needs to be called",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "ANH",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "tbh I don't really understand your question, however when simulating orders you have two parts, the initial place and check if a match occurs and then the constant check to see if an updated marketBook results in a match on the executable order\n\nthe code "
+                            },
+                            {
+                                "type": "text",
+                                "text": "_calculate_process_traded",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " is doing the latter, checking the piq (position in queue) and then the size remaining to see if "
+                            },
+                            {
+                                "type": "text",
+                                "text": "update_matched",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " needs to be called"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UCQB6S222",
+        "type": "message",
+        "ts": "1628761250.178900",
+        "client_msg_id": "f7ee74bf-0a5d-40aa-8bc0-963dc4fd6ff8",
+        "text": "just seen this in BaseEndpoint:\n```param Session session: Requests session to be used, reduces latency.```\nso passing in an already active session reduces latency? by how much roughly do we think?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g953ffd5e3b7",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/5813be539113b05ece8212c2a06d006a.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "George",
+            "real_name": "George",
+            "display_name": "George",
+            "team": "T4G9NBD2M",
+            "name": "gd",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "wsn",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "just seen this in BaseEndpoint:\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "param Session session: Requests session to be used, reduces latency."
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "so passing in an already active session reduces latency? by how much roughly do we think?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1628761314.179400",
+        "client_msg_id": "a22e71d9-38bf-462d-a676-62883393a83d",
+        "text": "round trip each request due to the handshake, so a lot",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1628761314.179400",
+        "reply_count": 9,
+        "reply_users_count": 3,
+        "latest_reply": "1628805803.206700",
+        "reply_users": [
+            "ULDAVFDRP",
+            "U4H19D1D2",
+            "UGV299K6H"
+        ],
+        "replies": [
+            {
+                "user": "ULDAVFDRP",
+                "ts": "1628762147.180900"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1628762229.181600"
+            },
+            {
+                "user": "ULDAVFDRP",
+                "ts": "1628762258.182200"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1628762618.185300"
+            },
+            {
+                "user": "ULDAVFDRP",
+                "ts": "1628762685.186100"
+            },
+            {
+                "user": "ULDAVFDRP",
+                "ts": "1628762696.186400"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1628762746.187200"
+            },
+            {
+                "user": "UGV299K6H",
+                "ts": "1628805313.205300"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1628805803.206700"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": true,
+        "last_read": "1628805803.206700",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Lmc",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "round trip each request due to the handshake, so a lot"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UCQB6S222",
+        "type": "message",
+        "ts": "1628761373.179800",
+        "client_msg_id": "e006a9cc-9e89-44fa-91a0-aefd1a0360e4",
+        "text": "wow! anything else i should know for latency sensitive BFLW users?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g953ffd5e3b7",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/5813be539113b05ece8212c2a06d006a.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "George",
+            "real_name": "George",
+            "display_name": "George",
+            "team": "T4G9NBD2M",
+            "name": "gd",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1628761373.179800",
+        "reply_count": 10,
+        "reply_users_count": 2,
+        "latest_reply": "1628764725.201000",
+        "reply_users": [
+            "UBS7QANF3",
+            "UCQB6S222"
+        ],
+        "replies": [
+            {
+                "user": "UBS7QANF3",
+                "ts": "1628763644.189500"
+            },
+            {
+                "user": "UCQB6S222",
+                "ts": "1628763730.189700"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1628763936.192400"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1628764021.193100"
+            },
+            {
+                "user": "UCQB6S222",
+                "ts": "1628764057.193300"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1628764343.197200"
+            },
+            {
+                "user": "UCQB6S222",
+                "ts": "1628764478.197400"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1628764552.199200"
+            },
+            {
+                "user": "UCQB6S222",
+                "ts": "1628764582.199600"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1628764725.201000"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": false,
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Fun",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "wow! anything else i should know for latency sensitive BFLW users?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1628761404.180000",
+        "client_msg_id": "6522b8b8-2f01-40d9-b225-eb6d3a2b76e0",
+        "text": "<https:\/\/liampauling.github.io\/betfair\/advanced\/>",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "attachments": [
+            {
+                "title": "Advanced Usage - betfairlightweight",
+                "title_link": "https:\/\/liampauling.github.io\/betfair\/advanced\/",
+                "text": "Lightweight, super fast (uses c libraries) pythonic wrapper for Betfair API-NG.",
+                "fallback": "Advanced Usage - betfairlightweight",
+                "from_url": "https:\/\/liampauling.github.io\/betfair\/advanced\/",
+                "service_icon": "https:\/\/liampauling.github.io\/betfair\/assets\/images\/favicon.png",
+                "service_name": "liampauling.github.io",
+                "id": 1,
+                "original_url": "https:\/\/liampauling.github.io\/betfair\/advanced\/"
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "UCGy",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "link",
+                                "url": "https:\/\/liampauling.github.io\/betfair\/advanced\/"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UCQB6S222",
+        "type": "message",
+        "ts": "1628761461.180300",
+        "client_msg_id": "f7db207e-c9db-490e-8ad8-7b687b2edb2e",
+        "text": "thanks",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g953ffd5e3b7",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/5813be539113b05ece8212c2a06d006a.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "George",
+            "real_name": "George",
+            "display_name": "George",
+            "team": "T4G9NBD2M",
+            "name": "gd",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Ugl",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "thanks"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UCQB6S222",
+        "type": "message",
+        "ts": "1628761564.180700",
+        "client_msg_id": "910d3adb-0a3c-459c-afbe-c6f275e2b81d",
+        "text": "so if i pass an aiohttp session to the client then maybe i can use async without rewriting BFLW?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g953ffd5e3b7",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/5813be539113b05ece8212c2a06d006a.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "George",
+            "real_name": "George",
+            "display_name": "George",
+            "team": "T4G9NBD2M",
+            "name": "gd",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "HIK2t",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "so if i pass an aiohttp session to the client then maybe i can use async without rewriting BFLW?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "man-shrugging",
+                "users": [
+                    "U4H19D1D2"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "ULDAVFDRP",
+        "type": "message",
+        "ts": "1628762147.180900",
+        "edited": {
+            "user": "ULDAVFDRP",
+            "ts": "1628762193.000000"
+        },
+        "client_msg_id": "0e39dc63-7699-4e54-9b0e-d042c7a5194a",
+        "text": "stupid question incoming, but does this mean I should be passing a session into the apiclient for flumine, not sure if I currently do but worth a check by the sounds",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g46fe1c1bf03",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/b46fe1c1bf03e18d951e7032fb494283.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0019-72.png",
+            "first_name": "",
+            "real_name": "Oliver Varney",
+            "display_name": "Oliver Varney",
+            "team": "T4G9NBD2M",
+            "name": "oliverashleyvarney",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1628761314.179400",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "9Afh",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "stupid question incoming, but does this mean I should be passing a session into the apiclient for flumine, not sure if I currently do but worth a check by the sounds"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UCQB6S222",
+        "type": "message",
+        "ts": "1628762216.181500",
+        "client_msg_id": "73c6519c-da43-4adb-848c-f9751b40e985",
+        "text": "well it sounds plausible... i'll let you know if it works :sweat_smile:",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g953ffd5e3b7",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/5813be539113b05ece8212c2a06d006a.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "George",
+            "real_name": "George",
+            "display_name": "George",
+            "team": "T4G9NBD2M",
+            "name": "gd",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "RqsA",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "well it sounds plausible... i'll let you know if it works "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "sweat_smile",
+                                "unicode": "1f605"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1628762229.181600",
+        "client_msg_id": "20e5ab01-bf59-4698-a3d7-978721217b94",
+        "text": "uses sessions by default for all calls",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1628761314.179400",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "iOb8d",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "uses sessions by default for all calls"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "ULDAVFDRP",
+        "type": "message",
+        "ts": "1628762258.182200",
+        "edited": {
+            "user": "ULDAVFDRP",
+            "ts": "1628762367.000000"
+        },
+        "client_msg_id": "3c82e1cd-3882-4c56-813f-b2bbd0fe3557",
+        "text": "okay so no need to set any params on the BFWL client passed into the flumine client (as per the getting started example)?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g46fe1c1bf03",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/b46fe1c1bf03e18d951e7032fb494283.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0019-72.png",
+            "first_name": "",
+            "real_name": "Oliver Varney",
+            "display_name": "Oliver Varney",
+            "team": "T4G9NBD2M",
+            "name": "oliverashleyvarney",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1628761314.179400",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "grwI",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "okay so no need to set any params on the BFWL client passed into the flumine client (as per the getting started example)?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1628762618.185300",
+        "client_msg_id": "4f0ca8fb-8b23-48c3-8c83-a07cc0a3e170",
+        "text": "what example?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1628761314.179400",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "r1h",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "what example?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01U24AG35W",
+        "type": "message",
+        "ts": "1628762645.185700",
+        "client_msg_id": "d66f817c-5853-48e6-9c13-f70094a04c17",
+        "text": "<@U4H19D1D2> re Flumingo Tango Q, OK little bit clearer for me thx...but I don't understand how the initial match attempt using BATL as comparator is equivalent to using Trade deltas in RunnerAnalytics.Traded as comparator.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "d12d00b0e337",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2021-04-05\/1930559079267_d12d00b0e33706cb4bbd_72.png",
+            "first_name": "Thomas",
+            "real_name": "Thomas Jakubauskas",
+            "display_name": "ThomasJ",
+            "team": "T4G9NBD2M",
+            "name": "thomasaj05",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Nj6s",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "user",
+                                "user_id": "U4H19D1D2"
+                            },
+                            {
+                                "type": "text",
+                                "text": " re Flumingo Tango Q, OK little bit clearer for me thx...but I don't understand how the initial match attempt using BATL as comparator is equivalent to using Trade deltas in RunnerAnalytics.Traded as comparator."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1628762673.186000",
+        "client_msg_id": "4253cd46-cd80-4004-b7a8-82e668040ed3",
+        "text": "why? its a different calculation",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "BXqC",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "why? its a different calculation"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "ULDAVFDRP",
+        "type": "message",
+        "ts": "1628762685.186100",
+        "client_msg_id": "ac8ec297-65bb-4733-810d-dd0caffb7b98",
+        "text": "<https:\/\/liampauling.github.io\/flumine\/quickstart\/>",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g46fe1c1bf03",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/b46fe1c1bf03e18d951e7032fb494283.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0019-72.png",
+            "first_name": "",
+            "real_name": "Oliver Varney",
+            "display_name": "Oliver Varney",
+            "team": "T4G9NBD2M",
+            "name": "oliverashleyvarney",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1628761314.179400",
+        "parent_user_id": "U4H19D1D2",
+        "attachments": [
+            {
+                "title": "QuickStart - flumine",
+                "title_link": "https:\/\/liampauling.github.io\/flumine\/quickstart\/",
+                "text": "Trading framework for Betfair API-NG.",
+                "fallback": "QuickStart - flumine",
+                "from_url": "https:\/\/liampauling.github.io\/flumine\/quickstart\/",
+                "service_icon": "https:\/\/liampauling.github.io\/flumine\/assets\/images\/favicon.png",
+                "service_name": "liampauling.github.io",
+                "id": 1,
+                "original_url": "https:\/\/liampauling.github.io\/flumine\/quickstart\/"
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "zJk",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "link",
+                                "url": "https:\/\/liampauling.github.io\/flumine\/quickstart\/"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "ULDAVFDRP",
+        "type": "message",
+        "ts": "1628762696.186400",
+        "client_msg_id": "c9df63ea-fec1-4561-8594-b19e0444e6b0",
+        "text": "```import betfairlightweight\nfrom flumine import Flumine, clients\n\ntrading = betfairlightweight.APIClient(\"username\")\nclient = clients.BetfairClient(trading)\n\nframework = Flumine(client=client)```\n",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g46fe1c1bf03",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/b46fe1c1bf03e18d951e7032fb494283.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0019-72.png",
+            "first_name": "",
+            "real_name": "Oliver Varney",
+            "display_name": "Oliver Varney",
+            "team": "T4G9NBD2M",
+            "name": "oliverashleyvarney",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1628761314.179400",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "77FmG",
+                "elements": [
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "import betfairlightweight\nfrom flumine import Flumine, clients\n\ntrading = betfairlightweight.APIClient(\"username\")\nclient = clients.BetfairClient(trading)\n\nframework = Flumine(client=client)"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": []
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01U24AG35W",
+        "type": "message",
+        "ts": "1628762729.187100",
+        "client_msg_id": "3121abe5-ca6b-4b80-92c0-db7f2cf5f359",
+        "text": "That's where I'm totally confused. Why the need for different?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "d12d00b0e337",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2021-04-05\/1930559079267_d12d00b0e33706cb4bbd_72.png",
+            "first_name": "Thomas",
+            "real_name": "Thomas Jakubauskas",
+            "display_name": "ThomasJ",
+            "team": "T4G9NBD2M",
+            "name": "thomasaj05",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1628762729.187100",
+        "reply_count": 3,
+        "reply_users_count": 2,
+        "latest_reply": "1628763496.187900",
+        "reply_users": [
+            "U4H19D1D2",
+            "U01U24AG35W"
+        ],
+        "replies": [
+            {
+                "user": "U4H19D1D2",
+                "ts": "1628762846.187500"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1628762884.187700"
+            },
+            {
+                "user": "U01U24AG35W",
+                "ts": "1628763496.187900"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": true,
+        "last_read": "1628763496.187900",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "SDfXj",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "That's where I'm totally confused. Why the need for different?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1628762746.187200",
+        "client_msg_id": "b330550b-b020-447e-bcaf-5ae4ddb6f120",
+        "text": "you can still pass params such as locale etc. but flumine will create a session on any latency sensitive calls",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1628761314.179400",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "+WKU",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "you can still pass params such as locale etc. but flumine will create a session on any latency sensitive calls"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "ULDAVFDRP"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1628762846.187500",
+        "client_msg_id": "8cef462a-61f8-4d9c-8d65-34e7fd1ebcbe",
+        "text": "Because on the initial place we need to check if we are taking money and if so what is available to be matched, once that has occurred we then ignore what is available and just look at what is traded. Many trading simulations (e.g betangel) don't do this and instead just use money available but for me I have found it to be far more accurate",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1628762729.187100",
+        "parent_user_id": "U01U24AG35W",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Kleg",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Because on the initial place we need to check if we are taking money and if so what is available to be matched, once that has occurred we then ignore what is available and just look at what is traded. Many trading simulations (e.g betangel) don't do this and instead just use money available but for me I have found it to be far more accurate"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1628762884.187700",
+        "client_msg_id": "c66511dd-574c-441a-ab3f-df5f209e256f",
+        "text": "However flumine has been designed so that you can use your own middleware and simulation logic if you want to",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1628762729.187100",
+        "parent_user_id": "U01U24AG35W",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "vD0c",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "However flumine has been designed so that you can use your own middleware and simulation logic if you want to"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01U24AG35W",
+        "type": "message",
+        "ts": "1628763496.187900",
+        "client_msg_id": "b70be089-54e0-4b68-9e77-26c3b5e947dc",
+        "text": "I will digest that insight thank you.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "d12d00b0e337",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2021-04-05\/1930559079267_d12d00b0e33706cb4bbd_72.png",
+            "first_name": "Thomas",
+            "real_name": "Thomas Jakubauskas",
+            "display_name": "ThomasJ",
+            "team": "T4G9NBD2M",
+            "name": "thomasaj05",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1628762729.187100",
+        "parent_user_id": "U01U24AG35W",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "CTQa",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I will digest that insight thank you."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UCQB6S222",
+        "type": "message",
+        "ts": "1628763640.189300",
+        "client_msg_id": "ed747f3f-31d7-4f78-adda-347324428430",
+        "text": "if you create a requests session in the morning, and use it for http requests all day long, will it last until the evening or will it expire (a) after a set period of time or (b) at random?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g953ffd5e3b7",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/5813be539113b05ece8212c2a06d006a.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "George",
+            "real_name": "George",
+            "display_name": "George",
+            "team": "T4G9NBD2M",
+            "name": "gd",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1628763640.189300",
+        "reply_count": 9,
+        "reply_users_count": 3,
+        "latest_reply": "1628764672.200700",
+        "reply_users": [
+            "UBS7QANF3",
+            "UCQB6S222",
+            "U4H19D1D2"
+        ],
+        "replies": [
+            {
+                "user": "UBS7QANF3",
+                "ts": "1628763831.190900"
+            },
+            {
+                "user": "UCQB6S222",
+                "ts": "1628763880.191800"
+            },
+            {
+                "user": "UCQB6S222",
+                "ts": "1628764231.195000"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1628764505.197800"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1628764530.198700"
+            },
+            {
+                "user": "UCQB6S222",
+                "ts": "1628764549.198900"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1628764594.200100"
+            },
+            {
+                "user": "UCQB6S222",
+                "ts": "1628764650.200500"
+            },
+            {
+                "user": "UCQB6S222",
+                "ts": "1628764672.200700"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": true,
+        "last_read": "1628764672.200700",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "F6l",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "if you create a requests session in the morning, and use it for http requests all day long, will it last until the evening or will it expire (a) after a set period of time or (b) at random?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1628763644.189500",
+        "client_msg_id": "8613DE05-3C5F-4456-B02C-121750157A6F",
+        "text": "Are you trying to “court side” with the scores API?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1628761373.179800",
+        "parent_user_id": "UCQB6S222",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "zYUhe",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Are you trying to “court side” with the scores API?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UCQB6S222",
+        "type": "message",
+        "ts": "1628763730.189700",
+        "client_msg_id": "e2277b60-a94c-4ac9-9ac6-439eab5aa089",
+        "text": "it's not courtsiding if you use data from the BF scores feed surely?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g953ffd5e3b7",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/5813be539113b05ece8212c2a06d006a.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "George",
+            "real_name": "George",
+            "display_name": "George",
+            "team": "T4G9NBD2M",
+            "name": "gd",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1628761373.179800",
+        "parent_user_id": "UCQB6S222",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "SoRO=",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "it's not courtsiding if you use data from the BF scores feed surely?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1628763831.190900",
+        "client_msg_id": "D6D30C6B-7E78-4696-B7AD-3C23FF62094A",
+        "text": "Cloudflare documentation states they keep connections open for 900 seconds after the last request. I suggest you test to confirm this ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1628763640.189300",
+        "parent_user_id": "UCQB6S222",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "S=\/jb",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Cloudflare documentation states they keep connections open for 900 seconds after the last request. I suggest you test to confirm this "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UCQB6S222",
+        "type": "message",
+        "ts": "1628763880.191800",
+        "client_msg_id": "060ff467-e3aa-4ac6-bfda-ee5299ceadec",
+        "text": "thanks",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g953ffd5e3b7",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/5813be539113b05ece8212c2a06d006a.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "George",
+            "real_name": "George",
+            "display_name": "George",
+            "team": "T4G9NBD2M",
+            "name": "gd",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1628763640.189300",
+        "parent_user_id": "UCQB6S222",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "RAG6",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "thanks"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1628763936.192400",
+        "client_msg_id": "5185ECE4-446D-4ED8-98F5-C798BE1A6AF7",
+        "text": "You seem to think courtsiding is a loaded term. I’m just using it as a colloquialism for latency arbitrage",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1628761373.179800",
+        "parent_user_id": "UCQB6S222",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Myt6",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "You seem to think courtsiding is a loaded term. I’m just using it as a colloquialism for latency arbitrage"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1628764021.193100",
+        "client_msg_id": "9B9C15F8-8CEA-4139-9CF2-891392AEEF38",
+        "text": "Without any moralistic judgement",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1628761373.179800",
+        "parent_user_id": "UCQB6S222",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "2vM",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Without any moralistic judgement"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UCQB6S222",
+        "type": "message",
+        "ts": "1628764057.193300",
+        "client_msg_id": "7a6d746b-8386-4233-a4ca-7d0785137f13",
+        "text": "oh ok. i see it as the description of something that's illegal in many countries. maybe it's immoral too... i don't know. i'm not going to try it! but using public data quickly, yes I'd like to give it a go",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g953ffd5e3b7",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/5813be539113b05ece8212c2a06d006a.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "George",
+            "real_name": "George",
+            "display_name": "George",
+            "team": "T4G9NBD2M",
+            "name": "gd",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1628761373.179800",
+        "parent_user_id": "UCQB6S222",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "AOOkE",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "oh ok. i see it as the description of something that's illegal in many countries. maybe it's immoral too... i don't know. i'm not going to try it! but using public data quickly, yes I'd like to give it a go"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UCQB6S222",
+        "type": "message",
+        "ts": "1628764231.195000",
+        "client_msg_id": "81c2da09-4cd7-49d4-a01b-3416e7e12e19",
+        "text": "I think this might be the answer? <https:\/\/docs.python-requests.org\/en\/latest\/user\/advanced\/#keep-alive>",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g953ffd5e3b7",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/5813be539113b05ece8212c2a06d006a.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "George",
+            "real_name": "George",
+            "display_name": "George",
+            "team": "T4G9NBD2M",
+            "name": "gd",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1628763640.189300",
+        "parent_user_id": "UCQB6S222",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "CZ1H5",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I think this might be the answer? "
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/docs.python-requests.org\/en\/latest\/user\/advanced\/#keep-alive"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1628764343.197200",
+        "client_msg_id": "D7662931-7225-46B2-82BA-A2BBBB2001DD",
+        "text": "I don’t think it’s illegal anywhere, it’s the sports governing bodies that crack down on it. Anyway if it’s for a bit of fun then crack on but just wanted to let you know that the scores API is not really competitive for this purpose",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1628761373.179800",
+        "parent_user_id": "UCQB6S222",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "1cKt",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I don’t think it’s illegal anywhere, it’s the sports governing bodies that crack down on it. Anyway if it’s for a bit of fun then crack on but just wanted to let you know that the scores API is not really competitive for this purpose"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UCQB6S222",
+        "type": "message",
+        "ts": "1628764478.197400",
+        "client_msg_id": "f3272285-6314-4928-a805-16a173778ea0",
+        "text": "you're right... but the alternative is going to cost high 6 figures right?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g953ffd5e3b7",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/5813be539113b05ece8212c2a06d006a.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "George",
+            "real_name": "George",
+            "display_name": "George",
+            "team": "T4G9NBD2M",
+            "name": "gd",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1628761373.179800",
+        "parent_user_id": "UCQB6S222",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "BpyT",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "you're right... but the alternative is going to cost high 6 figures right?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1628764505.197800",
+        "client_msg_id": "ebcb010b-0a81-43be-8fb9-8398f736852e",
+        "text": "its server dependant",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1628763640.189300",
+        "parent_user_id": "UCQB6S222",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "VRQ",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "its server dependant"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1628764530.198700",
+        "client_msg_id": "3228EB59-2E25-466F-96DB-10C87270D9D6",
+        "text": "That’s the answer from your perspective as the client. What the server does is what you need to account for",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1628763640.189300",
+        "parent_user_id": "UCQB6S222",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "MO1",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "That’s the answer from your perspective as the client. What the server does is what you need to account for"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UCQB6S222",
+        "type": "message",
+        "ts": "1628764549.198900",
+        "client_msg_id": "d6855a30-0a1a-45c7-ad8f-4df7ff4fbbba",
+        "text": "that's what i thought, do we know what bf does and what would be best practice in terms of creating a new session every so often",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g953ffd5e3b7",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/5813be539113b05ece8212c2a06d006a.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "George",
+            "real_name": "George",
+            "display_name": "George",
+            "team": "T4G9NBD2M",
+            "name": "gd",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1628763640.189300",
+        "parent_user_id": "UCQB6S222",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "9yAyE",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "that's what i thought, do we know what bf does and what would be best practice in terms of creating a new session every so often"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1628764552.199200",
+        "client_msg_id": "3FD87E25-BBAF-4F56-A87A-9A4524738056",
+        "text": "Indeed",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1628761373.179800",
+        "parent_user_id": "UCQB6S222",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "eo7",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Indeed"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UCQB6S222",
+        "type": "message",
+        "ts": "1628764582.199600",
+        "client_msg_id": "c1321b9b-f4c6-4ebc-b2ae-bb81bfe92455",
+        "text": "do you know anyone who actually pays for it?! they have got to be out there",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g953ffd5e3b7",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/5813be539113b05ece8212c2a06d006a.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "George",
+            "real_name": "George",
+            "display_name": "George",
+            "team": "T4G9NBD2M",
+            "name": "gd",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1628761373.179800",
+        "parent_user_id": "UCQB6S222",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "\/Og",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "do you know anyone who actually pays for it?! they have got to be out there"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1628764594.200100",
+        "edited": {
+            "user": "UBS7QANF3",
+            "ts": "1628764603.000000"
+        },
+        "client_msg_id": "CE76AE0A-E349-4325-94E6-B44A751C6F9A",
+        "text": "You go to Betfair via Cloudflare so the important question is what Cloudflare does",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1628763640.189300",
+        "parent_user_id": "UCQB6S222",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "tMVQ",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "You go to Betfair via Cloudflare so the important question is what Cloudflare does"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UCQB6S222",
+        "type": "message",
+        "ts": "1628764650.200500",
+        "client_msg_id": "cae0b5d6-9c0e-41b9-91cc-8351fab59eed",
+        "text": "the cloudflare site mentions using keep-alive which (apparently) is done automatically in the requests module",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g953ffd5e3b7",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/5813be539113b05ece8212c2a06d006a.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "George",
+            "real_name": "George",
+            "display_name": "George",
+            "team": "T4G9NBD2M",
+            "name": "gd",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1628763640.189300",
+        "parent_user_id": "UCQB6S222",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Fizl2",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "the cloudflare site mentions using keep-alive which (apparently) is done automatically in the requests module"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UCQB6S222",
+        "type": "message",
+        "ts": "1628764672.200700",
+        "client_msg_id": "d37baccc-cde6-4417-992c-6fb20b009728",
+        "text": "however the explanation could be a lot clearer.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g953ffd5e3b7",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/5813be539113b05ece8212c2a06d006a.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "George",
+            "real_name": "George",
+            "display_name": "George",
+            "team": "T4G9NBD2M",
+            "name": "gd",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1628763640.189300",
+        "parent_user_id": "UCQB6S222",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "OCq",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "however the explanation could be a lot clearer."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1628764725.201000",
+        "client_msg_id": "BA6685AA-BB71-4E7A-814E-E991C7E070EF",
+        "text": "Yup",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1628761373.179800",
+        "parent_user_id": "UCQB6S222",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "hBf",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Yup"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "subtype": "channel_join",
+        "user": "U02AX13V4BF",
+        "text": "<@U02AX13V4BF> has joined the channel",
+        "type": "message",
+        "ts": "1628772155.201300"
+    },
+    {
+        "user": "U029JM0BJLB",
+        "type": "message",
+        "ts": "1628798652.204400",
+        "client_msg_id": "f635f882-1e89-407c-ae33-148ce5df314f",
+        "text": "<@UBS7QANF3> in your presentation you said it would be nice if people had easy access to a hosted python environment, so they don't need to go through the struggles setting environments up. I think google colab serves that case pretty well.\n\nI've set up the dashboard branch in a colab, so all non coders can basically just upload their market file and use your dashboard right away:\n<https:\/\/colab.research.google.com\/drive\/1D362tW_TkPQdxX7UXqiLgTWZIZIcOmxr?usp=sharing> (if you intend to use it, please make a copy for yourself, after all this is \"colab\", so people can see and interrup what you're doing).",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gc027df5bdad",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/c027df5bdadbb8a9cd94dc2ad6574730.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0003-72.png",
+            "first_name": "",
+            "real_name": "Jan",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "janruno23",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1628798652.204400",
+        "reply_count": 47,
+        "reply_users_count": 4,
+        "latest_reply": "1629009260.243800",
+        "reply_users": [
+            "U029JM0BJLB",
+            "UBS7QANF3",
+            "U027P3N2WMQ",
+            "U9JHLMZB4"
+        ],
+        "replies": [
+            {
+                "user": "U029JM0BJLB",
+                "ts": "1628798751.204800"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1628801479.205000"
+            },
+            {
+                "user": "U027P3N2WMQ",
+                "ts": "1628805496.205500"
+            },
+            {
+                "user": "U029JM0BJLB",
+                "ts": "1628805653.205700"
+            },
+            {
+                "user": "U027P3N2WMQ",
+                "ts": "1628806980.206900"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1628834301.207500"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1628834371.207700"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1628835626.208000"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1628835727.208200"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1628835815.208500"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1628835945.208800"
+            },
+            {
+                "user": "U9JHLMZB4",
+                "ts": "1628842985.210300"
+            },
+            {
+                "user": "U9JHLMZB4",
+                "ts": "1628844589.210500"
+            },
+            {
+                "user": "U9JHLMZB4",
+                "ts": "1628844655.210700"
+            },
+            {
+                "user": "U029JM0BJLB",
+                "ts": "1628844688.210900"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1628844762.211100"
+            },
+            {
+                "user": "U9JHLMZB4",
+                "ts": "1628844815.211300"
+            },
+            {
+                "user": "U9JHLMZB4",
+                "ts": "1628844818.211500"
+            },
+            {
+                "user": "U029JM0BJLB",
+                "ts": "1628844884.211700"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1628844947.211900"
+            },
+            {
+                "user": "U9JHLMZB4",
+                "ts": "1628845452.212100"
+            },
+            {
+                "user": "U9JHLMZB4",
+                "ts": "1628846763.212700"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1628848353.216400"
+            },
+            {
+                "user": "U9JHLMZB4",
+                "ts": "1628849314.216800"
+            },
+            {
+                "user": "U9JHLMZB4",
+                "ts": "1628849847.217000"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1628851140.222700"
+            },
+            {
+                "user": "U029JM0BJLB",
+                "ts": "1628854171.222900"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1628854813.223100"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1628855124.224100"
+            },
+            {
+                "user": "U029JM0BJLB",
+                "ts": "1628855332.225700"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1628857032.228000"
+            },
+            {
+                "user": "U9JHLMZB4",
+                "ts": "1628862327.229000"
+            },
+            {
+                "user": "U029JM0BJLB",
+                "ts": "1628863228.229300"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1628863648.229500"
+            },
+            {
+                "user": "U029JM0BJLB",
+                "ts": "1628864012.229700"
+            },
+            {
+                "user": "U029JM0BJLB",
+                "ts": "1628864026.229900"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1628864136.230100"
+            },
+            {
+                "user": "U9JHLMZB4",
+                "ts": "1628864226.230300"
+            },
+            {
+                "user": "U9JHLMZB4",
+                "ts": "1628864288.230500"
+            },
+            {
+                "user": "U029JM0BJLB",
+                "ts": "1628864342.230700"
+            },
+            {
+                "user": "U029JM0BJLB",
+                "ts": "1628864436.230900"
+            },
+            {
+                "user": "U029JM0BJLB",
+                "ts": "1628864464.231100"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1628864533.231300"
+            },
+            {
+                "user": "U9JHLMZB4",
+                "ts": "1628864660.231600"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1628864691.231800"
+            },
+            {
+                "user": "U9JHLMZB4",
+                "ts": "1628865024.232000"
+            },
+            {
+                "user": "U9JHLMZB4",
+                "ts": "1629009260.243800"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": false,
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "rut",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "user",
+                                "user_id": "UBS7QANF3"
+                            },
+                            {
+                                "type": "text",
+                                "text": " in your presentation you said it would be nice if people had easy access to a hosted python environment, so they don't need to go through the struggles setting environments up. I think google colab serves that case pretty well.\n\nI've set up the dashboard branch in a colab, so all non coders can basically just upload their market file and use your dashboard right away:\n"
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/colab.research.google.com\/drive\/1D362tW_TkPQdxX7UXqiLgTWZIZIcOmxr?usp=sharing"
+                            },
+                            {
+                                "type": "text",
+                                "text": " (if you intend to use it, please make a copy for yourself, after all this is \"colab\", so people can see and interrup what you're doing)."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U029JM0BJLB",
+        "type": "message",
+        "ts": "1628798751.204800",
+        "client_msg_id": "619a5f43-6149-463c-817e-c1ede5a7dc9c",
+        "text": "One q to you though, what kind of market files are you passing in? I'm only doing soccer and only working with the pro files, they always throw an error when being parsed.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gc027df5bdad",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/c027df5bdadbb8a9cd94dc2ad6574730.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0003-72.png",
+            "first_name": "",
+            "real_name": "Jan",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "janruno23",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1628798652.204400",
+        "parent_user_id": "U029JM0BJLB",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "fHV3Y",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "One q to you though, what kind of market files are you passing in? I'm only doing soccer and only working with the pro files, they always throw an error when being parsed."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1628801479.205000",
+        "edited": {
+            "user": "UBS7QANF3",
+            "ts": "1628801485.000000"
+        },
+        "client_msg_id": "d3008ca9-6d35-467b-a855-d67aa410029f",
+        "text": "This is very cool. If you send me a copy of the file I'll investigate. It's been tested with scraped and PRO historic horse racing and tennis files",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1628798652.204400",
+        "parent_user_id": "U029JM0BJLB",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "lEIve",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "This is very cool. If you send me a copy of the file I'll investigate. It's been tested with scraped and PRO historic horse racing and tennis files"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UGV299K6H",
+        "type": "message",
+        "ts": "1628805313.205300",
+        "client_msg_id": "f8e82976-7640-4b83-ae29-4960791ec405",
+        "text": "<@U4H19D1D2> not using Flumine - is there any reason not to pass a session to the client?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g3a262a3cfba",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/b3a262a3cfba292c18acf5777f65908a.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0006-72.png",
+            "first_name": "Michael",
+            "real_name": "Michael C",
+            "display_name": "Michael",
+            "team": "T4G9NBD2M",
+            "name": "michael",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1628761314.179400",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "u8EF",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "user",
+                                "user_id": "U4H19D1D2"
+                            },
+                            {
+                                "type": "text",
+                                "text": " not using Flumine - is there any reason not to pass a session to the client?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U027P3N2WMQ",
+        "type": "message",
+        "ts": "1628805496.205500",
+        "client_msg_id": "f359cc59-6b46-4b58-b2b9-559b5cb88806",
+        "text": "Where can I find the presentation?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gc41721181dc",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/c41721181dc4833c08c32f14cddc81b6.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0026-72.png",
+            "first_name": "Michael",
+            "real_name": "Michael Leary",
+            "display_name": "Michael",
+            "team": "T4G9NBD2M",
+            "name": "michaelleary15",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1628798652.204400",
+        "parent_user_id": "U029JM0BJLB",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "MF8",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Where can I find the presentation?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U029JM0BJLB",
+        "type": "message",
+        "ts": "1628805653.205700",
+        "client_msg_id": "4F1546B5-AC10-4E7B-ACBA-2E5C8E9164D9",
+        "text": "<https:\/\/ppb.zoom.us\/rec\/play\/4MtoWtDnAxaIf4OgfUdHHt5oRytrWrjGebFzW1HcEjjTNhQsGZQ2n0nGqLazA18druK106aS666vUxOa.KFyxDBEH7wveZoJi?startTime=1627636029000&amp;_x_zm_rtaid=q3Pb9QeeRs2n9_o22X0vfw.1628805625862.16fa2e9add233dce0616dd82d30c33a7&amp;_x_zm_rhtaid=433|https:\/\/ppb.zoom.us\/rec\/play\/4MtoWtDnAxaIf4OgfUdHHt5oRytrWrjGebFzW1HcEjjTNhQsGZQ2n0nGqLazA18druK106aS666vUxOa.KFyxDBEH7wveZoJi?startTime=1627636029000&amp;_x_zm_rtaid=q3Pb9QeeRs2n9_o22X0vfw.1628805625862.16fa2e9add233dce0616dd82d30c33a7&amp;_x_zm_rhtaid=433>",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gc027df5bdad",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/c027df5bdadbb8a9cd94dc2ad6574730.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0003-72.png",
+            "first_name": "",
+            "real_name": "Jan",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "janruno23",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1628798652.204400",
+        "parent_user_id": "U029JM0BJLB",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "xIp",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "link",
+                                "url": "https:\/\/ppb.zoom.us\/rec\/play\/4MtoWtDnAxaIf4OgfUdHHt5oRytrWrjGebFzW1HcEjjTNhQsGZQ2n0nGqLazA18druK106aS666vUxOa.KFyxDBEH7wveZoJi?startTime=1627636029000&_x_zm_rtaid=q3Pb9QeeRs2n9_o22X0vfw.1628805625862.16fa2e9add233dce0616dd82d30c33a7&_x_zm_rhtaid=433",
+                                "text": "https:\/\/ppb.zoom.us\/rec\/play\/4MtoWtDnAxaIf4OgfUdHHt5oRytrWrjGebFzW1HcEjjTNhQsGZQ2n0nGqLazA18druK106aS666vUxOa.KFyxDBEH7wveZoJi?startTime=1627636029000&_x_zm_rtaid=q3Pb9QeeRs2n9_o22X0vfw.1628805625862.16fa2e9add233dce0616dd82d30c33a7&_x_zm_rhtaid=433"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1628805803.206700",
+        "client_msg_id": "7C41376B-E2C8-4422-BC87-994DEA6C19DC",
+        "text": "You don’t care about latency and\/or don’t plan on making another request ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1628761314.179400",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "gp3W",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "You don’t care about latency and\/or don’t plan on making another request "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U027P3N2WMQ",
+        "type": "message",
+        "ts": "1628806980.206900",
+        "client_msg_id": "eb29ff4e-515e-42b5-b87a-ae8a4fa09670",
+        "text": "great presentation <@UBS7QANF3>",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gc41721181dc",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/c41721181dc4833c08c32f14cddc81b6.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0026-72.png",
+            "first_name": "Michael",
+            "real_name": "Michael Leary",
+            "display_name": "Michael",
+            "team": "T4G9NBD2M",
+            "name": "michaelleary15",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1628798652.204400",
+        "parent_user_id": "U029JM0BJLB",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "gaf",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "great presentation "
+                            },
+                            {
+                                "type": "user",
+                                "user_id": "UBS7QANF3"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "subtype": "channel_join",
+        "user": "U02BSR9LN4Q",
+        "text": "<@U02BSR9LN4Q> has joined the channel",
+        "type": "message",
+        "ts": "1628831006.207400"
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1628834301.207500",
+        "client_msg_id": "ba2a4689-5e1d-4492-9901-6dec99552080",
+        "text": "Cheers!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1628798652.204400",
+        "parent_user_id": "U029JM0BJLB",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "1R\/wv",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Cheers!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1628834371.207700",
+        "edited": {
+            "user": "UBS7QANF3",
+            "ts": "1628834389.000000"
+        },
+        "client_msg_id": "b53c9d0f-affd-4e0b-8d48-504d0e6682d4",
+        "text": "<@U029JM0BJLB> I've not used collab before but looks like uploaded gives you a dictionary of filename to file contents so you need to change the dashboard creation cell to something like `betfairviz.create_dashboard(list(uploaded.keys())[0])`. While this \"works\" in that there is no error and there is clearly some processing involved, the cell output is empty",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1628798652.204400",
+        "parent_user_id": "U029JM0BJLB",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "R98V",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "user",
+                                "user_id": "U029JM0BJLB"
+                            },
+                            {
+                                "type": "text",
+                                "text": " I've not used collab before but looks like uploaded gives you a dictionary of filename to file contents so you need to change the dashboard creation cell to something like "
+                            },
+                            {
+                                "type": "text",
+                                "text": "betfairviz.create_dashboard(list(uploaded.keys())[0])",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": ". While this \"works\" in that there is no error and there is clearly some processing involved, the cell output is empty"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1628835626.208000",
+        "client_msg_id": "19efe790-79c5-4fac-807b-6e04cc52c961",
+        "text": "Looks like the problem is the graph even though I can get the graph working by itself. There are also some issues even when the dashboard can be brought up including:\n\n1. The slider for navigating through the market doesn't work\n2. None of the icons on the buttons display",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1628798652.204400",
+        "parent_user_id": "U029JM0BJLB",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "+p71M",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Looks like the problem is the graph even though I can get the graph working by itself. There are also some issues even when the dashboard can be brought up including:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_list",
+                        "elements": [
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "The slider for navigating through the market doesn't work"
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "None of the icons on the buttons display"
+                                    }
+                                ]
+                            }
+                        ],
+                        "style": "ordered",
+                        "indent": 0,
+                        "border": 0
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1628835727.208200",
+        "client_msg_id": "6ef63699-3aa0-4859-af37-62face5493b2",
+        "text": "Slider works with this workaround: <https:\/\/github.com\/googlecolab\/colabtools\/issues\/1612> although it's not very smooth to zoom around",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1628798652.204400",
+        "parent_user_id": "U029JM0BJLB",
+        "attachments": [
+            {
+                "text": "From <https:\/\/github.com\/googlecolab\/colabtools\/issues\/60#issuecomment-700419946|googlecolab\/colabtools#60 (comment)>\n\n<https:\/\/colab.research.google.com\/gist\/blois\/cc980d5284982ef5eff72acbceef491f\/copy-of-play_widget_test.ipynb|https:\/\/colab.research.google.com\/gist\/blois\/cc980d5284982ef5eff72acbceef491f\/copy-of-play_widget_test.ipynb>",
+                "title": "<https:\/\/github.com\/googlecolab\/colabtools\/issues\/1612|#1612 widgets.jslink is broken>",
+                "footer": "<https:\/\/github.com\/googlecolab\/colabtools|googlecolab\/colabtools>",
+                "id": 1,
+                "footer_icon": "https:\/\/slack.github.com\/static\/img\/favicon-neutral.png",
+                "ts": 1601421152,
+                "color": "36a64f",
+                "fields": [
+                    {
+                        "title": "Comments",
+                        "value": "1",
+                        "short": true
+                    }
+                ],
+                "mrkdwn_in": [
+                    "text"
+                ],
+                "fallback": "<https:\/\/github.com\/googlecolab\/colabtools\/issues\/1612|#1612 widgets.jslink is broken>",
+                "bot_id": "B021ZJYSBMW",
+                "app_unfurl_url": "https:\/\/github.com\/googlecolab\/colabtools\/issues\/1612",
+                "is_app_unfurl": true
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "gtPR7",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Slider works with this workaround: "
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/googlecolab\/colabtools\/issues\/1612"
+                            },
+                            {
+                                "type": "text",
+                                "text": " although it's not very smooth to zoom around"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1628835815.208500",
+        "client_msg_id": "8f27275e-4344-4b3f-a9c2-c63e77239dcf",
+        "text": "Icons solved by this workaround: <https:\/\/github.com\/googlecolab\/colabtools\/issues\/1302>",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1628798652.204400",
+        "parent_user_id": "U029JM0BJLB",
+        "attachments": [
+            {
+                "text": "From: <https:\/\/github.com\/googlecolab\/colabtools\/issues\/60#issuecomment-637049629|googlecolab\/colabtools#60 (comment)>\n\nIcons for buttons are not rendered in colab. I'd love to see this supported.\n\nAn empty button is showed for the following code:\n\n```\nmy_button = widgets.Button(icon=\"home\")\ndisplay(my_button)\n```\n\nI believe this is because IPyWidgets reference FontAwesome but do not include it.\n\nExample which does render:\n\n```\nfrom IPython.display import HTML\nmy_button = widgets.Button(icon=\"home\")\n\ndisplay(HTML('''&lt;link rel=\"stylesheet\" href=\"https:\/\/stackpath.bootstrapcdn.com\/font-awesome\/4.7.0\/css\/font-awesome.min.css\"&gt; '''))\ndisplay(my_button)\n```",
+                "title": "<https:\/\/github.com\/googlecolab\/colabtools\/issues\/1302|#1302 Icons not rendered in ipywidgets>",
+                "footer": "<https:\/\/github.com\/googlecolab\/colabtools|googlecolab\/colabtools>",
+                "id": 1,
+                "footer_icon": "https:\/\/slack.github.com\/static\/img\/favicon-neutral.png",
+                "ts": 1591039188,
+                "color": "36a64f",
+                "fields": [
+                    {
+                        "title": "Comments",
+                        "value": "1",
+                        "short": true
+                    }
+                ],
+                "mrkdwn_in": [
+                    "text"
+                ],
+                "fallback": "<https:\/\/github.com\/googlecolab\/colabtools\/issues\/1302|#1302 Icons not rendered in ipywidgets>",
+                "bot_id": "B021ZJYSBMW",
+                "app_unfurl_url": "https:\/\/github.com\/googlecolab\/colabtools\/issues\/1302",
+                "is_app_unfurl": true
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "ci2Y",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Icons solved by this workaround: "
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/googlecolab\/colabtools\/issues\/1302"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1628835945.208800",
+        "client_msg_id": "819b7330-a0d7-438b-8ba9-bc4f9ebba9fd",
+        "text": "I'll make some code changes to detect whether the code is running on colab and employ these workarounds if that's the case",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1628798652.204400",
+        "parent_user_id": "U029JM0BJLB",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "c=6V",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I'll make some code changes to detect whether the code is running on colab and employ these workarounds if that's the case"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

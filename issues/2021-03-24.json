@@ -1,0 +1,388 @@
+[
+    {
+        "user": "U0155J92A7Q",
+        "type": "message",
+        "ts": "1616570620.043700",
+        "edited": {
+            "user": "U0155J92A7Q",
+            "ts": "1616570649.000000"
+        },
+        "client_msg_id": "0b62b0ea-aecb-4cd2-8df7-9d23452c02cd",
+        "text": "Hi guys, in the marketrecorder example, <https:\/\/github.com\/liampauling\/flumine\/blob\/master\/examples\/marketrecorder.py>, what would be a case when `context['force_update'] == True` is useful? For me, some files remained locally after the S3 upload, is 'force_update' designed for these cases?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gde8c5d51af5",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/de8c5d51af54a5ac7b501f416ddb262c.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0016-72.png",
+            "first_name": "",
+            "real_name": "Jorge",
+            "display_name": "Jorge",
+            "team": "T4G9NBD2M",
+            "name": "jgarciam95",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "attachments": [
+            {
+                "fallback": "[liampauling\/flumine] examples\/marketrecorder.py",
+                "text": "```\nimport time\nimport logging\nimport betfairlightweight\nfrom pythonjsonlogger import jsonlogger\n\nfrom flumine import Flumine, clients\nfrom flumine.streams.datastream import DataStream\nfrom strategies.marketrecorder import MarketRecorder\n\nlogger = logging.getLogger()\n\ncustom_format = \"%(asctime) %(levelname) %(message)\"\nlog_handler = logging.StreamHandler()\nformatter = jsonlogger.JsonFormatter(custom_format)\nformatter.converter = time.gmtime\nlog_handler.setFormatter(formatter)\nlogger.addHandler(log_handler)\nlogger.setLevel(<http:\/\/logging.INFO|logging.INFO>)\n\ntrading = betfairlightweight.APIClient(\"username\")\nclient = clients.BetfairClient(trading)\n\nframework = Flumine(client=client)\n\nstrategy = MarketRecorder(\n    name=\"WIN\",\n    market_filter=betfairlightweight.filters.streaming_market_filter(\n        event_type_ids=[\"7\"],\n        country_codes=[\"GB\", \"IE\"],\n        market_types=[\"WIN\"],\n    ),\n    stream_class=DataStream,\n    context={\n        \"local_dir\": \"\/tmp\",\n        \"force_update\": False,\n        \"remove_file\": True,\n    },\n)\n\nframework.add_strategy(strategy)\n\nframework.run()\n\n```",
+                "title": "examples\/marketrecorder.py",
+                "footer": "<https:\/\/github.com\/liampauling\/flumine|liampauling\/flumine>",
+                "id": 1,
+                "title_link": "https:\/\/github.com\/liampauling\/flumine\/blob\/master\/examples\/marketrecorder.py",
+                "footer_icon": "https:\/\/github.githubassets.com\/favicon.ico",
+                "color": "24292f",
+                "mrkdwn_in": [
+                    "text"
+                ],
+                "bot_id": "B01144Z0734",
+                "app_unfurl_url": "https:\/\/github.com\/liampauling\/flumine\/blob\/master\/examples\/marketrecorder.py",
+                "is_app_unfurl": true
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "5hiW",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Hi guys, in the marketrecorder example, "
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/liampauling\/flumine\/blob\/master\/examples\/marketrecorder.py"
+                            },
+                            {
+                                "type": "text",
+                                "text": ", what would be a case when "
+                            },
+                            {
+                                "type": "text",
+                                "text": "context['force_update'] == True",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " is useful? For me, some files remained locally after the S3 upload, is 'force_update' designed for these cases?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1616570840.045700",
+        "client_msg_id": "CFC76DF1-8A5B-4FA0-AC73-305EC89D89CE",
+        "text": "Force update is a flag to enable \/ disable upload if the market is reopened and closed after the initial closure. Not uncommon for a result to change \/ runner to be removed after the initial closure ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1616570840.045700",
+        "reply_count": 5,
+        "reply_users_count": 2,
+        "latest_reply": "1621431018.013400",
+        "reply_users": [
+            "U0122TPQABW",
+            "U4H19D1D2"
+        ],
+        "replies": [
+            {
+                "user": "U0122TPQABW",
+                "ts": "1621430587.010200"
+            },
+            {
+                "user": "U0122TPQABW",
+                "ts": "1621430693.012500"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1621430749.012700"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1621430776.012900"
+            },
+            {
+                "user": "U0122TPQABW",
+                "ts": "1621431018.013400"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": true,
+        "last_read": "1621431018.013400",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "3zt",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Force update is a flag to enable \/ disable upload if the market is reopened and closed after the initial closure. Not uncommon for a result to change \/ runner to be removed after the initial closure "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "U0155J92A7Q"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "U0155J92A7Q",
+        "type": "message",
+        "ts": "1616575629.046700",
+        "client_msg_id": "f538e5af-5360-4935-9128-d0a46bd0cb50",
+        "text": "How do you read zip files from S3 without downloading them locally? I found it's possible for Gzip files, using 'read_bytes' option, but no luck with zip files",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gde8c5d51af5",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/de8c5d51af54a5ac7b501f416ddb262c.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0016-72.png",
+            "first_name": "",
+            "real_name": "Jorge",
+            "display_name": "Jorge",
+            "team": "T4G9NBD2M",
+            "name": "jgarciam95",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "BPq",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "How do you read zip files from S3 without downloading them locally? I found it's possible for Gzip files, using 'read_bytes' option, but no luck with zip files"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1616575983.049000",
+        "client_msg_id": "53d97b93-9999-40a8-8abc-e2579c2bd732",
+        "text": "I dont think you can, I made a very poor decision to use zip rather than compression, I will try and update that example and one day I will migrate my files to gzip or similar, maybe in the next pandemic when sports stop again..",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "daOMc",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I dont think you can, I made a very poor decision to use zip rather than compression, I will try and update that example and one day I will migrate my files to gzip or similar, maybe in the next pandemic when sports stop again.."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "joy",
+                "users": [
+                    "UGV299K6H",
+                    "U01LBKGUXCM",
+                    "U01C12ZEADQ"
+                ],
+                "count": 3
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1616576007.049300",
+        "client_msg_id": "b67f9286-afc3-44a1-8a69-1cb2a85ec8da",
+        "text": "The issue is that zip files can contain multiple files",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "TCA",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "The issue is that zip files can contain multiple files"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U0155J92A7Q",
+        "type": "message",
+        "ts": "1616576139.050200",
+        "client_msg_id": "0f1c505e-4247-45e0-a90f-784678e81c9c",
+        "text": "Exactly <@UBS7QANF3>. Okay, then I will change the example to use gzip files since I am starting to record properly now :)",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gde8c5d51af5",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/de8c5d51af54a5ac7b501f416ddb262c.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0016-72.png",
+            "first_name": "",
+            "real_name": "Jorge",
+            "display_name": "Jorge",
+            "team": "T4G9NBD2M",
+            "name": "jgarciam95",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "PZLb=",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Exactly "
+                            },
+                            {
+                                "type": "user",
+                                "user_id": "UBS7QANF3"
+                            },
+                            {
+                                "type": "text",
+                                "text": ". Okay, then I will change the example to use gzip files since I am starting to record properly now :)"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01C12ZEADQ",
+        "type": "message",
+        "ts": "1616592160.050800",
+        "client_msg_id": "964fe0bd-13fe-41fc-a90d-25957cc8f885",
+        "text": "<@U4H19D1D2> that's the perfect job for a lambda func :slightly_smiling_face:",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "e3b7687b0ef8",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-10-06\/1432945617648_e3b7687b0ef86e4f28b8_72.png",
+            "first_name": "Alessio",
+            "real_name": "Alessio",
+            "display_name": "Alessio",
+            "team": "T4G9NBD2M",
+            "name": "alessio",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "P07",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "user",
+                                "user_id": "U4H19D1D2"
+                            },
+                            {
+                                "type": "text",
+                                "text": " that's the perfect job for a lambda func "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "slightly_smiling_face",
+                                "unicode": "1f642"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "100",
+                "users": [
+                    "U4H19D1D2"
+                ],
+                "count": 1
+            }
+        ]
+    }
+]

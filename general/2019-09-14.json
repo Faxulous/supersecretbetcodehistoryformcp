@@ -1,0 +1,832 @@
+[
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1568446404.001100",
+        "client_msg_id": "29c8ba25-eae0-4233-b411-de815eddc02a",
+        "text": "I've been looking at the flumine code in more detail - what happens if you get a price update for a market that has been closed for more than `market_expiration`? It gets ignored? Do you know if that ever happens?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Seh",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I've been looking at the flumine code in more detail - what happens if you get a price update for a market that has been closed for more than "
+                            },
+                            {
+                                "type": "text",
+                                "text": "market_expiration",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "? It gets ignored? Do you know if that ever happens?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1568447564.003900",
+        "client_msg_id": "4F1D6710-469A-4F92-BBC0-9F9D2D3600BD",
+        "text": "Yeah that’s a limitation, you can bump it, it’s me striking a balance. One issue is that if you have an instance running recording data and then start another where a market comes through being closed it will overwrite, losing the data but you I have versioning on s3 ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Hys\/9",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Yeah that’s a limitation, you can bump it, it’s me striking a balance. One issue is that if you have an instance running recording data and then start another where a market comes through being closed it will overwrite, losing the data but you I have versioning on s3"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1568491013.007400",
+        "edited": {
+            "user": "UFTBRB3F1",
+            "ts": "1568491036.000000"
+        },
+        "client_msg_id": "346bd578-b305-455d-8355-446321c5ae80",
+        "text": "I am getting updates, that I'm struggling to understand tonight...for example:\n\n`{'id': '1.132099836', 'rc': [{'batb': [[0, 1.5, 313.6]], 'id': 10317011}]}`\n\nI placed a £5 order @ 1.53, but it looks like potentially its rolled up somehow, which confused me, as the update before was:\n\n`{'id': '1.132099836', 'rc': [{'batl': [[2, 1.59, 1.99], [1, 1.58, 500]], 'id': 10317011}]}`\n\nWhich suggest a £5 bet should not be rolled up.\n\nThe only thing I could think of, is possibly because I only have 3 ladder levels here:\n\n`market_data_filter = streaming_market_data_filter(\n    fields=['EX_BEST_OFFERS', 'EX_MARKET_DEF', 'EX_TRADED', 'EX_LTP'],\n    ladder_levels=3)`\n\nGiven in the above example, the 1st \/ best price was the one that changed I don't get why it wouldn't show, but am I misunderstanding something here, or is this behaviour weird?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Jw28c",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I am getting updates, that I'm struggling to understand tonight...for example:\n\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "{'id': '1.132099836', 'rc': [{'batb': [[0, 1.5, 313.6]], 'id': 10317011}]}",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n\nI placed a £5 order @ 1.53, but it looks like potentially its rolled up somehow, which confused me, as the update before was:\n\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "{'id': '1.132099836', 'rc': [{'batl': [[2, 1.59, 1.99], [1, 1.58, 500]], 'id': 10317011}]}",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n\nWhich suggest a £5 bet should not be rolled up.\n\nThe only thing I could think of, is possibly because I only have 3 ladder levels here:\n\n`market_data_filter = streaming_market_data_filter(\n    fields=['EX_BEST_OFFERS', 'EX_MARKET_DEF', 'EX_TRADED', 'EX_LTP'],\n    ladder_levels=3)`\n\nGiven in the above example, the 1st \/ best price was the one that changed I don't get why it wouldn't show, but am I misunderstanding something here, or is this behaviour weird?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1568491590.008900",
+        "client_msg_id": "2e7890ec-8824-4f78-8932-407b1520c65f",
+        "text": "It really looks like updates just aren't being sent, as I can see the order book has grown, with no updates coming through and that is just a print of:\n\n`    market_books = market_queue.get()\n    for market_book in market_books:\n        print(market_book.streaming_update)`\n\nI'm not manipulating anything at all, thats simply the raw update.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "l1t",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "It really looks like updates just aren't being sent, as I can see the order book has grown, with no updates coming through and that is just a print of:\n\n`    market_books = market_queue.get()\n    for market_book in market_books:\n        print(market_book.streaming_update)`\n\nI'm not manipulating anything at all, thats simply the raw update."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1568493240.009200",
+        "client_msg_id": "AEE8BE6B-6614-4602-9AE8-F93ECD66949A",
+        "text": "Are you backing or laying?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "geV",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Are you backing or laying?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1568493377.010600",
+        "client_msg_id": "45a92d1d-f5a0-4809-b558-bdbe91a9c58e",
+        "text": "the 1.53 was a £5 lay, but it doesn't matter which side, I'm pretty sure the updated I get through the order stream seem to make sense, but the market stream just doesn't seem to update",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "08KBe",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "the 1.53 was a £5 lay, but it doesn't matter which side, I'm pretty sure the updated I get through the order stream seem to make sense, but the market stream just doesn't seem to update"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1568493450.011700",
+        "client_msg_id": "88FC6A47-357F-4B6A-A598-783C6CAEB6A9",
+        "text": "It’s relevant to understand your example because in one update it’s the available to back and in the other it’s the available to lay that is updated",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "jNxs",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "It’s relevant to understand your example because in one update it’s the available to back and in the other it’s the available to lay that is updated"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1568493519.012200",
+        "client_msg_id": "08fe9191-f165-47fc-8b58-cd764940b593",
+        "text": "yeah, I just posted those to show the size in case it was relevant from a roll up perspective :slightly_smiling_face:",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "t356",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "yeah, I just posted those to show the size in case it was relevant from a roll up perspective "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "slightly_smiling_face",
+                                "unicode": "1f642"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1568493532.012800",
+        "client_msg_id": "0796a20c-336a-42ac-9693-49ae0fde3493",
+        "text": "(and they happened to come in around the same time)",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "mWdIR",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "(and they happened to come in around the same time)"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1568493537.013100",
+        "client_msg_id": "910c0e1b-c08c-4f67-b584-6cbf36632cfd",
+        "text": "so I was being lazy",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "8Px",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "so I was being lazy"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1568493603.014100",
+        "client_msg_id": "9B405F06-9DE2-4513-93D1-2A1DB6C5A603",
+        "text": "I think it *might* still be rollup, depending on how rollup is done at the 3rd level for displayed prices",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "mC2Z8",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I think it "
+                            },
+                            {
+                                "type": "text",
+                                "text": "might",
+                                "style": {
+                                    "bold": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " still be rollup, depending on how rollup is done at the 3rd level for displayed prices"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1568493676.015400",
+        "client_msg_id": "7ABA0996-CF00-4D41-8C48-67ADA271F431",
+        "text": "The main question is whether the volume available to back at 1.5 was previously 308.6?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "RQ2a",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "The main question is whether the volume available to back at 1.5 was previously 308.6?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1568493924.017000",
+        "client_msg_id": "9f73c78d-7df2-43b2-b3b0-30c84f775039",
+        "text": "A good question...not actually sure. I will play around with the ladder_level and see if somehow I can get any differing results.\n\nCurrently orders update instantly, but the market stream updates seem sporadic and just don't appear to make any sense (I even checked if I was using the delayed key just in case)!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "4YU",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "A good question...not actually sure. I will play around with the ladder_level and see if somehow I can get any differing results.\n\nCurrently orders update instantly, but the market stream updates seem sporadic and just don't appear to make any sense (I even checked if I was using the delayed key just in case)!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1568494335.017600",
+        "client_msg_id": "70916a94-f045-4cc6-bd2e-f899bc970779",
+        "text": "ok so interestingly, I changed the ladder levels to 10, placed a £2 lay @ 1.53 and:\n\n`{'id': '1.132099836', 'rc': [{'batb': [[9, 1.37, 1651.25], [8, 1.39, 5], [7, 1.44, 400], [6, 1.46, 455], [5, 1.48, 1765], [4, 1.49, 836.66], [3, 1.5, 303.6], [2, 1.51, 66.4], [1, 1.52, 5], [0, 1.53, 2]], 'id': 10317011}]}`",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "CjSw",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "ok so interestingly, I changed the ladder levels to 10, placed a £2 lay @ 1.53 and:\n\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "{'id': '1.132099836', 'rc': [{'batb': [[9, 1.37, 1651.25], [8, 1.39, 5], [7, 1.44, 400], [6, 1.46, 455], [5, 1.48, 1765], [4, 1.49, 836.66], [3, 1.5, 303.6], [2, 1.51, 66.4], [1, 1.52, 5], [0, 1.53, 2]], 'id': 10317011}]}",
+                                "style": {
+                                    "code": true
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1568494359.017900",
+        "client_msg_id": "e3788163-59e8-46d7-8ebd-fe0b0ed91ffb",
+        "text": "so that seems to have answered the question!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "tny1n",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "so that seems to have answered the question!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1568494512.018100",
+        "client_msg_id": "6D10C753-2A4B-4BA0-AC4D-6C1D5F26809B",
+        "text": ":+1:",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "qto9",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "emoji",
+                                "name": "+1",
+                                "unicode": "1f44d"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1568494866.019300",
+        "client_msg_id": "e453c574-f986-41c1-8096-6fc157bc5807",
+        "text": "out of curiosity, for this reason, does everyone just leave ladder levels as the max and just disregard whatever you don't need? I'm guessing that is probably best practice, as there's no real downside to doing so, and the other way (i.e. setting the ladder to what you were planning to use) creates problems as I've found!!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Fej",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "out of curiosity, for this reason, does everyone just leave ladder levels as the max and just disregard whatever you don't need? I'm guessing that is probably best practice, as there's no real downside to doing so, and the other way (i.e. setting the ladder to what you were planning to use) creates problems as I've found!!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1568498655.022200",
+        "client_msg_id": "CF2904C2-AB87-4F71-A5D3-C8E39FF4A601",
+        "text": "I’ve usually worked with two cases: either you want the full (nonvirtual) order book (ladder levels not relevant) or you just want what you see on the website (virtual prices, 3 levels)",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "62aS",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I’ve usually worked with two cases: either you want the full (nonvirtual) order book (ladder levels not relevant) or you just want what you see on the website (virtual prices, 3 levels)"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1568499769.027900",
+        "client_msg_id": "ec58bc77-9308-49ce-be62-ab5038c80465",
+        "text": "I think I'm still missing something here...\n\n`{'id': '1.132099836', 'orc': [{'id': 13231442, 'uo': [{'id': '178557559012', 'p': 48, 's': 2, 'side': 'B', 'status': 'E', 'pt': 'L', 'ot': 'L', 'pd': 1568499248000, 'sm': 0, 'sr': 2, 'sl': 0, 'sc': 0, 'sv': 0, 'rac': '', 'rc': 'REG_GGC', 'rfo': '', 'rfs': ''}]}]}\n{'id': '1.132099836', 'orc': [{'id': 13231442, 'uo': [{'id': '178557559012', 'p': 48, 's': 2, 'side': 'B', 'status': 'EC', 'pt': 'L', 'ot': 'L', 'pd': 1568499248000, 'sm': 0, 'sr': 0, 'sl': 0, 'sc': 2, 'sv': 0, 'rac': '', 'rc': 'REG_GGC', 'rfo': '', 'rfs': ''}]}]}\n{'id': '1.132099836', 'rc': [{'batl': [[9, 110, 3], [8, 100, 1.99], [7, 80, 4], [6, 75, 1.99], [5, 70, 2.01], [4, 65, 2.01], [3, 60, 4.01], [2, 55, 1.98], [1, 50, 7.4], [0, 48, 2]], 'id': 13231442}]}`\n\nSo  I placed a lay order for £2 @ 48, the first update comes through for the order and then I cancel it, hence the second update comes through, again for the order.\n\nI then receive 1 market book update, showing the updated market with the order still live, having already received both of the order messages.\n\nI can live with the weird ordering as that presumably can't be helped...but the issue is I never received another market book update.\n\nI've now removed any reference to ladder levels completely and (initially) the updates appear to be working. Just to make sure my logic is (hopefully finally) sound, if I have no reference to ladder levels and therefore am intending to receive the entire non-virtual order book as you suggest, is there anything else I could have inadvertently (or just plain stupidly :slightly_smiling_face: set, that might be limiting the market book messages somehow?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Gpv",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I think I'm still missing something here...\n\n`{'id': '1.132099836', 'orc': [{'id': 13231442, 'uo': [{'id': '178557559012', 'p': 48, 's': 2, 'side': 'B', 'status': 'E', 'pt': 'L', 'ot': 'L', 'pd': 1568499248000, 'sm': 0, 'sr': 2, 'sl': 0, 'sc': 0, 'sv': 0, 'rac': '', 'rc': 'REG_GGC', 'rfo': '', 'rfs': ''}]}]}\n{'id': '1.132099836', 'orc': [{'id': 13231442, 'uo': [{'id': '178557559012', 'p': 48, 's': 2, 'side': 'B', 'status': 'EC', 'pt': 'L', 'ot': 'L', 'pd': 1568499248000, 'sm': 0, 'sr': 0, 'sl': 0, 'sc': 2, 'sv': 0, 'rac': '', 'rc': 'REG_GGC', 'rfo': '', 'rfs': ''}]}]}\n{'id': '1.132099836', 'rc': [{'batl': [[9, 110, 3], [8, 100, 1.99], [7, 80, 4], [6, 75, 1.99], [5, 70, 2.01], [4, 65, 2.01], [3, 60, 4.01], [2, 55, 1.98], [1, 50, 7.4], [0, 48, 2]], 'id': 13231442}]}`\n\nSo  I placed a lay order for £2 @ 48, the first update comes through for the order and then I cancel it, hence the second update comes through, again for the order.\n\nI then receive 1 market book update, showing the updated market with the order still live, having already received both of the order messages.\n\nI can live with the weird ordering as that presumably can't be helped...but the issue is I never received another market book update.\n\nI've now removed any reference to ladder levels completely and (initially) the updates appear to be working. Just to make sure my logic is (hopefully finally) sound, if I have no reference to ladder levels and therefore am intending to receive the entire non-virtual order book as you suggest, is there anything else I could have inadvertently (or just plain stupidly "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "slightly_smiling_face",
+                                "unicode": "1f642"
+                            },
+                            {
+                                "type": "text",
+                                "text": " set, that might be limiting the market book messages somehow?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1568500266.029300",
+        "client_msg_id": "7418fd97-4fac-4684-9c03-e99e6c26da63",
+        "text": "I'm definitely not getting all updates still, I managed to replicate the above situation again (different runner and market just to check).\n\nmy market data filters are just as follows:\n\n`market_data_filter = streaming_market_data_filter(\n    fields=['EX_BEST_OFFERS', 'EX_MARKET_DEF', 'EX_TRADED', 'EX_LTP'])`\n\nNo reference to ladders at all, so clearly I'm doing something somewhere else...but I can't work out where!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "E8=k",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I'm definitely not getting all updates still, I managed to replicate the above situation again (different runner and market just to check).\n\nmy market data filters are just as follows:\n\n`market_data_filter = streaming_market_data_filter(\n    fields=['EX_BEST_OFFERS', 'EX_MARKET_DEF', 'EX_TRADED', 'EX_LTP'])`\n\nNo reference to ladders at all, so clearly I'm doing something somewhere else...but I can't work out where!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

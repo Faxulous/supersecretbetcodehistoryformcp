@@ -1,0 +1,1867 @@
+[
+    {
+        "user": "U04380WMKL2",
+        "type": "message",
+        "ts": "1667287171.235809",
+        "client_msg_id": "216098d2-c707-4a28-a967-edcc83618e1f",
+        "text": "Is the MarketRecorder under Flumine the best way to stream? I have seen lots of different modules and many different approaches to streaming - some use MarketRecorder, others don't. What do you suggest (and is there a specific streaming example you could refer me to)?\n\nSo far, I am able to obtain the market data I want, but not via streaming (just PIT query). Below is my code. What is the best way to adapt this for streaming?\n\nThanks in advance! This forum has already been extremely helpful!\n\n\ndef GetEventIDs():\n    event_types = trading.betting.list_event_types()\n    Result = pd.DataFrame({\n        'Sport': [event_type_object.event_type.name for event_type_object in event_types],\n        'ID': [event_type_object.event_type.id for event_type_object in event_types]\n    }).set_index('Sport').sort_index()\n    return Result\n\nGetEventIDs()\n\n\ndef FilterMarkets(EventTypeID,MarketCountry,DaysUntilMarketStart):\n    sport_event_filter = betfairlightweight.filters.market_filter(\n        event_type_ids    =[EventTypeID],\n        market_countries  =[MarketCountry],\n        market_start_time ={\n            'to': (datetime.datetime.utcnow() + datetime.timedelta(days=DaysUntilMarketStart)).strftime(\"%Y-%m-%dT%TZ\")\n        }\n    )\n    country_sport_events = trading.betting.list_events(\n        filter=sport_event_filter\n    )\n    Result = pd.DataFrame({\n        'Event Name': [event_object.event.name for event_object in country_sport_events],\n        'Event ID': [event_object.event.id for event_object in country_sport_events],\n        'Event Venue': [event_object.event.venue for event_object in country_sport_events],\n        'Country Code': [event_object.event.country_code for event_object in country_sport_events],\n        'Time Zone': [event_object.event.time_zone for event_object in country_sport_events],\n        'Open Date': [event_object.event.open_date for event_object in country_sport_events],\n        'Market Count': [event_object.market_count for event_object in country_sport_events]\n    })\n    return Result\n\n\ndef process_runner_books(runner_books,market_catalogues):\n    '''\n    This function processes the runner books and returns a DataFrame with the best back\/lay prices + vol for each runner\n    :param runner_books:\n    :return:\n    '''\n    best_back_prices = [runner_book.ex.available_to_back[0]['price']\n        if runner_book.ex.available_to_back\n        else np.nan\n        for runner_book\n        in runner_books]\n    best_back_sizes = [runner_book.ex.available_to_back[0]['size']\n        if runner_book.ex.available_to_back\n        else np.nan\n        for runner_book\n        in runner_books]\n\n    best_lay_prices = [runner_book.ex.available_to_lay[0]['price']\n        if runner_book.ex.available_to_lay\n        else np.nan\n        for runner_book\n        in runner_books]\n    best_lay_sizes = [runner_book.ex.available_to_lay[0]['size']\n        if runner_book.ex.available_to_lay\n        else np.nan\n        for runner_book\n        in runner_books]\n\n    selection_ids = [runner_book.selection_id for runner_book in runner_books]\n    statuses      = [runner_book.status for runner_book in runner_books]\n    runners       = [market_catalogue.runner_name for market_catalogue in market_catalogues.runners]\n\n    df = pd.DataFrame({\n        'Runners': runners,\n        'Selection ID': selection_ids,\n        'Best Back Price': best_back_prices,\n        'Best Back Size': best_back_sizes,\n        'Best Lay Price': best_lay_prices,\n        'Best Lay Size': best_lay_sizes,\n        'Status': statuses,\n    })\n    return df\n\n\ndef GetMarketBook(MarketID,MarketCatalogue):\n    price_filter = betfairlightweight.filters.price_projection(price_data=['EX_BEST_OFFERS'])\n    # Request market books\n    market_books = trading.betting.list_market_book(\n    market_ids=[MarketID],\n    price_projection=price_filter\n    )\n    # Grab the first market book from the returned list\n    market_book = market_books[0]\n    Result = process_runner_books(market_book.runners, MarketCatalogue)\n    return Result",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "0689a341f842",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2022-10-11\/4205481052053_0689a341f84245209a1b_72.png",
+            "first_name": "Liam",
+            "real_name": "Liam Querido",
+            "display_name": "Liam Querido",
+            "team": "T4G9NBD2M",
+            "name": "liamquerido",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1667287171.235809",
+        "reply_count": 76,
+        "reply_users_count": 2,
+        "latest_reply": "1671016540.407699",
+        "reply_users": [
+            "UBS7QANF3",
+            "U04380WMKL2"
+        ],
+        "replies": [
+            {
+                "user": "UBS7QANF3",
+                "ts": "1667287392.026559"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1667287422.222789"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1667287571.336279"
+            },
+            {
+                "user": "U04380WMKL2",
+                "ts": "1667290363.399549"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1667290830.159539"
+            },
+            {
+                "user": "U04380WMKL2",
+                "ts": "1667307270.420109"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1667307327.444009"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1667307334.667129"
+            },
+            {
+                "user": "U04380WMKL2",
+                "ts": "1667307749.024739"
+            },
+            {
+                "user": "U04380WMKL2",
+                "ts": "1667308880.222929"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1667308898.549089"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1667308928.235779"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1667308947.672479"
+            },
+            {
+                "user": "U04380WMKL2",
+                "ts": "1667308978.537419"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1667309022.454869"
+            },
+            {
+                "user": "U04380WMKL2",
+                "ts": "1667309538.771729"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1667309626.129969"
+            },
+            {
+                "user": "U04380WMKL2",
+                "ts": "1667370056.780829"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1667370246.270769"
+            },
+            {
+                "user": "U04380WMKL2",
+                "ts": "1667370335.448619"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1667370353.379699"
+            },
+            {
+                "user": "U04380WMKL2",
+                "ts": "1667370537.577599"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1667370597.674359"
+            },
+            {
+                "user": "U04380WMKL2",
+                "ts": "1667370633.596899"
+            },
+            {
+                "user": "U04380WMKL2",
+                "ts": "1670802356.972569"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1670833680.592079"
+            },
+            {
+                "user": "U04380WMKL2",
+                "ts": "1670833753.558119"
+            },
+            {
+                "user": "U04380WMKL2",
+                "ts": "1670847286.956719"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1670853157.517519"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1670853194.694459"
+            },
+            {
+                "user": "U04380WMKL2",
+                "ts": "1670904372.572869"
+            },
+            {
+                "user": "U04380WMKL2",
+                "ts": "1670904413.506879"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1670922050.742909"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1670922056.306109"
+            },
+            {
+                "user": "U04380WMKL2",
+                "ts": "1670922726.054949"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1670922803.923899"
+            },
+            {
+                "user": "U04380WMKL2",
+                "ts": "1670935328.608039"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1670935474.705879"
+            },
+            {
+                "user": "U04380WMKL2",
+                "ts": "1670935586.804669"
+            },
+            {
+                "user": "U04380WMKL2",
+                "ts": "1670935629.138669"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1670935952.471339"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1670935965.566039"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1670935993.404309"
+            },
+            {
+                "user": "U04380WMKL2",
+                "ts": "1670938856.153249"
+            },
+            {
+                "user": "U04380WMKL2",
+                "ts": "1670938866.630089"
+            },
+            {
+                "user": "U04380WMKL2",
+                "ts": "1670938867.401869"
+            },
+            {
+                "user": "U04380WMKL2",
+                "ts": "1670938899.239099"
+            },
+            {
+                "user": "U04380WMKL2",
+                "ts": "1670938909.683039"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1670940988.113469"
+            },
+            {
+                "user": "U04380WMKL2",
+                "ts": "1670942466.068619"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1670942855.298359"
+            },
+            {
+                "user": "U04380WMKL2",
+                "ts": "1670943232.108409"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1670943371.391709"
+            },
+            {
+                "user": "U04380WMKL2",
+                "ts": "1670943371.839549"
+            },
+            {
+                "user": "U04380WMKL2",
+                "ts": "1670943409.050579"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1670944497.105789"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1670944523.431679"
+            },
+            {
+                "user": "U04380WMKL2",
+                "ts": "1670953956.194869"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1670954002.598669"
+            },
+            {
+                "user": "U04380WMKL2",
+                "ts": "1670954247.165429"
+            },
+            {
+                "user": "U04380WMKL2",
+                "ts": "1670954278.670679"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1670954318.192799"
+            },
+            {
+                "user": "U04380WMKL2",
+                "ts": "1670954318.922419"
+            },
+            {
+                "user": "U04380WMKL2",
+                "ts": "1670954361.970439"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1670954380.844689"
+            },
+            {
+                "user": "U04380WMKL2",
+                "ts": "1670954626.717689"
+            },
+            {
+                "user": "U04380WMKL2",
+                "ts": "1670954640.588889"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1670954738.882139"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1670955289.258039"
+            },
+            {
+                "user": "U04380WMKL2",
+                "ts": "1670955574.599229"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1670955594.304049"
+            },
+            {
+                "user": "U04380WMKL2",
+                "ts": "1670955602.378029"
+            },
+            {
+                "user": "U04380WMKL2",
+                "ts": "1670956172.915049"
+            },
+            {
+                "user": "U04380WMKL2",
+                "ts": "1670956196.310759"
+            },
+            {
+                "user": "U04380WMKL2",
+                "ts": "1671016516.115579"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1671016540.407699"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": true,
+        "last_read": "1671016540.407699",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "j8F",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Is the MarketRecorder under Flumine the best way to stream? I have seen lots of different modules and many different approaches to streaming - some use MarketRecorder, others don't. What do you suggest (and is there a specific streaming example you could refer me to)?\n\nSo far, I am able to obtain the market data I want, but not via streaming (just PIT query). Below is my code. What is the best way to adapt this for streaming?\n\nThanks in advance! This forum has already been extremely helpful!\n\n\ndef GetEventIDs():\n    event_types = trading.betting.list_event_types()\n    Result = pd.DataFrame({\n        'Sport': [event_type_object.event_type.name for event_type_object in event_types],\n        'ID': [event_type_object.event_type.id for event_type_object in event_types]\n    }).set_index('Sport').sort_index()\n    return Result\n\nGetEventIDs()\n\n\ndef FilterMarkets(EventTypeID,MarketCountry,DaysUntilMarketStart):\n    sport_event_filter = betfairlightweight.filters.market_filter(\n        event_type_ids    =[EventTypeID],\n        market_countries  =[MarketCountry],\n        market_start_time ={\n            'to': (datetime.datetime.utcnow() + datetime.timedelta(days=DaysUntilMarketStart)).strftime(\"%Y-%m-%dT%TZ\")\n        }\n    )\n    country_sport_events = trading.betting.list_events(\n        filter=sport_event_filter\n    )\n    Result = pd.DataFrame({\n        'Event Name': [event_object.event.name for event_object in country_sport_events],\n        'Event ID': [event_object.event.id for event_object in country_sport_events],\n        'Event Venue': [event_object.event.venue for event_object in country_sport_events],\n        'Country Code': [event_object.event.country_code for event_object in country_sport_events],\n        'Time Zone': [event_object.event.time_zone for event_object in country_sport_events],\n        'Open Date': [event_object.event.open_date for event_object in country_sport_events],\n        'Market Count': [event_object.market_count for event_object in country_sport_events]\n    })\n    return Result\n\n\ndef process_runner_books(runner_books,market_catalogues):\n    '''\n    This function processes the runner books and returns a DataFrame with the best back\/lay prices + vol for each runner\n    :param runner_books:\n    :return:\n    '''\n    best_back_prices = [runner_book.ex.available_to_back[0]['price']\n        if runner_book.ex.available_to_back\n        else np.nan\n        for runner_book\n        in runner_books]\n    best_back_sizes = [runner_book.ex.available_to_back[0]['size']\n        if runner_book.ex.available_to_back\n        else np.nan\n        for runner_book\n        in runner_books]\n\n    best_lay_prices = [runner_book.ex.available_to_lay[0]['price']\n        if runner_book.ex.available_to_lay\n        else np.nan\n        for runner_book\n        in runner_books]\n    best_lay_sizes = [runner_book.ex.available_to_lay[0]['size']\n        if runner_book.ex.available_to_lay\n        else np.nan\n        for runner_book\n        in runner_books]\n\n    selection_ids = [runner_book.selection_id for runner_book in runner_books]\n    statuses      = [runner_book.status for runner_book in runner_books]\n    runners       = [market_catalogue.runner_name for market_catalogue in market_catalogues.runners]\n\n    df = pd.DataFrame({\n        'Runners': runners,\n        'Selection ID': selection_ids,\n        'Best Back Price': best_back_prices,\n        'Best Back Size': best_back_sizes,\n        'Best Lay Price': best_lay_prices,\n        'Best Lay Size': best_lay_sizes,\n        'Status': statuses,\n    })\n    return df\n\n\ndef GetMarketBook(MarketID,MarketCatalogue):\n    price_filter = betfairlightweight.filters.price_projection(price_data=['EX_BEST_OFFERS'])\n    # Request market books\n    market_books = trading.betting.list_market_book(\n    market_ids=[MarketID],\n    price_projection=price_filter\n    )\n    # Grab the first market book from the returned list\n    market_book = market_books[0]\n    Result = process_runner_books(market_book.runners, MarketCatalogue)\n    return Result"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1667287392.026559",
+        "client_msg_id": "eef275f4-9a0c-4e8b-a1be-e28088f56c6d",
+        "text": "Yes it's the best way",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1667287171.235809",
+        "parent_user_id": "U04380WMKL2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "FnS+",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Yes it's the best way"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1667287422.222789",
+        "client_msg_id": "b295707b-81c3-4ad3-ab4d-6306dae12153",
+        "text": "You need to be recording the raw data with the recorder and then doing this kind of processing (generating a data frame) after the fact",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1667287171.235809",
+        "parent_user_id": "U04380WMKL2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "fU8X",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "You need to be recording the raw data with the recorder and then doing this kind of processing (generating a data frame) after the fact"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1667287571.336279",
+        "client_msg_id": "142ea9f6-9f76-4601-b951-c1cc6f360cf2",
+        "text": "Also no need to reinvent the wheel - use market_book_to_data_frame in betfairutil",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1667287171.235809",
+        "parent_user_id": "U04380WMKL2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "cfvl",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Also no need to reinvent the wheel - use market_book_to_data_frame in betfairutil"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U04380WMKL2",
+        "type": "message",
+        "ts": "1667290363.399549",
+        "edited": {
+            "user": "U04380WMKL2",
+            "ts": "1667290392.000000"
+        },
+        "client_msg_id": "d9af3cbd-868f-4891-ae24-e37e593fdb04",
+        "text": "Okay cool, thanks Mo. I have the following code, which calls the MarketRecorder class. When I execute the code, the data is stored in a single file of type '.205772753'.\n\nI have two questions from here. First of all, I'm not quite sure what this file type is - could you please help me understand what it is, and how I can convert to .csv (I'm assuming you're going to suggest calling market_book_to_dataframe and then saving to .csv).\n\nSecond question, is my code actually streaming? Even though the code keeps running, no new data seems to be recorded. If I leave the code running for 10 mins, I am left with the same file that was exported when I initially executed the code 10 mins ago.\n\nPlease let me know if logs would be any of use in solving this issue. Thanks again Mo",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "0689a341f842",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2022-10-11\/4205481052053_0689a341f84245209a1b_72.png",
+            "first_name": "Liam",
+            "real_name": "Liam Querido",
+            "display_name": "Liam Querido",
+            "team": "T4G9NBD2M",
+            "name": "liamquerido",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1667287171.235809",
+        "parent_user_id": "U04380WMKL2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "lTQ",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Okay cool, thanks Mo. I have the following code, which calls the MarketRecorder class. When I execute the code, the data is stored in a single file of type '.205772753'.\n\nI have two questions from here. First of all, I'm not quite sure what this file type is - could you please help me understand what it is, and how I can convert to .csv (I'm assuming you're going to suggest calling market_book_to_dataframe and then saving to .csv).\n\nSecond question, is my code actually streaming? Even though the code keeps running, no new data seems to be recorded. If I leave the code running for 10 mins, I am left with the same file that was exported when I initially executed the code 10 mins ago.\n\nPlease let me know if logs would be any of use in solving this issue. Thanks again Mo"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1667290830.159539",
+        "edited": {
+            "user": "UBS7QANF3",
+            "ts": "1667293756.000000"
+        },
+        "client_msg_id": "b0b79608-2a9d-4c66-8697-ce2a8e880802",
+        "text": "1. It's technically a JSONL or line delimited JSON file. It's the same format as what you get if you purchase the official Betfair historic data - one streaming API message per line\n2. There is a prices_file_to_csv_file function in betfairutil\n3. Probably. It depends on a couple of things: 1. is the market active? If there are no price changes in those 10 minutes then don't expect there to be any changes to the file 2. are you looking at the prices file or the market catalogue? The market recorder should be saving both. You wouldn't expect the market catalogue to change (much)",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1667287171.235809",
+        "parent_user_id": "U04380WMKL2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "fTQr",
+                "elements": [
+                    {
+                        "type": "rich_text_list",
+                        "elements": [
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "It's technically a JSONL or line delimited JSON file. It's the same format as what you get if you purchase the official Betfair historic data - one streaming API message per line"
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "There is a prices_file_to_csv_file function in betfairutil"
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "Probably. It depends on a couple of things: 1. is the market active? If there are no price changes in those 10 minutes then don't expect there to be any changes to the file 2. are you looking at the prices file or the market catalogue? The market recorder should be saving both. You wouldn't expect the market catalogue to change (much)"
+                                    }
+                                ]
+                            }
+                        ],
+                        "style": "ordered",
+                        "indent": 0,
+                        "border": 0
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01DVUAE2G1",
+        "type": "message",
+        "ts": "1667300687.690429",
+        "client_msg_id": "80ea95c6-4633-4182-b324-b38329cc436e",
+        "text": "others also getting 404 when clicking on markets on betfair website?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gd87aca58eae",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/d87aca58eaeabd0a953b4bc4204bbbaf.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Aaron Smith",
+            "display_name": "Aaron Smith",
+            "team": "T4G9NBD2M",
+            "name": "smiffyaaron",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1667300687.690429",
+        "reply_count": 2,
+        "reply_users_count": 2,
+        "latest_reply": "1667300835.399439",
+        "reply_users": [
+            "U01DCR5PXDY",
+            "U01DVUAE2G1"
+        ],
+        "replies": [
+            {
+                "user": "U01DCR5PXDY",
+                "ts": "1667300759.277479"
+            },
+            {
+                "user": "U01DVUAE2G1",
+                "ts": "1667300835.399439"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": false,
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "0IOK",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "others also getting 404 when clicking on markets on betfair website?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01DCR5PXDY",
+        "type": "message",
+        "ts": "1667300759.277479",
+        "client_msg_id": "55648964-4bb5-463f-9f06-7cf609ca9adc",
+        "text": "Seems to be working fine for me",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "903bc20cd9db",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-10-26\/1448127317798_903bc20cd9dba9a758e0_72.png",
+            "first_name": "thambie1",
+            "real_name": "thambie1",
+            "display_name": "thambie1",
+            "team": "T4G9NBD2M",
+            "name": "thambie1",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1667300687.690429",
+        "parent_user_id": "U01DVUAE2G1",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "fiR4",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Seems to be working fine for me"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01DVUAE2G1",
+        "type": "message",
+        "ts": "1667300835.399439",
+        "client_msg_id": "e172fe7c-0403-47c6-b9fa-115fbdc9e941",
+        "text": "Seems to be fine for me now aswell, but wasnt working for the last 10 min. thanks for checking :slightly_smiling_face:",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gd87aca58eae",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/d87aca58eaeabd0a953b4bc4204bbbaf.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Aaron Smith",
+            "display_name": "Aaron Smith",
+            "team": "T4G9NBD2M",
+            "name": "smiffyaaron",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1667300687.690429",
+        "parent_user_id": "U01DVUAE2G1",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "4MLKn",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Seems to be fine for me now aswell, but wasnt working for the last 10 min. thanks for checking "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "slightly_smiling_face",
+                                "unicode": "1f642"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U0322P0CK0E",
+        "type": "message",
+        "ts": "1667303232.345199",
+        "client_msg_id": "2d8564f2-c5aa-41e7-a9b3-8ac8cf6d8747",
+        "text": "Anyone ever has this issue before? Using the simulation client in flumine using purchased data. Tested it out with a few data files and all had this issue. I've even checked if runner.status is active before placing any bets\n\n2022-11-01 22:42:25,440:CRITICAL:198:Trade error in 416eae93-59da-11ed-8a6c-6c2b59d9baa8\n Traceback (most recent call last):\n   File \"C:\\Users\\VL\\Documents\\virtual_environments\\backtest\\lib\\site-packages\\flumine\\execution\\simulatedexecution.py\", line 42, in execute_place\n     simulated_response = order.simulated.place(\n   File \"C:\\Users\\VL\\Documents\\virtual_environments\\backtest\\lib\\site-packages\\flumine\\simulation\\simulatedorder.py\", line 87, in place\n     if runner.status == \"REMOVED\":\n AttributeError: 'NoneType' object has no attribute 'status'",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "ab1918814707",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2022-07-31\/3867647231206_ab191881470773932048_72.jpg",
+            "first_name": "Vincent",
+            "real_name": "Vincent Lim",
+            "display_name": "Guy Incognito",
+            "team": "T4G9NBD2M",
+            "name": "nelsonmathsspecialist",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1667303232.345199",
+        "reply_count": 1,
+        "reply_users_count": 1,
+        "latest_reply": "1667303312.665559",
+        "reply_users": [
+            "UBS7QANF3"
+        ],
+        "replies": [
+            {
+                "user": "UBS7QANF3",
+                "ts": "1667303312.665559"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": false,
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "TfP",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Anyone ever has this issue before? Using the simulation client in flumine using purchased data. Tested it out with a few data files and all had this issue. I've even checked if runner.status is active before placing any bets\n\n2022-11-01 22:42:25,440:CRITICAL:198:Trade error in 416eae93-59da-11ed-8a6c-6c2b59d9baa8\n Traceback (most recent call last):\n   File \"C:\\Users\\VL\\Documents\\virtual_environments\\backtest\\lib\\site-packages\\flumine\\execution\\simulatedexecution.py\", line 42, in execute_place\n     simulated_response = order.simulated.place(\n   File \"C:\\Users\\VL\\Documents\\virtual_environments\\backtest\\lib\\site-packages\\flumine\\simulation\\simulatedorder.py\", line 87, in place\n     if runner.status == \"REMOVED\":\n AttributeError: 'NoneType' object has no attribute 'status'"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1667303271.343319",
+        "client_msg_id": "bc6dc8da-0914-431f-928f-57b1e22652d2",
+        "text": "can you share the strategy code where you call place?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1667303271.343319",
+        "reply_count": 5,
+        "reply_users_count": 2,
+        "latest_reply": "1667303790.093199",
+        "reply_users": [
+            "U0322P0CK0E",
+            "U4H19D1D2"
+        ],
+        "replies": [
+            {
+                "user": "U0322P0CK0E",
+                "ts": "1667303647.479209"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1667303666.128309"
+            },
+            {
+                "user": "U0322P0CK0E",
+                "ts": "1667303771.873379"
+            },
+            {
+                "user": "U0322P0CK0E",
+                "ts": "1667303775.098919"
+            },
+            {
+                "user": "U0322P0CK0E",
+                "ts": "1667303790.093199"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": true,
+        "last_read": "1667303790.093199",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "IBQe",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "can you share the strategy code where you call place?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1667303312.665559",
+        "client_msg_id": "F88C0F4F-C943-4D3A-8ED1-5B4167061C9D",
+        "text": "What level of purchased data?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1667303232.345199",
+        "parent_user_id": "U0322P0CK0E",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "wo0",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "What level of purchased data?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U0322P0CK0E",
+        "type": "message",
+        "ts": "1667303647.479209",
+        "client_msg_id": "6dba403d-518d-4c8f-96a8-7e620dbe9688",
+        "text": "if runner.status == \"ACTIVE\":\n                        back_price = 5\n                        back_size = 5\n\n                        trade = Trade(\n                            market_id=market_book.market_id,\n                            selection_id=runner.selection_id,\n                            handicap=runner.selection_id,\n                            strategy=self\n                        )\n\n                        order = trade.create_order(\n                            side=\"BACK\",\n                            order_type=LimitOrder(price=back_price, size=back_size)\n                        )\n\n                        market.place_order(order)",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "ab1918814707",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2022-07-31\/3867647231206_ab191881470773932048_72.jpg",
+            "first_name": "Vincent",
+            "real_name": "Vincent Lim",
+            "display_name": "Guy Incognito",
+            "team": "T4G9NBD2M",
+            "name": "nelsonmathsspecialist",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1667303271.343319",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "EgzA",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "if runner.status == \"ACTIVE\":\n                        back_price = 5\n                        back_size = 5\n\n                        trade = Trade(\n                            market_id=market_book.market_id,\n                            selection_id=runner.selection_id,\n                            handicap=runner.selection_id,\n                            strategy=self\n                        )\n\n                        order = trade.create_order(\n                            side=\"BACK\",\n                            order_type=LimitOrder(price=back_price, size=back_size)\n                        )\n\n                        market.place_order(order)"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1667303666.128309",
+        "client_msg_id": "a23fd505-3838-4e45-b713-a55d40915961",
+        "text": "hhaannnddiiiicccaaapaapapappapapa",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1667303271.343319",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "oIkP",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "hhaannnddiiiicccaaapaapapappapapa"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U0322P0CK0E",
+        "type": "message",
+        "ts": "1667303771.873379",
+        "client_msg_id": "5dc39ef3-c081-431d-8f8c-440da4f98408",
+        "text": "Noooooooooo",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "ab1918814707",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2022-07-31\/3867647231206_ab191881470773932048_72.jpg",
+            "first_name": "Vincent",
+            "real_name": "Vincent Lim",
+            "display_name": "Guy Incognito",
+            "team": "T4G9NBD2M",
+            "name": "nelsonmathsspecialist",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1667303271.343319",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "tSz43",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Noooooooooo"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U0322P0CK0E",
+        "type": "message",
+        "ts": "1667303775.098919",
+        "client_msg_id": "b28d1447-be70-4af2-9740-6e0cae098605",
+        "text": "Thanks!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "ab1918814707",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2022-07-31\/3867647231206_ab191881470773932048_72.jpg",
+            "first_name": "Vincent",
+            "real_name": "Vincent Lim",
+            "display_name": "Guy Incognito",
+            "team": "T4G9NBD2M",
+            "name": "nelsonmathsspecialist",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1667303271.343319",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "8LGr",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Thanks!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U0322P0CK0E",
+        "type": "message",
+        "ts": "1667303790.093199",
+        "client_msg_id": "a040c9a5-8d70-48f5-b383-03934c0e4d96",
+        "text": "I've been staring at it for a while",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "ab1918814707",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2022-07-31\/3867647231206_ab191881470773932048_72.jpg",
+            "first_name": "Vincent",
+            "real_name": "Vincent Lim",
+            "display_name": "Guy Incognito",
+            "team": "T4G9NBD2M",
+            "name": "nelsonmathsspecialist",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1667303271.343319",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Un=n",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I've been staring at it for a while"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U04380WMKL2",
+        "type": "message",
+        "ts": "1667307270.420109",
+        "client_msg_id": "15c75b23-e2b4-4e3d-bbe2-1bef1a4dd017",
+        "text": "Perfect. One other thing, is it possible to adjust the frequency of the data that Flumine records. I believe that, for the delayed app key, the default is every 180 seconds. Is this able to be changed (or just for the live key)?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "0689a341f842",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2022-10-11\/4205481052053_0689a341f84245209a1b_72.png",
+            "first_name": "Liam",
+            "real_name": "Liam Querido",
+            "display_name": "Liam Querido",
+            "team": "T4G9NBD2M",
+            "name": "liamquerido",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1667287171.235809",
+        "parent_user_id": "U04380WMKL2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "YjxDG",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Perfect. One other thing, is it possible to adjust the frequency of the data that Flumine records. I believe that, for the delayed app key, the default is every 180 seconds. Is this able to be changed (or just for the live key)?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1667307327.444009",
+        "client_msg_id": "3eb81b83-6ef5-48d2-a53e-88344dd14339",
+        "text": "JFC don't bother recording data with the delayed key",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1667287171.235809",
+        "parent_user_id": "U04380WMKL2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "IWR",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "JFC don't bother recording data with the delayed key"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1667307334.667129",
+        "client_msg_id": "0c239724-ef24-4081-8a12-ff006eda232c",
+        "text": "Message <@U4H19D1D2> to get your live key activated for free",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1667287171.235809",
+        "parent_user_id": "U04380WMKL2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "lUar",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Message "
+                            },
+                            {
+                                "type": "user",
+                                "user_id": "U4H19D1D2"
+                            },
+                            {
+                                "type": "text",
+                                "text": " to get your live key activated for free"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U04380WMKL2",
+        "type": "message",
+        "ts": "1667307749.024739",
+        "client_msg_id": "8064d5b9-fd2f-47a5-a3c4-3fcd1fcc3932",
+        "text": "hahahah, will do. Thanks Mo!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "0689a341f842",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2022-10-11\/4205481052053_0689a341f84245209a1b_72.png",
+            "first_name": "Liam",
+            "real_name": "Liam Querido",
+            "display_name": "Liam Querido",
+            "team": "T4G9NBD2M",
+            "name": "liamquerido",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1667287171.235809",
+        "parent_user_id": "U04380WMKL2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "j7RG8",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "hahahah, will do. Thanks Mo!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U04380WMKL2",
+        "type": "message",
+        "ts": "1667308880.222929",
+        "client_msg_id": "c0f18ae9-95d1-4068-a790-77e92ff60496",
+        "text": "Where would I call the prices_file_to_csv_file function in the below code?\n\nclient = clients.BetfairClient(trading)\n\nframework = Flumine(client=client)\n\nstrategy = MarketRecorder(\n    market_filter=betfairlightweight.filters.streaming_market_filter(\n        market_ids=[MarketID],\n    ),\n    stream_class=DataStream,\n    context={\"local_dir\": r\"C:\\tmp\", \"force_update\": False, \"remove_file\": True,},\n)\n\nframework.add_strategy(strategy)\nframework.run()",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "0689a341f842",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2022-10-11\/4205481052053_0689a341f84245209a1b_72.png",
+            "first_name": "Liam",
+            "real_name": "Liam Querido",
+            "display_name": "Liam Querido",
+            "team": "T4G9NBD2M",
+            "name": "liamquerido",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1667287171.235809",
+        "parent_user_id": "U04380WMKL2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "17sd",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Where would I call the prices_file_to_csv_file function in the below code?\n\nclient = clients.BetfairClient(trading)\n\nframework = Flumine(client=client)\n\nstrategy = MarketRecorder(\n    market_filter=betfairlightweight.filters.streaming_market_filter(\n        market_ids=[MarketID],\n    ),\n    stream_class=DataStream,\n    context={\"local_dir\": r\"C:\\tmp\", \"force_update\": False, \"remove_file\": True,},\n)\n\nframework.add_strategy(strategy)\nframework.run()"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1667308898.549089",
+        "client_msg_id": "43fc0787-25d6-4e2e-b887-a5f52c23e954",
+        "text": "You don't",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1667287171.235809",
+        "parent_user_id": "U04380WMKL2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "pzb3",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "You don't"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1667308928.235779",
+        "client_msg_id": "157631e9-3b7d-4436-bd78-d2d4824dba6c",
+        "text": "You're conflating the recording of the data with the formatting\/processing of the data",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1667287171.235809",
+        "parent_user_id": "U04380WMKL2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "T7q",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "You're conflating the recording of the data with the formatting\/processing of the data"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1667308947.672479",
+        "client_msg_id": "7ca4b90d-52c9-475d-abb0-e8b6473d2f0e",
+        "text": "Record the data in the standard format, process it to your preferred format after the fact",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1667287171.235809",
+        "parent_user_id": "U04380WMKL2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "dvCg",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Record the data in the standard format, process it to your preferred format after the fact"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U04380WMKL2",
+        "type": "message",
+        "ts": "1667308978.537419",
+        "client_msg_id": "6b6b5d70-375d-489d-817d-2658cc0be261",
+        "text": "Oh I see, so I import the file containing the market data and then call the prices_file_to_csv_file function?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "0689a341f842",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2022-10-11\/4205481052053_0689a341f84245209a1b_72.png",
+            "first_name": "Liam",
+            "real_name": "Liam Querido",
+            "display_name": "Liam Querido",
+            "team": "T4G9NBD2M",
+            "name": "liamquerido",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1667287171.235809",
+        "parent_user_id": "U04380WMKL2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "EAPQV",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Oh I see, so I import the file containing the market data and then call the prices_file_to_csv_file function?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1667309022.454869",
+        "client_msg_id": "e9fe3244-5c00-473e-b8fc-694fcb76e820",
+        "text": "You just call prices_file_to_csv_file giving it the path to the prices file as one of the arguments",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1667287171.235809",
+        "parent_user_id": "U04380WMKL2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "jUA",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "You just call prices_file_to_csv_file giving it the path to the prices file as one of the arguments"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U04380WMKL2",
+        "type": "message",
+        "ts": "1667309538.771729",
+        "client_msg_id": "73086629-1135-48a1-a9aa-17391c686c67",
+        "text": "That's exactly what I needed. Thanks Mo",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "0689a341f842",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2022-10-11\/4205481052053_0689a341f84245209a1b_72.png",
+            "first_name": "Liam",
+            "real_name": "Liam Querido",
+            "display_name": "Liam Querido",
+            "team": "T4G9NBD2M",
+            "name": "liamquerido",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1667287171.235809",
+        "parent_user_id": "U04380WMKL2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "SvAg",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "That's exactly what I needed. Thanks Mo"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1667309626.129969",
+        "client_msg_id": "11f5ebed-1bdb-4ece-aeab-9c8bb9734517",
+        "text": ":+1:",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1667287171.235809",
+        "parent_user_id": "U04380WMKL2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "wjkO",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "emoji",
+                                "name": "+1",
+                                "unicode": "1f44d"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U04380WMKL2",
+        "type": "message",
+        "ts": "1667370056.780829",
+        "client_msg_id": "20eb96b7-c6c1-4913-9754-eae21a5f7804",
+        "text": "Hey Mo, what exactly does the 'depth' variable show?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "0689a341f842",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2022-10-11\/4205481052053_0689a341f84245209a1b_72.png",
+            "first_name": "Liam",
+            "real_name": "Liam Querido",
+            "display_name": "Liam Querido",
+            "team": "T4G9NBD2M",
+            "name": "liamquerido",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1667287171.235809",
+        "parent_user_id": "U04380WMKL2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "\/b7jH",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Hey Mo, what exactly does the 'depth' variable show?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1667370246.270769",
+        "client_msg_id": "c03c4abf-b98e-4f63-a21e-ec573145bb2f",
+        "text": "Depth 0 is best price, depth 1 is second best price, depth 2 is third best price etc",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1667287171.235809",
+        "parent_user_id": "U04380WMKL2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "6WKsn",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Depth 0 is best price, depth 1 is second best price, depth 2 is third best price etc"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U04380WMKL2",
+        "type": "message",
+        "ts": "1667370335.448619",
+        "client_msg_id": "b12d0b19-3a31-417f-8725-5fabf86851f4",
+        "text": "Ahhh okay, what does depth default to in the event that there is no price?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "0689a341f842",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2022-10-11\/4205481052053_0689a341f84245209a1b_72.png",
+            "first_name": "Liam",
+            "real_name": "Liam Querido",
+            "display_name": "Liam Querido",
+            "team": "T4G9NBD2M",
+            "name": "liamquerido",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1667287171.235809",
+        "parent_user_id": "U04380WMKL2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "ZrwA",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Ahhh okay, what does depth default to in the event that there is no price?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1667370353.379699",
+        "client_msg_id": "49613228-e121-4cae-ab72-bcfbd3c35b1b",
+        "text": "If there is no price there won't be a row in the data frame",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1667287171.235809",
+        "parent_user_id": "U04380WMKL2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "BEYu9",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "If there is no price there won't be a row in the data frame"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U04380WMKL2",
+        "type": "message",
+        "ts": "1667370537.577599",
+        "client_msg_id": "89e10abf-ea8c-4132-b767-54e3ad7f81fb",
+        "text": "Oh true, of course. Okay, what about the following situation?\n\nIf the price at depth=0 and the price at depth=1 are the same (for the same selection_id), do the sizes at depth=0 and depth=1 sum? I.e., if the sizes are $20 for depth=0 and $15 for depth=1, can you place a trade of $35 at that price (given that it is common).",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "0689a341f842",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2022-10-11\/4205481052053_0689a341f84245209a1b_72.png",
+            "first_name": "Liam",
+            "real_name": "Liam Querido",
+            "display_name": "Liam Querido",
+            "team": "T4G9NBD2M",
+            "name": "liamquerido",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1667287171.235809",
+        "parent_user_id": "U04380WMKL2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "NMws",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Oh true, of course. Okay, what about the following situation?\n\nIf the price at depth=0 and the price at depth=1 are the same (for the same selection_id), do the sizes at depth=0 and depth=1 sum? I.e., if the sizes are $20 for depth=0 and $15 for depth=1, can you place a trade of $35 at that price (given that it is common)."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1667370597.674359",
+        "client_msg_id": "38b8f325-2e3e-4167-b448-acc74e767b84",
+        "text": "Impossible for the price to be the same for different depths at a given timestamp",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1667287171.235809",
+        "parent_user_id": "U04380WMKL2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "ysivv",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Impossible for the price to be the same for different depths at a given timestamp"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U04380WMKL2",
+        "type": "message",
+        "ts": "1667370633.596899",
+        "client_msg_id": "6dc906bd-45f6-450e-9260-9c27af20ad82",
+        "text": "Okay sweet, thanks Mo",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "0689a341f842",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2022-10-11\/4205481052053_0689a341f84245209a1b_72.png",
+            "first_name": "Liam",
+            "real_name": "Liam Querido",
+            "display_name": "Liam Querido",
+            "team": "T4G9NBD2M",
+            "name": "liamquerido",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1667287171.235809",
+        "parent_user_id": "U04380WMKL2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "qQk",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Okay sweet, thanks Mo"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

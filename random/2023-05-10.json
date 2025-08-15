@@ -1,0 +1,455 @@
+[
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1683705045.149049",
+        "client_msg_id": "1816ee1f-b2a6-426f-9b7d-e56e915d9802",
+        "text": "Its funny, but I wrote these functions, probably 2, maybe 3 years ago now (albeit they have grown into very slow moving monsters over time)! Back then they seemed to make sense!!!\n\nI think the bulk of the issue is the sheer inefficiency of these two, as they get called a lot as part of my order validation (or cancellation) process:\n\n```def check_race_type_by_country(race_type, market_name, event_type_id, country_dict):\n\n    race_type = return_race_type(race_type, market_name, event_type_id)\n\n    maiden = True if 'Mdn' in market_name else False\n\n    if country_dict != False and isinstance(country_dict, dict):\n        price = False\n        # If a dict is in the config, it will match by country and race type\n        maiden_list = [v for k,v in country_dict.items() if race_type == k]\n        if len(maiden_list) &gt; 0:\n            if isinstance(maiden_list[0], list):\n                for m in maiden_list[0]:\n                    if 'Mdn' in m.keys() and maiden is True:\n                        price = m['Mdn']\n                    else:\n                        if 'default' in m.keys():\n                            price = m['default']\n            else:\n                price = maiden_list[0]\n\n        else:\n            if 'default' in country_dict.keys():\n                if 'odds' not in country_dict.keys() and 'runners' not in country_dict.keys():\n                    maiden_list = country_dict['default']\n                    if isinstance(maiden_list, list):\n                        for m in maiden_list:\n                            if 'Mdn' in m.keys() and maiden is True:\n                                price = m['Mdn']\n                            else:\n                                if 'default' in m.keys():\n                                    price = m['default']\n                    else:\n                        price = maiden_list\n                else:\n                    price = country_dict\n    else:\n        # If a single price (rather than a dict) is in the config, then it will set this for all valid markets\n        if isinstance(country_dict, float) or isinstance(country_dict, int):\n            price = country_dict\n        else:\n            price = False\n    return price\n\ndef true_or_false(setting, country_code=False, market_id=False, market_type=False):\n    if not isinstance(setting, list):\n        if setting == 'True':\n            return True\n        elif setting == 'False':\n            return False\n        else:\n            return setting\n    else:\n        if country_code is False or country_code is None or country_code == 'False':\n            if setting == 'True' or setting is True:\n                return True\n            elif setting == 'False' or setting is False:\n                return False\n            else:\n                if market_id is False:\n                    if isinstance(setting, list):\n                        default = [s for s in setting if isinstance(s, dict) and 'default' in s.keys()]\n                        if len(default) &gt; 0:\n                            if market_type is False:\n                                return default[0]['default']\n                            else:\n                                market_type_benchmark = [s for s in setting if isinstance(s, dict) and market_type in s.keys()]\n                                if len(market_type_benchmark) &gt; 0:\n                                    return market_type_benchmark[0][market_type]\n                                else:\n                                    return default[0]['default']\n                        else:\n                            return setting\n                    else:\n                        return setting\n                else:\n                    for s in setting:\n                        if market_id in s.keys():\n                            if s[market_id] == 'True':\n                                return True\n                            elif s[market_id] == 'False':\n                                return False\n                            else:\n                                return s[market_id]\n                        else:\n                            default = [s for s in setting if 'default' in s.keys()]\n                            if len(default) &gt; 0:\n                                if market_type is False:\n                                    return default[0]['default']\n                                else:\n                                    market_type_benchmark = [s for s in setting if\n                                                             isinstance(s, dict) and market_type in s.keys()]\n                                    if len(market_type_benchmark) &gt; 0:\n                                        return market_type_benchmark[0][market_type]\n                                    else:\n                                        return default[0]['default']\n                            else:\n                                return False\n                    else:\n                        default = [s for s in setting if 'default' in s.keys()]\n                        if len(default) &gt; 0:\n                            if market_type is False:\n                                return default[0]['default']\n                            else:\n                                market_type_benchmark = [s for s in setting if\n                                                         isinstance(s, dict) and market_type in s.keys()]\n                                if len(market_type_benchmark) &gt; 0:\n                                    return market_type_benchmark[0][market_type]\n                                else:\n                                    return default[0]['default']\n                        else:\n                            return False\n        else:\n            for s in setting:\n                if isinstance(s, dict):\n                    if country_code in s.keys():\n                        if s[country_code] == 'True':\n                            return True\n                        elif s[country_code] == 'False':\n                            return False\n                        else:\n                            if isinstance(s[country_code], dict):\n                                if market_type in s[country_code].keys():\n                                    return s[country_code][market_type]\n                                else:\n                                    if 'default' in s[country_code].keys():\n                                        return s[country_code]['default']\n                                    else:\n                                        return False\n                            else:\n                                return s[country_code]\n                    else:\n                        if market_id is False:\n                            default = [s for s in setting if 'default' in s.keys()]\n                            if len(default) &gt; 0:\n                                if market_type is False:\n                                    return default[0]['default']\n                                else:\n                                    market_type_benchmark = [s for s in setting if\n                                                             isinstance(s, dict) and market_type in s.keys()]\n                                    if len(market_type_benchmark) &gt; 0:\n                                        return market_type_benchmark[0][market_type]\n                                    else:\n                                        return default[0]['default']\n                            else:\n                                return setting\n                        else:\n                            if market_id in s.keys():\n                                if s[market_id] == 'True':\n                                    return True\n                                elif s[market_id] == 'False':\n                                    return False\n                                else:\n                                    return s[market_id]\n            else:\n                default = [s for s in setting if isinstance(s, dict) and 'default' in s.keys()]\n                if len(default) &gt; 0:\n                    if market_type is False:\n                        return default[0]['default']\n                    else:\n                        market_type_benchmark = [s for s in setting if\n                                                 isinstance(s, dict) and market_type in s.keys()]\n                        if len(market_type_benchmark) &gt; 0:\n                            return market_type_benchmark[0][market_type]\n                        else:\n                            return default[0]['default']\n                else:\n                    if isinstance(setting, list):\n                        return setting\n                    else:\n                        return False```\nsetting in the above refers to a dict, on startup I open a json file which contains various parameters.\n\nAn example would be something like this:\n\n```    {\n        \"event_type_ids\": [\n            7\n        ],\n        \"strategy_name\": \"strategy_xyz\",\n        \"country_codes\": false,\n        \"market_types\": [\n            \"WIN\"\n        ],\n        \"execution_market_types\": [\n            \"WIN\"\n        ],\n        \"pre_event_order_window\": [\n            {\n                \"GB\": [\n                    {\n                        \"start\": 3600,\n                        \"duration\": false\n                    }\n                ],\n                \"IE\": [\n                    {\n                        \"start\": 3600,\n                        \"duration\": false\n                    }\n                ],\n                \"US\": [\n                    {\n                        \"start\": 3600,\n                        \"duration\": false\n                    }\n                ],\n                \"FR\": [\n                    {\n                        \"start\": 3600,\n                        \"duration\": false\n                    }\n                ],\n                \"AU\": [\n                    {\n                        \"start\": 3600,\n                        \"duration\": false\n                    }\n                ]\n            }\n        ]}```\n",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1683634789.288409",
+        "parent_user_id": "UFTBRB3F1",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "k3Jc",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Its funny, but I wrote these functions, probably 2, maybe 3 years ago now (albeit they have grown into very slow moving monsters over time)! Back then they seemed to make sense!!!\n\nI think the bulk of the issue is the sheer inefficiency of these two, as they get called a lot as part of my order validation (or cancellation) process:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "def check_race_type_by_country(race_type, market_name, event_type_id, country_dict):\n\n    race_type = return_race_type(race_type, market_name, event_type_id)\n\n    maiden = True if 'Mdn' in market_name else False\n\n    if country_dict != False and isinstance(country_dict, dict):\n        price = False\n        # If a dict is in the config, it will match by country and race type\n        maiden_list = [v for k,v in country_dict.items() if race_type == k]\n        if len(maiden_list) > 0:\n            if isinstance(maiden_list[0], list):\n                for m in maiden_list[0]:\n                    if 'Mdn' in m.keys() and maiden is True:\n                        price = m['Mdn']\n                    else:\n                        if 'default' in m.keys():\n                            price = m['default']\n            else:\n                price = maiden_list[0]\n\n        else:\n            if 'default' in country_dict.keys():\n                if 'odds' not in country_dict.keys() and 'runners' not in country_dict.keys():\n                    maiden_list = country_dict['default']\n                    if isinstance(maiden_list, list):\n                        for m in maiden_list:\n                            if 'Mdn' in m.keys() and maiden is True:\n                                price = m['Mdn']\n                            else:\n                                if 'default' in m.keys():\n                                    price = m['default']\n                    else:\n                        price = maiden_list\n                else:\n                    price = country_dict\n    else:\n        # If a single price (rather than a dict) is in the config, then it will set this for all valid markets\n        if isinstance(country_dict, float) or isinstance(country_dict, int):\n            price = country_dict\n        else:\n            price = False\n    return price\n\ndef true_or_false(setting, country_code=False, market_id=False, market_type=False):\n    if not isinstance(setting, list):\n        if setting == 'True':\n            return True\n        elif setting == 'False':\n            return False\n        else:\n            return setting\n    else:\n        if country_code is False or country_code is None or country_code == 'False':\n            if setting == 'True' or setting is True:\n                return True\n            elif setting == 'False' or setting is False:\n                return False\n            else:\n                if market_id is False:\n                    if isinstance(setting, list):\n                        default = [s for s in setting if isinstance(s, dict) and 'default' in s.keys()]\n                        if len(default) > 0:\n                            if market_type is False:\n                                return default[0]['default']\n                            else:\n                                market_type_benchmark = [s for s in setting if isinstance(s, dict) and market_type in s.keys()]\n                                if len(market_type_benchmark) > 0:\n                                    return market_type_benchmark[0][market_type]\n                                else:\n                                    return default[0]['default']\n                        else:\n                            return setting\n                    else:\n                        return setting\n                else:\n                    for s in setting:\n                        if market_id in s.keys():\n                            if s[market_id] == 'True':\n                                return True\n                            elif s[market_id] == 'False':\n                                return False\n                            else:\n                                return s[market_id]\n                        else:\n                            default = [s for s in setting if 'default' in s.keys()]\n                            if len(default) > 0:\n                                if market_type is False:\n                                    return default[0]['default']\n                                else:\n                                    market_type_benchmark = [s for s in setting if\n                                                             isinstance(s, dict) and market_type in s.keys()]\n                                    if len(market_type_benchmark) > 0:\n                                        return market_type_benchmark[0][market_type]\n                                    else:\n                                        return default[0]['default']\n                            else:\n                                return False\n                    else:\n                        default = [s for s in setting if 'default' in s.keys()]\n                        if len(default) > 0:\n                            if market_type is False:\n                                return default[0]['default']\n                            else:\n                                market_type_benchmark = [s for s in setting if\n                                                         isinstance(s, dict) and market_type in s.keys()]\n                                if len(market_type_benchmark) > 0:\n                                    return market_type_benchmark[0][market_type]\n                                else:\n                                    return default[0]['default']\n                        else:\n                            return False\n        else:\n            for s in setting:\n                if isinstance(s, dict):\n                    if country_code in s.keys():\n                        if s[country_code] == 'True':\n                            return True\n                        elif s[country_code] == 'False':\n                            return False\n                        else:\n                            if isinstance(s[country_code], dict):\n                                if market_type in s[country_code].keys():\n                                    return s[country_code][market_type]\n                                else:\n                                    if 'default' in s[country_code].keys():\n                                        return s[country_code]['default']\n                                    else:\n                                        return False\n                            else:\n                                return s[country_code]\n                    else:\n                        if market_id is False:\n                            default = [s for s in setting if 'default' in s.keys()]\n                            if len(default) > 0:\n                                if market_type is False:\n                                    return default[0]['default']\n                                else:\n                                    market_type_benchmark = [s for s in setting if\n                                                             isinstance(s, dict) and market_type in s.keys()]\n                                    if len(market_type_benchmark) > 0:\n                                        return market_type_benchmark[0][market_type]\n                                    else:\n                                        return default[0]['default']\n                            else:\n                                return setting\n                        else:\n                            if market_id in s.keys():\n                                if s[market_id] == 'True':\n                                    return True\n                                elif s[market_id] == 'False':\n                                    return False\n                                else:\n                                    return s[market_id]\n            else:\n                default = [s for s in setting if isinstance(s, dict) and 'default' in s.keys()]\n                if len(default) > 0:\n                    if market_type is False:\n                        return default[0]['default']\n                    else:\n                        market_type_benchmark = [s for s in setting if\n                                                 isinstance(s, dict) and market_type in s.keys()]\n                        if len(market_type_benchmark) > 0:\n                            return market_type_benchmark[0][market_type]\n                        else:\n                            return default[0]['default']\n                else:\n                    if isinstance(setting, list):\n                        return setting\n                    else:\n                        return False"
+                            }
+                        ],
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\nsetting in the above refers to a dict, on startup I open a json file which contains various parameters.\n\nAn example would be something like this:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "    {\n        \"event_type_ids\": [\n            7\n        ],\n        \"strategy_name\": \"strategy_xyz\",\n        \"country_codes\": false,\n        \"market_types\": [\n            \"WIN\"\n        ],\n        \"execution_market_types\": [\n            \"WIN\"\n        ],\n        \"pre_event_order_window\": [\n            {\n                \"GB\": [\n                    {\n                        \"start\": 3600,\n                        \"duration\": false\n                    }\n                ],\n                \"IE\": [\n                    {\n                        \"start\": 3600,\n                        \"duration\": false\n                    }\n                ],\n                \"US\": [\n                    {\n                        \"start\": 3600,\n                        \"duration\": false\n                    }\n                ],\n                \"FR\": [\n                    {\n                        \"start\": 3600,\n                        \"duration\": false\n                    }\n                ],\n                \"AU\": [\n                    {\n                        \"start\": 3600,\n                        \"duration\": false\n                    }\n                ]\n            }\n        ]}"
+                            }
+                        ],
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": []
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1683706240.672339",
+        "client_msg_id": "3bf87fd4-c713-4532-bf81-073959db57b6",
+        "text": "can you just delete all of that?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1683634789.288409",
+        "parent_user_id": "UFTBRB3F1",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "\/01Y6",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "can you just delete all of that?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1683708101.969049",
+        "client_msg_id": "F4F01FB6-09EF-4130-ACFB-1CD6B898F76C",
+        "text": "Yeah I suspect almost all of it can go! I simply didn’t realise how much of an impact it was having until I started Backtesting a new strategy (it only comes up in certain situations as anything in-play for example would already bypass this logic so haven’t noticed for a while)!\n\nSeeing the cprofile results was quite an eye opener, I think this particular strategy generated a lot more orders that triggered this logic so really highlighted the inefficiency!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1683634789.288409",
+        "parent_user_id": "UFTBRB3F1",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "\/ph",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Yeah I suspect almost all of it can go! I simply "
+                            },
+                            {
+                                "type": "text",
+                                "text": "didn’t"
+                            },
+                            {
+                                "type": "text",
+                                "text": " realise how much of an impact it was having until I started Backtesting a new strategy (it only comes up in certain situations as anything in-play for example would already bypass this logic so "
+                            },
+                            {
+                                "type": "text",
+                                "text": "haven’t"
+                            },
+                            {
+                                "type": "text",
+                                "text": " noticed for a while)!\n\nSeeing the cprofile results was quite an eye opener, I think this particular strategy generated a lot more orders that triggered this logic so really highlighted the inefficiency!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1683708117.284839",
+        "client_msg_id": "5B30E741-A392-49A3-9FE7-7CAE39E6955D",
+        "text": "Quite good really as I may not have noticed otherwise!!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1683634789.288409",
+        "parent_user_id": "UFTBRB3F1",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "W8fA",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Quite good really as I may not have noticed otherwise!!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1683708228.001079",
+        "client_msg_id": "f1399a9f-7660-4a5a-bbb5-ae7158c95b4d",
+        "text": "Yeah, 90% of the time is spent doing something in your code so if you can speed it up you are going to see a massive improvement",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1683634789.288409",
+        "parent_user_id": "UFTBRB3F1",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "o2QYU",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Yeah, 90% of the time is spent doing something in your code so if you can speed it up you are going to see a massive improvement"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1683708519.841159",
+        "client_msg_id": "7B02F60C-D9CB-4286-AB9F-D405D0020A70",
+        "text": "Yeah I this bit is an obvious win, then I can re-run and see what else is slowing things.\n\nJust as a rough benchmark, for circa 15k markets (in this contest pre-race horse racing, 3600 seconds prior to the off), where I will need to pull in the market catalogue via middleware, what sort of time should I be expecting for a Backtest?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1683634789.288409",
+        "parent_user_id": "UFTBRB3F1",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "qJx",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Yeah I this bit is an obvious win, then I can re-run and see what else is slowing things.\n\nJust as a rough benchmark, for circa 15k markets (in this contest pre-race horse racing, 3600 seconds prior to the off), where I will need to pull in the market catalogue via middleware, what sort of time should I be expecting for a Backtest?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1683708688.964409",
+        "client_msg_id": "47450a7e-c5c9-484e-bd99-18fbef5e98b5",
+        "text": "Sub 20 minutes at a guess",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1683634789.288409",
+        "parent_user_id": "UFTBRB3F1",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "vt2X",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Sub 20 minutes at a guess"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1683708796.970789",
+        "client_msg_id": "9d9a6975-6c10-45ea-ac2c-630a0e1be921",
+        "text": "Ok cool, I'll keep that in mind so at least I can assess my efficiency (ballpark), will give me an idea of how close I'm getting, tks!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1683634789.288409",
+        "parent_user_id": "UFTBRB3F1",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "m\/h",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Ok cool, I'll keep that in mind so at least I can assess my efficiency (ballpark), will give me an idea of how close I'm getting, tks!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1683708827.157309",
+        "client_msg_id": "ef8ea6de-9aa0-426b-9154-d20f2ad00832",
+        "text": "Just run it with a base strategy that does nothing and aim for that",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1683634789.288409",
+        "parent_user_id": "UFTBRB3F1",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "OY=x",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Just run it with a base strategy that does nothing and aim for that"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1683708982.507299",
+        "edited": {
+            "user": "UFTBRB3F1",
+            "ts": "1683708999.000000"
+        },
+        "client_msg_id": "76475486-42f5-4b40-8558-9c866f198d6b",
+        "text": "Ah yes, that makes sense (from a benchmarking perspective)!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1683634789.288409",
+        "parent_user_id": "UFTBRB3F1",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "W6PcR",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Ah yes, that makes sense (from a benchmarking perspective)!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

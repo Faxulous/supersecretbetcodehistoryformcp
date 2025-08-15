@@ -1,0 +1,268 @@
+[
+    {
+        "user": "UPMUFSGCR",
+        "type": "message",
+        "ts": "1645570444.689979",
+        "client_msg_id": "c1d29ae4-6567-4b26-b43f-45d153c9660c",
+        "text": "I'm trying to understand the `market_exposure` function here: <https:\/\/github.com\/liampauling\/flumine\/blob\/bc4d18a941778f41087b055c5c8d3f00ccd63201\/flumine\/markets\/blotter.py#L137-L154>\n\nDoes anyone have a dummies explanation for why it results in the worst possible loss?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "31c0bb5a442c",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2019-10-28\/812386967189_31c0bb5a442c5b8d2c61_72.png",
+            "first_name": "Jon",
+            "real_name": "Jon Jon Jon Jon Jon Jon Jon Jon",
+            "display_name": "Jonjonjon",
+            "team": "T4G9NBD2M",
+            "name": "fcmisc",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1645570444.689979",
+        "reply_count": 10,
+        "reply_users_count": 4,
+        "latest_reply": "1645694084.669049",
+        "reply_users": [
+            "UUE6E1LA1",
+            "UPMUFSGCR",
+            "U4H19D1D2",
+            "U9JHLMZB4"
+        ],
+        "replies": [
+            {
+                "user": "UUE6E1LA1",
+                "ts": "1645602057.654739"
+            },
+            {
+                "user": "UUE6E1LA1",
+                "ts": "1645602109.797709"
+            },
+            {
+                "user": "UPMUFSGCR",
+                "ts": "1645602250.269489"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1645612777.346729"
+            },
+            {
+                "user": "U9JHLMZB4",
+                "ts": "1645631545.865649"
+            },
+            {
+                "user": "UPMUFSGCR",
+                "ts": "1645651156.111389"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1645651194.573989"
+            },
+            {
+                "user": "UPMUFSGCR",
+                "ts": "1645651299.403879"
+            },
+            {
+                "user": "UPMUFSGCR",
+                "ts": "1645652202.663569"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1645694084.669049"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": true,
+        "last_read": "1645694084.669049",
+        "attachments": [
+            {
+                "id": 1,
+                "footer_icon": "https:\/\/slack.github.com\/static\/img\/favicon-neutral.png",
+                "color": "24292f",
+                "bot_id": "B021ZJYSBMW",
+                "app_unfurl_url": "https:\/\/github.com\/liampauling\/flumine\/blob\/bc4d18a941778f41087b055c5c8d3f00ccd63201\/flumine\/markets\/blotter.py#L137-L154",
+                "is_app_unfurl": true,
+                "app_id": "A01BP7R4KNY",
+                "fallback": "<https:\/\/github.com\/liampauling\/flumine\/blob\/bc4d18a941778f41087b055c5c8d3f00ccd63201\/flumine\/markets\/blotter.py | blotter.py>",
+                "text": "```\n    def market_exposure(self, strategy, market_book) -&gt; float:\n        \"\"\"Returns worst-case exposure for market, which is the maximum potential loss (negative),\n        arising from the worst race outcome, or the minimum potential profit (positive).\n        \"\"\"\n        orders = self.strategy_orders(strategy)\n        runners = set([order.lookup for order in orders])\n        worst_possible_profits = [\n            self.get_exposures(strategy, lookup) for lookup in runners\n        ]\n        worst_possible_profits_on_loses = [\n            wpp[\"worst_possible_profit_on_lose\"] for wpp in worst_possible_profits\n        ]\n        differences = [\n            wpp[\"worst_possible_profit_on_win\"] - wpp[\"worst_possible_profit_on_lose\"]\n            for wpp in worst_possible_profits\n        ] + (market_book.number_of_active_runners - len(runners)) * [0]\n        worst_differences = sorted(differences)[: market_book.number_of_winners]\n        return sum(worst_possible_profits_on_loses) + sum(worst_differences)\n```",
+                "title": "<https:\/\/github.com\/liampauling\/flumine\/blob\/bc4d18a941778f41087b055c5c8d3f00ccd63201\/flumine\/markets\/blotter.py | blotter.py>",
+                "footer": "<https:\/\/github.com\/liampauling\/flumine|liampauling\/flumine>",
+                "mrkdwn_in": [
+                    "text"
+                ]
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "E8Uk",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I'm trying to understand the "
+                            },
+                            {
+                                "type": "text",
+                                "text": "market_exposure",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " function here: "
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/liampauling\/flumine\/blob\/bc4d18a941778f41087b055c5c8d3f00ccd63201\/flumine\/markets\/blotter.py#L137-L154"
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n\nDoes anyone have a dummies explanation for why it results in the worst possible loss?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "subtype": "channel_join",
+        "user": "U033TGD4GB1",
+        "text": "<@U033TGD4GB1> has joined the channel",
+        "type": "message",
+        "ts": "1645578588.133889"
+    },
+    {
+        "user": "UUE6E1LA1",
+        "type": "message",
+        "ts": "1645602057.654739",
+        "client_msg_id": "309706f2-69b4-4401-a4c3-508cb0503997",
+        "text": "Surely that is the definition of exposure - the amount of money that you are at risk of losing?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gf53cae45edd",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/f53cae45edd7f7b67bbe98819597612e.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0017-72.png",
+            "first_name": "",
+            "real_name": "D C",
+            "display_name": "D C",
+            "team": "T4G9NBD2M",
+            "name": "oddsvantage",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1645570444.689979",
+        "parent_user_id": "UPMUFSGCR",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "1IK",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Surely that is the definition of exposure - the amount of money that you are at risk of losing?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "heavy_check_mark",
+                "users": [
+                    "U9JHLMZB4"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "UUE6E1LA1",
+        "type": "message",
+        "ts": "1645602109.797709",
+        "client_msg_id": "ac325363-6c48-451a-b71a-cb2703e03005",
+        "text": "I have a similar function in my setup so I can turn off the bet placement tap if it gets hit so I can have a max loss per market to save the bankroll",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gf53cae45edd",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/f53cae45edd7f7b67bbe98819597612e.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0017-72.png",
+            "first_name": "",
+            "real_name": "D C",
+            "display_name": "D C",
+            "team": "T4G9NBD2M",
+            "name": "oddsvantage",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1645570444.689979",
+        "parent_user_id": "UPMUFSGCR",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "vCu",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I have a similar function in my setup so I can turn off the bet placement tap if it gets hit so I can have a max loss per market to save the bankroll"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UPMUFSGCR",
+        "type": "message",
+        "ts": "1645602250.269489",
+        "client_msg_id": "5681d3da-5056-4777-bc42-cb96bbb4103c",
+        "text": "Why does it involve summing the differences? I use a function that calculates the same value by iterating through all combinations.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "31c0bb5a442c",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2019-10-28\/812386967189_31c0bb5a442c5b8d2c61_72.png",
+            "first_name": "Jon",
+            "real_name": "Jon Jon Jon Jon Jon Jon Jon Jon",
+            "display_name": "Jonjonjon",
+            "team": "T4G9NBD2M",
+            "name": "fcmisc",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1645570444.689979",
+        "parent_user_id": "UPMUFSGCR",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "f0hx",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Why does it involve summing the differences? I use a function that calculates the same value by iterating through all combinations."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

@@ -1,0 +1,4411 @@
+[
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1602149471.405900",
+        "client_msg_id": "ed380742-4c26-4c53-ac45-d98ac4e49bbe",
+        "text": "`Why hedging at negative EV is optimal - a rebuttal`\n_Including math for <@UGV299K6H>’s delectation_\n\nImagine the following scenario:\n\n• You have backed a selection pre-event at odds of 2.0\n• Your model gave the fair probability as 52% (and it's right)\n• You calculate the Kelly fraction to be 4% of your bankroll\n• But you're sensible and are using half Kelly so you actually bet 2% of your bankroll\nThe match goes in-play:\n\n• Unfortunately, your selection performs poorly and the odds move against you\n• The best lay on your selection is now 3.0\n• Your model gives the fair probability as 33.5% (and it's right)\n• This means laying the selection has an EV of -0.5%\n• The optimal Kelly stake given your existing position is approximately 1% of your bankroll!\n• Kelly is telling you to hedge at negative EV! :scream:\n• Again, you're sensible so you actually bet the half Kelly stake of 0.5%\nApplication of Bayes theorem gives us the probability that your selection hits odds of 3 as 0.72180 (5 d.p.) so we can work out that your selection wins without ever hitting odds of 3 as 0.27820.\n\nNow let's simulate this, generating 10,000 runs of 10,000 successive bets each. We'll do this for both hedging and no hedging:\n\n```no_hedge_bets = np.random.choice([1.02, 0.98], size=(10000, 10000), p=[0.52, 0.48])\nhedge_bets = np.random.choice([1.02, 1.01, 0.985], size=(10000, 10000), p=[0.278195489, 0.241804511, 0.48])\n\nno_hedge_cumulative_bank = np.cumprod(no_hedge_bets, axis=0)\nhedge_cumulative_bank = np.cumprod(hedge_bets, axis=0)\n\nprint(np.median(no_hedge_cumulative_bank[9999,:]))\nprint(np.median(hedge_cumulative_bank[9999,:]))```\n```403.69789599466213\n739.0367526793249```\nThe _median_ terminal bank of the hedging strategy is 83% larger than no hedging.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1602149471.405900",
+        "reply_count": 2,
+        "reply_users_count": 2,
+        "latest_reply": "1602177023.485900",
+        "reply_users": [
+            "UGV299K6H",
+            "UBS7QANF3"
+        ],
+        "replies": [
+            {
+                "user": "UGV299K6H",
+                "ts": "1602176971.485500"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1602177023.485900"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": false,
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "iWYxo",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Why hedging at negative EV is optimal - a rebuttal",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "Including math for ",
+                                "style": {
+                                    "italic": true
+                                }
+                            },
+                            {
+                                "type": "user",
+                                "user_id": "UGV299K6H",
+                                "style": {
+                                    "italic": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "’s delectation",
+                                "style": {
+                                    "italic": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n\nImagine the following scenario:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_list",
+                        "elements": [
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "You have backed a selection pre-event at odds of 2.0"
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "Your model gave the fair probability as 52% (and it's right)"
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "You calculate the Kelly fraction to be 4% of your bankroll"
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "But you're sensible and are using half Kelly so you actually bet 2% of your bankroll"
+                                    }
+                                ]
+                            }
+                        ],
+                        "style": "bullet",
+                        "indent": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\nThe match goes in-play:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_list",
+                        "elements": [
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "Unfortunately, your selection performs poorly and the odds move against you"
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "The best lay on your selection is now 3.0"
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "Your model gives the fair probability as 33.5% (and it's right)"
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "This means laying the selection has an EV of -0.5%"
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "The optimal Kelly stake given your existing position is approximately 1% of your bankroll!"
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "Kelly is telling you to hedge at negative EV! "
+                                    },
+                                    {
+                                        "type": "emoji",
+                                        "name": "scream",
+                                        "unicode": "1f631"
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "Again, you're sensible so you actually bet the half Kelly stake of 0.5%"
+                                    }
+                                ]
+                            }
+                        ],
+                        "style": "bullet",
+                        "indent": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\nApplication of Bayes theorem gives us the probability that your selection hits odds of 3 as 0.72180 (5 d.p.) so we can work out that your selection wins without ever hitting odds of 3 as 0.27820.\n\nNow let's simulate this, generating 10,000 runs of 10,000 successive bets each. We'll do this for both hedging and no hedging:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "no_hedge_bets = np.random.choice([1.02, 0.98], size=(10000, 10000), p=[0.52, 0.48])\nhedge_bets = np.random.choice([1.02, 1.01, 0.985], size=(10000, 10000), p=[0.278195489, 0.241804511, 0.48])\n\nno_hedge_cumulative_bank = np.cumprod(no_hedge_bets, axis=0)\nhedge_cumulative_bank = np.cumprod(hedge_bets, axis=0)\n\nprint(np.median(no_hedge_cumulative_bank[9999,:]))\nprint(np.median(hedge_cumulative_bank[9999,:]))"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "403.69789599466213\n739.0367526793249"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\nThe "
+                            },
+                            {
+                                "type": "text",
+                                "text": "median",
+                                "style": {
+                                    "italic": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " terminal bank of the hedging strategy is 83% larger than no hedging."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "clap",
+                "users": [
+                    "U017A7TRF6E"
+                ],
+                "count": 1
+            },
+            {
+                "name": "+1",
+                "users": [
+                    "UPMUFSGCR"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "UUE6E1LA1",
+        "type": "message",
+        "ts": "1602149943.410800",
+        "client_msg_id": "584ed412-50bd-40b4-8847-aec9e54d3dd6",
+        "text": "This is where gambling is so confusing. Surely the pre-start probability price has it factored in that the game\/race evolution could result in the in-game\/race scenario going against the selection for a time? I mean a pre-event price being value is not invalidated because it did not monotinically decrease in-play surely? And yet I understand the point you are making. Really what is the right answer.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gf53cae45edd",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/f53cae45edd7f7b67bbe98819597612e.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0017-72.png",
+            "first_name": "",
+            "real_name": "D C",
+            "display_name": "D C",
+            "team": "T4G9NBD2M",
+            "name": "oddsvantage",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "22fqI",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "This is where gambling is so confusing. Surely the pre-start probability price has it factored in that the game\/race evolution could result in the in-game\/race scenario going against the selection for a time? I mean a pre-event price being value is not invalidated because it did not monotinically decrease in-play surely? And yet I understand the point you are making. Really what is the right answer."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UUE6E1LA1",
+        "type": "message",
+        "ts": "1602149963.411300",
+        "client_msg_id": "f1bdb52b-5c6b-4190-9de2-41fd70abf288",
+        "text": "monotonically*",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gf53cae45edd",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/f53cae45edd7f7b67bbe98819597612e.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0017-72.png",
+            "first_name": "",
+            "real_name": "D C",
+            "display_name": "D C",
+            "team": "T4G9NBD2M",
+            "name": "oddsvantage",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "NIw",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "monotonically*"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U016535QCJ2",
+        "type": "message",
+        "ts": "1602149980.411700",
+        "client_msg_id": "0357b18e-6dbf-4db5-ac01-35ff295d37c9",
+        "text": "Alas, no model gets EV correct - the better the model, the closer you get on average. But no individual bet is ever guaranteed to be correct, or even close",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "048f61bdc189",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-07-01\/1216267094995_048f61bdc189acecaafc_72.jpg",
+            "first_name": "Misha",
+            "real_name": "Misha Charrett",
+            "display_name": "Misha",
+            "team": "T4G9NBD2M",
+            "name": "misha",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "MUl",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Alas, no model gets EV correct - the better the model, the closer you get on average. But no individual bet is ever guaranteed to be correct, or even close"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1602150029.412500",
+        "client_msg_id": "d0b28385-96f2-4e41-b698-fff42b6090af",
+        "text": "<@UUE6E1LA1> I address this by working out the probability that the selection lengthens to 3.0, and the probabilities that it goes on to win or goes on to loses from this",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "h6z",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "user",
+                                "user_id": "UUE6E1LA1"
+                            },
+                            {
+                                "type": "text",
+                                "text": " I address this by working out the probability that the selection lengthens to 3.0, and the probabilities that it goes on to win or goes on to loses from this"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1602150115.413900",
+        "edited": {
+            "user": "UBS7QANF3",
+            "ts": "1602150125.000000"
+        },
+        "client_msg_id": "b426a2da-84e8-4c7d-a58f-c8076c39dbcb",
+        "text": "<@U016535QCJ2> if you have a winning model you are going to achieve some positive ROI over the long term. Using half Kelly is an excellent way to protect yourself against model inaccuracies. Using a smaller fraction is even more protection. I like to use 1\/6th. Adapting the example to a different fraction is left as an exercise to the reader",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "RNl",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "user",
+                                "user_id": "U016535QCJ2"
+                            },
+                            {
+                                "type": "text",
+                                "text": " if you have a winning model you are going to achieve some positive ROI over the long term. Using half Kelly is an excellent way to protect yourself against model inaccuracies. Using a smaller fraction is even more protection. I like to use 1\/6th. Adapting the example to a different fraction is left as an exercise to the reader"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U016535QCJ2",
+        "type": "message",
+        "ts": "1602150187.414200",
+        "client_msg_id": "7d2c9df3-7e5d-4d80-bd22-63638b133b16",
+        "text": "Agreed",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "048f61bdc189",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-07-01\/1216267094995_048f61bdc189acecaafc_72.jpg",
+            "first_name": "Misha",
+            "real_name": "Misha Charrett",
+            "display_name": "Misha",
+            "team": "T4G9NBD2M",
+            "name": "misha",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "ybwf",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Agreed"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U016535QCJ2",
+        "type": "message",
+        "ts": "1602150345.415800",
+        "client_msg_id": "e90eef70-63a3-4730-8514-2132279663a2",
+        "text": "I actually use a different multiplier that takes into account (for a \"match-up\", i.e. two contestants) that an edge around 2 is nowhere near as accurate as an edge at higher\/lower probabilties",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "048f61bdc189",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-07-01\/1216267094995_048f61bdc189acecaafc_72.jpg",
+            "first_name": "Misha",
+            "real_name": "Misha Charrett",
+            "display_name": "Misha",
+            "team": "T4G9NBD2M",
+            "name": "misha",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "uUx",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I actually use a different multiplier that takes into account (for a \"match-up\", i.e. two contestants) that an edge around 2 is nowhere near as accurate as an edge at higher\/lower probabilties"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U016535QCJ2",
+        "type": "message",
+        "ts": "1602150389.416700",
+        "client_msg_id": "bff90141-90c2-4ee9-9ae9-b5b86f38a0c1",
+        "text": "So a 10% EV around even money is actually far less certain than a 5% EV at 1.50",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "048f61bdc189",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-07-01\/1216267094995_048f61bdc189acecaafc_72.jpg",
+            "first_name": "Misha",
+            "real_name": "Misha Charrett",
+            "display_name": "Misha",
+            "team": "T4G9NBD2M",
+            "name": "misha",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Ptx",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "So a 10% EV around even money is actually far less certain than a 5% EV at 1.50"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UUE6E1LA1",
+        "type": "message",
+        "ts": "1602150508.417700",
+        "client_msg_id": "a4b038b2-f21a-44ff-a93e-59bd79eba228",
+        "text": "<@UBS7QANF3> Can you expand on the application of Bayes' theorem to generate probability of your selection drifting to 3.0?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gf53cae45edd",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/f53cae45edd7f7b67bbe98819597612e.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0017-72.png",
+            "first_name": "",
+            "real_name": "D C",
+            "display_name": "D C",
+            "team": "T4G9NBD2M",
+            "name": "oddsvantage",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "YsetE",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "user",
+                                "user_id": "UBS7QANF3"
+                            },
+                            {
+                                "type": "text",
+                                "text": " Can you expand on the application of Bayes' theorem to generate probability of your selection drifting to 3.0?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UUE6E1LA1",
+        "type": "message",
+        "ts": "1602151231.418000",
+        "client_msg_id": "fbcb3946-1e75-4382-9543-12667dd06784",
+        "text": "Scratch that, got it now.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gf53cae45edd",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/f53cae45edd7f7b67bbe98819597612e.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0017-72.png",
+            "first_name": "",
+            "real_name": "D C",
+            "display_name": "D C",
+            "team": "T4G9NBD2M",
+            "name": "oddsvantage",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "5xC3",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Scratch that, got it now."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UUE6E1LA1",
+        "type": "message",
+        "ts": "1602151652.420700",
+        "client_msg_id": "657a7f26-1418-46d6-9c35-5b37b85b7592",
+        "text": "Is it not fair to say though that this example is dealing with the situation where the market has turned against you? I thought that <@UGV299K6H> was addressing situations where you enter the market, the market moves with you and you hedge out at -EV for no reason? Maybe I am misunderstanding something fundamental though. I need to start reading maths books again my brain is going soft and it can't all be due to advancing years.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gf53cae45edd",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/f53cae45edd7f7b67bbe98819597612e.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0017-72.png",
+            "first_name": "",
+            "real_name": "D C",
+            "display_name": "D C",
+            "team": "T4G9NBD2M",
+            "name": "oddsvantage",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "bOhb",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Is it not fair to say though that this example is dealing with the situation where the market has turned against you? I thought that "
+                            },
+                            {
+                                "type": "user",
+                                "user_id": "UGV299K6H"
+                            },
+                            {
+                                "type": "text",
+                                "text": " was addressing situations where you enter the market, the market moves with you and you hedge out at -EV for no reason? Maybe I am misunderstanding something fundamental though. I need to start reading maths books again my brain is going soft and it can't all be due to advancing years."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1602152032.423800",
+        "edited": {
+            "user": "UBS7QANF3",
+            "ts": "1602152057.000000"
+        },
+        "client_msg_id": "1c7a1a84-f997-4e1b-806a-0dc88d387718",
+        "text": "Yes this situation is dealing with the case where the market has turned against you. However, the discussion was sparked by the idea of using stop losses which are obviously intended for this kind of situation. Trading out some or all of a position when the market has moved in your favour is indeed a different scenario but not one I can say either way whether placing a negative EV bet would be optimal without some thought. I don't want to put words in <@U4H19D1D2> or <@UGV299K6H>'s mouths but my interpretation of their view is that placing a negative EV bet is not something you want to do ever.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "wWd",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Yes this situation is dealing with the case where the market has turned against you. However, the discussion was sparked by the idea of using stop losses which are obviously intended for this kind of situation. Trading out some or all of a position when the market has moved in your favour is indeed a different scenario but not one I can say either way whether placing a negative EV bet would be optimal without some thought. I don't want to put words in "
+                            },
+                            {
+                                "type": "user",
+                                "user_id": "U4H19D1D2"
+                            },
+                            {
+                                "type": "text",
+                                "text": " or "
+                            },
+                            {
+                                "type": "user",
+                                "user_id": "UGV299K6H"
+                            },
+                            {
+                                "type": "text",
+                                "text": "'s mouths but my interpretation of their view is that placing a negative EV bet is not something you want to do ever."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1602155409.424300",
+        "client_msg_id": "1edd8efe-8257-44f4-8a06-3550a793813e",
+        "text": "Your maths is wrong, when you treat the two bets separately the second will show negative EV (as expected). I believe the problem lies in the combing the two probabilities at the different times, once the selection drifts to 3 its chance of winning changes and thus the initial probabilities can no longer be used.\n\nI don't think its mathematically possible to accurately predict win, win with drift and lose as you have with 0.27, 0.24 and 0.48 because the last two are related. What you can say is that the the selection drifts to 3.0 72% of the time which means 72% of the time we place the negative EV bet.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1602155409.424300",
+        "reply_count": 12,
+        "reply_users_count": 2,
+        "latest_reply": "1602223837.019000",
+        "reply_users": [
+            "UBS7QANF3",
+            "U4H19D1D2"
+        ],
+        "replies": [
+            {
+                "user": "UBS7QANF3",
+                "ts": "1602164400.465900"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1602164508.467300"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1602164886.471300"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1602164918.471500"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1602164991.471700"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1602165091.473400"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1602165104.473900"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1602165123.474500"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1602167657.474700"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1602169470.475400"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1602184984.013200"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1602223837.019000"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": true,
+        "last_read": "1602184984.013200",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Hva1",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Your maths is wrong, when you treat the two bets separately the second will show negative EV (as expected). I believe the problem lies in the combing the two probabilities at the different times, once the selection drifts to 3 its chance of winning changes and thus the initial probabilities can no longer be used.\n\nI don't think its mathematically possible to accurately predict win, win with drift and lose as you have with 0.27, 0.24 and 0.48 because the last two are related. What you can say is that the the selection drifts to 3.0 72% of the time which means 72% of the time we place the negative EV bet."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "subtype": "channel_join",
+        "user": "U01C3LUD5UM",
+        "text": "<@U01C3LUD5UM> has joined the channel",
+        "type": "message",
+        "ts": "1602156350.424400"
+    },
+    {
+        "user": "UPMUFSGCR",
+        "type": "message",
+        "ts": "1602158365.427900",
+        "client_msg_id": "4fe6d33d-07ca-4cf9-840a-fd5a8ba959d2",
+        "text": "We seem to have diverged quite a lot from the original point of the question.\n\nCould\/should we implement offset orders within Flumine framework? Or should users who wish to use them implement their own solutions?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "31c0bb5a442c",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2019-10-28\/812386967189_31c0bb5a442c5b8d2c61_72.png",
+            "first_name": "Jon",
+            "real_name": "Jon Jon Jon Jon Jon Jon Jon Jon",
+            "display_name": "Jonjonjon",
+            "team": "T4G9NBD2M",
+            "name": "fcmisc",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "ZBQ13",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "We seem to have diverged quite a lot from the original point of the question.\n\nCould\/should we implement offset orders within Flumine framework? Or should users who wish to use them implement their own solutions?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UGV299K6H",
+        "type": "message",
+        "ts": "1602158916.433200",
+        "client_msg_id": "753ee053-6310-4e16-aeb0-0414567ce362",
+        "text": "<@UBS7QANF3> thanks that's a nice reply. I can't get into this much right now because I'm doing something else but quickly: I've got two point to make. 1: Your example closes selectively and I think that's not fair - IE you're not accounting for the other scenarios where the market goes in your favour and you close out for a loss anyway. You've answered the general case with a specific case. The 'open, wait close' strategy is decided before the opening bet is placed, you don't get to wait and see how your event goes. The 'open' bet is triggered by a signal of value but the 'close' bet is just triggered by the 'open' bet matching. 2: You haven't refuted any of my points or the structure  of my argument.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g3a262a3cfba",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/b3a262a3cfba292c18acf5777f65908a.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0006-72.png",
+            "first_name": "Michael",
+            "real_name": "Michael C",
+            "display_name": "Michael",
+            "team": "T4G9NBD2M",
+            "name": "michael",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1602158916.433200",
+        "reply_count": 14,
+        "reply_users_count": 2,
+        "latest_reply": "1602177379.489200",
+        "reply_users": [
+            "UBS7QANF3",
+            "UGV299K6H"
+        ],
+        "replies": [
+            {
+                "user": "UBS7QANF3",
+                "ts": "1602164772.469800"
+            },
+            {
+                "user": "UGV299K6H",
+                "ts": "1602172241.475700"
+            },
+            {
+                "user": "UGV299K6H",
+                "ts": "1602172575.475900"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1602173400.483000"
+            },
+            {
+                "user": "UGV299K6H",
+                "ts": "1602173596.483200"
+            },
+            {
+                "user": "UGV299K6H",
+                "ts": "1602173621.483400"
+            },
+            {
+                "user": "UGV299K6H",
+                "ts": "1602173854.483800"
+            },
+            {
+                "user": "UGV299K6H",
+                "ts": "1602174281.484100"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1602174642.484400"
+            },
+            {
+                "user": "UGV299K6H",
+                "ts": "1602174690.484600"
+            },
+            {
+                "user": "UGV299K6H",
+                "ts": "1602174794.484800"
+            },
+            {
+                "user": "UGV299K6H",
+                "ts": "1602175154.485000"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1602177192.488900"
+            },
+            {
+                "user": "UGV299K6H",
+                "ts": "1602177379.489200"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": false,
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "418U",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "user",
+                                "user_id": "UBS7QANF3"
+                            },
+                            {
+                                "type": "text",
+                                "text": " thanks that's a nice reply. I can't get into this much right now because I'm doing something else but quickly: I've got two point to make. 1: Your example closes selectively and I think that's not fair - IE you're not accounting for the other scenarios where the market goes in your favour and you close out for a loss anyway. You've answered the general case with a specific case. The 'open, wait close' strategy is decided before the opening bet is placed, you don't get to wait and see how your event goes. The 'open' bet is triggered by a signal of value but the 'close' bet is just triggered by the 'open' bet matching. 2: You haven't refuted any of my points or the structure  of my argument."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UU1URJ8L8",
+        "type": "message",
+        "ts": "1602161106.434600",
+        "client_msg_id": "fd1c8610-5ac5-41d9-b8c2-bf042437e4ab",
+        "text": "Suppose that you are betting on something which you know is a fair coin. We are pre-play, coin is not in the air yet. You are 95% sure that the market will be stable where you can back at 2.1 and lay at 2.06. What do you do?\n\nYou might see the positive EV, perhaps do the kelly thingy, and back 3.62% of your bank at odds 2.1. Great, you made a positive EV bet. Congrats.\n\nYou could also back 10% of you bank, then hedge at 2.06 (insert nEgAtIvE eV spongebob meme) and go for another course of the same. You estimate that there is enough volume and stability to do this round trip many times on average. Okay, so you can make your initial bet bigger than kelly because you expect to be able to get out and you get to round trip this a few more times.\n\nYou end up with more money by making negative EV bets.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g7a5a7d77117",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/7a5a7d7711746fb16f400e11af544b2e.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0012-72.png",
+            "first_name": "",
+            "real_name": "Remi",
+            "display_name": "Remi",
+            "team": "T4G9NBD2M",
+            "name": "services",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "scDdJ",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Suppose that you are betting on something which you know is a fair coin. We are pre-play, coin is not in the air yet. You are 95% sure that the market will be stable where you can back at 2.1 and lay at 2.06. What do you do?\n\nYou might see the positive EV, perhaps do the kelly thingy, and back 3.62% of your bank at odds 2.1. Great, you made a positive EV bet. Congrats.\n\nYou could also back 10% of you bank, then hedge at 2.06 (insert nEgAtIvE eV spongebob meme) and go for another course of the same. You estimate that there is enough volume and stability to do this round trip many times on average. Okay, so you can make your initial bet bigger than kelly because you expect to be able to get out and you get to round trip this a few more times.\n\nYou end up with more money by making negative EV bets."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UU1URJ8L8",
+        "type": "message",
+        "ts": "1602161234.435100",
+        "client_msg_id": "eb080d2c-9b9b-4cb5-bde6-ff4971675561",
+        "text": "(Meanwhile, the inventory you hold is always positive EV)",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g7a5a7d77117",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/7a5a7d7711746fb16f400e11af544b2e.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0012-72.png",
+            "first_name": "",
+            "real_name": "Remi",
+            "display_name": "Remi",
+            "team": "T4G9NBD2M",
+            "name": "services",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "OLLL3",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "(Meanwhile, the inventory you hold is always positive EV)"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UUE6E1LA1",
+        "type": "message",
+        "ts": "1602161329.436900",
+        "client_msg_id": "19246550-f524-4e89-bf80-d6a1c8cb37fa",
+        "text": "But this is adding new uncertainty into it - you are 95% sure that you will get a risk free profitable trade. What happens in the 5% of cases where you can't get in and out at 2.1 and 2.06 respectively?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gf53cae45edd",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/f53cae45edd7f7b67bbe98819597612e.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0017-72.png",
+            "first_name": "",
+            "real_name": "D C",
+            "display_name": "D C",
+            "team": "T4G9NBD2M",
+            "name": "oddsvantage",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "58p",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "But this is adding new uncertainty into it - you are 95% sure that you will get a risk free profitable trade. What happens in the 5% of cases where you can't get in and out at 2.1 and 2.06 respectively?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UUE6E1LA1",
+        "type": "message",
+        "ts": "1602161356.437900",
+        "client_msg_id": "f7c4c2d8-5e4c-4328-92c9-abdd6cc7b4cb",
+        "text": "Does it stick at 2.1 or drift out to 2.2? I think looking at things this way muddies the waters",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gf53cae45edd",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/f53cae45edd7f7b67bbe98819597612e.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0017-72.png",
+            "first_name": "",
+            "real_name": "D C",
+            "display_name": "D C",
+            "team": "T4G9NBD2M",
+            "name": "oddsvantage",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "cOon",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Does it stick at 2.1 or drift out to 2.2? I think looking at things this way muddies the waters"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UU1URJ8L8",
+        "type": "message",
+        "ts": "1602161376.438700",
+        "client_msg_id": "b0c83e9f-1581-47de-b558-5750c8e03f85",
+        "text": "Each time, you are 95% sure that there will be one more round available to you",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g7a5a7d77117",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/7a5a7d7711746fb16f400e11af544b2e.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0012-72.png",
+            "first_name": "",
+            "real_name": "Remi",
+            "display_name": "Remi",
+            "team": "T4G9NBD2M",
+            "name": "services",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Afmu",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Each time, you are 95% sure that there will be one more round available to you"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U016535QCJ2",
+        "type": "message",
+        "ts": "1602161385.439100",
+        "client_msg_id": "65182ca3-b8d1-448c-9dcf-29c81f884dd4",
+        "text": "Hmm, you can't make any assumption of what the market will do - you can't predict the future (if you could you would always make money)",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "048f61bdc189",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-07-01\/1216267094995_048f61bdc189acecaafc_72.jpg",
+            "first_name": "Misha",
+            "real_name": "Misha Charrett",
+            "display_name": "Misha",
+            "team": "T4G9NBD2M",
+            "name": "misha",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "GOVr",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Hmm, you can't make any assumption of what the market will do - you can't predict the future (if you could you would always make money)"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "laughing",
+                "users": [
+                    "UU1URJ8L8"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "UUE6E1LA1",
+        "type": "message",
+        "ts": "1602161584.442100",
+        "client_msg_id": "3ffacd0b-87dd-4886-bdde-b6401d128608",
+        "text": "You need to know your expected loss in the 5% of cases where you don't get things fall your way (and anyway what is the CI around that 95%??). If such info were available you could make an informed decision on your expected returns based on strategy X but without them who knows?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gf53cae45edd",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/f53cae45edd7f7b67bbe98819597612e.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0017-72.png",
+            "first_name": "",
+            "real_name": "D C",
+            "display_name": "D C",
+            "team": "T4G9NBD2M",
+            "name": "oddsvantage",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "flpzg",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "You need to know your expected loss in the 5% of cases where you don't get things fall your way (and anyway what is the CI around that 95%??). If such info were available you could make an informed decision on your expected returns based on strategy X but without them who knows?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UU1URJ8L8",
+        "type": "message",
+        "ts": "1602161711.443200",
+        "client_msg_id": "dbe8c1d7-8f28-45ae-b8af-edfd833d7571",
+        "text": "Yes. And if you are able to make reasonably accurate estimations about this (which is very much possible) then you win.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g7a5a7d77117",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/7a5a7d7711746fb16f400e11af544b2e.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0012-72.png",
+            "first_name": "",
+            "real_name": "Remi",
+            "display_name": "Remi",
+            "team": "T4G9NBD2M",
+            "name": "services",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "2vHR",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Yes. And if you are able to make reasonably accurate estimations about this (which is very much possible) then you win."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UU1URJ8L8",
+        "type": "message",
+        "ts": "1602161745.443900",
+        "client_msg_id": "28b28403-30da-4b23-8393-360d505bdf3a",
+        "text": "It is really not much different than predicting that odds will go up or down, you’re just adding a sideways direction and betting on that.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g7a5a7d77117",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/7a5a7d7711746fb16f400e11af544b2e.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0012-72.png",
+            "first_name": "",
+            "real_name": "Remi",
+            "display_name": "Remi",
+            "team": "T4G9NBD2M",
+            "name": "services",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Jq8o",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "It is really not much different than predicting that odds will go up or down, you’re just adding a sideways direction and betting on that."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UUE6E1LA1",
+        "type": "message",
+        "ts": "1602161979.446000",
+        "client_msg_id": "0165b787-e59c-4591-b1a7-f0f24a7fc3d9",
+        "text": "Yes but what you are modelling here is price movement direction. I mean you could add strategy 3 into this - back at 2.1 and take the value, then in your 5% of cases where the price drifts out more, back again at even more positive EV.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gf53cae45edd",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/f53cae45edd7f7b67bbe98819597612e.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0017-72.png",
+            "first_name": "",
+            "real_name": "D C",
+            "display_name": "D C",
+            "team": "T4G9NBD2M",
+            "name": "oddsvantage",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "dfWhW",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Yes but what you are modelling here is price movement direction. I mean you could add strategy 3 into this - back at 2.1 and take the value, then in your 5% of cases where the price drifts out more, back again at even more positive EV."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UU1URJ8L8",
+        "type": "message",
+        "ts": "1602162037.447500",
+        "client_msg_id": "38a86a36-dec5-4da4-a7f0-44c4b173ef0c",
+        "text": "No you can’t, then you would bet more than kelly suggest.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g7a5a7d77117",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/7a5a7d7711746fb16f400e11af544b2e.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0012-72.png",
+            "first_name": "",
+            "real_name": "Remi",
+            "display_name": "Remi",
+            "team": "T4G9NBD2M",
+            "name": "services",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "SY1Ow",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "No you can’t, then you would bet more than kelly suggest."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UUE6E1LA1",
+        "type": "message",
+        "ts": "1602162179.451800",
+        "client_msg_id": "ea6848a4-ee8a-4e5c-8a43-0024c59aace6",
+        "text": "You don't need to use kelly if you can get 2.1 on a coin toss every time. Maybe you should but its not compulsory. I mean in your scenario, every price mentioned is +EV so you can't fail to make money anyway unless you have very poor stake management!! I would be happy taking that 2.06 as a fire and forget and count my money at the end of the year (barring some extreme variance that killed my bankroll)",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gf53cae45edd",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/f53cae45edd7f7b67bbe98819597612e.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0017-72.png",
+            "first_name": "",
+            "real_name": "D C",
+            "display_name": "D C",
+            "team": "T4G9NBD2M",
+            "name": "oddsvantage",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "8hiS",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "You don't need to use kelly if you can get 2.1 on a coin toss every time. Maybe you should but its not compulsory. I mean in your scenario, every price mentioned is +EV so you can't fail to make money anyway unless you have very poor stake management!! I would be happy taking that 2.06 as a fire and forget and count my money at the end of the year (barring some extreme variance that killed my bankroll)"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U016535QCJ2",
+        "type": "message",
+        "ts": "1602162242.453000",
+        "client_msg_id": "d3a95a91-fa7a-42c6-9bff-6986dd607bdc",
+        "text": "I think you are getting into circular arguments making assumptions using accuracy that isn't possible. Any modelling you do on any market is so variable that you can't guarantee anything close to a set percentage. Real EV plots can be pretty much all over the place, and if your returns increase with EV then you are doing well",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "048f61bdc189",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-07-01\/1216267094995_048f61bdc189acecaafc_72.jpg",
+            "first_name": "Misha",
+            "real_name": "Misha Charrett",
+            "display_name": "Misha",
+            "team": "T4G9NBD2M",
+            "name": "misha",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "3N6\/s",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I think you are getting into circular arguments making assumptions using accuracy that isn't possible. Any modelling you do on any market is so variable that you can't guarantee anything close to a set percentage. Real EV plots can be pretty much all over the place, and if your returns increase with EV then you are doing well"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UU1URJ8L8",
+        "type": "message",
+        "ts": "1602162346.455200",
+        "client_msg_id": "86225137-e381-4c0f-850d-f6cf787fb285",
+        "text": "<@UUE6E1LA1> You could do that, yes. But 2 things. 1 you may only get 52 of those markets per year and 2, it is possible to make more than with the simple way",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g7a5a7d77117",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/7a5a7d7711746fb16f400e11af544b2e.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0012-72.png",
+            "first_name": "",
+            "real_name": "Remi",
+            "display_name": "Remi",
+            "team": "T4G9NBD2M",
+            "name": "services",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "p8aVY",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "user",
+                                "user_id": "UUE6E1LA1"
+                            },
+                            {
+                                "type": "text",
+                                "text": " You could do that, yes. But 2 things. 1 you may only get 52 of those markets per year and 2, it is possible to make more than with the simple way"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UU1URJ8L8",
+        "type": "message",
+        "ts": "1602162373.456400",
+        "edited": {
+            "user": "UU1URJ8L8",
+            "ts": "1602162743.000000"
+        },
+        "client_msg_id": "8621faaa-e567-4ae3-8a68-015724e62e1f",
+        "text": "<@U016535QCJ2> Why would that not be possible? Because some people can’t doesn’t mean no one can",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g7a5a7d77117",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/7a5a7d7711746fb16f400e11af544b2e.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0012-72.png",
+            "first_name": "",
+            "real_name": "Remi",
+            "display_name": "Remi",
+            "team": "T4G9NBD2M",
+            "name": "services",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "WAKTM",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "user",
+                                "user_id": "U016535QCJ2"
+                            },
+                            {
+                                "type": "text",
+                                "text": " Why would that not be possible? Because some people can’t doesn’t mean no one can"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UUE6E1LA1",
+        "type": "message",
+        "ts": "1602162392.457200",
+        "client_msg_id": "ee4f6aa6-82db-4229-a8f0-da180c6396d5",
+        "text": "Hmm but if there are only 52 of these markets a year then that confidence interval around your 95% is going to be pretty wide surely?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gf53cae45edd",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/f53cae45edd7f7b67bbe98819597612e.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0017-72.png",
+            "first_name": "",
+            "real_name": "D C",
+            "display_name": "D C",
+            "team": "T4G9NBD2M",
+            "name": "oddsvantage",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1602162392.457200",
+        "reply_count": 4,
+        "reply_users_count": 2,
+        "latest_reply": "1602163482.463200",
+        "reply_users": [
+            "UU1URJ8L8",
+            "UUE6E1LA1"
+        ],
+        "replies": [
+            {
+                "user": "UU1URJ8L8",
+                "ts": "1602162822.459200"
+            },
+            {
+                "user": "UUE6E1LA1",
+                "ts": "1602163201.460200"
+            },
+            {
+                "user": "UU1URJ8L8",
+                "ts": "1602163268.461600"
+            },
+            {
+                "user": "UUE6E1LA1",
+                "ts": "1602163482.463200"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": false,
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "gIKf",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Hmm but if there are only 52 of these markets a year then that confidence interval around your 95% is going to be pretty wide surely?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U016535QCJ2",
+        "type": "message",
+        "ts": "1602162401.457500",
+        "client_msg_id": "5b9571a6-59c6-4ee9-8fa7-dd844b1c5cf5",
+        "text": "I'm happy for anyone with data to prove me wrong :wink:",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "048f61bdc189",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-07-01\/1216267094995_048f61bdc189acecaafc_72.jpg",
+            "first_name": "Misha",
+            "real_name": "Misha Charrett",
+            "display_name": "Misha",
+            "team": "T4G9NBD2M",
+            "name": "misha",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "xID",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I'm happy for anyone with data to prove me wrong "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "wink",
+                                "unicode": "1f609"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U016535QCJ2",
+        "type": "message",
+        "ts": "1602162439.458300",
+        "edited": {
+            "user": "U016535QCJ2",
+            "ts": "1602162455.000000"
+        },
+        "client_msg_id": "9f8368b6-b27a-4a26-91b6-b7addfa227ae",
+        "text": "My view is that if your model is good you just bet as much as you can within the variance that you can expect. That's how all the really big players run - they trust the model implicitly and just let it go",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "048f61bdc189",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-07-01\/1216267094995_048f61bdc189acecaafc_72.jpg",
+            "first_name": "Misha",
+            "real_name": "Misha Charrett",
+            "display_name": "Misha",
+            "team": "T4G9NBD2M",
+            "name": "misha",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "OtJN",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "My view is that if your model is good you just bet as much as you can within the variance that you can expect. That's how all the really big players run - they trust the model implicitly and just let it go"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UU1URJ8L8",
+        "type": "message",
+        "ts": "1602162822.459200",
+        "edited": {
+            "user": "UU1URJ8L8",
+            "ts": "1602162849.000000"
+        },
+        "client_msg_id": "e448b896-e8d1-4698-9195-75e12b713fa2",
+        "text": "Just 52 markets, but a million market-seconds where this is the case…",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g7a5a7d77117",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/7a5a7d7711746fb16f400e11af544b2e.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0012-72.png",
+            "first_name": "",
+            "real_name": "Remi",
+            "display_name": "Remi",
+            "team": "T4G9NBD2M",
+            "name": "services",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1602162392.457200",
+        "parent_user_id": "UUE6E1LA1",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "kAZj",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Just 52 markets, but a million market-seconds where this is the case…"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UUE6E1LA1",
+        "type": "message",
+        "ts": "1602163201.460200",
+        "client_msg_id": "99c63cee-54bc-4aae-975d-acb7b99c282f",
+        "text": "So you are talking about multiple consecutive entry\/exit pairs? In this case it must be a very inefficient market if it can oscillate that many times around 2 positions that are BOTH +EV ??",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gf53cae45edd",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/f53cae45edd7f7b67bbe98819597612e.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0017-72.png",
+            "first_name": "",
+            "real_name": "D C",
+            "display_name": "D C",
+            "team": "T4G9NBD2M",
+            "name": "oddsvantage",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1602162392.457200",
+        "parent_user_id": "UUE6E1LA1",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "692DS",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "So you are talking about multiple consecutive entry\/exit pairs? In this case it must be a very inefficient market if it can oscillate that many times around 2 positions that are BOTH +EV ??"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "UU1URJ8L8"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "UU1URJ8L8",
+        "type": "message",
+        "ts": "1602163268.461600",
+        "client_msg_id": "98a223c6-cee2-4d90-bb2d-03b6589f0aec",
+        "text": "If it were efficient I wouldn’t join the party",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g7a5a7d77117",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/7a5a7d7711746fb16f400e11af544b2e.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0012-72.png",
+            "first_name": "",
+            "real_name": "Remi",
+            "display_name": "Remi",
+            "team": "T4G9NBD2M",
+            "name": "services",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1602162392.457200",
+        "parent_user_id": "UUE6E1LA1",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "r=j5Q",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "If it were efficient I wouldn’t join the party"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UGV299K6H",
+        "type": "message",
+        "ts": "1602163283.462000",
+        "client_msg_id": "6eab116a-e3f2-4d7d-8d01-0129f2c08d6b",
+        "text": "I think in general if your argument relies on 'if this happens and then that happens and then the other thing' it's an inherently weak argument. The more you can address the general case the stronger you are.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g3a262a3cfba",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/b3a262a3cfba292c18acf5777f65908a.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0006-72.png",
+            "first_name": "Michael",
+            "real_name": "Michael C",
+            "display_name": "Michael",
+            "team": "T4G9NBD2M",
+            "name": "michael",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "6TyP",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I think in general if your argument relies on 'if this happens and then that happens and then the other thing' it's an inherently weak argument. The more you can address the general case the stronger you are."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "U016535QCJ2",
+                    "UUE6E1LA1"
+                ],
+                "count": 2
+            }
+        ]
+    },
+    {
+        "user": "UU1URJ8L8",
+        "type": "message",
+        "ts": "1602163461.463100",
+        "client_msg_id": "f4956bde-ee5e-452d-8648-5d0a3c868ce8",
+        "text": "Lol, yes, this does not work “in general”.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g7a5a7d77117",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/7a5a7d7711746fb16f400e11af544b2e.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0012-72.png",
+            "first_name": "",
+            "real_name": "Remi",
+            "display_name": "Remi",
+            "team": "T4G9NBD2M",
+            "name": "services",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "YC6Gs",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Lol, yes, this does not work “in general”."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UUE6E1LA1",
+        "type": "message",
+        "ts": "1602163482.463200",
+        "client_msg_id": "1f094f79-f70d-4639-818e-cfba75f253a1",
+        "text": "But this is surely more in the domain of high frequency trading? But I suppose that doesn't really change the fundamentals.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gf53cae45edd",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/f53cae45edd7f7b67bbe98819597612e.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0017-72.png",
+            "first_name": "",
+            "real_name": "D C",
+            "display_name": "D C",
+            "team": "T4G9NBD2M",
+            "name": "oddsvantage",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1602162392.457200",
+        "parent_user_id": "UUE6E1LA1",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "BXEJG",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "But this is surely more in the domain of high frequency trading? But I suppose that doesn't really change the fundamentals."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UU1URJ8L8",
+        "type": "message",
+        "ts": "1602163700.464400",
+        "client_msg_id": "48325368-da30-4078-b395-7664a4d321a1",
+        "text": "This is much like a vanilla short-volatility strategy on the stock exchange, e.g. short-VIX",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g7a5a7d77117",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/7a5a7d7711746fb16f400e11af544b2e.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0012-72.png",
+            "first_name": "",
+            "real_name": "Remi",
+            "display_name": "Remi",
+            "team": "T4G9NBD2M",
+            "name": "services",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "PdsNx",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "This is much like a vanilla short-volatility strategy on the stock exchange, e.g. short-VIX"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UU1URJ8L8",
+        "type": "message",
+        "ts": "1602163721.464900",
+        "client_msg_id": "b4da43eb-0c76-48f4-9ea4-c8927d0b7003",
+        "text": "It doesn’t work in general, it only works when there is an accurate prediction of low volatility",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g7a5a7d77117",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/7a5a7d7711746fb16f400e11af544b2e.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0012-72.png",
+            "first_name": "",
+            "real_name": "Remi",
+            "display_name": "Remi",
+            "team": "T4G9NBD2M",
+            "name": "services",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Uatc",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "It doesn’t work in general, it only works when there is an accurate prediction of low volatility"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1602164400.465900",
+        "client_msg_id": "7B73A2A9-95E7-4C30-8372-8CC1F0C7BD8D",
+        "text": "I said the second bet is negative EV",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1602155409.424300",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "8Uu6U",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I said the second bet is negative EV"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1602164508.467300",
+        "client_msg_id": "50f56bfb-4029-41b3-bf34-dcbe8026f3c4",
+        "text": "I know but your proof is wrong",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1602155409.424300",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "64Bz",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I know but your proof is wrong"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1602164772.469800",
+        "client_msg_id": "8B153390-9926-4E9F-9597-558452EFDDD6",
+        "text": "This is not intended to address the question of stop losses specifically although I think it might be possible to reframe it without much effort. I am only showing that there are situations where not only is it good to place a negative EV bet but it is in fact optimal. ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1602158916.433200",
+        "parent_user_id": "UGV299K6H",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "TfY",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "This is not intended to address the question of stop losses specifically although I think it might be possible to reframe it without much effort. I am only showing that there are situations where not only is it good to place a negative EV bet but it is in fact optimal. "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1602164886.471300",
+        "client_msg_id": "FAEA76B6-FFF7-4EA8-828E-DC614447236D",
+        "text": "My proof of what? The conditional probability?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1602155409.424300",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "\/j18q",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "My proof of what? The conditional probability?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1602164918.471500",
+        "client_msg_id": "77964e5c-2a8e-41e7-851d-35c11bc979ef",
+        "text": "This is not valid\n```hedge_bets = np.random.choice([1.02, 1.01, 0.985], size=(10000, 10000), p=[0.278195489, 0.241804511, 0.48])```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1602155409.424300",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "EULol",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "This is not valid\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "hedge_bets = np.random.choice([1.02, 1.01, 0.985], size=(10000, 10000), p=[0.278195489, 0.241804511, 0.48])"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1602164991.471700",
+        "client_msg_id": "0d72f73b-44f2-4b9b-af3d-9f2ef37b52f9",
+        "text": "How can you possibly be better off hedging at negative EV 72% of the time, its wrong",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1602155409.424300",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "gOa",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "How can you possibly be better off hedging at negative EV 72% of the time, its wrong"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1602165091.473400",
+        "client_msg_id": "D01B8A49-5FFD-47BC-9B2F-BBB4773E9B51",
+        "text": "Pretty sure the entire thrust of what I’m saying is despite your aversion to negative EV hedging, it is optimal",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1602155409.424300",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "ARgwf",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Pretty sure the entire thrust of what I’m saying is despite your aversion to negative EV hedging, it is optimal"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1602165104.473900",
+        "client_msg_id": "748af5f3-c710-4dab-bbd8-1ad26061bfaa",
+        "text": "not in profit",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1602155409.424300",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "rR2",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "not in profit"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1602165123.474500",
+        "client_msg_id": "794F32E9-3081-411C-9307-FDEFBEF072EC",
+        "text": "In expectation of log wealth, yes",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1602155409.424300",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "tJL",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "In expectation of log wealth, yes"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1602167657.474700",
+        "client_msg_id": "2598f8ab-a390-4349-911a-0fa008112ef8",
+        "text": "Treating each bet independent (which they are) can you explain this in relation to your hypothetical linking via bayes\n\n```bet_a = np.random.choice([1.02, 0.98], size=(10000, 10000), p=[0.52, 0.48])\nbet_b = np.random.choice([0.99, 1.005], size=(10000, 10000), p=[0.335, 0.665])\n\nbet_a_cumulative_bank = np.cumprod(bet_a, axis=0)\nbet_b_cumulative_bank = np.cumprod(bet_b, axis=0)\n\nprint(np.median(bet_a_cumulative_bank[9999,:]))\nprint(np.median(bet_b_cumulative_bank[9999,:]))```\n```403.69789599466435\n0.605637255258604```\n",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1602155409.424300",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "3RXx7",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Treating each bet independent (which they are) can you explain this in relation to your hypothetical linking via bayes\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "bet_a = np.random.choice([1.02, 0.98], size=(10000, 10000), p=[0.52, 0.48])\nbet_b = np.random.choice([0.99, 1.005], size=(10000, 10000), p=[0.335, 0.665])\n\nbet_a_cumulative_bank = np.cumprod(bet_a, axis=0)\nbet_b_cumulative_bank = np.cumprod(bet_b, axis=0)\n\nprint(np.median(bet_a_cumulative_bank[9999,:]))\nprint(np.median(bet_b_cumulative_bank[9999,:]))"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "403.69789599466435\n0.605637255258604"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": []
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1602169470.475400",
+        "client_msg_id": "9D9AE4AA-0EBD-48B3-8D94-B5F294E9635F",
+        "text": "How are they independent when you are betting on the same outcome?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1602155409.424300",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Lmn6",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "How are they independent when you are betting on the same outcome?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UGV299K6H",
+        "type": "message",
+        "ts": "1602172241.475700",
+        "client_msg_id": "f102ff2f-79ce-4ca7-abaa-8e910a418f58",
+        "text": "Yeah I don't have any problem with that and you're much better qualified on the Bayesian stuff than I am so I'm not even going to go there. My purpose in the discussion above was to address really basic subjects like the idea that it might be wise to decide to trade out of a bet whatever happens before you've even placed it, that trading 'isn't betting' and the basic concept that your bets have to be +EV or you can't win and I don't think you'd disagree with me on any of those things?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g3a262a3cfba",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/b3a262a3cfba292c18acf5777f65908a.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0006-72.png",
+            "first_name": "Michael",
+            "real_name": "Michael C",
+            "display_name": "Michael",
+            "team": "T4G9NBD2M",
+            "name": "michael",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1602158916.433200",
+        "parent_user_id": "UGV299K6H",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "JQnaB",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Yeah I don't have any problem with that and you're much better qualified on the Bayesian stuff than I am so I'm not even going to go there. My purpose in the discussion above was to address really basic subjects like the idea that it might be wise to decide to trade out of a bet whatever happens before you've even placed it, that trading 'isn't betting' and the basic concept that your bets have to be +EV or you can't win and I don't think you'd disagree with me on any of those things?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UGV299K6H",
+        "type": "message",
+        "ts": "1602172575.475900",
+        "client_msg_id": "03b72fc0-9d0b-4074-a8f6-1acec6301aef",
+        "text": "Your example above is very specific, quite theoretical and omits a few home truths (for example assuming that it's possible to scale stakes according to Kelly without sacrificing value). That doesn't make it wrong, but it limits its application to the general case - I think you've shown that in a few special cases there might be a reason to make a -EV bet, but for practical application for the 99.99% I think 'always bet with +EV' is the rule to go with.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g3a262a3cfba",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/b3a262a3cfba292c18acf5777f65908a.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0006-72.png",
+            "first_name": "Michael",
+            "real_name": "Michael C",
+            "display_name": "Michael",
+            "team": "T4G9NBD2M",
+            "name": "michael",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1602158916.433200",
+        "parent_user_id": "UGV299K6H",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Q7ZIq",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Your example above is very specific, quite theoretical and omits a few home truths (for example assuming that it's possible to scale stakes according to Kelly without sacrificing value). That doesn't make it wrong, but it limits its application to the general case - I think you've shown that in a few special cases there might be a reason to make a -EV bet, but for practical application for the 99.99% I think 'always bet with +EV' is the rule to go with."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1602173400.483000",
+        "client_msg_id": "D3883BAB-664F-40FA-866D-EBBC74607708",
+        "text": "For illustration purposes it has to be specific. I agree there are shortcomings, such as not taking account of commission, that the bank cannot scale infinitely (but the flip side is that practically speaking once the bank reaches a small enough size you are wiped out), and that the mean of the unhedged final return is greater than the mean of the hedged. However, I don’t believe that any of these things affect the conclusion and with an 83% better median return there is a lot of wriggle room for the conclusion to be the same, just not as large a disparity. Personally I think that you saying for almost all cases always bet with +EV is _exactly_ the problem. This is simply not true and rules like this persist the misinformation. Everyone can benefit from negative EV hedges to grow their bankroll faster and larger. ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1602158916.433200",
+        "parent_user_id": "UGV299K6H",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "R2fT",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "For illustration purposes it has to be specific. I agree there are shortcomings, such as not taking account of commission, that the bank cannot scale infinitely (but the flip side is that practically speaking once the bank reaches a small enough size you are wiped out), and that the mean of the unhedged final return is greater than the mean of the hedged. However, I don’t believe that any of these things affect the conclusion and with an 83% better median return there is a lot of wriggle room for the conclusion to be the same, just not as large a disparity. Personally I think that you saying for almost all cases always bet with +EV is "
+                            },
+                            {
+                                "type": "text",
+                                "text": "exactly ",
+                                "style": {
+                                    "italic": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "the problem. This is simply not true and rules like this persist the misinformation. Everyone can benefit from negative EV hedges to grow their bankroll faster and larger. "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UGV299K6H",
+        "type": "message",
+        "ts": "1602173596.483200",
+        "client_msg_id": "a07b86df-0bc9-4b22-b1bd-2c18da6268f5",
+        "text": "I understand your point - but can we agree that if you commit to 'closing' a bet before you even place it you'll be accepting that you'll be doing so at -EV?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g3a262a3cfba",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/b3a262a3cfba292c18acf5777f65908a.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0006-72.png",
+            "first_name": "Michael",
+            "real_name": "Michael C",
+            "display_name": "Michael",
+            "team": "T4G9NBD2M",
+            "name": "michael",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1602158916.433200",
+        "parent_user_id": "UGV299K6H",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "43Kbv",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I understand your point - but can we agree that if you commit to 'closing' a bet before you even place it you'll be accepting that you'll be doing so at -EV?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UGV299K6H",
+        "type": "message",
+        "ts": "1602173621.483400",
+        "client_msg_id": "5f374b44-ac93-4f1d-bc9b-0b8fef1c39b2",
+        "text": "...which was the substantive point of my post.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g3a262a3cfba",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/b3a262a3cfba292c18acf5777f65908a.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0006-72.png",
+            "first_name": "Michael",
+            "real_name": "Michael C",
+            "display_name": "Michael",
+            "team": "T4G9NBD2M",
+            "name": "michael",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1602158916.433200",
+        "parent_user_id": "UGV299K6H",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "BjbF",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "...which was the substantive point of my post."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UGV299K6H",
+        "type": "message",
+        "ts": "1602173854.483800",
+        "edited": {
+            "user": "UGV299K6H",
+            "ts": "1602173869.000000"
+        },
+        "client_msg_id": "31cb4d27-3c1e-4262-be33-82990aec7818",
+        "text": "Addressing your substantive point: I think you're addressing quite an a-typical use case, whereby you place escalating stakes with known value. Most people will rapidly find that the market won't support that and they'll be churning small stakes which are essentially 'bank agnostic'. Again I want to return this to the context of the discussion which was 'trading isn't betting' etc.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g3a262a3cfba",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/b3a262a3cfba292c18acf5777f65908a.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0006-72.png",
+            "first_name": "Michael",
+            "real_name": "Michael C",
+            "display_name": "Michael",
+            "team": "T4G9NBD2M",
+            "name": "michael",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1602158916.433200",
+        "parent_user_id": "UGV299K6H",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "kJv2",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Addressing your substantive point: I think you're addressing quite an a-typical use case, whereby you place escalating stakes with known value. Most people will rapidly find that the market won't support that and they'll be churning small stakes which are essentially 'bank agnostic'. Again I want to return this to the context of the discussion which was 'trading isn't betting' etc."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UGV299K6H",
+        "type": "message",
+        "ts": "1602174281.484100",
+        "client_msg_id": "b81da205-4868-4fd7-87fb-d24e5db93e87",
+        "text": "Or - to put it another way: Do you think most people's betting is limited by their refusal to strike -EV bets?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g3a262a3cfba",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/b3a262a3cfba292c18acf5777f65908a.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0006-72.png",
+            "first_name": "Michael",
+            "real_name": "Michael C",
+            "display_name": "Michael",
+            "team": "T4G9NBD2M",
+            "name": "michael",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1602158916.433200",
+        "parent_user_id": "UGV299K6H",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "JHhLP",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Or - to put it another way: Do you think most people's betting is limited by their refusal to strike -EV bets?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1602174642.484400",
+        "client_msg_id": "AD8070F7-CCDE-4DB3-B65D-957DDABEB9F7",
+        "text": "No I don’t ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1602158916.433200",
+        "parent_user_id": "UGV299K6H",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "JfPsi",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "No I don’t "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UGV299K6H",
+        "type": "message",
+        "ts": "1602174690.484600",
+        "client_msg_id": "5368222f-a02e-4139-9434-7ca783970bb4",
+        "text": "Yeah I didn't think you would.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g3a262a3cfba",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/b3a262a3cfba292c18acf5777f65908a.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0006-72.png",
+            "first_name": "Michael",
+            "real_name": "Michael C",
+            "display_name": "Michael",
+            "team": "T4G9NBD2M",
+            "name": "michael",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1602158916.433200",
+        "parent_user_id": "UGV299K6H",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "ZJ5R",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Yeah I didn't think you would."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UGV299K6H",
+        "type": "message",
+        "ts": "1602174794.484800",
+        "client_msg_id": "332f8a36-8ab3-48f9-bf63-dd3e23e73b82",
+        "text": "I can see how what you're saying might apply to a large and sophisticated operation - but not many such setups are called 'newby99'",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g3a262a3cfba",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/b3a262a3cfba292c18acf5777f65908a.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0006-72.png",
+            "first_name": "Michael",
+            "real_name": "Michael C",
+            "display_name": "Michael",
+            "team": "T4G9NBD2M",
+            "name": "michael",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1602158916.433200",
+        "parent_user_id": "UGV299K6H",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "X1\/",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I can see how what you're saying might apply to a large and sophisticated operation - but not many such setups are called 'newby99'"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UGV299K6H",
+        "type": "message",
+        "ts": "1602175154.485000",
+        "edited": {
+            "user": "UGV299K6H",
+            "ts": "1602175822.000000"
+        },
+        "client_msg_id": "ab00c392-e662-472a-a7f6-89f345b01a49",
+        "text": "Something else to add: Unless I've misunderstood your rebuttal it only works because you're applying proportionate staking on an escalating bank. If you give it flat stakes (which I think is a more reasonable case) then I don't think it works at all. If your rebuttal is predicated on stakes and bank scaling without limit or loss of value then I think you could argue that it's not valid because we know that markets don't work like that. Markets have limited size and offer reduced value to larger stakes. (Edited for better clarity).",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g3a262a3cfba",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/b3a262a3cfba292c18acf5777f65908a.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0006-72.png",
+            "first_name": "Michael",
+            "real_name": "Michael C",
+            "display_name": "Michael",
+            "team": "T4G9NBD2M",
+            "name": "michael",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1602158916.433200",
+        "parent_user_id": "UGV299K6H",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "lBY",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Something else to add: Unless I've misunderstood your rebuttal it only works because you're applying proportionate staking on an escalating bank. If you give it flat stakes (which I think is a more reasonable case) then I don't think it works at all. If your rebuttal is predicated on stakes and bank scaling without limit or loss of value then I think you could argue that it's not valid because we know that markets don't work like that. Markets have limited size and offer reduced value to larger stakes. (Edited for better clarity)."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UGV299K6H",
+        "type": "message",
+        "ts": "1602176610.485300",
+        "client_msg_id": "ea14b8f1-407e-46dc-949d-c3e3a2b6c18c",
+        "text": "By way of addressing some of what unfolds below I'd like to add a footnote for clarity: The above specifically addresses strategies in which the bettor decides to close his bet before he opens it. It does not address a scenario where he makes a contextual decision to close or not later. Further, it assumes that repeated 'trades' are intended with unchanging stakes. Do you prefer that <@UBS7QANF3>?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g3a262a3cfba",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/b3a262a3cfba292c18acf5777f65908a.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0006-72.png",
+            "first_name": "Michael",
+            "real_name": "Michael C",
+            "display_name": "Michael",
+            "team": "T4G9NBD2M",
+            "name": "michael",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1602103111.356800",
+        "parent_user_id": "UGV299K6H",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "247",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "By way of addressing some of what unfolds below I'd like to add a footnote for clarity: The above specifically addresses strategies in which the bettor decides to close his bet before he opens it. It does not address a scenario where he makes a contextual decision to close or not later. Further, it assumes that repeated 'trades' are intended with unchanging stakes. Do you prefer that "
+                            },
+                            {
+                                "type": "user",
+                                "user_id": "UBS7QANF3"
+                            },
+                            {
+                                "type": "text",
+                                "text": "?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UGV299K6H",
+        "type": "message",
+        "ts": "1602176971.485500",
+        "client_msg_id": "31de4375-34d3-4d91-ad99-a5f0cad2a573",
+        "text": "I could sign up to this without problem if the title was different. 'Why hedging at -EV is optimal' implies it's always or usually optimal - which in fairness is not what I think you mean.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g3a262a3cfba",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/b3a262a3cfba292c18acf5777f65908a.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0006-72.png",
+            "first_name": "Michael",
+            "real_name": "Michael C",
+            "display_name": "Michael",
+            "team": "T4G9NBD2M",
+            "name": "michael",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1602149471.405900",
+        "parent_user_id": "UBS7QANF3",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Antb",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I could sign up to this without problem if the title was different. 'Why hedging at -EV is optimal' implies it's always or usually optimal - which in fairness is not what I think you mean."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1602177023.485900",
+        "client_msg_id": "9EF88528-E5E2-4431-AA05-A4C0CDCB8EFD",
+        "text": "Yes I take your point",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1602149471.405900",
+        "parent_user_id": "UBS7QANF3",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "BNYwp",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Yes I take your point"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "UGV299K6H"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1602177049.486300",
+        "client_msg_id": "327987E1-21CB-4A99-88C6-5B04A0B5FC73",
+        "text": "Let’s shake on it",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1602103111.356800",
+        "parent_user_id": "UGV299K6H",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "cqdU",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Let’s shake on it"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UGV299K6H",
+        "type": "message",
+        "ts": "1602177166.488200",
+        "client_msg_id": "e358a06e-ea58-4f23-bdb7-fc7081233cef",
+        "text": "Gonna have to be elbows <@UBS7QANF3> - get with the times.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g3a262a3cfba",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/b3a262a3cfba292c18acf5777f65908a.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0006-72.png",
+            "first_name": "Michael",
+            "real_name": "Michael C",
+            "display_name": "Michael",
+            "team": "T4G9NBD2M",
+            "name": "michael",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1602103111.356800",
+        "parent_user_id": "UGV299K6H",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Iyr",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Gonna have to be elbows "
+                            },
+                            {
+                                "type": "user",
+                                "user_id": "UBS7QANF3"
+                            },
+                            {
+                                "type": "text",
+                                "text": " - get with the times."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1602177192.488900",
+        "edited": {
+            "user": "UBS7QANF3",
+            "ts": "1602177388.000000"
+        },
+        "client_msg_id": "86CC547D-5A0D-455A-BF55-A98F1D41F5E4",
+        "text": "I don’t disagree with you but I did have that in mind with odds that are not extreme, a medium size edge on the initial bet and the idea of a pre-event bet followed by a hedge in-running. I think that football or tennis markets could easily support the kind of sizes we’re talking about with a six figure bankroll",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1602158916.433200",
+        "parent_user_id": "UGV299K6H",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "70Z\/7",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I don’t disagree with you but I did have that in mind with odds that are not extreme, a medium size edge on the initial bet and the idea of a pre-event bet followed by a hedge in-running. I think that football or tennis markets could easily support the kind of sizes we’re talking about with a six figure bankroll"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UGV299K6H",
+        "type": "message",
+        "ts": "1602177379.489200",
+        "client_msg_id": "f9262582-0b6d-4fb1-95c8-65c382e45c93",
+        "text": "Yeah I'd have to admit that when thinking about markets I default to in IR horse racing type scenario in which you run up against the stake\/value trade off much more quickly.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g3a262a3cfba",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/b3a262a3cfba292c18acf5777f65908a.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0006-72.png",
+            "first_name": "Michael",
+            "real_name": "Michael C",
+            "display_name": "Michael",
+            "team": "T4G9NBD2M",
+            "name": "michael",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1602158916.433200",
+        "parent_user_id": "UGV299K6H",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "BamT",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Yeah I'd have to admit that when thinking about markets I default to in IR horse racing type scenario in which you run up against the stake\/value trade off much more quickly."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UGV299K6H",
+        "type": "message",
+        "ts": "1602181140.489700",
+        "client_msg_id": "2bf2eb28-0ebd-42cc-86a0-b9ea4097fd73",
+        "text": "I'm going to attempt a summary of the substantive points in the above discussion and see if we can all agree on it. Here Goes:",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g3a262a3cfba",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/b3a262a3cfba292c18acf5777f65908a.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0006-72.png",
+            "first_name": "Michael",
+            "real_name": "Michael C",
+            "display_name": "Michael",
+            "team": "T4G9NBD2M",
+            "name": "michael",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "CgS",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I'm going to attempt a summary of the substantive points in the above discussion and see if we can all agree on it. Here Goes:"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "U01B458UEAK"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "UGV299K6H",
+        "type": "message",
+        "ts": "1602181144.489900",
+        "edited": {
+            "user": "UGV299K6H",
+            "ts": "1602181774.000000"
+        },
+        "client_msg_id": "4ae8bcd5-0277-46f7-90c2-b99b5e47324a",
+        "text": "1: All profitable betting that is sustained over a large number of bets is dependant on those bets having positive expected value at the time of placement on aggregate and there is no exception to this.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g3a262a3cfba",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/b3a262a3cfba292c18acf5777f65908a.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0006-72.png",
+            "first_name": "Michael",
+            "real_name": "Michael C",
+            "display_name": "Michael",
+            "team": "T4G9NBD2M",
+            "name": "michael",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "DY6",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "1: All profitable betting that is sustained over a large number of bets is dependant on those bets having positive expected value at the time of placement on aggregate and there is no exception to this."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UGV299K6H",
+        "type": "message",
+        "ts": "1602181159.490100",
+        "edited": {
+            "user": "UGV299K6H",
+            "ts": "1602181373.000000"
+        },
+        "client_msg_id": "c6e3bd1d-62e7-43e4-bd30-33bd4cf6d590",
+        "text": "2: After placing a bet any decision about placing further bets on the same selection must be contextual if it is to increase profits or optimise growth of bankroll. Making a decision to place a 'closing' bet before placing an 'opening' bet (as in the classic 'trading' scenario) is a bad proposition.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g3a262a3cfba",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/b3a262a3cfba292c18acf5777f65908a.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0006-72.png",
+            "first_name": "Michael",
+            "real_name": "Michael C",
+            "display_name": "Michael",
+            "team": "T4G9NBD2M",
+            "name": "michael",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "O0Y2Z",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "2: After placing a bet any decision about placing further bets on the same selection must be contextual if it is to increase profits or optimise growth of bankroll. Making a decision to place a 'closing' bet before placing an 'opening' bet (as in the classic 'trading' scenario) is a bad proposition."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UGV299K6H",
+        "type": "message",
+        "ts": "1602181252.491100",
+        "edited": {
+            "user": "UGV299K6H",
+            "ts": "1602181719.000000"
+        },
+        "client_msg_id": "909e6302-875c-4d22-ba99-e918283ff6d8",
+        "text": "3: As <@UBS7QANF3> has illustrated: in situations where a market will support escalating stakes some well judged -EV hedging can facilitate better growth of bank roll. Whether this is workable in practice depends on the specific character of markets in question. In markets that won't support escalating stakes Mo's illustration is not applicable.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g3a262a3cfba",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/b3a262a3cfba292c18acf5777f65908a.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0006-72.png",
+            "first_name": "Michael",
+            "real_name": "Michael C",
+            "display_name": "Michael",
+            "team": "T4G9NBD2M",
+            "name": "michael",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "+hVE",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "3: As "
+                            },
+                            {
+                                "type": "user",
+                                "user_id": "UBS7QANF3"
+                            },
+                            {
+                                "type": "text",
+                                "text": " has illustrated: in situations where a market will support escalating stakes some well judged -EV hedging can facilitate better growth of bank roll. Whether this is workable in practice depends on the specific character of markets in question. In markets that won't support escalating stakes Mo's illustration is not applicable."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UGV299K6H",
+        "type": "message",
+        "ts": "1602181283.491800",
+        "client_msg_id": "8309c5f7-5a89-4862-a58a-b9b6220607ed",
+        "text": "Happy to edit - would be nice to reach a consensus.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g3a262a3cfba",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/b3a262a3cfba292c18acf5777f65908a.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0006-72.png",
+            "first_name": "Michael",
+            "real_name": "Michael C",
+            "display_name": "Michael",
+            "team": "T4G9NBD2M",
+            "name": "michael",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "w0Gx",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Happy to edit - would be nice to reach a consensus."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UU1URJ8L8",
+        "type": "message",
+        "ts": "1602181534.495200",
+        "edited": {
+            "user": "UU1URJ8L8",
+            "ts": "1602181577.000000"
+        },
+        "client_msg_id": "bcd79c16-95e5-4267-af54-c053290cb2aa",
+        "text": "&gt;  Making a decision to place a ‘closing’ bet before placing an ‘opening’ bet (as in the classic ‘trading’ scenario) is a bad proposition.\nThat is actually exactly what I suggested in the example I gave. You could even (in theory) back 10x your bankroll and hedge it all away at negative EV. But you need to place a closing bet first because otherwise you can’t reach that volume.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g7a5a7d77117",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/7a5a7d7711746fb16f400e11af544b2e.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0012-72.png",
+            "first_name": "",
+            "real_name": "Remi",
+            "display_name": "Remi",
+            "team": "T4G9NBD2M",
+            "name": "services",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "m7i",
+                "elements": [
+                    {
+                        "type": "rich_text_quote",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": " Making a decision to place a ‘closing’ bet before placing an ‘opening’ bet (as in the classic ‘trading’ scenario) is a bad proposition."
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "That is actually exactly what I suggested in the example I gave. You could even (in theory) back 10x your bankroll and hedge it all away at negative EV. But you need to place a closing bet first because otherwise you can’t reach that volume."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01B8031PM1",
+        "type": "message",
+        "ts": "1602182678.499900",
+        "client_msg_id": "23444c77-0ef9-4a63-8ec4-d50953414303",
+        "text": "<@UU1URJ8L8> the problem setup you have would better be seen as a multivariate markowitz portfolio optimisation problem. if leverage is allowed and there is guaranteed payoffs then both multivariate kelly or markowitz would say to invest to max of allowed leverage to get the risk on. regarding doing negative ev trades, for bets or assets with known covariance matrix, it is very much permissible (infact recommended) to do negative ev trades to maximize risk reward. please notice in equations on page 4 and 5 that there is absolutely no requirement to clamp weights to 0 or negative for assets where asset return is negative (<https:\/\/ocw.mit.edu\/courses\/mathematics\/18-s096-topics-in-mathematics-with-applications-in-finance-fall-2013\/lecture-notes\/MIT18_S096F13_lecnote14.pdf>)",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6e482a0e41b",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6e482a0e41b232f48d801454006dfa56.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0016-72.png",
+            "first_name": "river_shah",
+            "real_name": "river_shah",
+            "display_name": "river_shah",
+            "team": "T4G9NBD2M",
+            "name": "ansar.sa",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Dule",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "user",
+                                "user_id": "UU1URJ8L8"
+                            },
+                            {
+                                "type": "text",
+                                "text": " the problem setup you have would better be seen as a multivariate markowitz portfolio optimisation problem. if leverage is allowed and there is guaranteed payoffs then both multivariate kelly or markowitz would say to invest to max of allowed leverage to get the risk on. regarding doing negative ev trades, for bets or assets with known covariance matrix, it is very much permissible (infact recommended) to do negative ev trades to maximize risk reward. please notice in equations on page 4 and 5 that there is absolutely no requirement to clamp weights to 0 or negative for assets where asset return is negative ("
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/ocw.mit.edu\/courses\/mathematics\/18-s096-topics-in-mathematics-with-applications-in-finance-fall-2013\/lecture-notes\/MIT18_S096F13_lecnote14.pdf"
+                            },
+                            {
+                                "type": "text",
+                                "text": ")"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01B8031PM1",
+        "type": "message",
+        "ts": "1602182833.001600",
+        "client_msg_id": "8ec294b7-802f-4242-860f-3080d97ceeb6",
+        "text": "the thing with gambling unlike equity portfolio trading is that we are talking of unit dim covariance matrix, hence kelly and markowitz both result in the same answer and you really should not be doing -ev bets \/ trades",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6e482a0e41b",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6e482a0e41b232f48d801454006dfa56.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0016-72.png",
+            "first_name": "river_shah",
+            "real_name": "river_shah",
+            "display_name": "river_shah",
+            "team": "T4G9NBD2M",
+            "name": "ansar.sa",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "QLZB",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "the thing with gambling unlike equity portfolio trading is that we are talking of unit dim covariance matrix, hence kelly and markowitz both result in the same answer and you really should not be doing -ev bets \/ trades"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UU1URJ8L8",
+        "type": "message",
+        "ts": "1602183033.002800",
+        "client_msg_id": "c53b4197-fa5c-4fe6-81d7-837564b5ddfb",
+        "text": "So you take the 2.1 odds once and leave it at that, even if you can expect to be able to do a few round trips?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g7a5a7d77117",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/7a5a7d7711746fb16f400e11af544b2e.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0012-72.png",
+            "first_name": "",
+            "real_name": "Remi",
+            "display_name": "Remi",
+            "team": "T4G9NBD2M",
+            "name": "services",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "BNgs0",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "So you take the 2.1 odds once and leave it at that, even if you can expect to be able to do a few round trips?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01B8031PM1",
+        "type": "message",
+        "ts": "1602183123.005000",
+        "client_msg_id": "9a47763c-6b10-45e4-acbd-1edc1cba02d1",
+        "text": "no, in the case of arbitrage you max out to your bankroll + leverage. i am speaking here theoretically. lots of things go bump in arbs.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6e482a0e41b",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6e482a0e41b232f48d801454006dfa56.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0016-72.png",
+            "first_name": "river_shah",
+            "real_name": "river_shah",
+            "display_name": "river_shah",
+            "team": "T4G9NBD2M",
+            "name": "ansar.sa",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "yBM",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "no, in the case of arbitrage you max out to your bankroll + leverage. i am speaking here theoretically. lots of things go bump in arbs."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01B8031PM1",
+        "type": "message",
+        "ts": "1602183143.005800",
+        "client_msg_id": "7e265c6e-8e9a-4b98-a11a-327e8a34f2cd",
+        "text": "i.e for an arb case, you would do negative ev trades",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6e482a0e41b",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6e482a0e41b232f48d801454006dfa56.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0016-72.png",
+            "first_name": "river_shah",
+            "real_name": "river_shah",
+            "display_name": "river_shah",
+            "team": "T4G9NBD2M",
+            "name": "ansar.sa",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "cG=W0",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "i.e for an arb case, you would do negative ev trades"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UU1URJ8L8",
+        "type": "message",
+        "ts": "1602183163.006300",
+        "client_msg_id": "cc18c6ad-9f28-4edc-b039-9f2f5e273d81",
+        "text": "And on betfair without leverage in the example I gave..?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g7a5a7d77117",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/7a5a7d7711746fb16f400e11af544b2e.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0012-72.png",
+            "first_name": "",
+            "real_name": "Remi",
+            "display_name": "Remi",
+            "team": "T4G9NBD2M",
+            "name": "services",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "YoA",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "And on betfair without leverage in the example I gave..?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01B8031PM1",
+        "type": "message",
+        "ts": "1602183246.007900",
+        "client_msg_id": "bd04e50e-5bb3-4aeb-9733-6be5728e598c",
+        "text": "in the idealised setting, you’d invest 100% of the bankroll.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6e482a0e41b",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6e482a0e41b232f48d801454006dfa56.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0016-72.png",
+            "first_name": "river_shah",
+            "real_name": "river_shah",
+            "display_name": "river_shah",
+            "team": "T4G9NBD2M",
+            "name": "ansar.sa",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "U\/1Qi",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "in the idealised setting, you’d invest 100% of the bankroll."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1602183264.008400",
+        "client_msg_id": "ac6a8afa-ea14-41d8-b90f-fe011a28fded",
+        "text": "I read point 3 as covering <@UU1URJ8L8>'s point (I think). What I believe <@UGV299K6H> is saying there is that in specific markets you could have a unique scenario (and this only works if bankroll is limited), where (very simplistically) the following could occur.\n\nLets say you only have £10 in your account, nothing more, you do the following:\n\nfair value = 3 (or higher, doesn't matter so long as its above 2.9)\ntrade 1: back £10 @ 3\ntrade 2: lay £10 @ 2.9\ntrade 3: lay £10 @ 2.9\n\nYou now have a +EV bet, with the same risk going in-play, but your return is higher, than had you initially taken the +EV bet and layed £10 @ 2.9 initially.\n\nAt least I think that's (simplistically) the point (obviously if not bankroll limited you could just lay in larger size).",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1602183264.008400",
+        "reply_count": 5,
+        "reply_users_count": 2,
+        "latest_reply": "1602317246.022600",
+        "reply_users": [
+            "UU1URJ8L8",
+            "UFTBRB3F1"
+        ],
+        "replies": [
+            {
+                "user": "UU1URJ8L8",
+                "ts": "1602183417.008700"
+            },
+            {
+                "user": "UFTBRB3F1",
+                "ts": "1602183484.009300"
+            },
+            {
+                "user": "UFTBRB3F1",
+                "ts": "1602183511.009600"
+            },
+            {
+                "user": "UU1URJ8L8",
+                "ts": "1602183526.009800"
+            },
+            {
+                "user": "UFTBRB3F1",
+                "ts": "1602317246.022600"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": false,
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "fEKm",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I read point 3 as covering "
+                            },
+                            {
+                                "type": "user",
+                                "user_id": "UU1URJ8L8"
+                            },
+                            {
+                                "type": "text",
+                                "text": "'s point (I think). What I believe "
+                            },
+                            {
+                                "type": "user",
+                                "user_id": "UGV299K6H"
+                            },
+                            {
+                                "type": "text",
+                                "text": " is saying there is that in specific markets you could have a unique scenario (and this only works if bankroll is limited), where (very simplistically) the following could occur.\n\nLets say you only have £10 in your account, nothing more, you do the following:\n\nfair value = 3 (or higher, doesn't matter so long as its above 2.9)\ntrade 1: back £10 @ 3\ntrade 2: lay £10 @ 2.9\ntrade 3: lay £10 @ 2.9\n\nYou now have a +EV bet, with the same risk going in-play, but your return is higher, than had you initially taken the +EV bet and layed £10 @ 2.9 initially.\n\nAt least I think that's (simplistically) the point (obviously if not bankroll limited you could just lay in larger size)."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01B8031PM1",
+        "type": "message",
+        "ts": "1602183268.008600",
+        "client_msg_id": "9864854b-f932-4441-873d-55d13539bfb0",
+        "text": "but i think we should step away from the arb case.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6e482a0e41b",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6e482a0e41b232f48d801454006dfa56.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0016-72.png",
+            "first_name": "river_shah",
+            "real_name": "river_shah",
+            "display_name": "river_shah",
+            "team": "T4G9NBD2M",
+            "name": "ansar.sa",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "WCu",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "but i think we should step away from the arb case."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UU1URJ8L8",
+        "type": "message",
+        "ts": "1602183417.008700",
+        "client_msg_id": "c183b008-1592-4585-b55a-0a2ad631225c",
+        "text": "( I assume trade 3 should be back @ 3  again? )",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g7a5a7d77117",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/7a5a7d7711746fb16f400e11af544b2e.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0012-72.png",
+            "first_name": "",
+            "real_name": "Remi",
+            "display_name": "Remi",
+            "team": "T4G9NBD2M",
+            "name": "services",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1602183264.008400",
+        "parent_user_id": "UFTBRB3F1",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "mh4",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "( I assume trade 3 should be back @ 3  again? )"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1602183484.009300",
+        "client_msg_id": "f6faae49-cc1c-411f-b613-3da7609ccdb8",
+        "text": "depends where fv is, but above if fv = 3, then the value is laying @ sub 3, rather than backing @ 3?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1602183264.008400",
+        "parent_user_id": "UFTBRB3F1",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "9V9bZ",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "depends where fv is, but above if fv = 3, then the value is laying @ sub 3, rather than backing @ 3?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UU1URJ8L8",
+        "type": "message",
+        "ts": "1602183485.009500",
+        "client_msg_id": "9484e39f-457e-4770-a204-3e0a703509cf",
+        "text": "All is arbitrage in a zero sum game.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g7a5a7d77117",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/7a5a7d7711746fb16f400e11af544b2e.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0012-72.png",
+            "first_name": "",
+            "real_name": "Remi",
+            "display_name": "Remi",
+            "team": "T4G9NBD2M",
+            "name": "services",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "aAM",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "All is arbitrage in a zero sum game."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1602183511.009600",
+        "client_msg_id": "9dcd6af0-17a6-46bc-b873-faf830d151c2",
+        "text": "(doesn't particularly matter of course, so long as the 3rd part is +EV)",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1602183264.008400",
+        "parent_user_id": "UFTBRB3F1",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "P+8U",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "(doesn't particularly matter of course, so long as the 3rd part is +EV)"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UU1URJ8L8",
+        "type": "message",
+        "ts": "1602183526.009800",
+        "client_msg_id": "c5fb3c21-a377-4c2b-ab5c-c7c303b963fe",
+        "text": "Ah, yes",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g7a5a7d77117",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/7a5a7d7711746fb16f400e11af544b2e.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0012-72.png",
+            "first_name": "",
+            "real_name": "Remi",
+            "display_name": "Remi",
+            "team": "T4G9NBD2M",
+            "name": "services",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1602183264.008400",
+        "parent_user_id": "UFTBRB3F1",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "5Sk",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Ah, yes"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1602184984.013200",
+        "client_msg_id": "E9E1D1B1-6744-474D-8115-AAFD160E70E0",
+        "text": "All bets are independent regardless of the underlying market, just because you placed that first bet doesn’t make the second different in terms of its eventual ev. \n\nI don’t agree with your probabilities surrounding your hedged scenario and I don’t understand how this proves you can increase your wealth based on a fixed bank because your backtest uses a new bankroll on each execution.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1602155409.424300",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "s\/0UT",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "All bets are independent regardless of the underlying market, just because you placed that first bet doesn’t make the second different in terms of its eventual ev. \n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "I don’t agree with your probabilities surrounding your hedged scenario and I don’t understand how this proves you can increase your wealth based on a fixed bank because your backtest uses a new bankroll on each execution."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U011VL3CA2Y",
+        "type": "message",
+        "ts": "1602187968.013700",
+        "client_msg_id": "f296f740-336d-4ad0-9b3e-63135bb0d8df",
+        "text": "what an enlighting discussion",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g1ec6e88d1e4",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/1ec6e88d1e4dd0bff349d83e9edba6bd.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0005-72.png",
+            "first_name": "Ruben",
+            "real_name": "Ruben",
+            "display_name": "Ruben",
+            "team": "T4G9NBD2M",
+            "name": "tduqruqtgtpiioibww",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "KUiZY",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "what an enlighting discussion"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U016TGY3676",
+        "type": "message",
+        "ts": "1602188996.017900",
+        "client_msg_id": "0192a8f0-0c18-4aa4-9ec8-18d55d43d7c4",
+        "text": "Minimising losses is just as important as maximising profits, so taking the \"optimal\" path will rarely have a negative impact on the bottom line. Anyone who has ever played Heads Up poker will have heard of Nash equilibrium and that is basically a -EV strategy that becomes +EV if the other player plays sub-optimally. As with all things related to gambling, profits are made from others making mistakes...",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6a681220e11",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6a681220e11c1a2ed3685375d658dadb.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0001-72.png",
+            "first_name": "",
+            "real_name": "birchy",
+            "display_name": "birchy",
+            "team": "T4G9NBD2M",
+            "name": "birchy",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "w+Yt",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Minimising losses is just as important as maximising profits, so taking the \"optimal\" path will rarely have a negative impact on the bottom line. Anyone who has ever played Heads Up poker will have heard of Nash equilibrium and that is basically a -EV strategy that becomes +EV if the other player plays sub-optimally. As with all things related to gambling, profits are made from others making mistakes..."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "subtype": "channel_join",
+        "user": "U01CYUVFEF2",
+        "text": "<@U01CYUVFEF2> has joined the channel",
+        "type": "message",
+        "ts": "1602196948.018100"
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1602223837.019000",
+        "client_msg_id": "06406EAA-68C9-4E9C-B80B-0DB5FEF4C6E9",
+        "text": "I didn’t say anything about a fixed bankroll. The entire point is to compound the winnings. ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1602155409.424300",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "QUVb",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I didn’t say anything about a fixed bankroll. The entire point is to compound the winnings. "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

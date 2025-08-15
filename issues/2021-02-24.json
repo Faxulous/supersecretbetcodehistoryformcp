@@ -1,0 +1,937 @@
+[
+    {
+        "user": "U01DVUAE2G1",
+        "type": "message",
+        "ts": "1614179444.058300",
+        "client_msg_id": "78dff993-3986-4d0f-acd8-ffb49f37fa5c",
+        "text": "Hey guys, i m still struggeling with my Latency issue, i have little clue how to \"debug\" this. I thought i d just put out all my current warning logs, maybe someone can make any sense of it, i d be grateful :smile: first: the latency issue seemingly isnt the result of to much processing per market update, even when i m not processing anything, i still eventually get the same problem. The framework is running on an ec2 instance, which i thought should be rather stable. Its a linux instance, so OS time should be in sync with an NTP server.\nProblem: _\"[MarketStream: 2001]: Latency high: 1.0108046531677246\"_\nLatency can go up to 6s.\n\nThat said, my suspicous logs:\n• sometimes i get _\"Market &lt;market_id&gt; not present when closing\"_, i dont know why it happens, timewise it doesnt seem to correlate with the _Latency high_ warning.\n• And now the probably bigger problem:\n```{\"asctime\": \"2021-02-23 21:19:59,560\", \"levelname\": \"ERROR\", \"message\": \"[MarketStream: 4001]: SUBSCRIPTION_LIMIT_EXCEEDED: trying to subscribe to 12930 markets whereas max allowed number was: 200\"}\n{\"asctime\": \"2021-02-23 21:20:10,572\", \"levelname\": \"ERROR\", \"message\": \"MarketStream run error\", \"exc_info\": \"Traceback (most recent call last):\\n  File \\\"\/usr\/local\/lib\/python3.7\/site-packages\/betfairlightweight\/streaming\/betfairstream.py\\\", line 216, in _receive_all\\n    part = self._socket.recv(self.buffer_size)\\n  File \\\"\/usr\/lib64\/python3.7\/ssl.py\\\", line 1056, in recv\\n    return self.read(buflen)\\n  File \\\"\/usr\/lib64\/python3.7\/ssl.py\\\", line 931, in read\\n    return self._sslobj.read(len)\\nsocket.timeout: The read operation timed out\\n\\nDuring handling of the above exception, another exception occurred:\\n\\nTraceback (most recent call last):\\n  File \\\"\/usr\/local\/lib\/python3.7\/site-packages\/flumine\/streams\/marketstream.py\\\", line 32, in run\\n    self._stream.start()\\n  File \\\"\/usr\/local\/lib\/python3.7\/site-packages\/betfairlightweight\/streaming\/betfairstream.py\\\", line 59, in start\\n    self._read_loop()\\n  File \\\"\/usr\/local\/lib\/python3.7\/site-packages\/betfairlightweight\/streaming\/betfairstream.py\\\", line 198, in _read_loop\\n    received_data_raw = self._receive_all()\\n  File \\\"\/usr\/local\/lib\/python3.7\/site-packages\/betfairlightweight\/streaming\/betfairstream.py\\\", line 220, in _receive_all\\n    raise SocketError(\\\"[Connect: %s]: Socket %s\\\" % (self._unique_id, e))\\nbetfairlightweight.exceptions.SocketError: [Connect: 4002]: Socket The read operation timed out\"}\n{\"asctime\": \"2021-02-23 21:20:12,575\", \"levelname\": \"WARNING\", \"message\": \"[Listener: 4002]: stream already registered, replacing data\"}```\nThese 3 fellas are getting logged right behind each other. The first few hours everything seems fine, until eventually these show up. I m not sure why it tries to subscribe to 12k (its always roughly 12k) markets, thats at least not what i m telling it to do. The fact it doesnt give this error the first few hours makes me feel like something bad is stacking up in the background (allthough if this was to log as soon as i hit &gt;200 markets, the jump from 200 to 12k seems kinda big). I know its not you guys job to solve my probs, but maybe some smart being immediatly has an idea of whats up - i d surely appreciate it :slightly_smiling_face:",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gd87aca58eae",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/d87aca58eaeabd0a953b4bc4204bbbaf.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Aaron Smith",
+            "display_name": "Aaron Smith",
+            "team": "T4G9NBD2M",
+            "name": "smiffyaaron",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1614179444.058300",
+        "reply_count": 17,
+        "reply_users_count": 2,
+        "latest_reply": "1614180983.062100",
+        "reply_users": [
+            "U4H19D1D2",
+            "U01DVUAE2G1"
+        ],
+        "replies": [
+            {
+                "user": "U4H19D1D2",
+                "ts": "1614179594.058700"
+            },
+            {
+                "user": "U01DVUAE2G1",
+                "ts": "1614179756.058900"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1614179787.059200"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1614179794.059400"
+            },
+            {
+                "user": "U01DVUAE2G1",
+                "ts": "1614179962.059600"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1614180202.059800"
+            },
+            {
+                "user": "U01DVUAE2G1",
+                "ts": "1614180407.060000"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1614180643.060300"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1614180663.060500"
+            },
+            {
+                "user": "U01DVUAE2G1",
+                "ts": "1614180776.060700"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1614180861.060900"
+            },
+            {
+                "user": "U01DVUAE2G1",
+                "ts": "1614180865.061100"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1614180905.061300"
+            },
+            {
+                "user": "U01DVUAE2G1",
+                "ts": "1614180915.061500"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1614180937.061700"
+            },
+            {
+                "user": "U01DVUAE2G1",
+                "ts": "1614180966.061900"
+            },
+            {
+                "user": "U01DVUAE2G1",
+                "ts": "1614180983.062100"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": true,
+        "last_read": "1614180983.062100",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "7asT",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Hey guys, i m still struggeling with my Latency issue, i have little clue how to \"debug\" this. I thought i d just put out all my current warning logs, maybe someone can make any sense of it, i d be grateful "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "smile",
+                                "unicode": "1f604"
+                            },
+                            {
+                                "type": "text",
+                                "text": " first: the latency issue seemingly isnt the result of to much processing per market update, even when i m not processing anything, i still eventually get the same problem. The framework is running on an ec2 instance, which i thought should be rather stable. Its a linux instance, so OS time should be in sync with an NTP server.\nProblem: "
+                            },
+                            {
+                                "type": "text",
+                                "text": "\"[MarketStream: 2001]: Latency high: 1.0108046531677246\"",
+                                "style": {
+                                    "italic": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\nLatency can go up to 6s.\n\nThat said, my suspicous logs:\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_list",
+                        "elements": [
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "sometimes i get "
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": "\"Market <market_id> not present when closing\"",
+                                        "style": {
+                                            "italic": true
+                                        }
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": ", i dont know why it happens, timewise it doesnt seem to correlate with the "
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": "Latency high",
+                                        "style": {
+                                            "italic": true
+                                        }
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": " warning."
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "And now the probably bigger problem:"
+                                    }
+                                ]
+                            }
+                        ],
+                        "style": "bullet",
+                        "indent": 0
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "{\"asctime\": \"2021-02-23 21:19:59,560\", \"levelname\": \"ERROR\", \"message\": \"[MarketStream: 4001]: SUBSCRIPTION_LIMIT_EXCEEDED: trying to subscribe to 12930 markets whereas max allowed number was: 200\"}\n{\"asctime\": \"2021-02-23 21:20:10,572\", \"levelname\": \"ERROR\", \"message\": \"MarketStream run error\", \"exc_info\": \"Traceback (most recent call last):\\n  File \\\"\/usr\/local\/lib\/python3.7\/site-packages\/betfairlightweight\/streaming\/betfairstream.py\\\", line 216, in _receive_all\\n    part = self._socket.recv(self.buffer_size)\\n  File \\\"\/usr\/lib64\/python3.7\/ssl.py\\\", line 1056, in recv\\n    return self.read(buflen)\\n  File \\\"\/usr\/lib64\/python3.7\/ssl.py\\\", line 931, in read\\n    return self._sslobj.read(len)\\nsocket.timeout: The read operation timed out\\n\\nDuring handling of the above exception, another exception occurred:\\n\\nTraceback (most recent call last):\\n  File \\\"\/usr\/local\/lib\/python3.7\/site-packages\/flumine\/streams\/marketstream.py\\\", line 32, in run\\n    self._stream.start()\\n  File \\\"\/usr\/local\/lib\/python3.7\/site-packages\/betfairlightweight\/streaming\/betfairstream.py\\\", line 59, in start\\n    self._read_loop()\\n  File \\\"\/usr\/local\/lib\/python3.7\/site-packages\/betfairlightweight\/streaming\/betfairstream.py\\\", line 198, in _read_loop\\n    received_data_raw = self._receive_all()\\n  File \\\"\/usr\/local\/lib\/python3.7\/site-packages\/betfairlightweight\/streaming\/betfairstream.py\\\", line 220, in _receive_all\\n    raise SocketError(\\\"[Connect: %s]: Socket %s\\\" % (self._unique_id, e))\\nbetfairlightweight.exceptions.SocketError: [Connect: 4002]: Socket The read operation timed out\"}\n{\"asctime\": \"2021-02-23 21:20:12,575\", \"levelname\": \"WARNING\", \"message\": \"[Listener: 4002]: stream already registered, replacing data\"}"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "These 3 fellas are getting logged right behind each other. The first few hours everything seems fine, until eventually these show up. I m not sure why it tries to subscribe to 12k (its always roughly 12k) markets, thats at least not what i m telling it to do. The fact it doesnt give this error the first few hours makes me feel like something bad is stacking up in the background (allthough if this was to log as soon as i hit >200 markets, the jump from 200 to 12k seems kinda big). I know its not you guys job to solve my probs, but maybe some smart being immediatly has an idea of whats up - i d surely appreciate it "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "slightly_smiling_face",
+                                "unicode": "1f642"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1614179594.058700",
+        "client_msg_id": "f3542100-513f-4d3b-a8f8-e822263017b4",
+        "text": "What does your market filter look like? (moved to thread)",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1614179444.058300",
+        "parent_user_id": "U01DVUAE2G1",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "\/he2",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "What does your market filter look like? (moved to thread)"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01DVUAE2G1",
+        "type": "message",
+        "ts": "1614179756.058900",
+        "edited": {
+            "user": "U01DVUAE2G1",
+            "ts": "1614179782.000000"
+        },
+        "client_msg_id": "448070f0-21af-4ad5-85f0-7ccb2b60e224",
+        "text": "market_filter = betfairlightweight.filters.market_filter(market_ids=market_ids)\n    market_data_filter = betfairlightweight.filters.streaming_market_data_filter(fields=[\"EX_BEST_OFFERS\", \"EX_MARKET_DEF\"],                                                                                          ladder_levels=1)\n\nlen(market_ids) is roughly 90",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gd87aca58eae",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/d87aca58eaeabd0a953b4bc4204bbbaf.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Aaron Smith",
+            "display_name": "Aaron Smith",
+            "team": "T4G9NBD2M",
+            "name": "smiffyaaron",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1614179444.058300",
+        "parent_user_id": "U01DVUAE2G1",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "TUUU4",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "market_filter = betfairlightweight.filters.market_filter(market_ids=market_ids)\n    market_data_filter = betfairlightweight.filters.streaming_market_data_filter(fields=[\"EX_BEST_OFFERS\", \"EX_MARKET_DEF\"],                                                                                          ladder_levels=1)\n\nlen(market_ids) is roughly 90"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1614179787.059200",
+        "client_msg_id": "f2b01d8f-60a0-4265-b28b-89d190cd6cfb",
+        "text": "why are you restricting to market_ids?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1614179444.058300",
+        "parent_user_id": "U01DVUAE2G1",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "ITgbp",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "why are you restricting to market_ids?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1614179794.059400",
+        "client_msg_id": "df60a726-bd84-4cb8-a872-c906f56e2c79",
+        "text": "and are you changing that filter during runtime?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1614179444.058300",
+        "parent_user_id": "U01DVUAE2G1",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "0\/uj",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "and are you changing that filter during runtime?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01DVUAE2G1",
+        "type": "message",
+        "ts": "1614179962.059600",
+        "client_msg_id": "a6c9fcc9-203c-48ee-8361-c5a74556c66d",
+        "text": "i have a \"competetion\" dataclass that holds the market_ids for each competition. The market_ids from the competitions in the next 2 hours are then put into the market_filter. Is this a bad way of doing it? The filter is not changed during runtime. When there are no more active markets, the framework terminates and starts again.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gd87aca58eae",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/d87aca58eaeabd0a953b4bc4204bbbaf.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Aaron Smith",
+            "display_name": "Aaron Smith",
+            "team": "T4G9NBD2M",
+            "name": "smiffyaaron",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1614179444.058300",
+        "parent_user_id": "U01DVUAE2G1",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "HdVT",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "i have a \"competetion\" dataclass that holds the market_ids for each competition. The market_ids from the competitions in the next 2 hours are then put into the market_filter. Is this a bad way of doing it? The filter is not changed during runtime. When there are no more active markets, the framework terminates and starts again."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1614180202.059800",
+        "client_msg_id": "95f97ca0-37cc-4717-97c2-a36b61b77fdd",
+        "text": "this will be the source of you problem, I can only assume the stream fails (betfair or network issue) a reconnect is attempted but the filter is a list of empty marketIds so it attempts to connect to all markets",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1614179444.058300",
+        "parent_user_id": "U01DVUAE2G1",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "vc=",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "this will be the source of you problem, I can only assume the stream fails (betfair or network issue) a reconnect is attempted but the filter is a list of empty marketIds so it attempts to connect to all markets"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01DVUAE2G1",
+        "type": "message",
+        "ts": "1614180407.060000",
+        "client_msg_id": "18d1c2cb-5c2c-4411-a750-893aa53360e9",
+        "text": "nice, sounds like i m getting closer to getting this out of the way :smile: So i should not use market_ids in my market_filter and reconstruct it to using something else? By \"empty\" market_ids you mean that all those markets have been closed already?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gd87aca58eae",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/d87aca58eaeabd0a953b4bc4204bbbaf.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Aaron Smith",
+            "display_name": "Aaron Smith",
+            "team": "T4G9NBD2M",
+            "name": "smiffyaaron",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1614179444.058300",
+        "parent_user_id": "U01DVUAE2G1",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "+fef",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "nice, sounds like i m getting closer to getting this out of the way "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "smile",
+                                "unicode": "1f604"
+                            },
+                            {
+                                "type": "text",
+                                "text": " So i should not use market_ids in my market_filter and reconstruct it to using something else? By \"empty\" market_ids you mean that all those markets have been closed already?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1614180643.060300",
+        "client_msg_id": "a24023a1-a188-44fb-8fb1-ba82cd720f07",
+        "text": "ideally you have a wider filter and filter out markets when required but I guess this workaround is because of the lack of football\/competition filter. Is there a chance that the list of marketIds could become empty during runtime?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1614179444.058300",
+        "parent_user_id": "U01DVUAE2G1",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "dMEe",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "ideally you have a wider filter and filter out markets when required but I guess this workaround is because of the lack of football\/competition filter. Is there a chance that the list of marketIds could become empty during runtime?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1614180663.060500",
+        "client_msg_id": "d66c5006-ce81-421b-b474-ede796a22639",
+        "text": "does that list get cleared or updated etc elsewhere in the app, thinking of a race condition",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1614179444.058300",
+        "parent_user_id": "U01DVUAE2G1",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "fezF",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "does that list get cleared or updated etc elsewhere in the app, thinking of a race condition"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01DVUAE2G1",
+        "type": "message",
+        "ts": "1614180776.060700",
+        "client_msg_id": "fcd97af7-f999-46b3-b1bf-00d7b804368c",
+        "text": "yea, there is a chance the list becomes empty during runtime. The list never gets cleared or updated during runtime, once its created it remains until the framework restarts",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gd87aca58eae",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/d87aca58eaeabd0a953b4bc4204bbbaf.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Aaron Smith",
+            "display_name": "Aaron Smith",
+            "team": "T4G9NBD2M",
+            "name": "smiffyaaron",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1614179444.058300",
+        "parent_user_id": "U01DVUAE2G1",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "f2PK=",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "yea, there is a chance the list becomes empty during runtime. The list never gets cleared or updated during runtime, once its created it remains until the framework restarts"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1614180861.060900",
+        "client_msg_id": "26026ab1-56e9-4390-9f54-08579a5d163e",
+        "text": "i would double check this, the only way for what you are seeing is if that list becomes `[]`",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1614179444.058300",
+        "parent_user_id": "U01DVUAE2G1",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "pxs",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "i would double check this, the only way for what you are seeing is if that list becomes "
+                            },
+                            {
+                                "type": "text",
+                                "text": "[]",
+                                "style": {
+                                    "code": true
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01DVUAE2G1",
+        "type": "message",
+        "ts": "1614180865.061100",
+        "client_msg_id": "621a6705-3b08-4c14-a010-324cc71bbb87",
+        "text": "by \"empty\" i mean there is a chance all markets are getting closed during runtime",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gd87aca58eae",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/d87aca58eaeabd0a953b4bc4204bbbaf.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Aaron Smith",
+            "display_name": "Aaron Smith",
+            "team": "T4G9NBD2M",
+            "name": "smiffyaaron",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1614179444.058300",
+        "parent_user_id": "U01DVUAE2G1",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "S6qR",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "by \"empty\" i mean there is a chance all markets are getting closed during runtime"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1614180905.061300",
+        "client_msg_id": "5f64869f-7286-43f4-a4c4-4586348e21cc",
+        "text": "why would that change that list?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1614179444.058300",
+        "parent_user_id": "U01DVUAE2G1",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "oS8BC",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "why would that change that list?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01DVUAE2G1",
+        "type": "message",
+        "ts": "1614180915.061500",
+        "client_msg_id": "29bf26aa-43ff-421d-b09e-209659de960e",
+        "text": "well, it could theoretically be that the inital list is empty",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gd87aca58eae",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/d87aca58eaeabd0a953b4bc4204bbbaf.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Aaron Smith",
+            "display_name": "Aaron Smith",
+            "team": "T4G9NBD2M",
+            "name": "smiffyaaron",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1614179444.058300",
+        "parent_user_id": "U01DVUAE2G1",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "JqSDk",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "well, it could theoretically be that the inital list is empty"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1614180937.061700",
+        "client_msg_id": "1eebbe81-e3df-4b90-bc4d-8278f09927a6",
+        "text": "yeah that could be the problem, simple to fix no?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1614179444.058300",
+        "parent_user_id": "U01DVUAE2G1",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "piV",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "yeah that could be the problem, simple to fix no?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01DVUAE2G1",
+        "type": "message",
+        "ts": "1614180966.061900",
+        "client_msg_id": "4223fed9-f589-4940-ba24-041e54213a17",
+        "text": "it doesnt change the list, i realized \"becomes empty\" was misleading, so i made clear what i meant :smile:",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gd87aca58eae",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/d87aca58eaeabd0a953b4bc4204bbbaf.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Aaron Smith",
+            "display_name": "Aaron Smith",
+            "team": "T4G9NBD2M",
+            "name": "smiffyaaron",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1614179444.058300",
+        "parent_user_id": "U01DVUAE2G1",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "tJvQG",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "it doesnt change the list, i realized \"becomes empty\" was misleading, so i made clear what i meant "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "smile",
+                                "unicode": "1f604"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01DVUAE2G1",
+        "type": "message",
+        "ts": "1614180983.062100",
+        "client_msg_id": "93fc9989-8619-4d52-b9a1-4d6150ce3b39",
+        "text": "yea should be an easy fix, just didnt know it would react like that. Thanks liam :slightly_smiling_face:",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gd87aca58eae",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/d87aca58eaeabd0a953b4bc4204bbbaf.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Aaron Smith",
+            "display_name": "Aaron Smith",
+            "team": "T4G9NBD2M",
+            "name": "smiffyaaron",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1614179444.058300",
+        "parent_user_id": "U01DVUAE2G1",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "wPh",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "yea should be an easy fix, just didnt know it would react like that. Thanks liam "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "slightly_smiling_face",
+                                "unicode": "1f642"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "U4H19D1D2"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "subtype": "channel_join",
+        "user": "U01PNBCPSKT",
+        "text": "<@U01PNBCPSKT> has joined the channel",
+        "type": "message",
+        "ts": "1614213896.062500"
+    }
+]

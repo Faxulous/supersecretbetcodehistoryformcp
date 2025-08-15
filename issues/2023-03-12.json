@@ -1,0 +1,285 @@
+[
+    {
+        "user": "U04L2UY6EH1",
+        "type": "message",
+        "ts": "1678622014.556409",
+        "client_msg_id": "e9b49a52-b53a-40d3-8a69-e3873e6be152",
+        "text": "Hey, fairly new to working with betfairlightweight\/flumine so this might be a dumb question, but I was looking at the difference in total_volume for each race calculated via totalling the price ladders you get from the runnerEX classes, vs just parsing the json files directly, and noticed they were pretty sizeable.\n\nLooking closer, I realised part of the reason was that even if the market update stated that there was an amount traded, and both the runnerEX class and my dictionary parser would pick up on it, afterwards for certain updates the runnerEX class would drop those values. In other cases, it would pick up trades that were not there. Is there a reason for this? Dived into the source code for a few hours but not really any closer to a solution.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "ga92550c2f47",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a92550c2f472c8dbe6b797e58ab0dbc1.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0014-72.png",
+            "first_name": "Sunken",
+            "real_name": "Sunken",
+            "display_name": "Sunken",
+            "team": "T4G9NBD2M",
+            "name": "kelvin.sun52",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1678622014.556409",
+        "reply_count": 9,
+        "reply_users_count": 2,
+        "latest_reply": "1678712263.556119",
+        "reply_users": [
+            "UBS7QANF3",
+            "U04L2UY6EH1"
+        ],
+        "replies": [
+            {
+                "user": "UBS7QANF3",
+                "ts": "1678628504.399709"
+            },
+            {
+                "user": "U04L2UY6EH1",
+                "ts": "1678696103.922009"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1678696118.023039"
+            },
+            {
+                "user": "U04L2UY6EH1",
+                "ts": "1678696432.930759"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1678696479.085709"
+            },
+            {
+                "user": "U04L2UY6EH1",
+                "ts": "1678696517.263029"
+            },
+            {
+                "user": "U04L2UY6EH1",
+                "ts": "1678706160.789079"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1678708598.829089"
+            },
+            {
+                "user": "U04L2UY6EH1",
+                "ts": "1678712263.556119"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": false,
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "YEpq",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Hey, fairly new to working with betfairlightweight\/flumine so this might be a dumb question, but I was looking at the difference in total_volume for each race calculated via totalling the price ladders you get from the runnerEX classes, vs just parsing the json files directly, and noticed they were pretty sizeable.\n\nLooking closer, I realised part of the reason was that even if the market update stated that there was an amount traded, and both the runnerEX class and my dictionary parser would pick up on it, afterwards for certain updates the runnerEX class would drop those values. In other cases, it would pick up trades that were not there. Is there a reason for this? Dived into the source code for a few hours but not really any closer to a solution."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U02RN7YDRQ9",
+        "type": "message",
+        "ts": "1678622494.402859",
+        "client_msg_id": "5a848af7-ba1c-401c-a4c5-f40a95681028",
+        "text": "Tracing back some oddball issues from the other day I discovered missing data for some markets. The logs showed connection issues with number of markets when BF published the next days GH races. I had 188 markets in the cache (rest of day + the next day). It looks like BF closed the connection for some reason (?) so Flumine automatically opened another stream but the number of markets ticked over the 200 limit. This kept repeating until 5 more markets had been closed and the count got down to 200. Any workaround for this ?\n\n```{\"asctime\": \"2023-03-09 19:30:47,754\", \"levelname\": \"INFO\", \"message\": \"[MarketStream: 1002] 1.211067730 removed, 188 markets in cache\"}\n\n{\"asctime\": \"2023-03-09 19:32:40,581\", \"levelname\": \"INFO\", \"message\": \"Created marketCatalogue for 1.211115814\", \"market_id\": ...}\n{\"asctime\": \"2023-03-09 19:32:40,581\", \"levelname\": \"INFO\", \"message\": \"Created marketCatalogue for 1.211115887\", \"market_id\": ...}\n\n{\"asctime\": \"2023-03-09 19:37:27,776\", \"levelname\": \"ERROR\", \"message\": \"DataStream 1002 run error\", \"exc_info\": \"Traceback (most recent call last):\\n  raise SocketError(\\nbetfairlightweight.exceptions.SocketError: [Connect: 1003]: Connection closed by server\"}\n{\"asctime\": \"2023-03-09 19:37:29,784\", \"levelname\": \"INFO\", \"message\": \"Starting DataStream 1002\", \"stream_id\": 1002, \"market_filter\": {\"eventTypeIds\": [\"4339\"], \"marketTypes\": [\"WIN\"], \"countryCodes\": [\"GB\"]}, \"market_data_filter\": {\"fields\": [\"EX_ALL_OFFERS\", \"EX_TRADED\", \"EX_TRADED_VOL\", \"EX_LTP\", \"EX_MARKET_DEF\", \"SP_TRADED\", \"SP_PROJECTED\"]}, \"conflate_ms\": null}\n{\"asctime\": \"2023-03-09 19:37:29,784\", \"levelname\": \"INFO\", \"message\": \"[Register: 1003]: Unique id updated on listener and stream\"}\n{\"asctime\": \"2023-03-09 19:37:29,831\", \"levelname\": \"INFO\", \"message\": \"[FlumineStream: 1003]: connection_id: 208-090323193730-4882826\"}\n{\"asctime\": \"2023-03-09 19:37:29,862\", \"levelname\": \"INFO\", \"message\": \"[FlumineStream: 1004]: SUCCESS (5 connections available)\"}\n{\"asctime\": \"2023-03-09 19:37:29,894\", \"levelname\": \"ERROR\", \"message\": \"[FlumineStream: 1003]: SUBSCRIPTION_LIMIT_EXCEEDED: trying to subscribe to 205 markets whereas max allowed number was: 200\"}\n{\"asctime\": \"2023-03-09 19:37:29,894\", \"levelname\": \"INFO\", \"message\": \"[FlumineStream: 1003]: FAILURE (5 connections available)\"}\n{\"asctime\": \"2023-03-09 19:37:45,417\", \"levelname\": \"ERROR\", \"message\": \"[FlumineStream: None]: TIMEOUT: Connection is not subscribed and is idle: 15000 ms\"}\n{\"asctime\": \"2023-03-09 19:37:45,417\", \"levelname\": \"ERROR\", \"message\": \"DataStream 1003 run error\", \"exc_info\": \"Traceback (most recent call last):\\n  File \\\"C:\\\\Users\\\\Administrator\\\\PycharmProjects\\\\betfair1\\\\venv\\\\lib\\\\site-packages\\\\flumine\\\\streams\\\\datastream.py\\\", line 166, in run\\n        raise ListenerError(self.listener.connection_id, received_data)\\nbetfairlightweight.exceptions.ListenerError: connection_id: 208-090323193730-4882826, data: {\\\"op\\\":\\\"status\\\",\\\"statusCode\\\":\\\"FAILURE\\\",\\\"errorCode\\\":\\\"TIMEOUT\\\",\\\"errorMessage\\\":\\\"Connection is not subscribed and is idle: 15000 ms\\\",\\\"connectionClosed\\\":true,\\\"connectionId\\\":\\\"208-090323193730-4882826\\\"}\"}```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "ge46f1f8b708",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/e46f1f8b708a630e3191de7b2c42b1d1.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0023-72.png",
+            "first_name": "edblock",
+            "real_name": "edblock",
+            "display_name": "foxwood",
+            "team": "T4G9NBD2M",
+            "name": "eanb",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1678622494.402859",
+        "reply_count": 2,
+        "reply_users_count": 2,
+        "latest_reply": "1678625418.836819",
+        "reply_users": [
+            "U01MPC0GUK1",
+            "U02RN7YDRQ9"
+        ],
+        "replies": [
+            {
+                "user": "U01MPC0GUK1",
+                "ts": "1678622846.053089"
+            },
+            {
+                "user": "U02RN7YDRQ9",
+                "ts": "1678625418.836819"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": false,
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "YmZpE",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Tracing back some oddball issues from the other day I discovered missing data for some markets. The logs showed connection issues with number of markets when BF published the next days GH races. I had 188 markets in the cache (rest of day + the next day). It looks like BF closed the connection for some reason (?) so Flumine automatically opened another stream but the number of markets ticked over the 200 limit. This kept repeating until 5 more markets had been closed and the count got down to 200. Any workaround for this ?\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "{\"asctime\": \"2023-03-09 19:30:47,754\", \"levelname\": \"INFO\", \"message\": \"[MarketStream: 1002] 1.211067730 removed, 188 markets in cache\"}\n\n{\"asctime\": \"2023-03-09 19:32:40,581\", \"levelname\": \"INFO\", \"message\": \"Created marketCatalogue for 1.211115814\", \"market_id\": ...}\n{\"asctime\": \"2023-03-09 19:32:40,581\", \"levelname\": \"INFO\", \"message\": \"Created marketCatalogue for 1.211115887\", \"market_id\": ...}\n\n{\"asctime\": \"2023-03-09 19:37:27,776\", \"levelname\": \"ERROR\", \"message\": \"DataStream 1002 run error\", \"exc_info\": \"Traceback (most recent call last):\\n  raise SocketError(\\nbetfairlightweight.exceptions.SocketError: [Connect: 1003]: Connection closed by server\"}\n{\"asctime\": \"2023-03-09 19:37:29,784\", \"levelname\": \"INFO\", \"message\": \"Starting DataStream 1002\", \"stream_id\": 1002, \"market_filter\": {\"eventTypeIds\": [\"4339\"], \"marketTypes\": [\"WIN\"], \"countryCodes\": [\"GB\"]}, \"market_data_filter\": {\"fields\": [\"EX_ALL_OFFERS\", \"EX_TRADED\", \"EX_TRADED_VOL\", \"EX_LTP\", \"EX_MARKET_DEF\", \"SP_TRADED\", \"SP_PROJECTED\"]}, \"conflate_ms\": null}\n{\"asctime\": \"2023-03-09 19:37:29,784\", \"levelname\": \"INFO\", \"message\": \"[Register: 1003]: Unique id updated on listener and stream\"}\n{\"asctime\": \"2023-03-09 19:37:29,831\", \"levelname\": \"INFO\", \"message\": \"[FlumineStream: 1003]: connection_id: 208-090323193730-4882826\"}\n{\"asctime\": \"2023-03-09 19:37:29,862\", \"levelname\": \"INFO\", \"message\": \"[FlumineStream: 1004]: SUCCESS (5 connections available)\"}\n{\"asctime\": \"2023-03-09 19:37:29,894\", \"levelname\": \"ERROR\", \"message\": \"[FlumineStream: 1003]: SUBSCRIPTION_LIMIT_EXCEEDED: trying to subscribe to 205 markets whereas max allowed number was: 200\"}\n{\"asctime\": \"2023-03-09 19:37:29,894\", \"levelname\": \"INFO\", \"message\": \"[FlumineStream: 1003]: FAILURE (5 connections available)\"}\n{\"asctime\": \"2023-03-09 19:37:45,417\", \"levelname\": \"ERROR\", \"message\": \"[FlumineStream: None]: TIMEOUT: Connection is not subscribed and is idle: 15000 ms\"}\n{\"asctime\": \"2023-03-09 19:37:45,417\", \"levelname\": \"ERROR\", \"message\": \"DataStream 1003 run error\", \"exc_info\": \"Traceback (most recent call last):\\n  File \\\"C:\\\\Users\\\\Administrator\\\\PycharmProjects\\\\betfair1\\\\venv\\\\lib\\\\site-packages\\\\flumine\\\\streams\\\\datastream.py\\\", line 166, in run\\n        raise ListenerError(self.listener.connection_id, received_data)\\nbetfairlightweight.exceptions.ListenerError: connection_id: 208-090323193730-4882826, data: {\\\"op\\\":\\\"status\\\",\\\"statusCode\\\":\\\"FAILURE\\\",\\\"errorCode\\\":\\\"TIMEOUT\\\",\\\"errorMessage\\\":\\\"Connection is not subscribed and is idle: 15000 ms\\\",\\\"connectionClosed\\\":true,\\\"connectionId\\\":\\\"208-090323193730-4882826\\\"}\"}"
+                            }
+                        ],
+                        "border": 0
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01MPC0GUK1",
+        "type": "message",
+        "ts": "1678622846.053089",
+        "client_msg_id": "c81d51e1-2429-44fd-aae3-f8217c163a2d",
+        "text": "Ask to increase the number of markets you can stream per connection. As long as you're placing bets bf will increase it to 1000",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "3be8fa875ec4",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2021-02-15\/1752388211523_3be8fa875ec4866620ff_72.png",
+            "first_name": "Beeblebrox",
+            "real_name": "Beeblebrox",
+            "display_name": "Beeblebrox",
+            "team": "T4G9NBD2M",
+            "name": "arch4672",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1678622494.402859",
+        "parent_user_id": "U02RN7YDRQ9",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "CyuW",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Ask to increase the number of markets you can stream per connection. As long as you're placing bets bf will increase it to 1000"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "U02RN7YDRQ9"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "U02RN7YDRQ9",
+        "type": "message",
+        "ts": "1678625418.836819",
+        "client_msg_id": "5d936f54-c688-4a3c-86f3-06997defd2d8",
+        "text": "Done that thanks - seems to happen most days on uk dogs if the connection is lost or start a new strategy running around 19:30 - 20:00 ish. So many markets open at the same time.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "ge46f1f8b708",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/e46f1f8b708a630e3191de7b2c42b1d1.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0023-72.png",
+            "first_name": "edblock",
+            "real_name": "edblock",
+            "display_name": "foxwood",
+            "team": "T4G9NBD2M",
+            "name": "eanb",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1678622494.402859",
+        "parent_user_id": "U02RN7YDRQ9",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "n6W",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Done that thanks - seems to happen most days on uk dogs if the connection is lost or start a new strategy running around 19:30 - 20:00 ish. So many markets open at the same time."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1678628504.399709",
+        "client_msg_id": "ac918031-a5c5-4a3b-b082-565504ef4234",
+        "text": "Live data? Self recorded? Betfair historic?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1678622014.556409",
+        "parent_user_id": "U04L2UY6EH1",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "qPc",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Live data? Self recorded? Betfair historic?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

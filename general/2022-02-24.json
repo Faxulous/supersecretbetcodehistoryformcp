@@ -1,0 +1,193 @@
+[
+    {
+        "user": "UUX1L88MC",
+        "type": "message",
+        "ts": "1645699462.320829",
+        "client_msg_id": "d785ab42-808d-440a-90d1-f0a740561ba4",
+        "text": "Just “finished” the betfairlightweight compat part of my data parsing library (<https:\/\/github.com\/tarb\/betfair_data>) and I would love if some people would like to try it out.\nEven better if you want to donate some cpu cycles and run my test script with some data, to help me find some remaining differences.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g15a28036452",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/15a28036452dd7be5991d4eda490e198.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0007-72.png",
+            "first_name": "",
+            "real_name": "Rob",
+            "display_name": "Rob",
+            "team": "T4G9NBD2M",
+            "name": "rtarbath",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "attachments": [
+            {
+                "id": 1,
+                "color": "24292f",
+                "bot_id": "B021ZJYSBMW",
+                "app_unfurl_url": "https:\/\/github.com\/tarb\/betfair_data",
+                "is_app_unfurl": true,
+                "app_id": "A01BP7R4KNY",
+                "fallback": "tarb\/betfair_data",
+                "text": "Fast Python Betfair historical data file parser",
+                "title": "tarb\/betfair_data",
+                "fields": [
+                    {
+                        "value": "8",
+                        "title": "Stars",
+                        "short": true
+                    },
+                    {
+                        "value": "Rust",
+                        "title": "Language",
+                        "short": true
+                    }
+                ]
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "CZI6I",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Just “finished” the betfairlightweight compat part of my data parsing library ("
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/tarb\/betfair_data"
+                            },
+                            {
+                                "type": "text",
+                                "text": ") and I would love if some people would like to try it out.\nEven better if you want to donate some cpu cycles and run my test script with some data, to help me find some remaining differences."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "U4H19D1D2",
+                    "UNW8Q88EL",
+                    "ULDAVFDRP"
+                ],
+                "count": 3
+            },
+            {
+                "name": "raised_hands",
+                "users": [
+                    "UUUAJQZ5J"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "UUX1L88MC",
+        "type": "message",
+        "ts": "1645700040.742359",
+        "client_msg_id": "13c6d999-91e3-4a68-a566-0dbac12de4f6",
+        "text": "heres some sample code as I havent added this part to the readme\n```import tarfile\nimport bz2\nfrom typing import Sequence\nimport betfair_data\nimport logging\nfrom betfair_data import bflw\n\nlogging.basicConfig(level=logging.WARN, format='%(levelname)s %(name)s %(message)s')\n\npaths = [ \n    \"data\/2021_10_OctRacingAUPro.tar\",\n    \"data\/2021_11_NovRacingAUPro.tar\",\n    \"data\/2021_12_DecRacingAUPro.tar\"\n]\n\ndef run_with_py_loading():\n    market_count = 0\n    update_count = 0\n\n    def load_tar(file_paths: Sequence[str]):\n        for file_path in file_paths:\n            with tarfile.TarFile(file_path) as archive:\n                for file in archive:\n                    f: bz2.BZ2File = bz2.open(archive.extractfile(file))\n                    name = file.name\n                    bytes = f.read()\n\n                    yield (name, bytes)\n        return None\n\n    for name, bytes in load_tar(paths):\n        file = bflw.BflwIter(name, bytes, cumulative_runner_tv=True)\n\n        market_count += 1\n        for market_books in file:\n            for market_book in market_books:\n                update_count += 1\n\n        print(f\"Market {market_count} Update {update_count}\", end='\\r')\n    print(f\"Market {market_count} Update {update_count}\")\n\n\ndef run_with_rust_loading():\n    for file in betfair_data.TarBz2(paths, cumulative_runner_tv=True).bflw():\n        market_count += 1\n\n        for market_books in file:\n            for market_book in market_books:\n                update_count += 1\n\n        print(f\"Market {market_count} Update {update_count}\", end='\\r')\n    print(f\"Market {market_count} Update {update_count}\")\n\n\nrun_with_rust_loading()```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g15a28036452",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/15a28036452dd7be5991d4eda490e198.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0007-72.png",
+            "first_name": "",
+            "real_name": "Rob",
+            "display_name": "Rob",
+            "team": "T4G9NBD2M",
+            "name": "rtarbath",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "XQ6YT",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "heres some sample code as I havent added this part to the readme\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "import tarfile\nimport bz2\nfrom typing import Sequence\nimport betfair_data\nimport logging\nfrom betfair_data import bflw\n\nlogging.basicConfig(level=logging.WARN, format='%(levelname)s %(name)s %(message)s')\n\npaths = [ \n    \"data\/2021_10_OctRacingAUPro.tar\",\n    \"data\/2021_11_NovRacingAUPro.tar\",\n    \"data\/2021_12_DecRacingAUPro.tar\"\n]\n\ndef run_with_py_loading():\n    market_count = 0\n    update_count = 0\n\n    def load_tar(file_paths: Sequence[str]):\n        for file_path in file_paths:\n            with tarfile.TarFile(file_path) as archive:\n                for file in archive:\n                    f: bz2.BZ2File = bz2.open(archive.extractfile(file))\n                    name = file.name\n                    bytes = f.read()\n\n                    yield (name, bytes)\n        return None\n\n    for name, bytes in load_tar(paths):\n        file = bflw.BflwIter(name, bytes, cumulative_runner_tv=True)\n\n        market_count += 1\n        for market_books in file:\n            for market_book in market_books:\n                update_count += 1\n\n        print(f\"Market {market_count} Update {update_count}\", end='\\r')\n    print(f\"Market {market_count} Update {update_count}\")\n\n\ndef run_with_rust_loading():\n    for file in betfair_data.TarBz2(paths, cumulative_runner_tv=True).bflw():\n        market_count += 1\n\n        for market_books in file:\n            for market_book in market_books:\n                update_count += 1\n\n        print(f\"Market {market_count} Update {update_count}\", end='\\r')\n    print(f\"Market {market_count} Update {update_count}\")\n\n\nrun_with_rust_loading()"
+                            }
+                        ],
+                        "border": 0
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "ok_hand",
+                "users": [
+                    "UUUAJQZ5J"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "UUX1L88MC",
+        "type": "message",
+        "ts": "1645700093.049599",
+        "client_msg_id": "cd6eaeae-eeb5-4486-a2bb-909d143fe024",
+        "text": "performance wise, its quite a lot slower the mutable version in the benchmark, finishing in 7:15sec for the same data (22k markets)",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g15a28036452",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/15a28036452dd7be5991d4eda490e198.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0007-72.png",
+            "first_name": "",
+            "real_name": "Rob",
+            "display_name": "Rob",
+            "team": "T4G9NBD2M",
+            "name": "rtarbath",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "haQJ=",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "performance wise, its quite a lot slower the mutable version in the benchmark, finishing in 7:15sec for the same data (22k markets)"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "subtype": "channel_join",
+        "user": "U034LRREJPM",
+        "text": "<@U034LRREJPM> has joined the channel",
+        "type": "message",
+        "ts": "1645750319.952449"
+    }
+]

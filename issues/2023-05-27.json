@@ -1,0 +1,1195 @@
+[
+    {
+        "user": "U013K4VNB6D",
+        "type": "message",
+        "ts": "1685185855.532469",
+        "edited": {
+            "user": "U013K4VNB6D",
+            "ts": "1685186001.000000"
+        },
+        "client_msg_id": "5040c51d-9fa9-460d-b96a-802fbc0f9af9",
+        "text": "Hi\n\nI'm doing back testing, and using market.cancel_order(order) to cancel orders, like so:\n\n```def cancel_order(self, market: Market, order: BaseOrder):\n    with market.transaction() as t:\n        t.cancel_order(order)```\nHowever, the logger shows that an exception was thrown:\n\n  *File \"C:\\Users\\User\\Documents\\New back test\\venv\\lib\\site-packages\\flumine\\execution\\transaction.py\", line 101, in cancel_order*\n    *order.cancel(size_reduction)*\n  *File \"C:\\Users\\User\\Documents\\New back test\\venv\\lib\\site-packages\\flumine\\order\\order.py\", line 339, in cancel*\n    *raise OrderUpdateError(\"Order does not currently have a betId\")*\n*flumine.exceptions.OrderUpdateError: Order does not currently have a betId*\n*ERROR - FlumineException Order does not currently have a betId in process_market_book (1.145085632)*\n\nI'm using the following code to create orders:\n\n```order = OrderFactory().non_bsp_order(self, back_or_lay, target_price, stake, runner, market_book)\nwith market.transaction() as t:\n    t.place_order(order)```\nand this is what the OrderFactory method looks like:\n\n```def non_bsp_order(self, strategy_object: BaseStrategy, back_or_lay: str, bet_price: float, stake_size: float,\n                  runner: RunnerBook, market_book: MarketBook) -&gt; BetfairOrder:\n    trade = Trade(\n        market_book.market_id,\n        runner.selection_id,\n        runner.handicap,\n        strategy_object,\n    )\n    return trade.create_order(\n        side=back_or_lay, order_type=LimitOrder(price=bet_price, size=stake_size)\n    )```\nWhere am I going wrong, please?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gf188478b89f",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/f188478b89f4a5e2c5af9eafa0433712.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0004-72.png",
+            "first_name": "",
+            "real_name": "Jeff Waters",
+            "display_name": "Jeff Waters",
+            "team": "T4G9NBD2M",
+            "name": "watersjg",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "cMa",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Hi\n\nI'm doing back testing, and using market.cancel_order(order) to cancel orders, like so:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "def cancel_order(self, market: Market, order: BaseOrder):\n    with market.transaction() as t:\n        t.cancel_order(order)"
+                            }
+                        ],
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\nHowever, the logger shows that an exception was thrown:\n\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "  File \"C:\\Users\\User\\Documents\\New back test\\venv\\lib\\site-packages\\flumine\\execution\\transaction.py\", line 101, in cancel_order",
+                                "style": {
+                                    "bold": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "    order.cancel(size_reduction)",
+                                "style": {
+                                    "bold": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "  File \"C:\\Users\\User\\Documents\\New back test\\venv\\lib\\site-packages\\flumine\\order\\order.py\", line 339, in cancel",
+                                "style": {
+                                    "bold": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "    raise OrderUpdateError(\"Order does not currently have a betId\")",
+                                "style": {
+                                    "bold": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "flumine.exceptions.OrderUpdateError: Order does not currently have a betId",
+                                "style": {
+                                    "bold": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "ERROR - FlumineException Order does not currently have a betId in process_market_book (1.145085632)",
+                                "style": {
+                                    "bold": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n\nI'm using the following code to create orders:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "order = OrderFactory().non_bsp_order(self, back_or_lay, target_price, stake, runner, market_book)\nwith market.transaction() as t:\n    t.place_order(order)"
+                            }
+                        ],
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\nand this is what the OrderFactory method looks like:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "def non_bsp_order(self, strategy_object: BaseStrategy, back_or_lay: str, bet_price: float, stake_size: float,\n                  runner: RunnerBook, market_book: MarketBook) -> BetfairOrder:\n    trade = Trade(\n        market_book.market_id,\n        runner.selection_id,\n        runner.handicap,\n        strategy_object,\n    )\n    return trade.create_order(\n        side=back_or_lay, order_type=LimitOrder(price=bet_price, size=stake_size)\n    )"
+                            }
+                        ],
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\nWhere am I going wrong, please?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01MPC0GUK1",
+        "type": "message",
+        "ts": "1685187882.673069",
+        "client_msg_id": "c3ce7aae-25d8-44ba-bdd3-8cf00b76174f",
+        "text": "Do you actually place the bet anywhere in your code? What you've shown is you create the order, but there also needs to be a market.place_order() call",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "3be8fa875ec4",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2021-02-15\/1752388211523_3be8fa875ec4866620ff_72.png",
+            "first_name": "Beeblebrox",
+            "real_name": "Beeblebrox",
+            "display_name": "Beeblebrox",
+            "team": "T4G9NBD2M",
+            "name": "arch4672",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "hhD",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Do you actually place the bet anywhere in your code? What you've shown is you create the order, but there also needs to be a market.place_order() call"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01MPC0GUK1",
+        "type": "message",
+        "ts": "1685187917.634579",
+        "client_msg_id": "d016559d-c005-474d-924d-c6e608548564",
+        "text": "Scrap that. Didn't see that you do already.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "3be8fa875ec4",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2021-02-15\/1752388211523_3be8fa875ec4866620ff_72.png",
+            "first_name": "Beeblebrox",
+            "real_name": "Beeblebrox",
+            "display_name": "Beeblebrox",
+            "team": "T4G9NBD2M",
+            "name": "arch4672",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "W=d=l",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Scrap that. Didn't see that you do already."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "U013K4VNB6D"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "U01MPC0GUK1",
+        "type": "message",
+        "ts": "1685187923.617879",
+        "client_msg_id": "2ebba4cf-8c6a-43e9-b64c-a5d91a2afcdb",
+        "text": "Ignore me",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "3be8fa875ec4",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2021-02-15\/1752388211523_3be8fa875ec4866620ff_72.png",
+            "first_name": "Beeblebrox",
+            "real_name": "Beeblebrox",
+            "display_name": "Beeblebrox",
+            "team": "T4G9NBD2M",
+            "name": "arch4672",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "IgO",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Ignore me"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U013K4VNB6D",
+        "type": "message",
+        "ts": "1685188012.378939",
+        "client_msg_id": "fb59d979-f276-4b06-aa02-98ee505fa536",
+        "text": "No worries. :slightly_smiling_face:",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gf188478b89f",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/f188478b89f4a5e2c5af9eafa0433712.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0004-72.png",
+            "first_name": "",
+            "real_name": "Jeff Waters",
+            "display_name": "Jeff Waters",
+            "team": "T4G9NBD2M",
+            "name": "watersjg",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "vuosq",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "No worries. "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "slightly_smiling_face",
+                                "unicode": "1f642"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U013K4VNB6D",
+        "type": "message",
+        "ts": "1685188295.174759",
+        "edited": {
+            "user": "U013K4VNB6D",
+            "ts": "1685188328.000000"
+        },
+        "client_msg_id": "e4e0b34a-98c8-43f7-89c8-a6feaac0e10c",
+        "text": "The curious thing is that, when I go 'print(order.betId)', I get a mixture of order id numbers and 'None'. I'm wondering whether some of the orders that I'm trying to cancel haven't yet been fully processed?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gf188478b89f",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/f188478b89f4a5e2c5af9eafa0433712.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0004-72.png",
+            "first_name": "",
+            "real_name": "Jeff Waters",
+            "display_name": "Jeff Waters",
+            "team": "T4G9NBD2M",
+            "name": "watersjg",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "9MNwg",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "The curious thing is that, when I go 'print(order.betId)', I get a mixture of order id numbers and 'None'. I'm wondering whether some of the orders that I'm trying to cancel haven't yet been fully processed?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U04NWADNCFR",
+        "type": "message",
+        "ts": "1685195429.810369",
+        "client_msg_id": "fba33709-961b-45b9-963e-45f0b29fc568",
+        "text": "Are you cancelling before a bet_id has been assigned, how quickly are you cancelling?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g3c4e33a28db",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/3c4e33a28dbfc1fe70799f8e243bf305.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0026-72.png",
+            "first_name": "Derek",
+            "real_name": "Derek C",
+            "display_name": "Derek C",
+            "team": "T4G9NBD2M",
+            "name": "dataexmachinazzzzz",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "tCh2",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Are you cancelling before a bet_id has been assigned, how quickly are you cancelling?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U013K4VNB6D",
+        "type": "message",
+        "ts": "1685195722.389459",
+        "client_msg_id": "da52f16a-c82a-47cc-925b-8507602b66c3",
+        "text": "I don't know if I'm cancelling it before the betId has been assigned, or if betIds are not assigned to all orders.\n\nSometimes orders are cancelled quite quickly, but as far as I know they wouldn't be cancelled before the next market refresh.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gf188478b89f",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/f188478b89f4a5e2c5af9eafa0433712.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0004-72.png",
+            "first_name": "",
+            "real_name": "Jeff Waters",
+            "display_name": "Jeff Waters",
+            "team": "T4G9NBD2M",
+            "name": "watersjg",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "kBZ",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I don't know if I'm cancelling it before the betId has been assigned, or if betIds are not assigned to all orders.\n\nSometimes orders are cancelled quite quickly, but as far as I know they wouldn't be cancelled before the next market refresh."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U04NWADNCFR",
+        "type": "message",
+        "ts": "1685196594.858069",
+        "client_msg_id": "bbea95cf-cc1b-40cf-833d-6d6fb46ac49d",
+        "text": "When I'm using Flumine, the bet_id isn't assigned immediately to the order object, otherwise the process would be waiting for that to happen. It's an asynchronous call and there will be a delay before Flumine receives the bet_id back from betfair and assigns it to the order. During this period the bet_id will be None.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g3c4e33a28db",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/3c4e33a28dbfc1fe70799f8e243bf305.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0026-72.png",
+            "first_name": "Derek",
+            "real_name": "Derek C",
+            "display_name": "Derek C",
+            "team": "T4G9NBD2M",
+            "name": "dataexmachinazzzzz",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "2VLtI",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "When I'm using Flumine, the bet_id isn't assigned immediately to the order object, otherwise the process would be waiting for that to happen. It's an asynchronous call and there will be a delay before Flumine receives the bet_id back from betfair and assigns it to the order. During this period the bet_id will be None."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U013K4VNB6D",
+        "type": "message",
+        "ts": "1685196806.095659",
+        "edited": {
+            "user": "U013K4VNB6D",
+            "ts": "1685196818.000000"
+        },
+        "client_msg_id": "bb15d640-f043-43dd-b6a3-3d32177f0f89",
+        "text": "Thanks Derek. Does that delay even apply with simulated trading, using historical data?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gf188478b89f",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/f188478b89f4a5e2c5af9eafa0433712.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0004-72.png",
+            "first_name": "",
+            "real_name": "Jeff Waters",
+            "display_name": "Jeff Waters",
+            "team": "T4G9NBD2M",
+            "name": "watersjg",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1685196806.095659",
+        "reply_count": 2,
+        "reply_users_count": 2,
+        "latest_reply": "1685202520.440299",
+        "reply_users": [
+            "UUCD6P13J",
+            "U013K4VNB6D"
+        ],
+        "replies": [
+            {
+                "user": "UUCD6P13J",
+                "ts": "1685198143.852589"
+            },
+            {
+                "user": "U013K4VNB6D",
+                "ts": "1685202520.440299"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": false,
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "uZC",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Thanks Derek. Does that delay even apply with simulated trading, using historical data?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U013K4VNB6D",
+        "type": "message",
+        "ts": "1685197423.132359",
+        "client_msg_id": "23bb1e93-0902-4192-8739-0c1e732e355e",
+        "text": "I'm wondering if I've missed a step by omitting execute(). From the documentation:\n\nwith market.transaction() as t:\n    t.place_order(order)\n    t.execute()  # above order executed\n\nWhat is the effect of executing an order? I'd previously assumed that, if I'd placed an order, it was in the market and no further action was required.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gf188478b89f",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/f188478b89f4a5e2c5af9eafa0433712.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0004-72.png",
+            "first_name": "",
+            "real_name": "Jeff Waters",
+            "display_name": "Jeff Waters",
+            "team": "T4G9NBD2M",
+            "name": "watersjg",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "2Kx8a",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I'm wondering if I've missed a step by omitting execute(). From the documentation:\n\nwith market.transaction() as t:\n    t.place_order(order)\n    t.execute()  # above order executed\n\nWhat is the effect of executing an order? I'd previously assumed that, if I'd placed an order, it was in the market and no further action was required."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U04NWADNCFR",
+        "type": "message",
+        "ts": "1685197613.731659",
+        "client_msg_id": "1b31f201-5524-44ff-ab45-7cbd5fb8b7d0",
+        "text": "my code uses market.place_order however going by the documentation, your execute statement isn't needed because it will execute automatically at the end of the context (with)",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g3c4e33a28db",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/3c4e33a28dbfc1fe70799f8e243bf305.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0026-72.png",
+            "first_name": "Derek",
+            "real_name": "Derek C",
+            "display_name": "Derek C",
+            "team": "T4G9NBD2M",
+            "name": "dataexmachinazzzzz",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "G6q",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "my code uses market.place_order however going by the documentation, your execute statement isn't needed because it will execute automatically at the end of the context (with)"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U013K4VNB6D",
+        "type": "message",
+        "ts": "1685197647.751329",
+        "client_msg_id": "ec6993ad-88c9-46ec-b501-72bc386f9126",
+        "text": "Thanks Derek",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gf188478b89f",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/f188478b89f4a5e2c5af9eafa0433712.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0004-72.png",
+            "first_name": "",
+            "real_name": "Jeff Waters",
+            "display_name": "Jeff Waters",
+            "team": "T4G9NBD2M",
+            "name": "watersjg",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Ff+\/2",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Thanks Derek"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U04NWADNCFR",
+        "type": "message",
+        "ts": "1685197845.573919",
+        "client_msg_id": "143fbb08-d58a-4be7-8639-e3850f015b1e",
+        "text": "I see in that example you have to execute before you can cancel - the order isn't executed until either execute() is called or the context ends (with statement).",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g3c4e33a28db",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/3c4e33a28dbfc1fe70799f8e243bf305.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0026-72.png",
+            "first_name": "Derek",
+            "real_name": "Derek C",
+            "display_name": "Derek C",
+            "team": "T4G9NBD2M",
+            "name": "dataexmachinazzzzz",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Uu\/X",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I see in that example you have to execute before you can cancel - the order isn't executed until either execute() is called or the context ends (with statement)."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U013K4VNB6D",
+        "type": "message",
+        "ts": "1685198095.079289",
+        "client_msg_id": "ee85a13a-cba6-4ff2-838d-8d1fc038f62b",
+        "text": "Thanks Derek.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gf188478b89f",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/f188478b89f4a5e2c5af9eafa0433712.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0004-72.png",
+            "first_name": "",
+            "real_name": "Jeff Waters",
+            "display_name": "Jeff Waters",
+            "team": "T4G9NBD2M",
+            "name": "watersjg",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "2QBn",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Thanks Derek."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UUCD6P13J",
+        "type": "message",
+        "ts": "1685198143.852589",
+        "client_msg_id": "881EB550-2E68-47E7-BDD1-48B89FF0DC05",
+        "text": "Yes, it has to to try and match live as close as possible. You’re trying to cancel an order before betfair would know anything about it, check the order status before cancelling, that should solve your issue.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6898272ab81",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6898272ab810e419c2c9ca9af1e53da8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0012-72.png",
+            "first_name": "Lee",
+            "real_name": "Lee U",
+            "display_name": "Lee",
+            "team": "T4G9NBD2M",
+            "name": "lunswor",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1685196806.095659",
+        "parent_user_id": "U013K4VNB6D",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "0F8e",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Yes, it has to to try and match live as close as possible. You’re trying to cancel an order before betfair would know anything about it, check the order status before cancelling, that should solve your issue."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U013K4VNB6D",
+        "type": "message",
+        "ts": "1685202520.440299",
+        "client_msg_id": "3561273b-69c2-48e6-9936-e161326f687a",
+        "text": "Thanks Lee",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gf188478b89f",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/f188478b89f4a5e2c5af9eafa0433712.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0004-72.png",
+            "first_name": "",
+            "real_name": "Jeff Waters",
+            "display_name": "Jeff Waters",
+            "team": "T4G9NBD2M",
+            "name": "watersjg",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1685196806.095659",
+        "parent_user_id": "U013K4VNB6D",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "lx9",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Thanks Lee"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U013K4VNB6D",
+        "type": "message",
+        "ts": "1685209379.694049",
+        "edited": {
+            "user": "U013K4VNB6D",
+            "ts": "1685209395.000000"
+        },
+        "client_msg_id": "3e64c3dc-1971-4a00-9223-e152befa75e9",
+        "text": "Hi again guys,\n\nWhen I'm placing orders, I'm now using:\n\n```with market.transaction() as transaction:\n    transaction.place_order(order)\n    transaction.execute()\n    order.transaction = transaction```\nAnd when I'm cancelling orders, I'm using:\n\n```with order.transaction as transaction:\n    transaction.cancel_order(order)```\nHowever, unless I include a check of\n```\n        if hasattr(order, \"betId\") \\\n        and order.betId is not None:```\nbefore executing my cancellation, I get loads of missing betId messages.\n\nWhere am I going wrong, please?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gf188478b89f",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/f188478b89f4a5e2c5af9eafa0433712.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0004-72.png",
+            "first_name": "",
+            "real_name": "Jeff Waters",
+            "display_name": "Jeff Waters",
+            "team": "T4G9NBD2M",
+            "name": "watersjg",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "T\/4",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Hi again guys,\n\nWhen I'm placing orders, I'm now using:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "with market.transaction() as transaction:\n    transaction.place_order(order)\n    transaction.execute()\n    order.transaction = transaction"
+                            }
+                        ],
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\nAnd when I'm cancelling orders, I'm using:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "with order.transaction as transaction:\n    transaction.cancel_order(order)"
+                            }
+                        ],
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\nHowever, unless I include a check of\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\n        if hasattr(order, \"betId\") \\\n        and order.betId is not None:"
+                            }
+                        ],
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "before executing my cancellation, I get loads of missing betId messages.\n\nWhere am I going wrong, please?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01MPC0GUK1",
+        "type": "message",
+        "ts": "1685210390.815799",
+        "client_msg_id": "3e3906b1-c7ba-42e7-85ec-8f265d83a3e2",
+        "text": "As Lee said if you try to cancel the order before it has been processed it won't have a betid. Before trying to cancel you should check the order status.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "3be8fa875ec4",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2021-02-15\/1752388211523_3be8fa875ec4866620ff_72.png",
+            "first_name": "Beeblebrox",
+            "real_name": "Beeblebrox",
+            "display_name": "Beeblebrox",
+            "team": "T4G9NBD2M",
+            "name": "arch4672",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "0U=RW",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "As Lee said if you try to cancel the order before it has been processed it won't have a betid. Before trying to cancel you should check the order status."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UUJNW57D5",
+        "type": "message",
+        "ts": "1685210520.465859",
+        "edited": {
+            "user": "UUJNW57D5",
+            "ts": "1685210534.000000"
+        },
+        "client_msg_id": "c8cf424d-2409-4769-8a08-79af945dbe33",
+        "text": "<@UUE6E1LA1> would you mind sharing a code example of how would you add the throttle?\n\nWould you recommend modifying the throttle through by accessing the background worker `flumine._workers[-1].interval = 300` ?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "813879316de9",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-02-25\/968469311540_813879316de909e9c8f5_72.png",
+            "first_name": "",
+            "real_name": "Adam Momen",
+            "display_name": "Adam Momen",
+            "team": "T4G9NBD2M",
+            "name": "adammuman81",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1684267282.474879",
+        "parent_user_id": "UPMUFSGCR",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "IUFf",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "user",
+                                "user_id": "UUE6E1LA1"
+                            },
+                            {
+                                "type": "text",
+                                "text": " would you mind sharing a code example of how would you add the throttle?\n\nWould you recommend modifying the throttle through by accessing the background worker "
+                            },
+                            {
+                                "type": "text",
+                                "text": "flumine._workers[-1].interval = 300",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " ?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U013K4VNB6D",
+        "type": "message",
+        "ts": "1685210570.705979",
+        "client_msg_id": "966dcad6-7559-4df4-a840-92f5d0c16227",
+        "text": "Yes, but I'm not doing that (as far as I can tell). I'm setting up the order in the first block of code, and then cancelling it in the second. I would have assumed that, as I'm just doing simulated trading, the order would be in place by the next refresh.\n\nGood point about checking the order status.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gf188478b89f",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/f188478b89f4a5e2c5af9eafa0433712.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0004-72.png",
+            "first_name": "",
+            "real_name": "Jeff Waters",
+            "display_name": "Jeff Waters",
+            "team": "T4G9NBD2M",
+            "name": "watersjg",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "f8N",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Yes, but I'm not doing that (as far as I can tell). I'm setting up the order in the first block of code, and then cancelling it in the second. I would have assumed that, as I'm just doing simulated trading, the order would be in place by the next refresh.\n\nGood point about checking the order status."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1685211944.347429",
+        "client_msg_id": "02B7CFDE-B18E-4188-86DC-1C487EB8770B",
+        "text": "Why do you think an order would be processed in under a few ms? ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "BJIZ",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Why do you think "
+                            },
+                            {
+                                "type": "text",
+                                "text": "an order"
+                            },
+                            {
+                                "type": "text",
+                                "text": " would be processed in under a few ms? "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U013K4VNB6D",
+        "type": "message",
+        "ts": "1685214366.547759",
+        "client_msg_id": "f7833b7b-970f-4059-9777-7b98f74fdf16",
+        "text": "I assumed that, with it being a simulation, it would be processed before the next refresh (though I suppose that some delay could be being built in, for realism?).",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gf188478b89f",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/f188478b89f4a5e2c5af9eafa0433712.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0004-72.png",
+            "first_name": "",
+            "real_name": "Jeff Waters",
+            "display_name": "Jeff Waters",
+            "team": "T4G9NBD2M",
+            "name": "watersjg",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "9uJr",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I assumed that, with it being a simulation, it would be processed before the next refresh (though I suppose that some delay could be being built in, for realism?)."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1685214578.158879",
+        "client_msg_id": "0B9D013B-3511-4512-BFF3-2C131FAF8D37",
+        "text": "Yes there is a delay, it’s as real as we can make it ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "rlC",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Yes there is a delay, "
+                            },
+                            {
+                                "type": "text",
+                                "text": "it’s"
+                            },
+                            {
+                                "type": "text",
+                                "text": " as real as we can make it "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "U013K4VNB6D",
+                    "U01C12ZEADQ"
+                ],
+                "count": 2
+            }
+        ]
+    }
+]

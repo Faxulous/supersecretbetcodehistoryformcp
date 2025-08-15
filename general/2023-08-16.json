@@ -1,0 +1,894 @@
+[
+    {
+        "user": "U027P3N2WMQ",
+        "type": "message",
+        "ts": "1692177154.383249",
+        "client_msg_id": "150d5dc7-353d-4d2e-ba7e-34ea94b0b74c",
+        "text": "Yeah, directly within the strategy. I do it within process_closed market, passing the market catalogue to the db write function and then writing to db from there. The DB is just storing the path and then certain parts of the market catalogue to help me filter during backtesting.\nIf you store the raw data and then process to db, do you not lose the ability to retrieve the market catalogue? Really, it doesn’t need to write to db instantly after the market is closed as long as it does it eventually",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gc41721181dc",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/c41721181dc4833c08c32f14cddc81b6.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0026-72.png",
+            "first_name": "Michael",
+            "real_name": "Michael Leary",
+            "display_name": "Michael",
+            "team": "T4G9NBD2M",
+            "name": "michaelleary15",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1692135644.158579",
+        "parent_user_id": "U027P3N2WMQ",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "9ao+L",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Yeah, directly within the strategy. I do it within process_closed market, passing the market catalogue to the db write function and then writing to db from there. The DB is just storing the path and then certain parts of the market catalogue to help me filter during backtesting.\nIf you store the raw data and then process to db, do you not lose the ability to retrieve the market catalogue? Really, it doesn’t need to write to db instantly after the market is closed as long as it does it eventually"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U027P3N2WMQ",
+        "type": "message",
+        "ts": "1692177230.216419",
+        "client_msg_id": "4eaa9ced-4639-481c-9cbe-79b49e6ab521",
+        "text": "Its worked for a while on horse racing but I don’t think I’ve ever had 150 markets close instantaneously so presume its just not been writing quick enough",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gc41721181dc",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/c41721181dc4833c08c32f14cddc81b6.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0026-72.png",
+            "first_name": "Michael",
+            "real_name": "Michael Leary",
+            "display_name": "Michael",
+            "team": "T4G9NBD2M",
+            "name": "michaelleary15",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1692135644.158579",
+        "parent_user_id": "U027P3N2WMQ",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "ODq7Z",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Its worked for a while on horse racing but I don’t think I’ve ever had 150 markets close instantaneously so presume its just not been writing quick enough"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1692178646.172539",
+        "client_msg_id": "78df130c-a413-4446-89a7-e9032db0c440",
+        "text": "So are you writing just the marketCatalogue? It sounds like some sort of socket exhaustion or memory leak in your code",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1692135644.158579",
+        "parent_user_id": "U027P3N2WMQ",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "vpwq",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "So are you writing just the marketCatalogue? It sounds like some sort of socket exhaustion or memory leak in your code"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UCQB6S222",
+        "type": "message",
+        "ts": "1692199878.358389",
+        "edited": {
+            "user": "UCQB6S222",
+            "ts": "1692200880.000000"
+        },
+        "client_msg_id": "cdc70cce-7409-460b-8e94-53012a3d3e5d",
+        "text": "I have noticed that, when using a logging control, `_process_closed_market` and `_process_cleared_orders_meta` often get called twice. The second call is often around an hour later than the first.\n\nIn theory, this should not be a big deal - I can just ignore the repeated log lines that I don't need. However, I want to start uploading my log files to s3. I am planning to put an s3_upload call at the end of `_process_cleared_orders_meta`. But if I do this, I'll upload to s3 twice, and the second upload will overwrite the first.\n\nI can turn on versioning, but that's not really the point, because the first log file is the 'correct' one and the second should not (in my mind) be appearing at all.\n\nHas anyone noticed this problem and found a way to resolve it?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g953ffd5e3b7",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/5813be539113b05ece8212c2a06d006a.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "George",
+            "real_name": "George",
+            "display_name": "George",
+            "team": "T4G9NBD2M",
+            "name": "gd",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1692199878.358389",
+        "reply_count": 12,
+        "reply_users_count": 4,
+        "latest_reply": "1692257185.563069",
+        "reply_users": [
+            "UBS7QANF3",
+            "UCQB6S222",
+            "U013PLN93AT",
+            "U4H19D1D2"
+        ],
+        "replies": [
+            {
+                "user": "UBS7QANF3",
+                "ts": "1692201207.320399"
+            },
+            {
+                "user": "UCQB6S222",
+                "ts": "1692201361.689949"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1692201517.327509"
+            },
+            {
+                "user": "UCQB6S222",
+                "ts": "1692201574.477739"
+            },
+            {
+                "user": "U013PLN93AT",
+                "ts": "1692203848.562339"
+            },
+            {
+                "user": "UCQB6S222",
+                "ts": "1692204566.728379"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1692217957.549149"
+            },
+            {
+                "user": "UCQB6S222",
+                "ts": "1692218411.167129"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1692255608.642699"
+            },
+            {
+                "user": "UCQB6S222",
+                "ts": "1692256440.704629"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1692257029.882849"
+            },
+            {
+                "user": "UCQB6S222",
+                "ts": "1692257185.563069"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": true,
+        "last_read": "1692257185.563069",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "1oSh",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I have noticed that, when using a logging control, "
+                            },
+                            {
+                                "type": "text",
+                                "text": "_process_closed_market",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " and "
+                            },
+                            {
+                                "type": "text",
+                                "text": "_process_cleared_orders_meta",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " often get called twice. The second call is often around an hour later than the first.\n\nIn theory, this should not be a big deal - I can just ignore the repeated log lines that I don't need. However, I want to start uploading my log files to s3. I am planning to put an s3_upload call at the end of "
+                            },
+                            {
+                                "type": "text",
+                                "text": "_process_cleared_orders_meta",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": ". But if I do this, I'll upload to s3 twice, and the second upload will overwrite the first.\n\nI can turn on versioning, but that's not really the point, because the first log file is the 'correct' one and the second should not (in my mind) be appearing at all.\n\nHas anyone noticed this problem and found a way to resolve it?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1692201207.320399",
+        "client_msg_id": "0f93089b-bf2b-434e-bc69-bbee2e48f806",
+        "text": "Not sure I agree with you that the second one shouldn't be appearing at all. There are good reasons why you might get an update after a market is closed",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1692199878.358389",
+        "parent_user_id": "UCQB6S222",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "IvmEc",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Not sure I agree with you that the second one shouldn't be appearing at all. There are good reasons why you might get an update after a market is closed"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UCQB6S222",
+        "type": "message",
+        "ts": "1692201361.689949",
+        "client_msg_id": "d0aaaf0d-1142-4a16-97bd-854e23f7422e",
+        "text": "Yes, probably I shouldn't write in such sweeping terms, but it is a genuine \"issue\" for me. For the markets I'm trading, I am seeing this happen well above 50% of the time, and I have never once noticed any difference between the data that is returned in the first and second calls.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g953ffd5e3b7",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/5813be539113b05ece8212c2a06d006a.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "George",
+            "real_name": "George",
+            "display_name": "George",
+            "team": "T4G9NBD2M",
+            "name": "gd",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1692199878.358389",
+        "parent_user_id": "UCQB6S222",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "5EE",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Yes, probably I shouldn't write in such sweeping terms, but it is a genuine \"issue\" for me. For the markets I'm trading, I am seeing this happen well above 50% of the time, and I have never once noticed any difference between the data that is returned in the first and second calls."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1692201517.327509",
+        "client_msg_id": "46874388-626a-4eea-8da7-9288433a3e51",
+        "text": "I'm bumping up against the limitation of my flumine knowledge here but personally I handle this kind of situation by having the S3 upload handled by a completely separate process (cron job) which will allow time for these kind of appends to log files before compressing and uploading the log files to S3",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1692199878.358389",
+        "parent_user_id": "UCQB6S222",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "rsl",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I'm bumping up against the limitation of my flumine knowledge here but personally I handle this kind of situation by having the S3 upload handled by a completely separate process (cron job) which will allow time for these kind of appends to log files before compressing and uploading the log files to S3"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UCQB6S222",
+        "type": "message",
+        "ts": "1692201574.477739",
+        "client_msg_id": "9ae8ad29-d14f-41ec-a73c-0f835bdbc492",
+        "text": "OK thanks. I'm working on that same solution right now. I wondered whether others were doing the same.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g953ffd5e3b7",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/5813be539113b05ece8212c2a06d006a.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "George",
+            "real_name": "George",
+            "display_name": "George",
+            "team": "T4G9NBD2M",
+            "name": "gd",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1692199878.358389",
+        "parent_user_id": "UCQB6S222",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "F+R",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "OK thanks. I'm working on that same solution right now. I wondered whether others were doing the same."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U013PLN93AT",
+        "type": "message",
+        "ts": "1692203848.562339",
+        "client_msg_id": "e7a7c152-6e79-4aa3-88c2-da6095cb6394",
+        "text": "I use a rotating log handler which starts a new log file once a day a midnight.  Could you not just wait for the log file to fill, then upload it once a day? Where is the rush?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g1e2aa0b687e",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/1e2aa0b687e3d4f68c7123a0791e9b2a.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0001-72.png",
+            "first_name": "",
+            "real_name": "mzaja",
+            "display_name": "mzaja",
+            "team": "T4G9NBD2M",
+            "name": "mzaja0",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1692199878.358389",
+        "parent_user_id": "UCQB6S222",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "uvbuJ",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I use a rotating log handler which starts a new log file once a day a midnight.  Could you not just wait for the log file to fill, then upload it once a day? Where is the rush?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UCQB6S222",
+        "type": "message",
+        "ts": "1692204566.728379",
+        "client_msg_id": "cc60e4ea-c478-4bf9-bae6-25c8262dc4e3",
+        "text": "there is no rush, but it is more convenient to have one log file per market, so a rotating log handler isn't right for me i think, but instead probably I will end up doing what Mo suggested.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g953ffd5e3b7",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/5813be539113b05ece8212c2a06d006a.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "George",
+            "real_name": "George",
+            "display_name": "George",
+            "team": "T4G9NBD2M",
+            "name": "gd",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1692199878.358389",
+        "parent_user_id": "UCQB6S222",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "sh5=",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "there is no rush, but it is more convenient to have one log file per market, so a rotating log handler isn't right for me i think, but instead probably I will end up doing what Mo suggested."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U05M15DJHRP",
+        "type": "message",
+        "ts": "1692209370.691709",
+        "client_msg_id": "cf0ae524-c019-4bbc-afd4-7949ee7b8bae",
+        "text": "Hi all, a newbie here. I am trying to go through the documentation of Flumine in order to deploy my own strategy, I wanted to check if there's any way to fetch my current exposure at each runner.\nOne way is for me to calculate this locally by tracking all my previous matchings but I wanted to know if there's any method\/attribute that provides this, or how do you guys fetch this info?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "c3d5c2bcd7f8",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2023-08-07\/5699622300437_c3d5c2bcd7f8e990e94e_72.jpg",
+            "first_name": "Ishan",
+            "real_name": "Ishan Shandilya",
+            "display_name": "Frenkie",
+            "team": "T4G9NBD2M",
+            "name": "aishwarshandilya1994",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1692209370.691709",
+        "reply_count": 18,
+        "reply_users_count": 5,
+        "latest_reply": "1692500150.003009",
+        "reply_users": [
+            "UCQB6S222",
+            "U05M15DJHRP",
+            "U9JHLMZB4",
+            "U4H19D1D2",
+            "U01DVUAE2G1"
+        ],
+        "replies": [
+            {
+                "user": "UCQB6S222",
+                "ts": "1692218575.772079"
+            },
+            {
+                "user": "U05M15DJHRP",
+                "ts": "1692256764.220019"
+            },
+            {
+                "user": "U9JHLMZB4",
+                "ts": "1692271642.569159"
+            },
+            {
+                "user": "UCQB6S222",
+                "ts": "1692271960.288589"
+            },
+            {
+                "user": "U9JHLMZB4",
+                "ts": "1692273495.110599"
+            },
+            {
+                "user": "UCQB6S222",
+                "ts": "1692276269.861189"
+            },
+            {
+                "user": "UCQB6S222",
+                "ts": "1692276438.139799"
+            },
+            {
+                "user": "U9JHLMZB4",
+                "ts": "1692288956.007449"
+            },
+            {
+                "user": "UCQB6S222",
+                "ts": "1692290465.337049"
+            },
+            {
+                "user": "U9JHLMZB4",
+                "ts": "1692352295.699289"
+            },
+            {
+                "user": "UCQB6S222",
+                "ts": "1692352503.292879"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1692355821.257969"
+            },
+            {
+                "user": "U9JHLMZB4",
+                "ts": "1692355839.169079"
+            },
+            {
+                "user": "UCQB6S222",
+                "ts": "1692359272.402839"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1692361369.690369"
+            },
+            {
+                "user": "UCQB6S222",
+                "ts": "1692363369.825319"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1692391655.829609"
+            },
+            {
+                "user": "U01DVUAE2G1",
+                "ts": "1692500150.003009"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": true,
+        "last_read": "1692500150.003009",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Bvl",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Hi all, a newbie here. I am trying to go through the documentation of Flumine in order to deploy my own strategy, I wanted to check if there's any way to fetch my current exposure at each runner.\nOne way is for me to calculate this locally by tracking all my previous matchings but I wanted to know if there's any method\/attribute that provides this, or how do you guys fetch this info?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1692217957.549149",
+        "client_msg_id": "C74F030D-E855-4A38-AD01-965329D526D5",
+        "text": "I don’t understand why you don’t want the second one tbh as it will just have more data. Regardless, keeping a tab on what has been uploaded or checking for an upload is pretty simple, no?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1692199878.358389",
+        "parent_user_id": "UCQB6S222",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "v0\/ku",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I "
+                            },
+                            {
+                                "type": "text",
+                                "text": "don’t"
+                            },
+                            {
+                                "type": "text",
+                                "text": " understand why you "
+                            },
+                            {
+                                "type": "text",
+                                "text": "don’t"
+                            },
+                            {
+                                "type": "text",
+                                "text": " want the second one tbh as it will just have more data. Regardless, keeping a tab on what has been uploaded or checking for an upload is pretty simple, no?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UCQB6S222",
+        "type": "message",
+        "ts": "1692218411.167129",
+        "client_msg_id": "5d8e7bce-37a6-4cb7-8786-0c26090aa5d9",
+        "text": "It's not really more data, it's just the same data again 99.9%+ of the time and it's really quite annoying as there's no reason for it.\nYou are right in that an alternative solution could be to check if the first file has already been uploaded.\nBut it's probably better to do what Mo suggested.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g953ffd5e3b7",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/5813be539113b05ece8212c2a06d006a.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "George",
+            "real_name": "George",
+            "display_name": "George",
+            "team": "T4G9NBD2M",
+            "name": "gd",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1692199878.358389",
+        "parent_user_id": "UCQB6S222",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "CAF",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "It's not really more data, it's just the same data again 99.9%+ of the time and it's really quite annoying as there's no reason for it.\nYou are right in that an alternative solution could be to check if the first file has already been uploaded.\nBut it's probably better to do what Mo suggested."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UCQB6S222",
+        "type": "message",
+        "ts": "1692218575.772079",
+        "client_msg_id": "aeb6d669-df5b-48fc-9481-e1a13abde6f0",
+        "text": "Depends on your definition of exposure. Probably best to do it yourself. There are exposure functions in market.blotter but they may not do what you want.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g953ffd5e3b7",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/5813be539113b05ece8212c2a06d006a.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "George",
+            "real_name": "George",
+            "display_name": "George",
+            "team": "T4G9NBD2M",
+            "name": "gd",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1692209370.691709",
+        "parent_user_id": "U05M15DJHRP",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "eHSo",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Depends on your definition of exposure. Probably best to do it yourself. There are exposure functions in market.blotter but they may not do what you want."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UEA14GBRR",
+        "type": "message",
+        "ts": "1692219607.801349",
+        "client_msg_id": "92a9f9d0-0dad-4bc2-9a4e-86c60a2ca602",
+        "text": "Win and Place XMed <@UBS7QANF3>?  Not sure how they'd do that, they're not necessarily related. Horses that aren't going to win don't always try for a place etc.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "889680f46fe7",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-06\/6774538588752_889680f46fe773047cb9_72.jpg",
+            "first_name": "",
+            "real_name": "Shaun White",
+            "display_name": "ShaunW",
+            "team": "T4G9NBD2M",
+            "name": "shaunwhite",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1692130158.901369",
+        "parent_user_id": "U05F3D8PB5F",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "lSm",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Win and Place XMed "
+                            },
+                            {
+                                "type": "user",
+                                "user_id": "UBS7QANF3"
+                            },
+                            {
+                                "type": "text",
+                                "text": "?  Not sure how they'd do that, they're not necessarily related. Horses that aren't going to win don't always try for a place etc."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U027P3N2WMQ",
+        "type": "message",
+        "ts": "1692224741.252009",
+        "edited": {
+            "user": "U027P3N2WMQ",
+            "ts": "1692224755.000000"
+        },
+        "client_msg_id": "ae01d5d4-0d9c-4b49-9bbc-ae0e82112e06",
+        "text": "Yeah and some things from market definition. I’ve restarted it and added some additional logging plus tracking the db requests.\nAre the streams async?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gc41721181dc",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/c41721181dc4833c08c32f14cddc81b6.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0026-72.png",
+            "first_name": "Michael",
+            "real_name": "Michael Leary",
+            "display_name": "Michael",
+            "team": "T4G9NBD2M",
+            "name": "michaelleary15",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1692135644.158579",
+        "parent_user_id": "U027P3N2WMQ",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "kPIJz",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Yeah and some things from market definition. I’ve restarted it and added some additional logging plus tracking the db requests.\nAre the streams async?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1692250546.070229",
+        "client_msg_id": "5DDBA56B-DE1C-481C-97DB-4798C440686D",
+        "text": "No, Each Way cross matched simultaneously with Win and Place",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1692130158.901369",
+        "parent_user_id": "U05F3D8PB5F",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "CQw",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "No, Each Way cross matched simultaneously with Win and Place"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

@@ -1,0 +1,835 @@
+[
+    {
+        "user": "U016TGY3676",
+        "type": "message",
+        "ts": "1615884681.000900",
+        "client_msg_id": "3da42979-9a72-4f42-8cb8-f8f0d99f4a80",
+        "text": "<@U01Q94VE1AB> make marketrecorder your first priority.\n<https:\/\/github.com\/liampauling\/flumine\/blob\/master\/examples\/strategies\/marketrecorder.py>",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6a681220e11",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6a681220e11c1a2ed3685375d658dadb.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0001-72.png",
+            "first_name": "",
+            "real_name": "birchy",
+            "display_name": "birchy",
+            "team": "T4G9NBD2M",
+            "name": "birchy",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1615884681.000900",
+        "reply_count": 4,
+        "reply_users_count": 2,
+        "latest_reply": "1615897617.010100",
+        "reply_users": [
+            "U01Q94VE1AB",
+            "U016TGY3676"
+        ],
+        "replies": [
+            {
+                "user": "U01Q94VE1AB",
+                "ts": "1615896026.009500"
+            },
+            {
+                "user": "U016TGY3676",
+                "ts": "1615896706.009700"
+            },
+            {
+                "user": "U01Q94VE1AB",
+                "ts": "1615897489.009900"
+            },
+            {
+                "user": "U016TGY3676",
+                "ts": "1615897617.010100"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": true,
+        "last_read": "1615897617.010100",
+        "attachments": [
+            {
+                "fallback": "[liampauling\/flumine] examples\/strategies\/marketrecorder.py",
+                "text": "```\nimport os\nimport json\nimport time\nimport logging\nimport zipfile\nimport boto3\nfrom boto3.s3.transfer import S3Transfer, TransferConfig\nfrom botocore.exceptions import BotoCoreError\n\nfrom flumine import BaseStrategy\nfrom flumine.utils import create_short_uuid, file_line_count\n\nlogger = logging.getLogger(__name__)\n\n\nclass MarketRecorder(BaseStrategy):\n\n    MARKET_ID_LOOKUP = \"id\"\n\n    def __init__(self, *args, **kwargs):\n        BaseStrategy.__init__(self, *args, **kwargs)\n        self._market_expiration = self.context.get(\"market_expiration\", 3600)  # seconds\n        self._remove_file = self.context.get(\n            \"remove_file\", True\n        )  # remove txt file after zip\n        self._force_update = self.context.get(\n            \"force_update\", True\n        )  # update after initial closure\n        self.local_dir = self.context.get(\"local_dir\", \"\/tmp\")\n        self.recorder_id = create_short_uuid()\n        self._loaded_markets = []  # list of marketIds\n\n    def add(self) -&gt; None:\n        <http:\/\/logger.info|logger.info>(\"Adding strategy %s with id %s\" % (self.name, self.recorder_id))\n        # check local dir\n        if not os.path.isdir(self.local_dir):\n            raise OSError(\"File dir %s does not exist\" % self.local_dir)\n        # create sub dir\n        directory = os.path.join(self.local_dir, self.recorder_id)\n        if not os.path.exists(directory):\n            os.makedirs(directory)\n\n    def process_raw_data(self, publish_time, data):\n        market_id = data.get(self.MARKET_ID_LOOKUP)\n        file_directory = os.path.join(self.local_dir, self.recorder_id, market_id)\n        with open(file_directory, \"a\") as f:\n            f.write(\n                json.dumps({\"op\": \"mcm\", \"clk\": None, \"pt\": publish_time, \"mc\": [data]})\n                + \"\\n\"\n            )\n\n    def process_closed_market(self, market, data: dict) -&gt; None:\n        market_id = data.get(self.MARKET_ID_LOOKUP)\n        if market_id in self._loaded_markets:\n            if self._force_update:\n                logger.warning(\n                    \"File: \/{0}\/{1}\/{2} has already been loaded, updating..\".format(\n                        self.local_dir, self.recorder_id, market_id\n                    )\n                )\n            else:\n                return\n        <http:\/\/logger.info|logger.info>(\"Closing market %s\" % market_id)\n\n        file_dir = os.path.join(self.local_dir, self.recorder_id, market_id)\n        market_definition = data.get(\"marketDefinition\")\n\n        # check that file actually exists\n        if not os.path.isfile(file_dir):\n            logger.error(\n                \"File: %s does not exist in \/%s\/%s\/\"\n                % (self.local_dir, market_id, self.recorder_id)\n            )\n            return\n\n        # check that file is not empty \/ 1 line (i.e. the market had already closed on startup)\n        line_count = file_line_count(file_dir)\n        if line_count == 1:\n            logger.warning(\n                \"File: %s contains one line only and will not be loaded (already closed on startup)\"\n                % file_dir\n            )\n            return\n\n        # zip file\n        zip_file_dir = self._zip_file(file_dir, market_id)\n\n        # core load code\n        self._load(market, zip_file_dir, market_definition)\n\n        # clean up\n        self._clean_up()\n\n        self._loaded_markets.append(market_id)\n\n    def _zip_file(self, file_dir: str, market_id: str) -&gt; str:\n        \"\"\"zips txt file into filename.zip\"\"\"\n        zip_file_directory = os.path.join(\n            self.local_dir, self.recorder_id, \"%s.zip\" % market_id\n        )\n        with zipfile.ZipFile(zip_file_directory, mode=\"w\") as zf:\n            zf.write(\n                file_dir, os.path.basename(file_dir), compress_type=zipfile.ZIP_DEFLATED\n            )\n        return zip_file_directory\n\n    def _load(self, market, zip_file_dir: str, market_definition: dict) -&gt; None:\n        pass\n\n    def _clean_up(self) -&gt; None:\n        \"\"\"If zip &gt; market_expiration old remove\n        zip and txt file\n        \"\"\"\n        directory = os.path.join(self.local_dir, self.recorder_id)\n        for file in os.listdir(directory):\n            if file.endswith(\".zip\"):\n                file_stats = os.stat(os.path.join(directory, file))\n                seconds_since = time.time() - file_stats.st_mtime\n                if seconds_since &gt; self._market_expiration:\n                    <http:\/\/logger.info|logger.info>(\n                        \"Removing: %s, age: %ss\" % (file, round(seconds_since, 2))\n                    )\n                    txt_path = os.path.join(directory, file.split(\".zip\")[0])\n                    zip_path = os.path.join(directory, file)\n                    os.remove(zip_path)\n                    if self._remove_file:\n                        os.remove(txt_path)\n\n    @staticmethod\n    def _create_metadata(market_definition: dict) -&gt; dict:\n        try:\n            del market_definition[\"runners\"]\n        except KeyError:\n            pass\n        return dict([a, str(x)] for a, x in market_definition.items())\n\n\nclass S3MarketRecorder(MarketRecorder):\n    def __init__(self, *args, **kwargs):\n        MarketRecorder.__init__(self, *args, **kwargs)\n        self._bucket = self.context[\"bucket\"]\n        self._data_type = self.context.get(\"data_type\", \"marketdata\")\n        self.s3 = boto3.client(\"s3\")\n        transfer_config = TransferConfig(use_threads=False)\n        self.transfer = S3Transfer(self.s3, config=transfer_config)\n\n    def add(self) -&gt; None:\n        super().add()\n        self.s3.head_bucket(Bucket=self._bucket)  # validate bucket\/access\n\n    def _load(self, market, zip_file_dir: str, market_definition: dict) -&gt; None:\n        # note this will block the main handler queue during upload\n        # todo create background worker instead?\n        event_type_id = (\n            market_definition.get(\"eventTypeId\", 0) if market_definition else \"7\"\n        )\n        try:\n            self.transfer.upload_file(\n                filename=zip_file_dir,\n                bucket=self._bucket,\n                key=os.path.join(\n                    self._data_type,\n                    \"streaming\",\n                    event_type_id,\n                    os.path.basename(zip_file_dir),\n                ),\n                extra_args={\n                    \"Metadata\": self._create_metadata(market_definition)\n                    if market_definition\n                    else {}\n                },\n            )\n            <http:\/\/logger.info|logger.info>(\"%s successfully loaded to s3\" % zip_file_dir)\n        except (BotoCoreError, Exception) as e:\n            logger.error(\"Error loading to s3: %s\" % e)\n\n        # upload marketCatalogue data\n        if market and self.context.get(\"load_market_catalogue\", True):\n            if market.market_catalogue is None:\n                logger.warning(\n                    \"No marketCatalogue data available for %s\" % market.market_id\n                )\n                return\n            try:\n                self.s3.put_object(\n                    Body=market.market_catalogue.json(),\n                    Bucket=self._bucket,\n                    Key=os.path.join(\n                        \"marketdata\",\n                        \"marketCatalogue\",\n                        market.market_id,\n                    ),\n                )\n                <http:\/\/logger.info|logger.info>(\n                    \"%s successfully loaded marketCatalogue to s3\" % market.market_id\n                )\n            except (BotoCoreError, Exception) as e:\n                logger.error(\"Error loading to s3: %s\" % e)\n\n```",
+                "title": "examples\/strategies\/marketrecorder.py",
+                "footer": "<https:\/\/github.com\/liampauling\/flumine|liampauling\/flumine>",
+                "id": 1,
+                "title_link": "https:\/\/github.com\/liampauling\/flumine\/blob\/master\/examples\/strategies\/marketrecorder.py",
+                "footer_icon": "https:\/\/github.githubassets.com\/favicon.ico",
+                "color": "24292f",
+                "mrkdwn_in": [
+                    "text"
+                ],
+                "bot_id": "B01144Z0734",
+                "app_unfurl_url": "https:\/\/github.com\/liampauling\/flumine\/blob\/master\/examples\/strategies\/marketrecorder.py",
+                "is_app_unfurl": true
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "3w2",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "user",
+                                "user_id": "U01Q94VE1AB"
+                            },
+                            {
+                                "type": "text",
+                                "text": " make marketrecorder your first priority.\n"
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/liampauling\/flumine\/blob\/master\/examples\/strategies\/marketrecorder.py"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U016TGY3676",
+        "type": "message",
+        "ts": "1615884806.002800",
+        "client_msg_id": "f1842179-bb95-4a3a-8594-c3c69891616d",
+        "text": "Seconds priority: some basic bot that fires off a handful of bets to avoid betfair getting shitty about you capturing data but not placing any bets. Something simple like £2 lay all runners &lt; 2.0 will suffice.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6a681220e11",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6a681220e11c1a2ed3685375d658dadb.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0001-72.png",
+            "first_name": "",
+            "real_name": "birchy",
+            "display_name": "birchy",
+            "team": "T4G9NBD2M",
+            "name": "birchy",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "qWs\/v",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Seconds priority: some basic bot that fires off a handful of bets to avoid betfair getting shitty about you capturing data but not placing any bets. Something simple like £2 lay all runners < 2.0 will suffice."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "U016535QCJ2"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "UGV299K6H",
+        "type": "message",
+        "ts": "1615888026.003100",
+        "client_msg_id": "6553032d-822d-4330-9763-59385a7dc42d",
+        "text": "Do you get my point <@UPMUFSGCR>? I just mean that if it's the distribution of the odds that you're interested in then I'd address that directly. You wouldn't expect Handicap markets to have fundamentally different betting behaviour just because the horses have to carry some weights, but the idea that they might have a different distribution of odds and THAT might lead to different behaviour is plausible so that's the way I'd direct my analysis.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g3a262a3cfba",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/b3a262a3cfba292c18acf5777f65908a.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0006-72.png",
+            "first_name": "Michael",
+            "real_name": "Michael C",
+            "display_name": "Michael",
+            "team": "T4G9NBD2M",
+            "name": "michael",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1615679661.478600",
+        "parent_user_id": "UPMUFSGCR",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "eizmv",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Do you get my point "
+                            },
+                            {
+                                "type": "user",
+                                "user_id": "UPMUFSGCR"
+                            },
+                            {
+                                "type": "text",
+                                "text": "? I just mean that if it's the distribution of the odds that you're interested in then I'd address that directly. You wouldn't expect Handicap markets to have fundamentally different betting behaviour just because the horses have to carry some weights, but the idea that they might have a different distribution of odds and THAT might lead to different behaviour is plausible so that's the way I'd direct my analysis."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U0155J92A7Q",
+        "type": "message",
+        "ts": "1615890551.005500",
+        "client_msg_id": "3d83cac8-d8ce-42b1-b4b7-4588af6a40f3",
+        "text": "In the example above, does flumine use S3 to store the recorded data? I'm not using flumine right now but this looks very interesting! (I keep the data in my local machine so it is getting huge)",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gde8c5d51af5",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/de8c5d51af54a5ac7b501f416ddb262c.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0016-72.png",
+            "first_name": "",
+            "real_name": "Jorge",
+            "display_name": "Jorge",
+            "team": "T4G9NBD2M",
+            "name": "jgarciam95",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "0ksW",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "In the example above, does flumine use S3 to store the recorded data? I'm not using flumine right now but this looks very interesting! (I keep the data in my local machine so it is getting huge)"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U0155J92A7Q",
+        "type": "message",
+        "ts": "1615891099.007900",
+        "client_msg_id": "f2818a1b-c8b6-48eb-900b-00ddca7e03c3",
+        "text": "Flumine's MarketRecorder creates a 'market_id' file and appends the MarketChangeMessage ('mcm') messages that come from Streaming to it, right?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gde8c5d51af5",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/de8c5d51af54a5ac7b501f416ddb262c.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0016-72.png",
+            "first_name": "",
+            "real_name": "Jorge",
+            "display_name": "Jorge",
+            "team": "T4G9NBD2M",
+            "name": "jgarciam95",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "0jLub",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Flumine's MarketRecorder creates a 'market_id' file and appends the MarketChangeMessage ('mcm') messages that come from Streaming to it, right?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1615892040.008900",
+        "client_msg_id": "CB5C98FB-5F5F-44F2-907F-BB57AD4DA2B1",
+        "text": "Yea it can record to s3 (or any backend), pretty much yes, then allows you to backtest each market individually ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "lIu",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Yea it can record to s3 (or any backend), pretty much yes, then allows you to backtest each market individually "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UPMUFSGCR",
+        "type": "message",
+        "ts": "1615893058.009000",
+        "client_msg_id": "8e7b1cf9-fc28-4808-a8bf-f2cdb9549eaa",
+        "text": "Yes. I think I do. Your comment about flats and jumps inplay has also given me some food for though. Thanks for the helpful ideas!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "31c0bb5a442c",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2019-10-28\/812386967189_31c0bb5a442c5b8d2c61_72.png",
+            "first_name": "Jon",
+            "real_name": "Jon Jon Jon Jon Jon Jon Jon Jon",
+            "display_name": "Jonjonjon",
+            "team": "T4G9NBD2M",
+            "name": "fcmisc",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1615679661.478600",
+        "parent_user_id": "UPMUFSGCR",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "=92F",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Yes. I think I do. Your comment about flats and jumps inplay has also given me some food for though. Thanks for the helpful ideas!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "UGV299K6H"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "U01Q94VE1AB",
+        "type": "message",
+        "ts": "1615895952.009300",
+        "client_msg_id": "3e5f06ed-e106-423a-875c-343ee62e3601",
+        "text": "Ha. Ok thanks Alessio, quality of BASIC data duly noted.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaba40a9e646",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/aba40a9e646010f02770b57a686a4ada.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0018-72.png",
+            "first_name": "Tom",
+            "real_name": "Tom",
+            "display_name": "Tom",
+            "team": "T4G9NBD2M",
+            "name": "tom.dowdeswell",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1615845707.005300",
+        "parent_user_id": "U01C12ZEADQ",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "kba",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Ha. Ok thanks Alessio, quality of BASIC data duly noted."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01Q94VE1AB",
+        "type": "message",
+        "ts": "1615896026.009500",
+        "client_msg_id": "95d47b07-b212-4b29-beca-84f37a50728c",
+        "text": "Thanks for the above <@U016TGY3676>. Are most here using Flumine or Betfairlightweight please?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaba40a9e646",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/aba40a9e646010f02770b57a686a4ada.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0018-72.png",
+            "first_name": "Tom",
+            "real_name": "Tom",
+            "display_name": "Tom",
+            "team": "T4G9NBD2M",
+            "name": "tom.dowdeswell",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1615884681.000900",
+        "parent_user_id": "U016TGY3676",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "FBX",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Thanks for the above "
+                            },
+                            {
+                                "type": "user",
+                                "user_id": "U016TGY3676"
+                            },
+                            {
+                                "type": "text",
+                                "text": ". Are most here using Flumine or Betfairlightweight please?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U016TGY3676",
+        "type": "message",
+        "ts": "1615896706.009700",
+        "client_msg_id": "816fbfaf-73c8-48cd-b3ed-5d5db0e5fb82",
+        "text": "So BFLW was <@U4H19D1D2>'s first generous offering and is the lower level implementation of the betfair API. Flumine takes bflw and adds lots of features (including backtesting capability) for \"real world\" applications. If you're just starting out, Flumine is definitely the way to go.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6a681220e11",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6a681220e11c1a2ed3685375d658dadb.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0001-72.png",
+            "first_name": "",
+            "real_name": "birchy",
+            "display_name": "birchy",
+            "team": "T4G9NBD2M",
+            "name": "birchy",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1615884681.000900",
+        "parent_user_id": "U016TGY3676",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "og=T",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "So BFLW was "
+                            },
+                            {
+                                "type": "user",
+                                "user_id": "U4H19D1D2"
+                            },
+                            {
+                                "type": "text",
+                                "text": "'s first generous offering and is the lower level implementation of the betfair API. Flumine takes bflw and adds lots of features (including backtesting capability) for \"real world\" applications. If you're just starting out, Flumine is definitely the way to go."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01Q94VE1AB",
+        "type": "message",
+        "ts": "1615897489.009900",
+        "client_msg_id": "2b9c3c9f-7a11-4798-959b-6f06ded811d4",
+        "text": "Nice! I'll take a look at the github repo etc. Assuming the marketrecorder script allows me to capture real data without having to rely on BF downloads?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaba40a9e646",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/aba40a9e646010f02770b57a686a4ada.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0018-72.png",
+            "first_name": "Tom",
+            "real_name": "Tom",
+            "display_name": "Tom",
+            "team": "T4G9NBD2M",
+            "name": "tom.dowdeswell",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1615884681.000900",
+        "parent_user_id": "U016TGY3676",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "BN2",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Nice! I'll take a look at the github repo etc. Assuming the marketrecorder script allows me to capture real data without having to rely on BF downloads?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U016TGY3676",
+        "type": "message",
+        "ts": "1615897617.010100",
+        "client_msg_id": "f91ae196-ff28-4b04-9660-d0b1e9414bdc",
+        "text": "Yeah, that's exactly why you need to get it running asap. Plus it's realistic data that your bot would _actually_ see.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6a681220e11",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6a681220e11c1a2ed3685375d658dadb.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0001-72.png",
+            "first_name": "",
+            "real_name": "birchy",
+            "display_name": "birchy",
+            "team": "T4G9NBD2M",
+            "name": "birchy",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1615884681.000900",
+        "parent_user_id": "U016TGY3676",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "BL1GL",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Yeah, that's exactly why you need to get it running asap. Plus it's realistic data that your bot would "
+                            },
+                            {
+                                "type": "text",
+                                "text": "actually",
+                                "style": {
+                                    "italic": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " see."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "U01Q94VE1AB"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "U016TGY3676",
+        "type": "message",
+        "ts": "1615897924.013700",
+        "client_msg_id": "340681cb-ea0c-4d60-a830-a743c9276339",
+        "text": "The AWS thing was new to me when I started, but S3 is definitely worth setting up. I run a modified marketrecorder that saves the data into it's corresponding month based on projected start date\/time. It just makes it easier to pull out specific months for backtesting, i.e. summer flat racing is &gt; winter racing for one of my strategies.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6a681220e11",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6a681220e11c1a2ed3685375d658dadb.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0001-72.png",
+            "first_name": "",
+            "real_name": "birchy",
+            "display_name": "birchy",
+            "team": "T4G9NBD2M",
+            "name": "birchy",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "6OgT\/",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "The AWS thing was new to me when I started, but S3 is definitely worth setting up. I run a modified marketrecorder that saves the data into it's corresponding month based on projected start date\/time. It just makes it easier to pull out specific months for backtesting, i.e. summer flat racing is > winter racing for one of my strategies."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "U0155J92A7Q"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "U0155J92A7Q",
+        "type": "message",
+        "ts": "1615915552.015100",
+        "client_msg_id": "19b2f941-62e7-45a0-b138-f8c17a7128b0",
+        "text": "Okay thanks! I am using bflw for recording because I find it simpler to use the MarketBook object returned by Streaming instead of the 'mcm' messages",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gde8c5d51af5",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/de8c5d51af54a5ac7b501f416ddb262c.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0016-72.png",
+            "first_name": "",
+            "real_name": "Jorge",
+            "display_name": "Jorge",
+            "team": "T4G9NBD2M",
+            "name": "jgarciam95",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "nCG5O",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Okay thanks! I am using bflw for recording because I find it simpler to use the MarketBook object returned by Streaming instead of the 'mcm' messages"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U0155J92A7Q",
+        "type": "message",
+        "ts": "1615915660.016900",
+        "client_msg_id": "8780f201-2bc8-47b6-99b7-3f3ccf7baf97",
+        "text": "How do you avoid that your Python Script loads the complete fills to memory when storing files in S3? Do you always keep the connection with the cloud open?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gde8c5d51af5",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/de8c5d51af54a5ac7b501f416ddb262c.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0016-72.png",
+            "first_name": "",
+            "real_name": "Jorge",
+            "display_name": "Jorge",
+            "team": "T4G9NBD2M",
+            "name": "jgarciam95",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "mfIBq",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "How do you avoid that your Python Script loads the complete fills to memory when storing files in S3? Do you always keep the connection with the cloud open?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01DCR5PXDY",
+        "type": "message",
+        "ts": "1615915681.017100",
+        "client_msg_id": "3cbeaae6-24bb-4f38-9136-5ff38fcfbe60",
+        "text": "'mcm' messages are deltas. If you're recording large amounts of data you'll save a bunch of space using deltas, and probably run quicker when processing the data as well.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "903bc20cd9db",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-10-26\/1448127317798_903bc20cd9dba9a758e0_72.png",
+            "first_name": "thambie1",
+            "real_name": "thambie1",
+            "display_name": "thambie1",
+            "team": "T4G9NBD2M",
+            "name": "thambie1",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "9\/3",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "'mcm' messages are deltas. If you're recording large amounts of data you'll save a bunch of space using deltas, and probably run quicker when processing the data as well."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "UQYQGDUKG"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "U0155J92A7Q",
+        "type": "message",
+        "ts": "1615915825.017800",
+        "client_msg_id": "c013f959-e2cd-4a0c-81c3-0ce3a06f25f3",
+        "text": "Yes, bflw is using deltas but converts these 'mcm' messages to a readable MarketBook object",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gde8c5d51af5",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/de8c5d51af54a5ac7b501f416ddb262c.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0016-72.png",
+            "first_name": "",
+            "real_name": "Jorge",
+            "display_name": "Jorge",
+            "team": "T4G9NBD2M",
+            "name": "jgarciam95",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "VNE",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Yes, bflw is using deltas but converts these 'mcm' messages to a readable MarketBook object"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1615925296.019400",
+        "client_msg_id": "C531D6DE-0364-494D-AE35-F96B9D2794DF",
+        "text": "You still get access to the MarketBook once processed through the streaming.historical function but the data is stored as deltas, space saving is huge compared to saving full market books ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "oXL=",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "You still get access to the MarketBook once processed through the streaming.historical function but the data is stored as deltas, space saving is huge compared to saving full market books "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

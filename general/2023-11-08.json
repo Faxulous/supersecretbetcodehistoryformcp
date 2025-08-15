@@ -1,0 +1,1358 @@
+[
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1699431483.280249",
+        "client_msg_id": "2b70b14d-4ded-4bce-9c5e-d841da3d1ca5",
+        "text": "You would use a worker following <https:\/\/github.com\/betcode-org\/flumine\/blob\/master\/examples\/workers\/inplayservice.py|this> pattern",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1699427939.508799",
+        "parent_user_id": "U05LE2JN68L",
+        "attachments": [
+            {
+                "id": 1,
+                "footer_icon": "https:\/\/slack.github.com\/static\/img\/favicon-neutral.png",
+                "color": "24292f",
+                "bot_id": "B021ZJYSBMW",
+                "app_unfurl_url": "https:\/\/github.com\/betcode-org\/flumine\/blob\/master\/examples\/workers\/inplayservice.py",
+                "is_app_unfurl": true,
+                "app_id": "A01BP7R4KNY",
+                "fallback": "<https:\/\/github.com\/betcode-org\/flumine\/blob\/master\/examples\/workers\/inplayservice.py | inplayservice.py>",
+                "text": "```\nimport logging\nfrom flumine.utils import get_event_ids\nfrom flumine.events.events import CustomEvent\n\nlogger = logging.getLogger(__name__)\n\n\"\"\"\nSee examples\/tennisexample.py in how\nto use this worker for betting.\n\"\"\"\n\n\ndef poll_in_play_service(context: dict, flumine, event_type_id: str) -> None:\n    client = flumine.clients.get_betfair_default()\n    event_ids = get_event_ids(flumine.markets, event_type_id=event_type_id)\n    for event_id in event_ids:\n        response = client.betting_client.in_play_service.get_scores(\n            event_ids=[event_id]\n        )\n        if response is None:\n            logger.warning(\n                \"poll_in_play_service\",\n                extra={\"response\": response, \"event_id\": event_id},\n            )\n            continue\n\n        for score in response:\n            flumine.handler_queue.put(CustomEvent(score, callback))\n\n\ndef callback(flumine, event):\n    # update market context\n    score = event.event\n    for market in flumine.markets:\n        if market.event_id == str(score.event_id):\n            logger.debug(\n                \"Updated market %s with event %s scores data\",\n                market.market_id,\n                market.event_id,\n            )\n            market.context[\"score\"] = score\n\n```",
+                "title": "<https:\/\/github.com\/betcode-org\/flumine\/blob\/master\/examples\/workers\/inplayservice.py | inplayservice.py>",
+                "footer": "<https:\/\/github.com\/betcode-org\/flumine|betcode-org\/flumine>",
+                "mrkdwn_in": [
+                    "text"
+                ]
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "QYRlp",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "You would use a worker following "
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/betcode-org\/flumine\/blob\/master\/examples\/workers\/inplayservice.py",
+                                "text": "this"
+                            },
+                            {
+                                "type": "text",
+                                "text": " pattern"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U05LE2JN68L",
+        "type": "message",
+        "ts": "1699433575.380209",
+        "client_msg_id": "D6DD6C9B-B68E-4DD5-8C99-BDDF2A76A9A5",
+        "text": "Cool! Thanks will have a look",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "b0b67902e998",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2023-08-04\/5694086812628_b0b67902e9986d0a4e22_72.png",
+            "first_name": "joe",
+            "real_name": "joe taylor",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "erdoshft",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1699427939.508799",
+        "parent_user_id": "U05LE2JN68L",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "JT87w",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Cool! Thanks will have a look"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "subtype": "thread_broadcast",
+        "user": "U01A3B4SBDZ",
+        "thread_ts": "1699170427.056339",
+        "root": {
+            "user": "U01A3B4SBDZ",
+            "type": "message",
+            "ts": "1699170427.056339",
+            "client_msg_id": "a153fdcc-742b-424d-b32a-09f01bca1db0",
+            "text": "Hey everyone,\nHas anyone here had any experience with these betting APIs? They seem to offer connections to Betfair and other bookies. Are you aware of any pros\/cons?\n• <https:\/\/betinasia.com\/sports-betting-api\/|BetInAsia Sports Betting API>\n• <https:\/\/www.mollybet.com\/|MollyBet>\nThanks in advance for any insights! :blush:",
+            "team": "T4G9NBD2M",
+            "thread_ts": "1699170427.056339",
+            "reply_count": 13,
+            "reply_users_count": 3,
+            "latest_reply": "1699522867.065239",
+            "reply_users": [
+                "UBS7QANF3",
+                "U012CS8MP52",
+                "U01A3B4SBDZ"
+            ],
+            "replies": [
+                {
+                    "user": "UBS7QANF3",
+                    "ts": "1699172555.444049"
+                },
+                {
+                    "user": "UBS7QANF3",
+                    "ts": "1699173040.307869"
+                },
+                {
+                    "user": "U012CS8MP52",
+                    "ts": "1699182399.693899"
+                },
+                {
+                    "user": "U01A3B4SBDZ",
+                    "ts": "1699436655.875379"
+                },
+                {
+                    "user": "UBS7QANF3",
+                    "ts": "1699436723.191699"
+                },
+                {
+                    "user": "U01A3B4SBDZ",
+                    "ts": "1699436735.114479"
+                },
+                {
+                    "user": "UBS7QANF3",
+                    "ts": "1699436833.859219"
+                },
+                {
+                    "user": "U01A3B4SBDZ",
+                    "ts": "1699437001.526189"
+                },
+                {
+                    "user": "UBS7QANF3",
+                    "ts": "1699437797.517049"
+                },
+                {
+                    "user": "U01A3B4SBDZ",
+                    "ts": "1699437889.420379"
+                },
+                {
+                    "user": "U01A3B4SBDZ",
+                    "ts": "1699510595.608459"
+                },
+                {
+                    "user": "UBS7QANF3",
+                    "ts": "1699511349.853339"
+                },
+                {
+                    "user": "U01A3B4SBDZ",
+                    "ts": "1699522867.065239"
+                }
+            ],
+            "is_locked": false,
+            "subscribed": false,
+            "attachments": [
+                {
+                    "from_url": "https:\/\/www.mollybet.com\/",
+                    "service_icon": "https:\/\/www.mollybet.com\/lstatic\/img\/favicon.ico",
+                    "id": 1,
+                    "original_url": "https:\/\/www.mollybet.com\/",
+                    "fallback": "MollyBet - Best-In-Class Sports Trading Platform for Professional Betting",
+                    "text": "MollyBet is the most advanced sports trading platform, designed for professional high volume betting.",
+                    "title": "MollyBet - Best-In-Class Sports Trading Platform for Professional Betting",
+                    "title_link": "https:\/\/www.mollybet.com\/",
+                    "service_name": "mollybet.com"
+                }
+            ],
+            "blocks": [
+                {
+                    "type": "rich_text",
+                    "block_id": "z47Zw",
+                    "elements": [
+                        {
+                            "type": "rich_text_section",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "Hey everyone,\nHas anyone here had any experience with these betting APIs? They seem to offer connections to Betfair and other bookies. Are you aware of any pros\/cons?\n"
+                                }
+                            ]
+                        },
+                        {
+                            "type": "rich_text_list",
+                            "elements": [
+                                {
+                                    "type": "rich_text_section",
+                                    "elements": [
+                                        {
+                                            "type": "link",
+                                            "url": "https:\/\/betinasia.com\/sports-betting-api\/",
+                                            "text": "BetInAsia Sports Betting API"
+                                        }
+                                    ]
+                                },
+                                {
+                                    "type": "rich_text_section",
+                                    "elements": [
+                                        {
+                                            "type": "link",
+                                            "url": "https:\/\/www.mollybet.com\/",
+                                            "text": "MollyBet"
+                                        }
+                                    ]
+                                }
+                            ],
+                            "style": "bullet",
+                            "indent": 0,
+                            "border": 0
+                        },
+                        {
+                            "type": "rich_text_section",
+                            "elements": [
+                                {
+                                    "type": "text",
+                                    "text": "Thanks in advance for any insights! "
+                                },
+                                {
+                                    "type": "emoji",
+                                    "name": "blush",
+                                    "unicode": "1f60a"
+                                }
+                            ]
+                        }
+                    ]
+                }
+            ]
+        },
+        "type": "message",
+        "ts": "1699436655.875379",
+        "client_msg_id": "1dec22c9-4251-44e0-a6bc-579ba01957ac",
+        "text": "Thanks for your replies guys! I'm just considering my options after Betfair withdrew from the Norwegian market a few days ago:cry:",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "3OqtY",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Thanks for your replies guys! I'm just considering my options after Betfair withdrew from the Norwegian market a few days ago"
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "cry",
+                                "unicode": "1f622"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1699436723.191699",
+        "client_msg_id": "6F9E8427-86F3-4736-8BE2-C721FF33E8BE",
+        "text": "What sports do you bet on?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1699170427.056339",
+        "parent_user_id": "U01A3B4SBDZ",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "+eCyw",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "What sports do you bet on?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01A3B4SBDZ",
+        "type": "message",
+        "ts": "1699436735.114479",
+        "client_msg_id": "fae5b2e6-f0ab-4210-b3d3-879bcfcf0dd0",
+        "text": "Football",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gab79d3fadbd",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/ab79d3fadbd18abc3a25aa548a2a392a.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0020-72.png",
+            "first_name": "",
+            "real_name": "jptrader",
+            "display_name": "jp",
+            "team": "T4G9NBD2M",
+            "name": "petterto",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1699170427.056339",
+        "parent_user_id": "U01A3B4SBDZ",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "hihA2",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Football"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1699436833.859219",
+        "client_msg_id": "9610C3E2-457C-4D1E-B378-4741B822C1B3",
+        "text": "Are you happy to bet at Pinnacle prices?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1699170427.056339",
+        "parent_user_id": "U01A3B4SBDZ",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "AQ7c3",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Are you happy to bet at Pinnacle prices?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01A3B4SBDZ",
+        "type": "message",
+        "ts": "1699437001.526189",
+        "client_msg_id": "48206e8b-a89f-49ac-96c0-9bfba9fc33dc",
+        "text": "Probably not. A significant part of my betting is from offering odds in the markets, so for that I would need an exhange.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gab79d3fadbd",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/ab79d3fadbd18abc3a25aa548a2a392a.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0020-72.png",
+            "first_name": "",
+            "real_name": "jptrader",
+            "display_name": "jp",
+            "team": "T4G9NBD2M",
+            "name": "petterto",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1699170427.056339",
+        "parent_user_id": "U01A3B4SBDZ",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "UpXvF",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Probably not. A significant part of my betting is from offering odds in the markets, so for that I would need an exhange."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1699437797.517049",
+        "client_msg_id": "5661E5C9-7706-4135-8CD1-FCA2DFD0800E",
+        "text": "Do you pay PC?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1699170427.056339",
+        "parent_user_id": "U01A3B4SBDZ",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "k5sBS",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Do you pay PC?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01A3B4SBDZ",
+        "type": "message",
+        "ts": "1699437889.420379",
+        "client_msg_id": "98271db7-d37d-4b3b-b1d9-4432886caeb7",
+        "text": "Oh yes, been paying that since 2010 I think",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gab79d3fadbd",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/ab79d3fadbd18abc3a25aa548a2a392a.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0020-72.png",
+            "first_name": "",
+            "real_name": "jptrader",
+            "display_name": "jp",
+            "team": "T4G9NBD2M",
+            "name": "petterto",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1699170427.056339",
+        "parent_user_id": "U01A3B4SBDZ",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "pSSQm",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Oh yes, been paying that since 2010 I think"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U064W55MBJ5",
+        "type": "message",
+        "ts": "1699446184.134259",
+        "client_msg_id": "bdb45f87-1ff6-4f76-a10d-0338c98337e2",
+        "text": "Hi All. Im looking to build a an ML model for tracking in game tennis price movements. I have historcal data from betfair and I want to combine it with pre match stats on the players. The issue im having is putting the 2 datasets together so I can start to train some models and get started. In the  betfair data I have market, selection and event id and also the selection name. Has anyone experience with this and how do you approach getting the data prepared so a model can be trained with various datasets?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "5bfe7c672cd4",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2023-11-06\/6153540185010_5bfe7c672cd4245b63b3_72.jpg",
+            "first_name": "Brian",
+            "real_name": "Brian Sexton",
+            "display_name": "Brian Sexton",
+            "team": "T4G9NBD2M",
+            "name": "brian.w.sexton",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "R\/VWi",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Hi All. Im looking to build a an ML model for tracking in game tennis price movements. I have historcal data from betfair and I want to combine it with pre match stats on the players. The issue im having is putting the 2 datasets together so I can start to train some models and get started. In the  betfair data I have market, selection and event id and also the selection name. Has anyone experience with this and how do you approach getting the data prepared so a model can be trained with various datasets?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UEA14GBRR",
+        "type": "message",
+        "ts": "1699446589.974839",
+        "edited": {
+            "user": "UEA14GBRR",
+            "ts": "1699446628.000000"
+        },
+        "client_msg_id": "e4efe98c-80e0-4a67-bec1-8693d40f82ab",
+        "text": "I think you'll need to build your own lookup table(s) <@U064W55MBJ5>.  Even within a data source the name\/id standardisation can be unreliable let alone across several.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "889680f46fe7",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-06\/6774538588752_889680f46fe773047cb9_72.jpg",
+            "first_name": "",
+            "real_name": "Shaun White",
+            "display_name": "ShaunW",
+            "team": "T4G9NBD2M",
+            "name": "shaunwhite",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "\/f2aa",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I think you'll need to build your own lookup table(s) "
+                            },
+                            {
+                                "type": "user",
+                                "user_id": "U064W55MBJ5"
+                            },
+                            {
+                                "type": "text",
+                                "text": ".  Even within a data source the name\/id standardisation can be unreliable let alone across several."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U064W55MBJ5",
+        "type": "message",
+        "ts": "1699446718.327239",
+        "client_msg_id": "7e976782-dd15-461a-8b72-34f5880e0429",
+        "text": "Thanks <@UEA14GBRR> Thatts what I was thinking I was going to have to do. Im planning on creating a db and normalizing the data somehow but wanted to see if there was a better more standardised approach",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "5bfe7c672cd4",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2023-11-06\/6153540185010_5bfe7c672cd4245b63b3_72.jpg",
+            "first_name": "Brian",
+            "real_name": "Brian Sexton",
+            "display_name": "Brian Sexton",
+            "team": "T4G9NBD2M",
+            "name": "brian.w.sexton",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "VMHka",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Thanks "
+                            },
+                            {
+                                "type": "user",
+                                "user_id": "UEA14GBRR"
+                            },
+                            {
+                                "type": "text",
+                                "text": " Thatts what I was thinking I was going to have to do. Im planning on creating a db and normalizing the data somehow but wanted to see if there was a better more standardised approach"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UEA14GBRR",
+        "type": "message",
+        "ts": "1699447173.560629",
+        "client_msg_id": "8c93cda0-9b62-49db-bbfc-b3e0e8e237fa",
+        "text": "Sadly not. We're not quite at the ISO code stage yet.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "889680f46fe7",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-06\/6774538588752_889680f46fe773047cb9_72.jpg",
+            "first_name": "",
+            "real_name": "Shaun White",
+            "display_name": "ShaunW",
+            "team": "T4G9NBD2M",
+            "name": "shaunwhite",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "7fD6M",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Sadly not. We're not quite at the ISO code stage yet."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "joy",
+                "users": [
+                    "U064W55MBJ5"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "text": "<@U064W55MBJ5> I have got something like that one:",
+        "files": [
+            {
+                "id": "F064E257UPR",
+                "mode": "hidden_by_limit"
+            }
+        ],
+        "upload": false,
+        "user": "U028Z5T4AF6",
+        "display_as_bot": false,
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "F\/xNS",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "user",
+                                "user_id": "U064W55MBJ5"
+                            },
+                            {
+                                "type": "text",
+                                "text": " I have got something like that one:"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "type": "message",
+        "ts": "1699454962.384739",
+        "client_msg_id": "65e39cc8-ff95-4b48-9b4c-fdb725e3b8ca",
+        "thread_ts": "1699454962.384739",
+        "reply_count": 13,
+        "reply_users_count": 5,
+        "latest_reply": "1699957403.264159",
+        "reply_users": [
+            "U064W55MBJ5",
+            "U028Z5T4AF6",
+            "U030GKBMCBF",
+            "UPMUFSGCR",
+            "U05N9773A23"
+        ],
+        "replies": [
+            {
+                "user": "U064W55MBJ5",
+                "ts": "1699456454.879559"
+            },
+            {
+                "user": "U028Z5T4AF6",
+                "ts": "1699457849.294849"
+            },
+            {
+                "user": "U064W55MBJ5",
+                "ts": "1699458735.911379"
+            },
+            {
+                "user": "U030GKBMCBF",
+                "ts": "1699461875.226119"
+            },
+            {
+                "user": "U064W55MBJ5",
+                "ts": "1699462907.683219"
+            },
+            {
+                "user": "UPMUFSGCR",
+                "ts": "1699463127.096619"
+            },
+            {
+                "user": "U028Z5T4AF6",
+                "ts": "1699526263.082759"
+            },
+            {
+                "user": "UPMUFSGCR",
+                "ts": "1699527398.000499"
+            },
+            {
+                "user": "U028Z5T4AF6",
+                "ts": "1699528213.136309"
+            },
+            {
+                "user": "UPMUFSGCR",
+                "ts": "1699528734.684189"
+            },
+            {
+                "user": "U028Z5T4AF6",
+                "ts": "1699531147.014289"
+            },
+            {
+                "user": "U05N9773A23",
+                "ts": "1699955764.503989"
+            },
+            {
+                "user": "U028Z5T4AF6",
+                "ts": "1699957403.264159"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": false
+    },
+    {
+        "user": "U05LE2JN68L",
+        "type": "message",
+        "ts": "1699455728.777289",
+        "client_msg_id": "F714D08E-30E3-4E11-8652-B4518A98C988",
+        "text": "<@U4H19D1D2> worker part make sense, thanks for the same. One small doubt- for getting race_status(PARADING Etc, before the race), I didn’t find any field in the betting_client or in_play_service object that might store this information(or any object which might Call the api). Are you suggesting me to use the same design and Call the race_status api using the link provided on the betfair dev section?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "b0b67902e998",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2023-08-04\/5694086812628_b0b67902e9986d0a4e22_72.png",
+            "first_name": "joe",
+            "real_name": "joe taylor",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "erdoshft",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1699427939.508799",
+        "parent_user_id": "U05LE2JN68L",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Led4X",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "user",
+                                "user_id": "U4H19D1D2"
+                            },
+                            {
+                                "type": "text",
+                                "text": " worker part make sense, thanks for the same. One small doubt- for getting race_status(PARADING Etc, before the race), "
+                            },
+                            {
+                                "type": "text",
+                                "text": "I didn’t"
+                            },
+                            {
+                                "type": "text",
+                                "text": " find any field in the betting_client or in_play_service object that might store this information(or any object which might Call the api). Are you suggesting me to use the same design and Call the race_status api using the link provided on the betfair dev section?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1699456189.027979",
+        "client_msg_id": "d91685cd-e940-4d20-8eb4-0f93cb901020",
+        "text": "`trading.scores.list_race_details()`",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1699427939.508799",
+        "parent_user_id": "U05LE2JN68L",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "CCDLV",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "trading.scores.list_race_details()",
+                                "style": {
+                                    "code": true
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "heart",
+                "users": [
+                    "U05KECSV68N"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1699456205.457729",
+        "client_msg_id": "51dcb651-fc68-4397-a437-54977915876b",
+        "text": "<https:\/\/github.com\/betcode-org\/betfair\/blob\/9dfed6a2acd18550a6c2192c8c67bc6b0d2ce27e\/betfairlightweight\/endpoints\/scores.py#L16>",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1699427939.508799",
+        "parent_user_id": "U05LE2JN68L",
+        "attachments": [
+            {
+                "id": 1,
+                "footer_icon": "https:\/\/slack.github.com\/static\/img\/favicon-neutral.png",
+                "color": "24292f",
+                "bot_id": "B021ZJYSBMW",
+                "app_unfurl_url": "https:\/\/github.com\/betcode-org\/betfair\/blob\/9dfed6a2acd18550a6c2192c8c67bc6b0d2ce27e\/betfairlightweight\/endpoints\/scores.py#L16",
+                "is_app_unfurl": true,
+                "app_id": "A01BP7R4KNY",
+                "fallback": "<https:\/\/github.com\/betcode-org\/betfair\/blob\/9dfed6a2acd18550a6c2192c8c67bc6b0d2ce27e\/betfairlightweight\/endpoints\/scores.py | scores.py>",
+                "text": "```\n    def list_race_details(\n```",
+                "title": "<https:\/\/github.com\/betcode-org\/betfair\/blob\/9dfed6a2acd18550a6c2192c8c67bc6b0d2ce27e\/betfairlightweight\/endpoints\/scores.py | scores.py>",
+                "footer": "<https:\/\/github.com\/betcode-org\/betfair|betcode-org\/betfair>",
+                "mrkdwn_in": [
+                    "text"
+                ]
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "wVkNQ",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/betcode-org\/betfair\/blob\/9dfed6a2acd18550a6c2192c8c67bc6b0d2ce27e\/betfairlightweight\/endpoints\/scores.py#L16"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "U05LE2JN68L"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "U064W55MBJ5",
+        "type": "message",
+        "ts": "1699456454.879559",
+        "client_msg_id": "69de117a-191c-4d83-b70a-8192be19509e",
+        "text": "Would you mind sharing some info on the schema and how you were able to link the datasources?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "5bfe7c672cd4",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2023-11-06\/6153540185010_5bfe7c672cd4245b63b3_72.jpg",
+            "first_name": "Brian",
+            "real_name": "Brian Sexton",
+            "display_name": "Brian Sexton",
+            "team": "T4G9NBD2M",
+            "name": "brian.w.sexton",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1699454962.384739",
+        "parent_user_id": "U028Z5T4AF6",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "ISJix",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Would you mind sharing some info on the schema and how you were able to link the datasources?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U028Z5T4AF6",
+        "type": "message",
+        "ts": "1699457849.294849",
+        "client_msg_id": "74176013-ce17-4ba0-96b2-6e269e9eb683",
+        "text": "Just from the table names you can judge my schema and how I normalized database structure. I link datasources by race time and horse names as getting data from 3 different sources.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "be15732fa18c",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2021-07-21\/2295982109957_be15732fa18caaf5dbc6_72.png",
+            "first_name": "Štefan",
+            "real_name": "Štefan Belopotočan",
+            "display_name": "Štefan",
+            "team": "T4G9NBD2M",
+            "name": "stefanbelopotocan203",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1699454962.384739",
+        "parent_user_id": "U028Z5T4AF6",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "C8Mzl",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Just from the table names you can judge my schema and how I normalized database structure. I link datasources by race time and horse names as getting data from 3 different sources."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U064W55MBJ5",
+        "type": "message",
+        "ts": "1699458735.911379",
+        "client_msg_id": "f6764efb-5242-4cf0-924f-6e8917a4d47c",
+        "text": "Cool you went with the horse name. Thats about the only option I could see. Thanks",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "5bfe7c672cd4",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2023-11-06\/6153540185010_5bfe7c672cd4245b63b3_72.jpg",
+            "first_name": "Brian",
+            "real_name": "Brian Sexton",
+            "display_name": "Brian Sexton",
+            "team": "T4G9NBD2M",
+            "name": "brian.w.sexton",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1699454962.384739",
+        "parent_user_id": "U028Z5T4AF6",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "PJjiw",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Cool you went with the horse name. Thats about the only option I could see. Thanks"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U05KECSV68N",
+        "type": "message",
+        "ts": "1699459027.455139",
+        "client_msg_id": "979e1b5b-8da7-41e3-868f-e7249d3fbbca",
+        "text": "Awesome, Thanks a lot. That made things quite simple.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gc2bc41d6054",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/c2bc41d60540ec3895c1d64cf560d276.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0017-72.png",
+            "first_name": "Rishab",
+            "real_name": "Rishab",
+            "display_name": "Rishab",
+            "team": "T4G9NBD2M",
+            "name": "ris499",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1699427939.508799",
+        "parent_user_id": "U05LE2JN68L",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "HK3Iz",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Awesome, Thanks a lot. That made things quite simple."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U030GKBMCBF",
+        "type": "message",
+        "ts": "1699461875.226119",
+        "client_msg_id": "B73E6B67-F78B-49F4-AD0E-678776BEC611",
+        "text": "With a bit of string standardisation horse names are pretty straight forward to match up 99.99% of the time, no idea about tennis ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "c8efe9a619a7",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2022-01-27\/3012906420054_c8efe9a619a784f8fc22_72.png",
+            "first_name": "Leo",
+            "real_name": "Leo",
+            "display_name": "Leo",
+            "team": "T4G9NBD2M",
+            "name": "leomccarthy709",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1699454962.384739",
+        "parent_user_id": "U028Z5T4AF6",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "0K8fY",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "With a bit of string standardisation horse names are pretty straight forward to match up 99.99% of the time, no idea about tennis "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U064W55MBJ5",
+        "type": "message",
+        "ts": "1699462907.683219",
+        "client_msg_id": "5eec461b-d9f4-44cf-b309-f876723d45c7",
+        "text": "Ill get the data i have structured into a database and try to normalize and match them up to see how it works. It should be ok :crossed_fingers:",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "5bfe7c672cd4",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2023-11-06\/6153540185010_5bfe7c672cd4245b63b3_72.jpg",
+            "first_name": "Brian",
+            "real_name": "Brian Sexton",
+            "display_name": "Brian Sexton",
+            "team": "T4G9NBD2M",
+            "name": "brian.w.sexton",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1699454962.384739",
+        "parent_user_id": "U028Z5T4AF6",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Ag+KD",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Ill get the data i have structured into a database and try to normalize and match them up to see how it works. It should be ok "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "crossed_fingers",
+                                "unicode": "1f91e"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UPMUFSGCR",
+        "type": "message",
+        "ts": "1699463127.096619",
+        "client_msg_id": "fced9862-419c-478b-b566-574ea9f5e4af",
+        "text": "Where are the prize money and finish time data from?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "31c0bb5a442c",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2019-10-28\/812386967189_31c0bb5a442c5b8d2c61_72.png",
+            "first_name": "Jon",
+            "real_name": "Jon Jon Jon Jon Jon Jon Jon Jon",
+            "display_name": "Jonjonjon",
+            "team": "T4G9NBD2M",
+            "name": "fcmisc",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1699454962.384739",
+        "parent_user_id": "U028Z5T4AF6",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "QDo6Q",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Where are the prize money and finish time data from?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01A3B4SBDZ",
+        "type": "message",
+        "ts": "1699510595.608459",
+        "client_msg_id": "87d74ba4-d87a-418e-ada7-bd8e8954fb55",
+        "text": "Sounds like you may have some ideas on how I can get back in business <@UBS7QANF3>. I am currently investigating some options myself. Are you going to the developer event next week, if so maybe we could chat there?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gab79d3fadbd",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/ab79d3fadbd18abc3a25aa548a2a392a.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0020-72.png",
+            "first_name": "",
+            "real_name": "jptrader",
+            "display_name": "jp",
+            "team": "T4G9NBD2M",
+            "name": "petterto",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1699170427.056339",
+        "parent_user_id": "U01A3B4SBDZ",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "z8E+8",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Sounds like you may have some ideas on how I can get back in business "
+                            },
+                            {
+                                "type": "user",
+                                "user_id": "UBS7QANF3"
+                            },
+                            {
+                                "type": "text",
+                                "text": ". I am currently investigating some options myself. Are you going to the developer event next week, if so maybe we could chat there?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1699511349.853339",
+        "client_msg_id": "7932cc17-6cee-4c44-b9c5-03d1267f58c7",
+        "text": "So my syndicate has a gambling licence and perhaps there is some arrangement whereby you bet with us but really we are just passing your bets through to the exchange\n\nObviously there are a lot of messy details that are best discussed privately and yeah I'll be at the developer event next week. The only reason I'm stating the above publicly is in case anyone else might find it useful to have a bespoke relationship with a \"bookmaker\"\n\nTo cover my ass legally: I'm in no way soliciting customers by saying these things :grinning:",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1699170427.056339",
+        "parent_user_id": "U01A3B4SBDZ",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "ST5n4",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "So my syndicate has a gambling licence and perhaps there is some arrangement whereby you bet with us but really we are just passing your bets through to the exchange\n\nObviously there are a lot of messy details that are best discussed privately and yeah I'll be at the developer event next week. The only reason I'm stating the above publicly is in case anyone else might find it useful to have a bespoke relationship with a \"bookmaker\"\n\nTo cover my ass legally: I'm in no way soliciting customers by saying these things "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "grinning",
+                                "unicode": "1f600"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

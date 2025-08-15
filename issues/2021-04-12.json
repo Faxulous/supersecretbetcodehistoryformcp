@@ -1,0 +1,478 @@
+[
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1618238776.064300",
+        "client_msg_id": "84de4d46-edd3-4ddc-b632-53a2dd6f39ed",
+        "text": "When trying to place an order using:\n\n```trade = Trade(\n           market_id=market.market_id,\n           selection_id=selection_id,\n           handicap=handicap,\n           strategy=self,\n       )\n   order = trade.create_order(\n       side=direction, order_type=LimitOrder(price=price, size=stake, persistence_type=persistence_type)\n   )\n\norder_placed = market.place_order(order)```\nI am trying to catch errors as follows:\n\n```if order_placed is False:\n\t# Do stuff```\nI just noticed an order (correctly) failing due to BPE, so this is expected behaviour and from logs I can see the following:\n\n```{\"asctime\": \"2021-04-12 13:39:15,049\", \"levelname\": \"INFO\", \"message\": \"Order Place: FAILURE\", \"bet_id\": null, \"order_id\": \"138375275548404227\", \"status\": \"FAILURE\", \"error_code\": \"BET_LAPSED_PRICE_IMPROVEMENT_TOO_LARGE\"}```\nHowever, from place_order in execution.transaction thought the above would return True or False and I could catch the error that way and do whatever I need, but it doesn’t appear to be catching for failures in live (I could have sworn this worked in paper trading, but haven’t been able to replicate yet), it does return True for successfully placed orders, but doesn’t return False.\n\n So, what is the correct way to catch these errors, as I’m clearly mis-reading the code?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Kdy",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "When trying to place an order using:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "trade = Trade(\n           market_id=market.market_id,\n           selection_id=selection_id,\n           handicap=handicap,\n           strategy=self,\n       )\n   order = trade.create_order(\n       side=direction, order_type=LimitOrder(price=price, size=stake, persistence_type=persistence_type)\n   )\n\norder_placed = market.place_order(order)"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\nI am trying to catch errors as follows:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "if order_placed is False:\n\t# Do stuff"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\nI just noticed an order (correctly) failing due to BPE, so this is expected behaviour and from logs I can see the following:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "{\"asctime\": \"2021-04-12 13:39:15,049\", \"levelname\": \"INFO\", \"message\": \"Order Place: FAILURE\", \"bet_id\": null, \"order_id\": \"138375275548404227\", \"status\": \"FAILURE\", \"error_code\": \"BET_LAPSED_PRICE_IMPROVEMENT_TOO_LARGE\"}"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\nHowever, from place_order in execution.transaction thought the above would return True or False and I could catch the error that way and do whatever I need, but it doesn’t appear to be catching for failures in live (I could have sworn this worked in paper trading, but haven’t been able to replicate yet), it does return True for successfully placed orders, but doesn’t return False.\n\n So, what is the correct way to catch these errors, as I’m clearly mis-reading the code?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1618240025.066200",
+        "client_msg_id": "0F682506-E75F-49D2-8BD2-64456D349760",
+        "text": "Orders get placed through the execution thread pool so you don’t get a delay, therefore there is no callback (currently) on failed place requests, it’s only on control validations that you will get false on your example ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "XYz",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Orders get placed through the execution thread pool so you don’t get a delay, therefore there is no callback (currently) on failed place requests, it’s only on control validations that you will get false on your example "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1618240572.066400",
+        "client_msg_id": "11f96dab-4e60-4366-a33f-ec9f65f41b12",
+        "text": "ah okay cool, tks!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "PKCla",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "ah okay cool, tks!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1618253126.067900",
+        "client_msg_id": "007a0127-3a93-473a-a736-b03dc1987776",
+        "text": "So ignoring my approach above, which it looks like isn't going to work, based on Liam's clarification. Does anyone have any examples \/ suggestions for the best way to capture failed order placements, I'm struggling to get my head round the best approach here?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "oWZ5",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "So ignoring my approach above, which it looks like isn't going to work, based on Liam's clarification. Does anyone have any examples \/ suggestions for the best way to capture failed order placements, I'm struggling to get my head round the best approach here?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01C12ZEADQ",
+        "type": "message",
+        "ts": "1618257936.070900",
+        "edited": {
+            "user": "U01C12ZEADQ",
+            "ts": "1618257950.000000"
+        },
+        "client_msg_id": "b66442f8-51bb-4fa9-aaa1-193f412dca2d",
+        "text": "The way you can do it is keeping intenral state by market and the order objects stored in the strategy. process_market_book -&gt; place the order. then in process_orders(market, orders) you can loop over them and see 'order.status'. If you index stuff by market id you can use the market.market_id to link to the state. Also, remember that the Trade constructor has a 'notes' argument where you can put an OrderedDict of what you want, and you can access the trade from the order.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "e3b7687b0ef8",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-10-06\/1432945617648_e3b7687b0ef86e4f28b8_72.png",
+            "first_name": "Alessio",
+            "real_name": "Alessio",
+            "display_name": "Alessio",
+            "team": "T4G9NBD2M",
+            "name": "alessio",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "tmBr",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "The way you can do it is keeping intenral state by market and the order objects stored in the strategy. process_market_book -> place the order. then in process_orders(market, orders) you can loop over them and see 'order.status'. If you index stuff by market id you can use the market.market_id to link to the state. Also, remember that the Trade constructor has a 'notes' argument where you can put an OrderedDict of what you want, and you can access the trade from the order."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01C12ZEADQ",
+        "type": "message",
+        "ts": "1618258001.071400",
+        "client_msg_id": "429f10b0-1e3b-4c51-9e82-ee127c75b904",
+        "text": "But in general, you need kind of a state machine, where the state gets checked across different calls.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "e3b7687b0ef8",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-10-06\/1432945617648_e3b7687b0ef86e4f28b8_72.png",
+            "first_name": "Alessio",
+            "real_name": "Alessio",
+            "display_name": "Alessio",
+            "team": "T4G9NBD2M",
+            "name": "alessio",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "fLT7S",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "But in general, you need kind of a state machine, where the state gets checked across different calls."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1618258968.073200",
+        "client_msg_id": "dd57647c-2aed-47b4-a3e6-3fbf371bea9b",
+        "text": "Okay cool, that makes sense, I wasn't sure if an order that never got placed would have a status, but assuming it stays as Failure that should work, will try and replicate tomorrow!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "H8M",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Okay cool, that makes sense, I wasn't sure if an order that never got placed would have a status, but assuming it stays as Failure that should work, will try and replicate tomorrow!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1618259148.074200",
+        "client_msg_id": "27d5c856-71eb-4b3e-b2fc-894dd5ebbbd8",
+        "text": "Actually it doesn't look like Failure is a valid order status, but I think the above technically is lapsed, so I should be able to use that approach still.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "feJ",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Actually it doesn't look like Failure is a valid order status, but I think the above technically is lapsed, so I should be able to use that approach still."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01C12ZEADQ",
+        "type": "message",
+        "ts": "1618259420.074400",
+        "client_msg_id": "11c6f68c-df89-4820-9ff8-f21afa6c1c04",
+        "text": "I think you want to look at Violation",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "e3b7687b0ef8",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-10-06\/1432945617648_e3b7687b0ef86e4f28b8_72.png",
+            "first_name": "Alessio",
+            "real_name": "Alessio",
+            "display_name": "Alessio",
+            "team": "T4G9NBD2M",
+            "name": "alessio",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "dbU=o",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I think you want to look at Violation"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01C12ZEADQ",
+        "type": "message",
+        "ts": "1618259433.074800",
+        "client_msg_id": "69d622a8-0aa0-4fd2-be3b-978b85739268",
+        "text": "but don't quote me on that, that's an error_code i never saw",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "e3b7687b0ef8",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-10-06\/1432945617648_e3b7687b0ef86e4f28b8_72.png",
+            "first_name": "Alessio",
+            "real_name": "Alessio",
+            "display_name": "Alessio",
+            "team": "T4G9NBD2M",
+            "name": "alessio",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "olk\/",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "but don't quote me on that, that's an error_code i never saw"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1618260008.075600",
+        "client_msg_id": "91433cd1-f9e2-4f6b-b040-7fad941a19aa",
+        "text": "Not on this occasion, it doesn't violate as its a valid order, it only fails due to BPE as the price moves between placing and execution on the order book",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "1OBVw",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Not on this occasion, it doesn't violate as its a valid order, it only fails due to BPE as the price moves between placing and execution on the order book"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

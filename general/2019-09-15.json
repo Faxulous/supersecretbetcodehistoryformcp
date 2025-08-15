@@ -1,0 +1,1931 @@
+[
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1568536455.029600",
+        "edited": {
+            "user": "UBS7QANF3",
+            "ts": "1568536477.000000"
+        },
+        "client_msg_id": "b9e54f59-dfc2-462c-962d-8edc0f95ddf5",
+        "text": "You want EX_ALL_OFFERS not EX_BEST_OFFERS without ladderLevels",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "6r7",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "You want EX_ALL_OFFERS not EX_BEST_OFFERS without ladderLevels"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1568536564.030200",
+        "client_msg_id": "8820f55c-c9ca-4df5-bedb-e2e83251a028",
+        "text": "Although based on the most recent example I'm not convinced that is the problem",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Gmri",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Although based on the most recent example I'm not convinced that is the problem"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1568537056.031300",
+        "client_msg_id": "107E9999-FCB7-4B2F-8023-2BEA897FFFA1",
+        "text": "I’m inclined to agree, it looks to me like somehow messages are not being sent \/ revived somehow, rather than a ladder issue",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "cOj",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I’m inclined to agree, it looks to me like somehow messages are not being sent \/ revived somehow, rather than a ladder issue"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1568538422.033600",
+        "edited": {
+            "user": "UFTBRB3F1",
+            "ts": "1568538453.000000"
+        },
+        "client_msg_id": "cb0d0b8c-603d-4c74-88c4-f10b458cac7e",
+        "text": "I managed to replicate the issue again, this time, with EX_ALL_OFFERS, just to see.\n\nMy code, is stripped back, completely to basics here, so it should be obvious if something is wrong, but it looks okay to me, I can't see what would be withholding messages (and is there any possibility they aren't being sent somehow?)\n\n```filters = betfairlightweight.filters\n\nlogging.basicConfig(level=<http:\/\/logging.INFO|logging.INFO>)\n\ntrading = betfairlightweight.APIClient(accname, accpass, acckey, certs=path)\ntrading.login()\n\nmarket_ids=['1.148222764','1.132099836','1.130856098']\n\nmarket_queue = queue.Queue()\nmarket_listener = betfairlightweight.StreamListener(output_queue=market_queue)\nmarket_stream = trading.streaming.create_stream(listener=market_listener)\nmarket_filter = streaming_market_filter(\nmarket_ids=market_ids)\n\nmarket_data_filter = streaming_market_data_filter(\n    fields=['EX_ALL_OFFERS', 'EX_MARKET_DEF', 'EX_TRADED', 'EX_LTP'])\n\nmarket_stream.subscribe_to_markets(\n    market_filter=market_filter,\n    market_data_filter=market_data_filter)\n\nmarket_stream.start(async_=True)\n\nwhile True:\n    market_books = market_queue.get()\n    for market_book in market_books:\n        print(market_book.streaming_update)```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "eVB",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I managed to replicate the issue again, this time, with EX_ALL_OFFERS, just to see.\n\nMy code, is stripped back, completely to basics here, so it should be obvious if something is wrong, but it looks okay to me, I can't see what would be withholding messages (and is there any possibility they aren't being sent somehow?)\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "filters = betfairlightweight.filters\n\nlogging.basicConfig(level="
+                            },
+                            {
+                                "type": "link",
+                                "url": "http:\/\/logging.INFO",
+                                "text": "logging.INFO"
+                            },
+                            {
+                                "type": "text",
+                                "text": ")\n\ntrading = betfairlightweight.APIClient(accname, accpass, acckey, certs=path)\ntrading.login()\n\nmarket_ids=['1.148222764','1.132099836','1.130856098']\n\nmarket_queue = queue.Queue()\nmarket_listener = betfairlightweight.StreamListener(output_queue=market_queue)\nmarket_stream = trading.streaming.create_stream(listener=market_listener)\nmarket_filter = streaming_market_filter(\nmarket_ids=market_ids)\n\nmarket_data_filter = streaming_market_data_filter(\n    fields=['EX_ALL_OFFERS', 'EX_MARKET_DEF', 'EX_TRADED', 'EX_LTP'])\n\nmarket_stream.subscribe_to_markets(\n    market_filter=market_filter,\n    market_data_filter=market_data_filter)\n\nmarket_stream.start(async_=True)\n\nwhile True:\n    market_books = market_queue.get()\n    for market_book in market_books:\n        print(market_book.streaming_update)"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1568538437.033900",
+        "client_msg_id": "1fc14eff-49a7-40af-8471-ab7067a57e53",
+        "text": "use ``` to format it",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "JjN",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "use ``` to format it"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1568538460.034300",
+        "client_msg_id": "1093686b-9122-4658-beb9-9c5f1e5a0b81",
+        "text": ":+1:",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "j=j",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "emoji",
+                                "name": "+1",
+                                "unicode": "1f44d"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1568538460.034400",
+        "client_msg_id": "df98f404-dcd1-4f5b-b016-c84780ba901c",
+        "text": "ooops, fixed now :slightly_smiling_face:",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "CD2W=",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "ooops, fixed now "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "slightly_smiling_face",
+                                "unicode": "1f642"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1568538723.034700",
+        "client_msg_id": "774a5d59-3c9c-45c8-9e5f-d64ab0f3aa65",
+        "text": "How are you doing the bet placement? Manually?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "WlE3",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "How are you doing the bet placement? Manually?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1568538785.035000",
+        "client_msg_id": "339a422e-8115-4443-8538-dde2785ca46b",
+        "text": "in this instance yes",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "=nUG",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "in this instance yes"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1568538796.035300",
+        "client_msg_id": "6a5f1894-6381-4dbc-8020-0f29f8bbda9c",
+        "text": "I just wanted to strip it back to super basic levels to get to the root of theissue",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "CXsuO",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I just wanted to strip it back to super basic levels to get to the root of theissue"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1568539143.035700",
+        "client_msg_id": "09c882de-5215-4af2-a378-0bb1934c9dd6",
+        "text": "You have a separate process for receiving the order stream messages and printing them?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "wgt",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "You have a separate process for receiving the order stream messages and printing them?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1568539293.036200",
+        "client_msg_id": "7116614e-478e-4feb-942a-bd817d63c205",
+        "text": "I just stripped them out, as the problem still arises using the above, so just wanted it to be super simple",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "rdV",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I just stripped them out, as the problem still arises using the above, so just wanted it to be super simple"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1568539680.036600",
+        "client_msg_id": "a7175650-8a98-41ea-b2ab-b8da875c6673",
+        "text": "When you say problem, you mean that the bet appears in the order book but doesn't disappear when cancelled?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "3\/O1",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "When you say problem, you mean that the bet appears in the order book but doesn't disappear when cancelled?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1568539978.039200",
+        "client_msg_id": "f43f1ff6-aafe-4705-a321-0107e071592e",
+        "text": "on the betfair front end it appears and then disappears, but at my end via the streaming API it appears I miss messages (sometimes), for example, here a bet I placed correctly shows up as placed and cancelled:\n\n```{'id': '1.132099836', 'rc': [{'atl': [[3.3, 2]], 'id': 10317012}]}\n{'id': '1.132099836', 'rc': [{'atl': [[3.3, 0]], 'id': 10317012}]}```\n\nBut then, trying to replicate, I only receive one side:\n\n```{'id': '1.132099836', 'rc': [{'atb': [[44, 1.99]], 'id': 13231442}]}```\n\n(that one was a £2 back bet @ 44, where 1p got matched), but no cancellation message",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "vxevk",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "on the betfair front end it appears and then disappears, but at my end via the streaming API it appears I miss messages (sometimes), for example, here a bet I placed correctly shows up as placed and cancelled:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "{'id': '1.132099836', 'rc': [{'atl': [[3.3, 2]], 'id': 10317012}]}\n{'id': '1.132099836', 'rc': [{'atl': [[3.3, 0]], 'id': 10317012}]}"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\n\nBut then, trying to replicate, I only receive one side:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "{'id': '1.132099836', 'rc': [{'atb': [[44, 1.99]], 'id': 13231442}]}"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\n\n(that one was a £2 back bet @ 44, where 1p got matched), but no cancellation message"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1568540040.039400",
+        "client_msg_id": "fe116f5c-e33e-43f2-ad02-5e35b0942509",
+        "text": "*lay bet",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "UKfF=",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "*lay bet"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1568557551.039800",
+        "client_msg_id": "D4BB9936-4E8C-4100-B80D-8B5942DFBF48",
+        "text": "I don’t understand the problem \/ see a problem ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "l8u",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I don’t understand the problem \/ see a problem"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1568558633.043400",
+        "client_msg_id": "C5AD4B15-6C45-4735-9DD5-EC03CF5ECD51",
+        "text": "I placed and cancelled an order, but not all messages come through.\n\nIn the above example I placed and cancelled 2 orders so should have received 4 market updates, but only received 3.\n\nThis behaviour is constant for me, I never receive all the expected messages on the market stream.\n\nOn the order stream everything comes through as expected.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "EM5B",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I placed and cancelled an order, but not all messages come through.\n\nIn the above example I placed and cancelled 2 orders so should have received 4 market updates, but only received 3.\n\nThis behaviour is constant for me, I never receive all the expected messages on the market stream.\n\nOn the order stream everything comes through as expected."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1568558666.043800",
+        "client_msg_id": "81B3B2B2-C668-4CC4-BC5F-1365B42F33B8",
+        "text": "Is conflate=True present in the logs?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "ecj",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Is conflate=True present in the logs?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1568560264.044200",
+        "client_msg_id": "8A201E3E-73D5-491B-80C9-137188EC2075",
+        "text": "I didn’t specifically set it, should I?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "MCzla",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I didn’t specifically set it, should I?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1568560408.045100",
+        "client_msg_id": "334FFA40-87BD-43B0-A392-17EAD12BD6E7",
+        "text": "It comes from betfair to tell you the data is conflated. Can you share the full logs and when you did what? ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "mn2l",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "It comes from betfair to tell you the data is conflated. Can you share the full logs and when you did what?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1568561551.045900",
+        "client_msg_id": "634C6434-1899-487E-9D7A-D0FBA9883E26",
+        "text": "I must have logging off currently, will try and replicate with it enabled and re-post",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "g0W",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I must have logging off currently, will try and replicate with it enabled and re-post"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1568561586.046100",
+        "client_msg_id": "9D25F4D8-DF66-4C0B-B9C3-4045D9A4BFC0",
+        "text": "Live key yeah?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "nqHkJ",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Live key yeah?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1568564737.046400",
+        "client_msg_id": "81537112-2042-4e30-ab4f-89c966400d29",
+        "text": "yeah, that was the first thing I checked!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Zrn8y",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "yeah, that was the first thing I checked!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1568566592.046900",
+        "client_msg_id": "3d2b4307-ba58-4080-b528-2dfa3382574a",
+        "text": "Frustratingly, since I've turned logging back on, I have not been able to replicate it!!!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "iwr",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Frustratingly, since I've turned logging back on, I have not been able to replicate it!!!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1568568148.048200",
+        "client_msg_id": "a2e30bd5-18fa-49b0-9b96-6af6592adb60",
+        "text": "but just so I don't miss anything, I have the following line:\n\n```logging.basicConfig(level=<http:\/\/logging.INFO|logging.INFO>)```\n\nDoes that need to be changed to debug, or is info level okay for what you're looking for (I did try debug initially and obviously saw a ton of messages, but nothing containing conflate = xxx)?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Qutw",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "but just so I don't miss anything, I have the following line:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "logging.basicConfig(level="
+                            },
+                            {
+                                "type": "link",
+                                "url": "http:\/\/logging.INFO",
+                                "text": "logging.INFO"
+                            },
+                            {
+                                "type": "text",
+                                "text": ")"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\n\nDoes that need to be changed to debug, or is info level okay for what you're looking for (I did try debug initially and obviously saw a ton of messages, but nothing containing conflate = xxx)?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1568568270.049100",
+        "client_msg_id": "EA0F6313-0EB9-4522-AE96-109AE66E140B",
+        "text": "Debug will show you everything so if you think there is a problem then set it to debug but I don’t think there is ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "mV2",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Debug will show you everything so if you think there is a problem then set it to debug but I don’t think there is"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1568568374.049800",
+        "client_msg_id": "8cd11c71-c6d5-412f-9b2b-85cab2ca0843",
+        "text": "Excuse my ignorance, but what am I missing here...\n\nIf I place and cancel an order, surely I should see that come through in the market updates?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "9q=",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Excuse my ignorance, but what am I missing here...\n\nIf I place and cancel an order, surely I should see that come through in the market updates?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1568568406.050300",
+        "client_msg_id": "9CD3BB79-4F6D-42CD-BEED-88064D70066C",
+        "text": "Thought you said it was now working?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "v49",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Thought you said it was now working?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1568568426.050700",
+        "client_msg_id": "f3723ccd-0da5-4eb5-aad5-86eadb2e8064",
+        "text": "well...I have not been able to replicate the issue this afternoon, but I haven't changed anything since this morning",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "MN3g",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "well...I have not been able to replicate the issue this afternoon, but I haven't changed anything since this morning"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1568568438.051000",
+        "client_msg_id": "eb340f62-0123-46be-9040-f9d4fdfdd311",
+        "text": "so I'm assuming thats down to luck rather than anything else!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "tzbsP",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "so I'm assuming thats down to luck rather than anything else!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1568570116.053800",
+        "client_msg_id": "0A61EDCF-B3E1-4212-B273-C5E5500D6166",
+        "text": "There can only really be two reasons why, a delayed key or the data is being conflated due to you not reading data off the socket quick enough which could be network or resource issues. If conflated betfair will tell you with a conflated flag which you can see with the debug logs ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "krka",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "There can only really be two reasons why, a delayed key or the data is being conflated due to you not reading data off the socket quick enough which could be network or resource issues. If conflated betfair will tell you with a conflated flag which you can see with the debug logs"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1568570139.054200",
+        "client_msg_id": "A280C0A4-DCBF-458F-9123-3180B659749A",
+        "text": "The code is rock solid :smile: ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "HwV8C",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "The code is rock solid "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "smile",
+                                "unicode": "1f604"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1568570577.057500",
+        "client_msg_id": "f2c83361-6c8e-4f17-ad84-9358029f74e6",
+        "text": "Is there any possibility then that my hardware could be the issue?\n\nGoing forward I can look out for a conflated flag and factor that in I guess, but just wondering, if my hardware is a bit outdated, would an upgrade assist, or is that just irrelevant as its all to do with the connection (in terms of my end, the connection speed is healthy, but my laptop could possibly be due an upgrade)?\n\nOf course if its simply (likely to be) network issues and outside my control, then so be it, I can sleep more easily :wink:",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "o53w",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Is there any possibility then that my hardware could be the issue?\n\nGoing forward I can look out for a conflated flag and factor that in I guess, but just wondering, if my hardware is a bit outdated, would an upgrade assist, or is that just irrelevant as its all to do with the connection (in terms of my end, the connection speed is healthy, but my laptop could possibly be due an upgrade)?\n\nOf course if its simply (likely to be) network issues and outside my control, then so be it, I can sleep more easily "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "wink",
+                                "unicode": "1f609"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1568585878.059900",
+        "client_msg_id": "b6cc0e7c-d6e5-48e6-9dee-bb7131378af7",
+        "text": "Just managed to replicate again, placed and cancelled an order, came through instantly via the order stream and nothing on via the market stream :disappointed:\n\n```DEBUG:betfairlightweight.streaming.listener:[Subscription: 1]: UPDATE: {'op': 'mcm', 'id': 1, 'clk': 'ALQGAL4FAMAG', 'pt': 1568585572062, 'mc': [{'id': '1.132099836', 'rc': [{'atl': [[6, 2]], 'id': 10317012}]}]}\nDEBUG:betfairlightweight.streaming.listener:[Subscription: 1]: UPDATE: {'op': 'ocm', 'id': 1, 'clk': 'AJ4DAMQDAN0BAJECAKYD', 'pt': 1568585572678, 'oc': [{'id': '1.130856098', 'orc': [{'id': 12832766, 'uo': [{'id': '178731051032', 'p': 2.54, 's': 2, 'side': 'B', 'status': 'E', 'pt': 'L', 'ot': 'L', 'pd': 1568585572000, 'sm': 0, 'sr': 2, 'sl': 0, 'sc': 0, 'sv': 0, 'rac': '', 'rc': 'REG_GGC', 'rfo': '', 'rfs': ''}]}]}]}\n{'id': '1.130856098', 'orc': [{'id': 12832766, 'uo': [{'id': '178731051032', 'p': 2.54, 's': 2, 'side': 'B', 'status': 'E', 'pt': 'L', 'ot': 'L', 'pd': 1568585572000, 'sm': 0, 'sr': 2, 'sl': 0, 'sc': 0, 'sv': 0, 'rac': '', 'rc': 'REG_GGC', 'rfo': '', 'rfs': ''}]}]}\n{'id': '1.132099836', 'rc': [{'atl': [[6, 2]], 'id': 10317012}]}\nDEBUG:betfairlightweight.streaming.listener:[Subscription: 1]: UPDATE: {'op': 'mcm', 'id': 1, 'clk': 'AOYGAO0FAPAG', 'pt': 1568585572693, 'mc': [{'id': '1.130856098', 'rc': [{'atl': [[2.54, 19.72]], 'id': 12832766}]}]}\nDEBUG:betfairlightweight.streaming.listener:[Subscription: 1]: UPDATE: {'op': 'mcm', 'id': 1, 'clk': 'AK0HAKcGALMH', 'pt': 1568585573555, 'mc': [{'id': '1.130856098', 'rc': [{'atl': [[2.54, 17.72]], 'id': 12832766}]}]}\nDEBUG:betfairlightweight.streaming.listener:[Subscription: 1]: UPDATE: {'op': 'ocm', 'id': 1, 'clk': 'ALwDAOMDAPEBAKUCAMwD', 'pt': 1568585573644, 'oc': [{'id': '1.130856098', 'orc': [{'id': 12832766, 'uo': [{'id': '178731051032', 'p': 2.54, 's': 2, 'side': 'B', 'status': 'EC', 'pt': 'L', 'ot': 'L', 'pd': 1568585572000, 'sm': 0, 'sr': 0, 'sl': 0, 'sc': 2, 'sv': 0, 'rac': '', 'rc': 'REG_GGC', 'rfo': '', 'rfs': ''}]}]}]}\n{'id': '1.130856098', 'orc': [{'id': 12832766, 'uo': [{'id': '178731051032', 'p': 2.54, 's': 2, 'side': 'B', 'status': 'EC', 'pt': 'L', 'ot': 'L', 'pd': 1568585572000, 'sm': 0, 'sr': 0, 'sl': 0, 'sc': 2, 'sv': 0, 'rac': '', 'rc': 'REG_GGC', 'rfo': '', 'rfs': ''}]}]}\n{'id': '1.130856098', 'rc': [{'atl': [[2.54, 19.72]], 'id': 12832766}]}\n```\n\nSo I placed and cancelled a £2 bet @ 2.54 on 1.130856098, came through the order stream, but only one instance came through the market stream. Interestingly this time it was the cancel order, previously its only been the placement order.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "sJX",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Just managed to replicate again, placed and cancelled an order, came through instantly via the order stream and nothing on via the market stream "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "disappointed",
+                                "unicode": "1f61e"
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "DEBUG:betfairlightweight.streaming.listener:[Subscription: 1]: UPDATE: {'op': 'mcm', 'id': 1, 'clk': 'ALQGAL4FAMAG', 'pt': 1568585572062, 'mc': [{'id': '1.132099836', 'rc': [{'atl': [[6, 2]], 'id': 10317012}]}]}\nDEBUG:betfairlightweight.streaming.listener:[Subscription: 1]: UPDATE: {'op': 'ocm', 'id': 1, 'clk': 'AJ4DAMQDAN0BAJECAKYD', 'pt': 1568585572678, 'oc': [{'id': '1.130856098', 'orc': [{'id': 12832766, 'uo': [{'id': '178731051032', 'p': 2.54, 's': 2, 'side': 'B', 'status': 'E', 'pt': 'L', 'ot': 'L', 'pd': 1568585572000, 'sm': 0, 'sr': 2, 'sl': 0, 'sc': 0, 'sv': 0, 'rac': '', 'rc': 'REG_GGC', 'rfo': '', 'rfs': ''}]}]}]}\n{'id': '1.130856098', 'orc': [{'id': 12832766, 'uo': [{'id': '178731051032', 'p': 2.54, 's': 2, 'side': 'B', 'status': 'E', 'pt': 'L', 'ot': 'L', 'pd': 1568585572000, 'sm': 0, 'sr': 2, 'sl': 0, 'sc': 0, 'sv': 0, 'rac': '', 'rc': 'REG_GGC', 'rfo': '', 'rfs': ''}]}]}\n{'id': '1.132099836', 'rc': [{'atl': [[6, 2]], 'id': 10317012}]}\nDEBUG:betfairlightweight.streaming.listener:[Subscription: 1]: UPDATE: {'op': 'mcm', 'id': 1, 'clk': 'AOYGAO0FAPAG', 'pt': 1568585572693, 'mc': [{'id': '1.130856098', 'rc': [{'atl': [[2.54, 19.72]], 'id': 12832766}]}]}\nDEBUG:betfairlightweight.streaming.listener:[Subscription: 1]: UPDATE: {'op': 'mcm', 'id': 1, 'clk': 'AK0HAKcGALMH', 'pt': 1568585573555, 'mc': [{'id': '1.130856098', 'rc': [{'atl': [[2.54, 17.72]], 'id': 12832766}]}]}\nDEBUG:betfairlightweight.streaming.listener:[Subscription: 1]: UPDATE: {'op': 'ocm', 'id': 1, 'clk': 'ALwDAOMDAPEBAKUCAMwD', 'pt': 1568585573644, 'oc': [{'id': '1.130856098', 'orc': [{'id': 12832766, 'uo': [{'id': '178731051032', 'p': 2.54, 's': 2, 'side': 'B', 'status': 'EC', 'pt': 'L', 'ot': 'L', 'pd': 1568585572000, 'sm': 0, 'sr': 0, 'sl': 0, 'sc': 2, 'sv': 0, 'rac': '', 'rc': 'REG_GGC', 'rfo': '', 'rfs': ''}]}]}]}\n{'id': '1.130856098', 'orc': [{'id': 12832766, 'uo': [{'id': '178731051032', 'p': 2.54, 's': 2, 'side': 'B', 'status': 'EC', 'pt': 'L', 'ot': 'L', 'pd': 1568585572000, 'sm': 0, 'sr': 0, 'sl': 0, 'sc': 2, 'sv': 0, 'rac': '', 'rc': 'REG_GGC', 'rfo': '', 'rfs': ''}]}]}\n{'id': '1.130856098', 'rc': [{'atl': [[2.54, 19.72]], 'id': 12832766}]}\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\n\nSo I placed and cancelled a £2 bet @ 2.54 on 1.130856098, came through the order stream, but only one instance came through the market stream. Interestingly this time it was the cancel order, previously its only been the placement order."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1568585889.060300",
+        "client_msg_id": "8ded1da9-f666-46ce-8730-c7ec1865357e",
+        "text": "The above is with logging set to DEBUG",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "LCdQ",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "The above is with logging set to DEBUG"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1568585910.060800",
+        "client_msg_id": "3de31eac-3a84-49e0-96b8-210e345ad0e7",
+        "text": "So it didn't show up much (or at least not that I can decipher)",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "T3=Va",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "So it didn't show up much (or at least not that I can decipher)"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1568585966.061300",
+        "client_msg_id": "d3f511e9-a05e-4f9e-8fd9-8f3e445f446a",
+        "text": "actually ignore that, having pasted it, I can clearly see both messages in the debug output!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "3Wv",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "actually ignore that, having pasted it, I can clearly see both messages in the debug output!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1568586021.061900",
+        "client_msg_id": "89fa345c-26c2-4acb-89e0-0907f01c1196",
+        "text": "So perhaps that sheds some light....I must be getting the messages, but for some reason they don't always print. Odd.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "fAgn",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "So perhaps that sheds some light....I must be getting the messages, but for some reason they don't always print. Odd."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1568587642.062700",
+        "client_msg_id": "4cbd82bf-eb0c-42f5-9db2-7d9a72c911af",
+        "text": "(and more importantly than whether they don't print or not, is the fact that for whatever reason they don't appear to be picked up and processed by my code). That is very confusing.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "jTJUs",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "(and more importantly than whether they don't print or not, is the fact that for whatever reason they don't appear to be picked up and processed by my code). That is very confusing."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1568612458.063700",
+        "client_msg_id": "648C8893-9D2F-44BD-9056-C6193999D241",
+        "text": "I guess your code is different to what you have shared before as those logs are showing an order stream as well?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "OBB",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I guess your code is different to what you have shared before as those logs are showing an order stream as well?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1568615506.065400",
+        "client_msg_id": "f175fa12-e0f9-4885-bb58-2e91311583a4",
+        "text": "yep, I had just stripped out the market bits, the full code is:\n\n```import threading\nimport logging\nfrom datetime import datetime\nimport mysql.connector\nimport queue\nfrom new_functions import calc_live_order_risk, view_runners, view_orders, database_run_sp, getprofitandloss, check_queue, \\\n    set_initial_market_book, inital_position, create_initial_market_book, calc_initial_risk, check_positions, live_positions, create_initial_risk, combine_stream_results\nimport auto_hedge\nimport betfairlightweight\nfrom betfairlightweight.filters import (\n    streaming_market_filter,\n    streaming_market_data_filter,\n    streaming_order_filter,\n    market_filter,\n    price_data,\n    price_projection,\n    ex_best_offers_overrides\n)\nfrom account_info import accname, accpass, acckey, path, db_host, db_user, db_passwd, db_database\nfrom betfairlightweight.resources.bettingresources import MarketBook, CurrentOrders\nfrom betfairlightweight.endpoints.account import Account\nfrom betfairlightweight.endpoints.betting import Betting\nfrom place_orders import place_order\n\nlogging.basicConfig(level=logging.DEBUG)  # change to DEBUG to see log all updates\n\nfilters = betfairlightweight.filters\n\nmysql = mysql.connector\n\nlogging.basicConfig(level=<http:\/\/logging.info|logging.info>)\n\ntrading = betfairlightweight.APIClient(accname, accpass, acckey, certs=path)\ntrading.login()\n\norder_queue = queue.Queue()\norder_listener = betfairlightweight.StreamListener(output_queue=order_queue)\norder_stream = trading.streaming.create_stream(listener=order_listener)\norder_filter = streaming_order_filter(\n    include_overall_position=True\n    # customer_strategy_refs=[\"\"]\n    #    partition_matched_by_strategy_ref=None\n)\norder_stream.subscribe_to_orders(\n    order_filter=order_filter)\norder_stream.start(async_=True)\n\nmarket_ids=['1.148222764','1.132099836','1.130856098']\n\nmarket_queue = queue.Queue()\nmarket_listener = betfairlightweight.StreamListener(output_queue=market_queue)\nmarket_stream = trading.streaming.create_stream(listener=market_listener)\nmarket_filter = streaming_market_filter(\nmarket_ids=market_ids)\n\nmarket_data_filter = streaming_market_data_filter(\n    fields=['EX_ALL_OFFERS', 'EX_MARKET_DEF', 'EX_TRADED', 'EX_LTP'])\n\nmarket_stream.subscribe_to_markets(\n    market_filter=market_filter,\n    market_data_filter=market_data_filter)\n\nmarket_stream.start(async_=True)\n\nmb =[]\n\ninitial_risk_list = create_initial_risk(trading, filters, market_ids)\n\ndef consumer(queue, initial_risk_list):\n    while True:\n        message = queue.get()\n        output = check_queue(message,'market_list', 'order_list', update_time, initial_risk_list)\n        live_data = combine_stream_results(output, mb, queue, update_time)\n\n\nif __name__ == \"__main__\":\n    format = \"%(asctime)s: %(message)s\"\n    logging.basicConfig(format=format, level=<http:\/\/logging.INFO|logging.INFO>, datefmt=\"%H:%M:%S\")\n    pipeline = queue.Queue(maxsize=50)\n    c = threading.Thread(target=consumer, args=(pipeline,initial_risk_list))\n    c.start()\n\nwhile True:\n    update_time = datetime.now().strftime(\"%m\/%d\/%Y, %H:%M:%S\")\n    order_books = order_queue.get()\n    for order_book in order_books:\n        print(order_book.streaming_update)\n    order_list = {'order_list': view_orders(order_books)}\n    pipeline.put(order_list)\n    market_books = market_queue.get()\n    for market_book in market_books:\n        print(market_book.streaming_update)\n    runner_list, mb = view_runners(mb, market_books, mysql, db_host, db_user, db_passwd, db_database)\n    runner_list = {'runner_list': runner_list}\n    pipeline.put(runner_list)\n    market_list = {'market_list': mb}\n    pipeline.put(market_list)```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "1DpD",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "yep, I had just stripped out the market bits, the full code is:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "import threading\nimport logging\nfrom datetime import datetime\nimport mysql.connector\nimport queue\nfrom new_functions import calc_live_order_risk, view_runners, view_orders, database_run_sp, getprofitandloss, check_queue, \\\n    set_initial_market_book, inital_position, create_initial_market_book, calc_initial_risk, check_positions, live_positions, create_initial_risk, combine_stream_results\nimport auto_hedge\nimport betfairlightweight\nfrom betfairlightweight.filters import (\n    streaming_market_filter,\n    streaming_market_data_filter,\n    streaming_order_filter,\n    market_filter,\n    price_data,\n    price_projection,\n    ex_best_offers_overrides\n)\nfrom account_info import accname, accpass, acckey, path, db_host, db_user, db_passwd, db_database\nfrom betfairlightweight.resources.bettingresources import MarketBook, CurrentOrders\nfrom betfairlightweight.endpoints.account import Account\nfrom betfairlightweight.endpoints.betting import Betting\nfrom place_orders import place_order\n\nlogging.basicConfig(level=logging.DEBUG)  # change to DEBUG to see log all updates\n\nfilters = betfairlightweight.filters\n\nmysql = mysql.connector\n\nlogging.basicConfig(level="
+                            },
+                            {
+                                "type": "link",
+                                "url": "http:\/\/logging.info",
+                                "text": "logging.info"
+                            },
+                            {
+                                "type": "text",
+                                "text": ")\n\ntrading = betfairlightweight.APIClient(accname, accpass, acckey, certs=path)\ntrading.login()\n\norder_queue = queue.Queue()\norder_listener = betfairlightweight.StreamListener(output_queue=order_queue)\norder_stream = trading.streaming.create_stream(listener=order_listener)\norder_filter = streaming_order_filter(\n    include_overall_position=True\n    # customer_strategy_refs=[\"\"]\n    #    partition_matched_by_strategy_ref=None\n)\norder_stream.subscribe_to_orders(\n    order_filter=order_filter)\norder_stream.start(async_=True)\n\nmarket_ids=['1.148222764','1.132099836','1.130856098']\n\nmarket_queue = queue.Queue()\nmarket_listener = betfairlightweight.StreamListener(output_queue=market_queue)\nmarket_stream = trading.streaming.create_stream(listener=market_listener)\nmarket_filter = streaming_market_filter(\nmarket_ids=market_ids)\n\nmarket_data_filter = streaming_market_data_filter(\n    fields=['EX_ALL_OFFERS', 'EX_MARKET_DEF', 'EX_TRADED', 'EX_LTP'])\n\nmarket_stream.subscribe_to_markets(\n    market_filter=market_filter,\n    market_data_filter=market_data_filter)\n\nmarket_stream.start(async_=True)\n\nmb =[]\n\ninitial_risk_list = create_initial_risk(trading, filters, market_ids)\n\ndef consumer(queue, initial_risk_list):\n    while True:\n        message = queue.get()\n        output = check_queue(message,'market_list', 'order_list', update_time, initial_risk_list)\n        live_data = combine_stream_results(output, mb, queue, update_time)\n\n\nif __name__ == \"__main__\":\n    format = \"%(asctime)s: %(message)s\"\n    logging.basicConfig(format=format, level="
+                            },
+                            {
+                                "type": "link",
+                                "url": "http:\/\/logging.INFO",
+                                "text": "logging.INFO"
+                            },
+                            {
+                                "type": "text",
+                                "text": ", datefmt=\"%H:%M:%S\")\n    pipeline = queue.Queue(maxsize=50)\n    c = threading.Thread(target=consumer, args=(pipeline,initial_risk_list))\n    c.start()\n\nwhile True:\n    update_time = datetime.now().strftime(\"%m\/%d\/%Y, %H:%M:%S\")\n    order_books = order_queue.get()\n    for order_book in order_books:\n        print(order_book.streaming_update)\n    order_list = {'order_list': view_orders(order_books)}\n    pipeline.put(order_list)\n    market_books = market_queue.get()\n    for market_book in market_books:\n        print(market_book.streaming_update)\n    runner_list, mb = view_runners(mb, market_books, mysql, db_host, db_user, db_passwd, db_database)\n    runner_list = {'runner_list': runner_list}\n    pipeline.put(runner_list)\n    market_list = {'market_list': mb}\n    pipeline.put(market_list)"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1568615508.065600",
+        "edited": {
+            "user": "UFTBRB3F1",
+            "ts": "1568615538.000000"
+        },
+        "client_msg_id": "c78e4401-0ec4-41a0-bb96-b426310a978d",
+        "text": "I cleaned it up before as this issue persists without all my functions etc, i.e. if the while true section is:\n\n```while True:\n    order_books = order_queue.get()\n    for order_book in order_books:\n        print(order_book.streaming_update)\n    market_books = market_queue.get()\n    for market_book in market_books:\n        print(market_book.streaming_update)```\n\nThe issue still persists.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "9Ws",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I cleaned it up before as this issue persists without all my functions etc, i.e. if the while true section is:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "while True:\n    order_books = order_queue.get()\n    for order_book in order_books:\n        print(order_book.streaming_update)\n    market_books = market_queue.get()\n    for market_book in market_books:\n        print(market_book.streaming_update)"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\n\nThe issue still persists."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1568615837.066200",
+        "client_msg_id": "D8722323-F9BF-4649-AE07-AE6533946E66",
+        "text": "Yeah so that order queue get is blocking your market queue get",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "xsS",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Yeah so that order queue get is blocking your market queue get"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1568615857.066800",
+        "client_msg_id": "E473FDEB-AD5C-47C4-8CB5-18965BACA083",
+        "text": "You won’t get any market book updates till you get an order update ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "LY5x",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "You won’t get any market book updates till you get an order update"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1568615925.068400",
+        "client_msg_id": "623347B0-D138-476B-A8C2-3A194C57BDCF",
+        "text": "Simple fix is to use the same queue for both and you will see it working ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "EDUxT",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Simple fix is to use the same queue for both and you will see it working"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1568616026.069700",
+        "client_msg_id": "865ab9ba-ab6f-4e26-b775-61106516da44",
+        "text": "Ah cool, I thought I tried that previously and had similar issues, but will try again and see how it works out, maybe it was something different.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "0zfC",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Ah cool, I thought I tried that previously and had similar issues, but will try again and see how it works out, maybe it was something different."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

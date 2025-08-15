@@ -1,0 +1,663 @@
+[
+    {
+        "user": "U02TVNZQDPV",
+        "type": "message",
+        "ts": "1697531784.489219",
+        "edited": {
+            "user": "U02TVNZQDPV",
+            "ts": "1697532169.000000"
+        },
+        "client_msg_id": "21ae0f8e-5dca-4d9d-bc31-9b82236f9b36",
+        "text": "Hi guys, I'm trying to make sense of some data I've recorded. I am trying to record price data for Aus racing at 1s intervals using streaming. Conflation is set to 1000ms. There are lots of occasions where the gaps in the data are more than 1000ms. Is that to be expected with streaming where there are no changes in the market in the meantime? Thanks",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "ge82f91f3690",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/e82f91f36900aec46a2097987592769d.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0020-72.png",
+            "first_name": "rob",
+            "real_name": "rob smith",
+            "display_name": "rob smith",
+            "team": "T4G9NBD2M",
+            "name": "rob51852",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "5NiBR",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Hi guys, I'm trying to make sense of some data I've recorded. I am trying to record price data for Aus racing at 1s intervals using streaming. Conflation is set to 1000ms. There are lots of occasions where the gaps in the data are more than 1000ms. Is that to be expected with streaming where there are no changes in the market in the meantime? Thanks"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UPMUFSGCR",
+        "type": "message",
+        "ts": "1697532804.161559",
+        "client_msg_id": "cc197499-1f80-43de-90f6-4c5a822a9971",
+        "text": "From what I know, yes it will happen naturally. Especially if it's a long time before the scheduled start time.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "31c0bb5a442c",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2019-10-28\/812386967189_31c0bb5a442c5b8d2c61_72.png",
+            "first_name": "Jon",
+            "real_name": "Jon Jon Jon Jon Jon Jon Jon Jon",
+            "display_name": "Jonjonjon",
+            "team": "T4G9NBD2M",
+            "name": "fcmisc",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "5bEIL",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "From what I know, yes it will happen naturally. Especially if it's a long time before the scheduled start time."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "U02TVNZQDPV"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "U02TVNZQDPV",
+        "type": "message",
+        "ts": "1697538378.497699",
+        "client_msg_id": "36e76460-3d5c-4942-b510-f2971bf5832d",
+        "text": "Thanks Jon",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "ge82f91f3690",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/e82f91f36900aec46a2097987592769d.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0020-72.png",
+            "first_name": "rob",
+            "real_name": "rob smith",
+            "display_name": "rob smith",
+            "team": "T4G9NBD2M",
+            "name": "rob51852",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "fMG\/s",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Thanks Jon"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U05V9E7JA58",
+        "type": "message",
+        "ts": "1697545350.615739",
+        "client_msg_id": "149da44d-1444-4230-912d-0cf7d0d0af13",
+        "text": "Hello again,\nAny pointers re how I might record the data in \"raw\" format? I'm currently attempting to do this using using the below code but the results don't look right for use in replay \/ simulation mode.\nI'm guessing it could be something to do with the stream_class!\nAny help would be very welcome.\n\nimport time\nimport logging\nimport betfairlightweight\nfrom pythonjsonlogger import jsonlogger\n\nfrom flumine import Flumine, clients\nfrom flumine.strategy import strategy\nfrom flumine.streams.datastream import DataStream\nfrom local_marketrecorder import MarketRecorder\nimport betfairlightweight\n\nlogger = logging.getLogger()\ncustom_format = \"%(asctime) %(levelname) %(message)\"\nlog_handler = logging.StreamHandler()\nformatter = jsonlogger.JsonFormatter(custom_format)\nformatter.converter = time.gmtime\nlog_handler.setFormatter(formatter)\nlogger.addHandler(log_handler)\nlogger.setLevel(<http:\/\/logging.INFO|logging.INFO>)\n\ntrading = betfairlightweight.APIClient(\"###\", \"###\", devKey, certs=(###))\nclient = clients.BetfairClient(trading)\n\nframework = Flumine(client=client)\n\nstrategy = MarketRecorder(\n    name=\"WIN\",\n    market_filter=betfairlightweight.filters.streaming_market_filter(\n        event_type_ids=[\"7\"],\n        country_codes=[\"AU\"],\n        market_types=[\"WIN\"],\n        market_ids=[\"1.219765628\"],\n    ),\n    stream_class=DataStream,\n    context={\n        \"local_dir\": \"d:\/BetFair\/data\",\n        \"force_update\": True,\n        \"remove_file\": False,\n        \"remove_gz_file\": False,\n        \"load_market_catalogue\": True,\n    },\n)\n\nframework.add_strategy(strategy)\nframework.run()",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "cc7dc83644f0",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2023-10-05\/5995483702786_cc7dc83644f0419b2460_72.png",
+            "first_name": "Tony",
+            "real_name": "Tony Holder",
+            "display_name": "tone",
+            "team": "T4G9NBD2M",
+            "name": "tjwhold",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1696932436.053159",
+        "parent_user_id": "U05V9E7JA58",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "1Qpaw",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Hello again,\nAny pointers re how I might record the data in \"raw\" format? I'm currently attempting to do this using using the below code but the results don't look right for use in replay \/ simulation mode.\nI'm guessing it could be something to do with the stream_class!\nAny help would be very welcome.\n\nimport time\nimport logging\nimport betfairlightweight\nfrom pythonjsonlogger import jsonlogger\n\nfrom flumine import Flumine, clients\nfrom flumine.strategy import strategy\nfrom flumine.streams.datastream import DataStream\nfrom local_marketrecorder import MarketRecorder\nimport betfairlightweight\n\nlogger = logging.getLogger()\ncustom_format = \"%(asctime) %(levelname) %(message)\"\nlog_handler = logging.StreamHandler()\nformatter = jsonlogger.JsonFormatter(custom_format)\nformatter.converter = time.gmtime\nlog_handler.setFormatter(formatter)\nlogger.addHandler(log_handler)\nlogger.setLevel("
+                            },
+                            {
+                                "type": "link",
+                                "url": "http:\/\/logging.INFO",
+                                "text": "logging.INFO"
+                            },
+                            {
+                                "type": "text",
+                                "text": ")\n\ntrading = betfairlightweight.APIClient(\"###\", \"###\", devKey, certs=(###))\nclient = clients.BetfairClient(trading)\n\nframework = Flumine(client=client)\n\nstrategy = MarketRecorder(\n    name=\"WIN\",\n    market_filter=betfairlightweight.filters.streaming_market_filter(\n        event_type_ids=[\"7\"],\n        country_codes=[\"AU\"],\n        market_types=[\"WIN\"],\n        market_ids=[\"1.219765628\"],\n    ),\n    stream_class=DataStream,\n    context={\n        \"local_dir\": \"d:\/BetFair\/data\",\n        \"force_update\": True,\n        \"remove_file\": False,\n        \"remove_gz_file\": False,\n        \"load_market_catalogue\": True,\n    },\n)\n\nframework.add_strategy(strategy)\nframework.run()"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U9JHLMZB4",
+        "type": "message",
+        "ts": "1697546502.513569",
+        "edited": {
+            "user": "U9JHLMZB4",
+            "ts": "1697546532.000000"
+        },
+        "client_msg_id": "f3b26694-a91b-41af-8535-de872ef10314",
+        "text": "\"the results don't look right for use in replay \/ simulation mode\" - could you be more specific?\n\nThe real processing is going on in the MarketRecorder class, which you haven't included. Are you using a copy of the one from the repos examples folder? Or have you changed it?\n\nWhat does the data you're getting look like?\n\nWhat happens when you run it through the simulator?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g951ddcb43e7",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/3951ddcb43e788a387d6daf330dad5ca.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0018-72.png",
+            "first_name": "",
+            "real_name": "Peter Coles",
+            "display_name": "Peter",
+            "team": "T4G9NBD2M",
+            "name": "peter",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1696932436.053159",
+        "parent_user_id": "U05V9E7JA58",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "EkEym",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\"the results don't look right for use in replay \/ simulation mode\" - could you be more specific?\n\nThe real processing is going on in the MarketRecorder class, which you haven't included. Are you using a copy of the one from the repos examples folder? Or have you changed it?\n\nWhat does the data you're getting look like?\n\nWhat happens when you run it through the simulator?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "text": "I'm using a local copy of MarketRecorder (a bit of an ugly hack in order to get things to compile. I imagine I'll be able to get things working in better fashion when I get more accustomed to using Python). The code is unchanged from the version in the repo.\nI've attached a copy of a market I recorded from a couple of minutes before start time until completion. Note there are only 5 mcm messages and 5 mc messages although there are lots of prices and volumes attached to these messages as lists.\nI also attach the output from the \"lowestlayer\" simulation on the repo.\nI occurs to be that the recorder might be populating the price list on chronological order and then therefore the simulation would not require timestamps. Is this correct?",
+        "files": [
+            {
+                "id": "F061H08HUPM",
+                "created": 1697548274,
+                "timestamp": 1697548274,
+                "name": "1.219544945",
+                "title": "1.219544945",
+                "mimetype": "text\/plain",
+                "filetype": "text",
+                "pretty_type": "Plain Text",
+                "user": "U05V9E7JA58",
+                "user_team": "T4G9NBD2M",
+                "editable": true,
+                "size": 72067,
+                "mode": "snippet",
+                "is_external": false,
+                "external_type": "",
+                "is_public": true,
+                "public_url_shared": false,
+                "display_as_bot": false,
+                "username": "",
+                "url_private": "https:\/\/files.slack.com\/files-pri\/T4G9NBD2M-F061H08HUPM\/1.219544945?t=xoxe-152328387089-8357743338709-8373272928225-dfe8ebcd8ca3d2f633bcafeb95191840",
+                "url_private_download": "https:\/\/files.slack.com\/files-pri\/T4G9NBD2M-F061H08HUPM\/download\/1.219544945?t=xoxe-152328387089-8357743338709-8373272928225-dfe8ebcd8ca3d2f633bcafeb95191840",
+                "permalink": "https:\/\/betcode-org.slack.com\/files\/U05V9E7JA58\/F061H08HUPM\/1.219544945",
+                "permalink_public": "https:\/\/slack-files.com\/T4G9NBD2M-F061H08HUPM-6f3937b215",
+                "edit_link": "https:\/\/betcode-org.slack.com\/files\/U05V9E7JA58\/F061H08HUPM\/1.219544945\/edit",
+                "is_starred": false,
+                "has_rich_preview": false,
+                "file_access": "visible"
+            },
+            {
+                "id": "F061E5DUL5T",
+                "created": 1697548281,
+                "timestamp": 1697548281,
+                "name": "simulation_output.log",
+                "title": "simulation_output.log",
+                "mimetype": "text\/plain",
+                "filetype": "text",
+                "pretty_type": "Plain Text",
+                "user": "U05V9E7JA58",
+                "user_team": "T4G9NBD2M",
+                "editable": true,
+                "size": 14813,
+                "mode": "snippet",
+                "is_external": false,
+                "external_type": "",
+                "is_public": true,
+                "public_url_shared": false,
+                "display_as_bot": false,
+                "username": "",
+                "url_private": "https:\/\/files.slack.com\/files-pri\/T4G9NBD2M-F061E5DUL5T\/simulation_output.log?t=xoxe-152328387089-8357743338709-8373272928225-dfe8ebcd8ca3d2f633bcafeb95191840",
+                "url_private_download": "https:\/\/files.slack.com\/files-pri\/T4G9NBD2M-F061E5DUL5T\/download\/simulation_output.log?t=xoxe-152328387089-8357743338709-8373272928225-dfe8ebcd8ca3d2f633bcafeb95191840",
+                "permalink": "https:\/\/betcode-org.slack.com\/files\/U05V9E7JA58\/F061E5DUL5T\/simulation_output.log",
+                "permalink_public": "https:\/\/slack-files.com\/T4G9NBD2M-F061E5DUL5T-256099d3ed",
+                "edit_link": "https:\/\/betcode-org.slack.com\/files\/U05V9E7JA58\/F061E5DUL5T\/simulation_output.log\/edit",
+                "is_starred": false,
+                "has_rich_preview": false,
+                "file_access": "visible"
+            }
+        ],
+        "upload": false,
+        "user": "U05V9E7JA58",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "ZokDx",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I'm using a local copy of MarketRecorder (a bit of an ugly hack in order to get things to compile. I imagine I'll be able to get things working in better fashion when I get more accustomed to using Python). The code is unchanged from the version in the repo.\nI've attached a copy of a market I recorded from a couple of minutes before start time until completion. Note there are only 5 mcm messages and 5 mc messages although there are lots of prices and volumes attached to these messages as lists.\nI also attach the output from the \"lowestlayer\" simulation on the repo.\nI occurs to be that the recorder might be populating the price list on chronological order and then therefore the simulation would not require timestamps. Is this correct?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "type": "message",
+        "ts": "1697548285.724319",
+        "client_msg_id": "e32f1ba4-bfe5-4256-8a87-3d6682ddd949",
+        "thread_ts": "1696932436.053159",
+        "parent_user_id": "U05V9E7JA58"
+    },
+    {
+        "user": "U9JHLMZB4",
+        "type": "message",
+        "ts": "1697550142.908189",
+        "client_msg_id": "36c15cc9-d672-4a1d-985d-1fd5ad6423ba",
+        "text": "You don't have two minutes of data before the start in that file. The first entry is 24 seconds after the scheduled start.\n\nThe second entry is from three minutes later after the race has started. Have you edited out the incremental updates in between?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g951ddcb43e7",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/3951ddcb43e788a387d6daf330dad5ca.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0018-72.png",
+            "first_name": "",
+            "real_name": "Peter Coles",
+            "display_name": "Peter",
+            "team": "T4G9NBD2M",
+            "name": "peter",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1696932436.053159",
+        "parent_user_id": "U05V9E7JA58",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "sVphz",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "You don't have two minutes of data before the start in that file. The first entry is 24 seconds after the scheduled start.\n\nThe second entry is from three minutes later after the race has started. Have you edited out the incremental updates in between?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1697550231.066699",
+        "client_msg_id": "6f1bfa5f-5e90-41f3-92bb-020f0af7aab4",
+        "text": "Delayed key??!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1696932436.053159",
+        "parent_user_id": "U05V9E7JA58",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "IsBvF",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Delayed key??!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U05V9E7JA58",
+        "type": "message",
+        "ts": "1697554446.609789",
+        "client_msg_id": "7a8f89f9-0d0e-4f65-963d-28419675527b",
+        "text": "The file is completely unedited. It's possible that I started the recording a little later than I thought but its odd that there's a gap!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "cc7dc83644f0",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2023-10-05\/5995483702786_cc7dc83644f0419b2460_72.png",
+            "first_name": "Tony",
+            "real_name": "Tony Holder",
+            "display_name": "tone",
+            "team": "T4G9NBD2M",
+            "name": "tjwhold",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1696932436.053159",
+        "parent_user_id": "U05V9E7JA58",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Lt+\/u",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "The file is completely unedited. It's possible that I started the recording a little later than I thought but its odd that there's a gap!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U05V9E7JA58",
+        "type": "message",
+        "ts": "1697554609.133959",
+        "client_msg_id": "8af8b9fa-3fa6-4b81-af5a-912cd7280e19",
+        "text": "I'm going to do another recording to double check!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "cc7dc83644f0",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2023-10-05\/5995483702786_cc7dc83644f0419b2460_72.png",
+            "first_name": "Tony",
+            "real_name": "Tony Holder",
+            "display_name": "tone",
+            "team": "T4G9NBD2M",
+            "name": "tjwhold",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1696932436.053159",
+        "parent_user_id": "U05V9E7JA58",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "zVEdn",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I'm going to do another recording to double check!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U9JHLMZB4",
+        "type": "message",
+        "ts": "1697559358.146599",
+        "client_msg_id": "B685B573-F25B-4824-B3B6-7391FE0CE040",
+        "text": "Are you using a delayed key or a live key?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g951ddcb43e7",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/3951ddcb43e788a387d6daf330dad5ca.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0018-72.png",
+            "first_name": "",
+            "real_name": "Peter Coles",
+            "display_name": "Peter",
+            "team": "T4G9NBD2M",
+            "name": "peter",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1696932436.053159",
+        "parent_user_id": "U05V9E7JA58",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "fLLE5",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Are you using a delayed key or a live key?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "text": "I'm using a delayed key.  Attached is a market that I started recording 5 mins before the start time (in case it's still relevant and the delayed key explains the problem!)",
+        "files": [
+            {
+                "id": "F061JEEJ1A7",
+                "mode": "hidden_by_limit"
+            }
+        ],
+        "upload": false,
+        "user": "U05V9E7JA58",
+        "display_as_bot": false,
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "RkVjx",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I'm using a delayed key.  Attached is a market that I started recording 5 mins before the start time (in case it's still relevant and the delayed key explains the problem!)"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "type": "message",
+        "ts": "1697561142.835379",
+        "client_msg_id": "16ccc50e-04ee-4f89-9d5c-99eadf6eabf6",
+        "thread_ts": "1696932436.053159",
+        "parent_user_id": "U05V9E7JA58"
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1697561273.903889",
+        "client_msg_id": "719aed77-9a56-45a2-8c62-178de6e7f540",
+        "text": "Delayed key = junk data",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1696932436.053159",
+        "parent_user_id": "U05V9E7JA58",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "XUUy2",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Delayed key = junk data"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U05V9E7JA58",
+        "type": "message",
+        "ts": "1697561475.462479",
+        "client_msg_id": "07527b13-1c27-4215-826a-a324e4ce53f0",
+        "text": "Damn! Thanks for that. The doco says not to use a live key unless you are participating in the market. Would it be terribly risky to use the live key to record just a few markets even though I'm not participating?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "cc7dc83644f0",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2023-10-05\/5995483702786_cc7dc83644f0419b2460_72.png",
+            "first_name": "Tony",
+            "real_name": "Tony Holder",
+            "display_name": "tone",
+            "team": "T4G9NBD2M",
+            "name": "tjwhold",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1696932436.053159",
+        "parent_user_id": "U05V9E7JA58",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "e\/+c2",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Damn! Thanks for that. The doco says not to use a live key unless you are participating in the market. Would it be terribly risky to use the live key to record just a few markets even though I'm not participating?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1697561642.930929",
+        "client_msg_id": "03c9da26-2b72-42c9-b179-590d565a2ee9",
+        "text": "Impossible to say. Unlikely you will get away with it for long if you are placing literally zero bets. You could always just run the lowest layer example with small stakes",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1696932436.053159",
+        "parent_user_id": "U05V9E7JA58",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "OJTiO",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Impossible to say. Unlikely you will get away with it for long if you are placing literally zero bets. You could always just run the lowest layer example with small stakes"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

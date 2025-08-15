@@ -1,0 +1,1565 @@
+[
+    {
+        "user": "ULDAVFDRP",
+        "type": "message",
+        "ts": "1606464280.048000",
+        "edited": {
+            "user": "ULDAVFDRP",
+            "ts": "1606464343.000000"
+        },
+        "client_msg_id": "f5263f74-513e-4f51-afaf-06475d5a0d6d",
+        "text": "morning all, im looking for some advice when it comes to effectively batching up orders (place and cancels) within flumine. Now I have upped the number of trades + strategies I think I may be ineffectively sending updates to betfair (leading to latency from time to time, not confirmed yet but a hunch from looking at the logs ). I believe order packages are designed to combat this, by batching up from market orders from the market blotters (I am right in my understanding?). I am looking to better understand this process and how I could improve my code to prevent unnecessary extra messages to betfair. Does anyone have any advice \/ be able further explain the process and how it can be optimised ?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g46fe1c1bf03",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/b46fe1c1bf03e18d951e7032fb494283.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0019-72.png",
+            "first_name": "",
+            "real_name": "Oliver Varney",
+            "display_name": "Oliver Varney",
+            "team": "T4G9NBD2M",
+            "name": "oliverashleyvarney",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "JCD",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "morning all, im looking for some advice when it comes to effectively batching up orders (place and cancels) within flumine. Now I have upped the number of trades + strategies I think I may be ineffectively sending updates to betfair (leading to latency from time to time, not confirmed yet but a hunch from looking at the logs ). I believe order packages are designed to combat this, by batching up from market orders from the market blotters (I am right in my understanding?). I am looking to better understand this process and how I could improve my code to prevent unnecessary extra messages to betfair. Does anyone have any advice \/ be able further explain the process and how it can be optimised ?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1606464733.052300",
+        "client_msg_id": "AA538086-84F9-4493-A74B-DDC25889C229",
+        "text": "So a market update comes in and processed through all strategies, after this an order package is created which like say can have multiple orders to reduce the number of requests.\n\nThe number of orders shouldn’t increase latency, are you monitoring CPU \/ ram? AWS? And have you tried profiling? I use cprofilev, quickly show you anything that is slow.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "1=J",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "So a market update comes in and processed through all strategies, after this an order package is created which like say can have multiple orders to reduce the number of requests.\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "The number of orders shouldn’t increase latency, are you monitoring CPU \/ ram? AWS? And have you tried profiling? I use cprofilev, quickly show you anything that is slow."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "ULDAVFDRP",
+        "type": "message",
+        "ts": "1606465195.056000",
+        "client_msg_id": "f814c0fa-f212-4d89-ba78-11b291633c9b",
+        "text": "hmm okay, I do need to further profile , which ill look into today. It can run for a few hours before it starts to struggle so could be a rare laggy update myside. Should I be setting the  conflate_ms parameter. If this is not set will this lead to each pull from the stream containing minimal market_books, therefore only a few orders are batched and more network trips?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g46fe1c1bf03",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/b46fe1c1bf03e18d951e7032fb494283.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0019-72.png",
+            "first_name": "",
+            "real_name": "Oliver Varney",
+            "display_name": "Oliver Varney",
+            "team": "T4G9NBD2M",
+            "name": "oliverashleyvarney",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "6vuu",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "hmm okay, I do need to further profile , which ill look into today. It can run for a few hours before it starts to struggle so could be a rare laggy update myside. Should I be setting the  conflate_ms parameter. If this is not set will this lead to each pull from the stream containing minimal market_books, therefore only a few orders are batched and more network trips?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1606465294.057700",
+        "client_msg_id": "5384FB08-A2B6-4CE2-B1D3-9132654564D0",
+        "text": "Conflating will just reduce he number of updates from betfair which will reduce your CPU but it sounds like you have some dodgy code, profile and it will tell you instantly unless it’s a memory leak but again this will be in your code ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "9VU",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Conflating will just reduce he number of updates from betfair which will reduce your CPU but it sounds like you have some dodgy code, profile and it will tell you instantly unless it’s a memory leak but again this will be in your code "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "ULDAVFDRP"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "U01FJN59B52",
+        "type": "message",
+        "ts": "1606468834.059400",
+        "client_msg_id": "33637229-23b7-4517-b9d9-9715f43de0d7",
+        "text": "Morning. Can anyone recommend a decent book for Python programming suitable for experienced programmers in other languages?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "ec27c9e723af",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-11-26\/1537761741556_ec27c9e723af59f09f68_72.png",
+            "first_name": "A",
+            "real_name": "A",
+            "display_name": "A",
+            "team": "T4G9NBD2M",
+            "name": "adam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "P2i",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Morning. Can anyone recommend a decent book for Python programming suitable for experienced programmers in other languages?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01C12ZEADQ",
+        "type": "message",
+        "ts": "1606468917.060100",
+        "client_msg_id": "9f9eff0f-e3f9-49be-b151-536202a04d3b",
+        "text": "At the time, diveintopython3 was good for me",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "e3b7687b0ef8",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-10-06\/1432945617648_e3b7687b0ef86e4f28b8_72.png",
+            "first_name": "Alessio",
+            "real_name": "Alessio",
+            "display_name": "Alessio",
+            "team": "T4G9NBD2M",
+            "name": "alessio",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "t9R",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "At the time, diveintopython3 was good for me"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U010GM77S4W",
+        "type": "message",
+        "ts": "1606482169.060800",
+        "client_msg_id": "291d32e2-15a8-480c-8a2d-5d683bfabf58",
+        "text": "how do I get the simulated matched amount on a runner in backtesting?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "66cae8f5399c",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-03-20\/1004508356769_66cae8f5399cf91a07ae_72.jpg",
+            "first_name": "",
+            "real_name": "mandelbot",
+            "display_name": "mandelbot",
+            "team": "T4G9NBD2M",
+            "name": "demhadbale",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "6EpT",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "how do I get the simulated matched amount on a runner in backtesting?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1606483108.061000",
+        "client_msg_id": "E9A21983-B966-4534-93D2-F536E8A65B34",
+        "text": "Huh?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "5Qy",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Huh?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U010GM77S4W",
+        "type": "message",
+        "ts": "1606483316.062000",
+        "client_msg_id": "06d0f664-5f8e-4c68-ab04-f1ad08f8c6d6",
+        "text": "lol, I want to grab the amount matched from my orders within a strategy :clown_face:",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "66cae8f5399c",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-03-20\/1004508356769_66cae8f5399cf91a07ae_72.jpg",
+            "first_name": "",
+            "real_name": "mandelbot",
+            "display_name": "mandelbot",
+            "team": "T4G9NBD2M",
+            "name": "demhadbale",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "FPrlo",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "lol, I want to grab the amount matched from my orders within a strategy "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "clown_face",
+                                "unicode": "1f921"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1606483336.062400",
+        "client_msg_id": "64253B98-0F32-4901-A135-80B762A040A7",
+        "text": "order.size_matched ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "OSz8s",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "order.size_matched "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U010GM77S4W",
+        "type": "message",
+        "ts": "1606483355.062800",
+        "client_msg_id": "2203f00a-ee62-40a8-bfca-830b23ee0fcf",
+        "text": "but how do I get it for a specific runner?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "66cae8f5399c",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-03-20\/1004508356769_66cae8f5399cf91a07ae_72.jpg",
+            "first_name": "",
+            "real_name": "mandelbot",
+            "display_name": "mandelbot",
+            "team": "T4G9NBD2M",
+            "name": "demhadbale",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "OX0",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "but how do I get it for a specific runner?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1606483457.063600",
+        "client_msg_id": "2E06A3E0-5B09-4D89-B83C-89D625E1630C",
+        "text": "Just loop all the orders and sum? We don’t have any specific helper functions for this <https:\/\/github.com\/liampauling\/flumine\/blob\/c466dc6a076719f0fbb5886bfcded1c400f50207\/flumine\/markets\/blotter.py#L26|https:\/\/github.com\/liampauling\/flumine\/blob\/c466dc6a076719f0fbb5886bfcded1c400f50207\/flumine\/markets\/blotter.py#L26>",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "attachments": [
+            {
+                "fallback": "[liampauling\/flumine] flumine\/markets\/blotter.py:26",
+                "text": "```\n    def strategy_orders(self, strategy) -&gt; list:\n```",
+                "title": "flumine\/markets\/blotter.py:26",
+                "footer": "<https:\/\/github.com\/liampauling\/flumine|liampauling\/flumine>",
+                "id": 1,
+                "title_link": "https:\/\/github.com\/liampauling\/flumine\/blob\/c466dc6a076719f0fbb5886bfcded1c400f50207\/flumine\/markets\/blotter.py#L26",
+                "footer_icon": "https:\/\/github.githubassets.com\/favicon.ico",
+                "color": "24292f",
+                "mrkdwn_in": [
+                    "text"
+                ],
+                "bot_id": "B01144Z0734",
+                "app_unfurl_url": "https:\/\/github.com\/liampauling\/flumine\/blob\/c466dc6a076719f0fbb5886bfcded1c400f50207\/flumine\/markets\/blotter.py#L26",
+                "is_app_unfurl": true
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "ixY4",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Just loop all the orders and sum? We don’t have any specific helper functions for this "
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/liampauling\/flumine\/blob\/c466dc6a076719f0fbb5886bfcded1c400f50207\/flumine\/markets\/blotter.py#L26",
+                                "text": "https:\/\/github.com\/liampauling\/flumine\/blob\/c466dc6a076719f0fbb5886bfcded1c400f50207\/flumine\/markets\/blotter.py#L26"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "ok_hand",
+                "users": [
+                    "U010GM77S4W"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "U011XS4N62U",
+        "type": "message",
+        "ts": "1606484671.064300",
+        "client_msg_id": "13951893-473a-4958-84ea-2ba7cb6ff480",
+        "text": "Hey everyone, quick question regarding streaming: Is it allowed to run more than one streamer to subscribe to more than 200 markets? Or how do you guys overcome this constraint (if possible)?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g3257ce8f3a5",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/3257ce8f3a5c6707cd8d75a847645dc6.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0013-72.png",
+            "first_name": "",
+            "real_name": "Christian Tox",
+            "display_name": "Christian Tox",
+            "team": "T4G9NBD2M",
+            "name": "christiantox",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Opk",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Hey everyone, quick question regarding streaming: Is it allowed to run more than one streamer to subscribe to more than 200 markets? Or how do you guys overcome this constraint (if possible)?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1606484698.064800",
+        "client_msg_id": "C527FD48-299D-45E8-856D-6E916B3EAF17",
+        "text": "You can have 10 connections simultaneously",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "FvlFj",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "You can have 10 connections simultaneously"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1606484712.065400",
+        "client_msg_id": "5788C262-7BFB-4E33-A4AE-035AA7C4E40A",
+        "text": "You can have the limit increased to 1000 markets or removed entirely",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "zyDm",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "You can have the limit increased to 1000 markets or removed entirely"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U011XS4N62U",
+        "type": "message",
+        "ts": "1606484817.066900",
+        "client_msg_id": "ca526835-ebef-4e26-933e-d5dcb13a292d",
+        "text": "Awesome, thanks! Also I read here at some point that its bets to have a coarse streamer to limit how often it is created- do you just spin them up daily or what is best practice?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g3257ce8f3a5",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/3257ce8f3a5c6707cd8d75a847645dc6.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0013-72.png",
+            "first_name": "",
+            "real_name": "Christian Tox",
+            "display_name": "Christian Tox",
+            "team": "T4G9NBD2M",
+            "name": "christiantox",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "ty+XX",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Awesome, thanks! Also I read here at some point that its bets to have a coarse streamer to limit how often it is created- do you just spin them up daily or what is best practice?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U011XS4N62U",
+        "type": "message",
+        "ts": "1606484829.067100",
+        "client_msg_id": "ee38316d-7b80-48bb-940b-a705f6061291",
+        "text": "*best",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g3257ce8f3a5",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/3257ce8f3a5c6707cd8d75a847645dc6.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0013-72.png",
+            "first_name": "",
+            "real_name": "Christian Tox",
+            "display_name": "Christian Tox",
+            "team": "T4G9NBD2M",
+            "name": "christiantox",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "rBlEL",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "*best"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1606484936.067600",
+        "client_msg_id": "026BC411-3B7D-4F6C-A9DA-2BF22191D5F8",
+        "text": "Best practice is to start the stream and never stop it",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "s7r",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Best practice is to start the stream and never stop it"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U011XS4N62U",
+        "type": "message",
+        "ts": "1606484985.068300",
+        "client_msg_id": "b9719d61-c6cd-42bf-925b-4c0028470393",
+        "text": "Ok so you subscribe to the competition types\/something general rather than the different event ids?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g3257ce8f3a5",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/3257ce8f3a5c6707cd8d75a847645dc6.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0013-72.png",
+            "first_name": "",
+            "real_name": "Christian Tox",
+            "display_name": "Christian Tox",
+            "team": "T4G9NBD2M",
+            "name": "christiantox",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "l=4",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Ok so you subscribe to the competition types\/something general rather than the different event ids?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1606485032.069300",
+        "client_msg_id": "E73AD2A4-1C4A-4B9E-BD32-DD6D0441E48E",
+        "text": "Correct insofar as you shouldn’t be subscribing to specific IDs but you can’t actually filter on competitions ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Eq=H",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Correct insofar as you shouldn’t be subscribing to specific IDs but you can’t actually filter on competitions "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U011XS4N62U",
+        "type": "message",
+        "ts": "1606485052.069500",
+        "client_msg_id": "e470a97c-d39c-4890-ac3a-50c89ad43533",
+        "text": "Right ok",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g3257ce8f3a5",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/3257ce8f3a5c6707cd8d75a847645dc6.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0013-72.png",
+            "first_name": "",
+            "real_name": "Christian Tox",
+            "display_name": "Christian Tox",
+            "team": "T4G9NBD2M",
+            "name": "christiantox",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Ebj",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Right ok"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U011XS4N62U",
+        "type": "message",
+        "ts": "1606485115.070400",
+        "client_msg_id": "aad80af2-19fa-4d6e-9845-16941d2a280c",
+        "text": "Thanks <@UBS7QANF3>!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g3257ce8f3a5",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/3257ce8f3a5c6707cd8d75a847645dc6.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0013-72.png",
+            "first_name": "",
+            "real_name": "Christian Tox",
+            "display_name": "Christian Tox",
+            "team": "T4G9NBD2M",
+            "name": "christiantox",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "ttJvY",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Thanks "
+                            },
+                            {
+                                "type": "user",
+                                "user_id": "UBS7QANF3"
+                            },
+                            {
+                                "type": "text",
+                                "text": "!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1606485169.070700",
+        "client_msg_id": "9655B1EF-6AB7-4593-A957-48BCC8FAEC8D",
+        "text": "Any time :+1:",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "T7jwm",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Any time "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "+1",
+                                "unicode": "1f44d"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01DPDD0GS3",
+        "type": "message",
+        "ts": "1606493369.072100",
+        "client_msg_id": "aa7b4c6b-47ec-4a1e-acac-f697d25c8f2d",
+        "text": "Evening, I was wondering if there was a way to record distance of horse race. Been looking but to the life of me can not find it.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "fda9f379556c",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-11-05\/1473466107318_fda9f379556cded82524_72.png",
+            "first_name": "",
+            "real_name": "Ryan Clapham",
+            "display_name": "Ryan Clapham",
+            "team": "T4G9NBD2M",
+            "name": "ryan.clapham",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "aiH",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Evening, I was wondering if there was a way to record distance of horse race. Been looking but to the life of me can not find it."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1606493452.073000",
+        "client_msg_id": "3A04D4CC-D280-4911-9E11-31AD8085A623",
+        "text": "Have you seen the undocumented <https:\/\/github.com\/liampauling\/betfair\/blob\/master\/examples\/exampleracecard.py|raceCard> endpoint?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "attachments": [
+            {
+                "fallback": "[liampauling\/betfair] examples\/exampleracecard.py",
+                "text": "```\nimport logging\n\nimport betfairlightweight\n\n\n# setup logging\nlogging.basicConfig(level=<http:\/\/logging.INFO|logging.INFO>)  # change to DEBUG to see log all updates\n\n# create trading instance (don't need username\/password)\ntrading = betfairlightweight.APIClient(\"username\", \"password\")\n\n# race card login\ntrading.race_card.login()\n\n# update\nmarket_id = \"1.133559518\"\n\n# race card request (provide list \/ returns list)\nrace_cards = trading.race_card.get_race_card(market_ids=[market_id])\n\n\nprint(race_cards)\nfor race_card in race_cards:\n    print(\n        race_card, race_card.prize, race_card.timeform_123_text\n    )  # view resources or debug to see all values available\n\n    for runner in race_card.runners:\n        print(runner.name, runner.comment)\n\n\n# results request (provide list \/ returns list of dictionaries)\nresults = trading.race_card.get_race_result(market_ids=[market_id])\n\nprint(results)\nfor result in results:\n    print(result)\n\n```",
+                "title": "examples\/exampleracecard.py",
+                "footer": "<https:\/\/github.com\/liampauling\/betfair|liampauling\/betfair>",
+                "id": 1,
+                "title_link": "https:\/\/github.com\/liampauling\/betfair\/blob\/master\/examples\/exampleracecard.py",
+                "footer_icon": "https:\/\/github.githubassets.com\/favicon.ico",
+                "color": "24292f",
+                "mrkdwn_in": [
+                    "text"
+                ],
+                "bot_id": "B01144Z0734",
+                "app_unfurl_url": "https:\/\/github.com\/liampauling\/betfair\/blob\/master\/examples\/exampleracecard.py",
+                "is_app_unfurl": true
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "4Nt",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Have you seen the undocumented "
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/liampauling\/betfair\/blob\/master\/examples\/exampleracecard.py",
+                                "text": "raceCard"
+                            },
+                            {
+                                "type": "text",
+                                "text": " endpoint?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "U01DPDD0GS3"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1606493452.073100",
+        "client_msg_id": "1ABCC6E6-AF1E-4FA2-B6D1-2A92359FD4BA",
+        "text": "Check out the race card endpoint: <https:\/\/github.com\/liampauling\/betfair\/blob\/master\/examples\/exampleracecard.py|https:\/\/github.com\/liampauling\/betfair\/blob\/master\/examples\/exampleracecard.py>",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "KfN",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Check out the race card endpoint: "
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/liampauling\/betfair\/blob\/master\/examples\/exampleracecard.py",
+                                "text": "https:\/\/github.com\/liampauling\/betfair\/blob\/master\/examples\/exampleracecard.py"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1606493459.073400",
+        "client_msg_id": "58AC3C72-01F5-498F-8982-EC068DF60A39",
+        "text": "Snap",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "i2R",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Snap"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "U01DPDD0GS3"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1606493667.074200",
+        "client_msg_id": "853A6586-C905-4385-A87E-09DB1C41F6ED",
+        "text": "Your getting slow :joy:",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "ccBl",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Your getting slow "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "joy",
+                                "unicode": "1f602"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01DPDD0GS3",
+        "type": "message",
+        "ts": "1606493679.074600",
+        "client_msg_id": "f84a88f6-1dd6-41bf-9608-56ff0532f3b5",
+        "text": "Thanks <@U4H19D1D2> and <@UBS7QANF3> much appreciated.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "fda9f379556c",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-11-05\/1473466107318_fda9f379556cded82524_72.png",
+            "first_name": "",
+            "real_name": "Ryan Clapham",
+            "display_name": "Ryan Clapham",
+            "team": "T4G9NBD2M",
+            "name": "ryan.clapham",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "ZPt",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Thanks "
+                            },
+                            {
+                                "type": "user",
+                                "user_id": "U4H19D1D2"
+                            },
+                            {
+                                "type": "text",
+                                "text": " and "
+                            },
+                            {
+                                "type": "user",
+                                "user_id": "UBS7QANF3"
+                            },
+                            {
+                                "type": "text",
+                                "text": " much appreciated."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U010GM77S4W",
+        "type": "message",
+        "ts": "1606493839.075000",
+        "client_msg_id": "3b184b79-612f-41cc-a56e-767a95689fbf",
+        "text": "what causes this violation when placing order : `\"Pending, Violation\"`",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "66cae8f5399c",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-03-20\/1004508356769_66cae8f5399cf91a07ae_72.jpg",
+            "first_name": "",
+            "real_name": "mandelbot",
+            "display_name": "mandelbot",
+            "team": "T4G9NBD2M",
+            "name": "demhadbale",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "2kNaC",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "what causes this violation when placing order : "
+                            },
+                            {
+                                "type": "text",
+                                "text": "\"Pending, Violation\"",
+                                "style": {
+                                    "code": true
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1606493859.075200",
+        "client_msg_id": "264043F1-B7DF-4818-8872-A1B192043716",
+        "text": "Logs?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "H+T",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Logs?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1606494025.076200",
+        "client_msg_id": "0223CAFA-0584-4840-8A00-EDF68A629300",
+        "text": "Should be another before or after which tells you why, you using an old version of flumine?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "eJ1",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Should be another before or after which tells you why, you using an old version of flumine?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U010GM77S4W",
+        "type": "message",
+        "ts": "1606494109.076500",
+        "client_msg_id": "8577db06-d63e-415a-87e8-fcf023111f5d",
+        "text": "```__version__ = \"1.14.6\"```\n",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "66cae8f5399c",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-03-20\/1004508356769_66cae8f5399cf91a07ae_72.jpg",
+            "first_name": "",
+            "real_name": "mandelbot",
+            "display_name": "mandelbot",
+            "team": "T4G9NBD2M",
+            "name": "demhadbale",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "zKZWo",
+                "elements": [
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "__version__ = \"1.14.6\""
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": []
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1606494156.077000",
+        "client_msg_id": "BBCEB61E-31A6-4FDF-89E1-0B3F1DEBA051",
+        "text": "Well the issue is the size being below the min at 1.97",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "fsip",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Well the issue is the size being below the min at 1.97"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U010GM77S4W",
+        "type": "message",
+        "ts": "1606494169.077200",
+        "client_msg_id": "5c7ff83b-35a2-4d0e-8984-1bbd6a910936",
+        "text": "ah, but it's a lay bet?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "66cae8f5399c",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-03-20\/1004508356769_66cae8f5399cf91a07ae_72.jpg",
+            "first_name": "",
+            "real_name": "mandelbot",
+            "display_name": "mandelbot",
+            "team": "T4G9NBD2M",
+            "name": "demhadbale",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "\/5J",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "ah, but it's a lay bet?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1606494190.077700",
+        "edited": {
+            "user": "U4H19D1D2",
+            "ts": "1606494200.000000"
+        },
+        "client_msg_id": "34901A78-392D-4354-89C1-46D7B102B64D",
+        "text": "Liability is still below the min of £10",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "v9t",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Liability is still below the min of £10"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U010GM77S4W",
+        "type": "message",
+        "ts": "1606494217.078000",
+        "client_msg_id": "669cce45-d697-4771-b64a-5537ee23c211",
+        "text": "ah yes",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "66cae8f5399c",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-03-20\/1004508356769_66cae8f5399cf91a07ae_72.jpg",
+            "first_name": "",
+            "real_name": "mandelbot",
+            "display_name": "mandelbot",
+            "team": "T4G9NBD2M",
+            "name": "demhadbale",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "QIc",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "ah yes"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

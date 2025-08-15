@@ -1,0 +1,709 @@
+[
+    {
+        "user": "UNQGKT0CR",
+        "type": "message",
+        "ts": "1637616389.097900",
+        "client_msg_id": "32f22693-c8cf-40ab-8483-bb86e2caa35a",
+        "text": "Hi all, I am trying to run <@U4H19D1D2>'s data collection example from a little while back. But I'm getting some issues where the code is setting up the client and adding the strategy but not actually running the data collection.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g51b5871ab46",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/51b5871ab46e5ef289d9e90376cacaab.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0001-72.png",
+            "first_name": "AP",
+            "real_name": "AP",
+            "display_name": "AP",
+            "team": "T4G9NBD2M",
+            "name": "ant.papa22",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "FzvvS",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Hi all, I am trying to run "
+                            },
+                            {
+                                "type": "user",
+                                "user_id": "U4H19D1D2"
+                            },
+                            {
+                                "type": "text",
+                                "text": "'s data collection example from a little while back. But I'm getting some issues where the code is setting up the client and adding the strategy but not actually running the data collection."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UNQGKT0CR",
+        "type": "message",
+        "ts": "1637616395.098100",
+        "client_msg_id": "8de27355-0ccd-432d-9df3-df3598596a4f",
+        "text": "Will attach my code",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g51b5871ab46",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/51b5871ab46e5ef289d9e90376cacaab.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0001-72.png",
+            "first_name": "AP",
+            "real_name": "AP",
+            "display_name": "AP",
+            "team": "T4G9NBD2M",
+            "name": "ant.papa22",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "mFt",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Will attach my code"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UNQGKT0CR",
+        "type": "message",
+        "ts": "1637616408.098400",
+        "client_msg_id": "81521c1e-5237-4677-ae6d-d7c63f69f805",
+        "text": "```import csv\nimport logging\nimport os\nfrom flumine.strategy.strategy import BaseStrategy\nfrom flumine.utils import get_sp, get_price\nfrom inplay_bot.util import calculate_vwap_runner_book\n\nlogger = logging.getLogger(__name__)\n\nFIELDNAMES = [\n    \"publish_time\",\n    \"market_id\",\n    \"market_venue\",\n    \"market_name\",\n    \"market_seconds_to_start\",\n    \"market_total_matched\",\n    \"active_runners\",\n    \"selection_id\",\n    \"selection_back\",\n    \"selection_lay\",\n    \"selection_wom_one\",\n    \"selection_wom_two\",\n    \"selection_wom_three\",\n    \"selection_vwap\",\n    \"selection_ltp\",\n    \"selection_total_matched\",\n    \"selection_status\",\n    \"selection_actual_sp\",\n]\n\n\nclass DataCollectWOM(BaseStrategy):\n    \"\"\"\n    Collect market\/runner data every\n    x update_seconds.\n    \"\"\"\n\n    def __init__(self, *args, **kwargs):\n        BaseStrategy.__init__(self, *args, **kwargs)\n        self.local_dir = \"\/home\/antonypapadimitriou\/betfair_data_collection\"\n\n    def add(self) -&gt; None:\n        self.context[\"_data\"] = []\n        self.context[\"pt\"] = 0\n        # check local dir\n        if not os.path.isdir(self.local_dir):\n            raise OSError(\"File dir %s does not exist\" % self.local_dir)\n\n    def check_market_book(self, market, market_book) -&gt; bool:\n        if market_book.status != \"OPEN\":\n            return False\n        if market_book.inplay:\n            return False\n        if \"data\" not in market.context:\n            market.context[\"data\"] = {}\n        # check update seconds\n        update_seconds = self.context[\"update_seconds\"]\n        pt = self.context[\"pt\"]\n        if market_book.publish_time_epoch - pt &gt; (update_seconds * 1000):\n            self.context[\"pt\"] = market_book.publish_time_epoch\n            return True\n        return False\n\n    def process_market_book(self, market, market_book) -&gt; None:\n        for runner in market_book.runners:\n            if runner.status == \"ACTIVE\":\n                # get prices\n                back, lay = self._get_back_lay(runner)\n                # calculate WOM\n                wom_one = self._calculate_wom(runner, 1)\n                wom_two = self._calculate_wom(runner, 2)\n                wom_three = self._calculate_wom(runner, 3)\n                # calculate VWAP\n                vwap = calculate_vwap_runner_book(runner.ex.traded_volume)\n                # store data in context\n                data = {\n                    \"publish_time\": market_book.publish_time,\n                    # market\n                    \"market_id\": market.market_id,\n                    \"market_venue\": market_book.market_definition.venue,\n                    \"market_name\": market_book.market_definition.name,\n                    \"market_seconds_to_start\": market.seconds_to_start,\n                    \"market_total_matched\": market_book.total_matched,\n                    \"active_runners\": market_book.market_definition.number_of_active_runners,\n                    # selection\n                    \"selection_id\": runner.selection_id,\n                    # current state\n                    \"selection_back\": back,\n                    \"selection_lay\": lay,\n                    \"selection_wom_one\": wom_one,\n                    \"selection_wom_two\": wom_two,\n                    \"selection_wom_three\": wom_three,\n                    \"selection_vwap\": vwap,\n                    \"selection_ltp\": runner.last_price_traded,\n                    \"selection_total_matched\": runner.total_matched,\n                    # after\n                    \"selection_status\": None,\n                    \"selection_actual_sp\": None,\n                }\n                self.context[\"_data\"].append(data)\n\n    def process_closed_market(self, market, market_book):\n        # get runner status (status and BSP)\n        status = {}\n        for runner in market_book.runners:\n            status[runner.selection_id] = (runner.status, get_sp(runner))\n        # write data to csv\n        filename = os.path.join(self.local_dir, f\"{market_book.market_id.split('.')[-1]}.csv\")\n        is_new = not os.path.exists(filename)\n        with open(filename, \"a\", newline=\"\") as f:\n            writer = csv.DictWriter(f, delimiter=\",\", fieldnames=FIELDNAMES)\n            if is_new:\n                writer.writeheader()\n            for d in self.context[\"_data\"]:\n                _status = status.get(d[\"selection_id\"])\n                d[\"selection_status\"], d[\"selection_actual_sp\"] = _status\n                writer.writerow(d)\n        self.context[\"_data\"].clear()\n\n    @staticmethod\n    def _get_back_lay(runner_book, level: int = 0) -&gt; tuple:\n        if runner_book is None:\n            return None, None\n        back = get_price(runner_book.ex.available_to_back, level)\n        lay = get_price(runner_book.ex.available_to_lay, level)\n        return back, lay\n\n    @staticmethod\n    def _calculate_wom(runner_book, depth: int) -&gt; float:\n        total_atb, total_atl = 0, 0\n        for i in range(0, depth):\n            # back\n            p = runner_book.ex.available_to_back[i]\n            total_atb += p[\"size\"]\n            # lay\n            p = runner_book.ex.available_to_lay[i]\n            total_atl += p[\"size\"]\n        if total_atb + total_atl &gt; 0:\n            return round(total_atb \/ (total_atb + total_atl), 4)\n        else:\n            return 0```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g51b5871ab46",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/51b5871ab46e5ef289d9e90376cacaab.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0001-72.png",
+            "first_name": "AP",
+            "real_name": "AP",
+            "display_name": "AP",
+            "team": "T4G9NBD2M",
+            "name": "ant.papa22",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "m367r",
+                "elements": [
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "import csv\nimport logging\nimport os\nfrom flumine.strategy.strategy import BaseStrategy\nfrom flumine.utils import get_sp, get_price\nfrom inplay_bot.util import calculate_vwap_runner_book\n\nlogger = logging.getLogger(__name__)\n\nFIELDNAMES = [\n    \"publish_time\",\n    \"market_id\",\n    \"market_venue\",\n    \"market_name\",\n    \"market_seconds_to_start\",\n    \"market_total_matched\",\n    \"active_runners\",\n    \"selection_id\",\n    \"selection_back\",\n    \"selection_lay\",\n    \"selection_wom_one\",\n    \"selection_wom_two\",\n    \"selection_wom_three\",\n    \"selection_vwap\",\n    \"selection_ltp\",\n    \"selection_total_matched\",\n    \"selection_status\",\n    \"selection_actual_sp\",\n]\n\n\nclass DataCollectWOM(BaseStrategy):\n    \"\"\"\n    Collect market\/runner data every\n    x update_seconds.\n    \"\"\"\n\n    def __init__(self, *args, **kwargs):\n        BaseStrategy.__init__(self, *args, **kwargs)\n        self.local_dir = \"\/home\/antonypapadimitriou\/betfair_data_collection\"\n\n    def add(self) -> None:\n        self.context[\"_data\"] = []\n        self.context[\"pt\"] = 0\n        # check local dir\n        if not os.path.isdir(self.local_dir):\n            raise OSError(\"File dir %s does not exist\" % self.local_dir)\n\n    def check_market_book(self, market, market_book) -> bool:\n        if market_book.status != \"OPEN\":\n            return False\n        if market_book.inplay:\n            return False\n        if \"data\" not in market.context:\n            market.context[\"data\"] = {}\n        # check update seconds\n        update_seconds = self.context[\"update_seconds\"]\n        pt = self.context[\"pt\"]\n        if market_book.publish_time_epoch - pt > (update_seconds * 1000):\n            self.context[\"pt\"] = market_book.publish_time_epoch\n            return True\n        return False\n\n    def process_market_book(self, market, market_book) -> None:\n        for runner in market_book.runners:\n            if runner.status == \"ACTIVE\":\n                # get prices\n                back, lay = self._get_back_lay(runner)\n                # calculate WOM\n                wom_one = self._calculate_wom(runner, 1)\n                wom_two = self._calculate_wom(runner, 2)\n                wom_three = self._calculate_wom(runner, 3)\n                # calculate VWAP\n                vwap = calculate_vwap_runner_book(runner.ex.traded_volume)\n                # store data in context\n                data = {\n                    \"publish_time\": market_book.publish_time,\n                    # market\n                    \"market_id\": market.market_id,\n                    \"market_venue\": market_book.market_definition.venue,\n                    \"market_name\": market_book.market_definition.name,\n                    \"market_seconds_to_start\": market.seconds_to_start,\n                    \"market_total_matched\": market_book.total_matched,\n                    \"active_runners\": market_book.market_definition.number_of_active_runners,\n                    # selection\n                    \"selection_id\": runner.selection_id,\n                    # current state\n                    \"selection_back\": back,\n                    \"selection_lay\": lay,\n                    \"selection_wom_one\": wom_one,\n                    \"selection_wom_two\": wom_two,\n                    \"selection_wom_three\": wom_three,\n                    \"selection_vwap\": vwap,\n                    \"selection_ltp\": runner.last_price_traded,\n                    \"selection_total_matched\": runner.total_matched,\n                    # after\n                    \"selection_status\": None,\n                    \"selection_actual_sp\": None,\n                }\n                self.context[\"_data\"].append(data)\n\n    def process_closed_market(self, market, market_book):\n        # get runner status (status and BSP)\n        status = {}\n        for runner in market_book.runners:\n            status[runner.selection_id] = (runner.status, get_sp(runner))\n        # write data to csv\n        filename = os.path.join(self.local_dir, f\"{market_book.market_id.split('.')[-1]}.csv\")\n        is_new = not os.path.exists(filename)\n        with open(filename, \"a\", newline=\"\") as f:\n            writer = csv.DictWriter(f, delimiter=\",\", fieldnames=FIELDNAMES)\n            if is_new:\n                writer.writeheader()\n            for d in self.context[\"_data\"]:\n                _status = status.get(d[\"selection_id\"])\n                d[\"selection_status\"], d[\"selection_actual_sp\"] = _status\n                writer.writerow(d)\n        self.context[\"_data\"].clear()\n\n    @staticmethod\n    def _get_back_lay(runner_book, level: int = 0) -> tuple:\n        if runner_book is None:\n            return None, None\n        back = get_price(runner_book.ex.available_to_back, level)\n        lay = get_price(runner_book.ex.available_to_lay, level)\n        return back, lay\n\n    @staticmethod\n    def _calculate_wom(runner_book, depth: int) -> float:\n        total_atb, total_atl = 0, 0\n        for i in range(0, depth):\n            # back\n            p = runner_book.ex.available_to_back[i]\n            total_atb += p[\"size\"]\n            # lay\n            p = runner_book.ex.available_to_lay[i]\n            total_atl += p[\"size\"]\n        if total_atb + total_atl > 0:\n            return round(total_atb \/ (total_atb + total_atl), 4)\n        else:\n            return 0"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UNQGKT0CR",
+        "type": "message",
+        "ts": "1637616418.098600",
+        "client_msg_id": "f5d0421e-29e2-43df-ba86-c0138e2e6e65",
+        "text": "That's the strategy",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g51b5871ab46",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/51b5871ab46e5ef289d9e90376cacaab.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0001-72.png",
+            "first_name": "AP",
+            "real_name": "AP",
+            "display_name": "AP",
+            "team": "T4G9NBD2M",
+            "name": "ant.papa22",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "G66",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "That's the strategy"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1637616430.099000",
+        "client_msg_id": "4AC5AE14-E725-40C0-B954-426B7DF156B9",
+        "text": "What do the logs say?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Nwdy",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "What do the logs say?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UNQGKT0CR",
+        "type": "message",
+        "ts": "1637616507.099400",
+        "client_msg_id": "c5826a1e-2750-4239-8aa2-9a73086dcebf",
+        "text": "Here are some logs, there are no errors:\n```{\"asctime\": \"2021-11-22 21:27:56,178\", \"levelname\": \"INFO\", \"message\": \"Adding market middleware &lt;flumine.markets.middleware.SimulatedMiddleware object at 0x7f81a8794640&gt;\"}\n{\"asctime\": \"2021-11-22 21:27:56,178\", \"levelname\": \"INFO\", \"message\": \"Adding trading control ORDER_VALIDATION\"}\n{\"asctime\": \"2021-11-22 21:27:56,178\", \"levelname\": \"INFO\", \"message\": \"Adding market middleware &lt;flumine.markets.middleware.SimulatedMiddleware object at 0x7f81a8794730&gt;\"}\n{\"asctime\": \"2021-11-22 21:27:56,178\", \"levelname\": \"INFO\", \"message\": \"Adding market middleware &lt;flumine.markets.middleware.SimulatedMiddleware object at 0x7f81a8794820&gt;\"}\n{\"asctime\": \"2021-11-22 21:27:56,178\", \"levelname\": \"INFO\", \"message\": \"Adding trading control MARKET_VALIDATION\"}\n{\"asctime\": \"2021-11-22 21:27:56,178\", \"levelname\": \"INFO\", \"message\": \"Adding trading control STRATEGY_EXPOSURE\"}\n{\"asctime\": \"2021-11-22 21:27:56,178\", \"levelname\": \"INFO\", \"message\": \"Adding client control MAX_TRANSACTION_COUNT\"}\n{\"asctime\": \"2021-11-22 21:27:56,179\", \"levelname\": \"INFO\", \"message\": \"Adding trading control ORDER_VALIDATION\"}\n{\"asctime\": \"2021-11-22 21:27:56,179\", \"levelname\": \"INFO\", \"message\": \"Adding trading control ORDER_VALIDATION\"}\n{\"asctime\": \"2021-11-22 21:27:56,179\", \"levelname\": \"INFO\", \"message\": \"Adding strategy DataCollectWOM\"}\n{\"asctime\": \"2021-11-22 21:27:56,179\", \"levelname\": \"INFO\", \"message\": \"Adding trading control MARKET_VALIDATION\"}\n{\"asctime\": \"2021-11-22 21:27:56,179\", \"levelname\": \"INFO\", \"message\": \"Adding trading control MARKET_VALIDATION\"}\n{\"asctime\": \"2021-11-22 21:27:56,179\", \"levelname\": \"INFO\", \"message\": \"Adding trading control STRATEGY_EXPOSURE\"}\n{\"asctime\": \"2021-11-22 21:27:56,179\", \"levelname\": \"INFO\", \"message\": \"Adding trading control STRATEGY_EXPOSURE\"}```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g51b5871ab46",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/51b5871ab46e5ef289d9e90376cacaab.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0001-72.png",
+            "first_name": "AP",
+            "real_name": "AP",
+            "display_name": "AP",
+            "team": "T4G9NBD2M",
+            "name": "ant.papa22",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "QdtBy",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Here are some logs, there are no errors:\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "{\"asctime\": \"2021-11-22 21:27:56,178\", \"levelname\": \"INFO\", \"message\": \"Adding market middleware <flumine.markets.middleware.SimulatedMiddleware object at 0x7f81a8794640>\"}\n{\"asctime\": \"2021-11-22 21:27:56,178\", \"levelname\": \"INFO\", \"message\": \"Adding trading control ORDER_VALIDATION\"}\n{\"asctime\": \"2021-11-22 21:27:56,178\", \"levelname\": \"INFO\", \"message\": \"Adding market middleware <flumine.markets.middleware.SimulatedMiddleware object at 0x7f81a8794730>\"}\n{\"asctime\": \"2021-11-22 21:27:56,178\", \"levelname\": \"INFO\", \"message\": \"Adding market middleware <flumine.markets.middleware.SimulatedMiddleware object at 0x7f81a8794820>\"}\n{\"asctime\": \"2021-11-22 21:27:56,178\", \"levelname\": \"INFO\", \"message\": \"Adding trading control MARKET_VALIDATION\"}\n{\"asctime\": \"2021-11-22 21:27:56,178\", \"levelname\": \"INFO\", \"message\": \"Adding trading control STRATEGY_EXPOSURE\"}\n{\"asctime\": \"2021-11-22 21:27:56,178\", \"levelname\": \"INFO\", \"message\": \"Adding client control MAX_TRANSACTION_COUNT\"}\n{\"asctime\": \"2021-11-22 21:27:56,179\", \"levelname\": \"INFO\", \"message\": \"Adding trading control ORDER_VALIDATION\"}\n{\"asctime\": \"2021-11-22 21:27:56,179\", \"levelname\": \"INFO\", \"message\": \"Adding trading control ORDER_VALIDATION\"}\n{\"asctime\": \"2021-11-22 21:27:56,179\", \"levelname\": \"INFO\", \"message\": \"Adding strategy DataCollectWOM\"}\n{\"asctime\": \"2021-11-22 21:27:56,179\", \"levelname\": \"INFO\", \"message\": \"Adding trading control MARKET_VALIDATION\"}\n{\"asctime\": \"2021-11-22 21:27:56,179\", \"levelname\": \"INFO\", \"message\": \"Adding trading control MARKET_VALIDATION\"}\n{\"asctime\": \"2021-11-22 21:27:56,179\", \"levelname\": \"INFO\", \"message\": \"Adding trading control STRATEGY_EXPOSURE\"}\n{\"asctime\": \"2021-11-22 21:27:56,179\", \"levelname\": \"INFO\", \"message\": \"Adding trading control STRATEGY_EXPOSURE\"}"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UNQGKT0CR",
+        "type": "message",
+        "ts": "1637616539.099800",
+        "client_msg_id": "d88858e0-d539-4399-97f3-d696d4172388",
+        "text": "This is the script I am using to kick it off if it helps",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g51b5871ab46",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/51b5871ab46e5ef289d9e90376cacaab.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0001-72.png",
+            "first_name": "AP",
+            "real_name": "AP",
+            "display_name": "AP",
+            "team": "T4G9NBD2M",
+            "name": "ant.papa22",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "DFD",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "This is the script I am using to kick it off if it helps"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UNQGKT0CR",
+        "type": "message",
+        "ts": "1637616545.100100",
+        "client_msg_id": "d92dc3d1-b3b3-4715-bf7d-0825e5c7caf6",
+        "text": "```import smart_open\nimport os\nimport time\nimport logging\nfrom unittest.mock import patch\nfrom concurrent import futures\nfrom pythonjsonlogger import jsonlogger\nfrom flumine import FlumineBacktest, clients\n\nfrom inplay_bot.backtest.strategies.data_collection import DataCollectWOM\nfrom inplay_bot.backtest import MARKET_IDS\n\nlogger = logging.getLogger()\n\ncustom_format = \"%(asctime) %(levelname) %(message)\"\nlog_handler = logging.StreamHandler()\nformatter = jsonlogger.JsonFormatter(custom_format)\nformatter.converter = time.gmtime\nlog_handler.setFormatter(formatter)\nlogger.addHandler(log_handler)\nlogger.setLevel(<http:\/\/logging.INFO|logging.INFO>)\n\n\ndef run_backtest(market):\n    client = clients.BacktestClient()\n    client.min_bet_validation = False\n    framework = FlumineBacktest(client=client)\n\n    strategy = DataCollectWOM(\n            market_filter={\n                \"markets\": [market],\n                \"listener_kwargs\": {\n                    \"seconds_to_start\": 600,\n                    \"calculate_market_tv\": True,\n                    \"cumulative_runner_tv\": True,\n                },\n            },\n            context={\n                \"update_seconds\": 5,\n            }\n    )\n\n    framework.add_strategy(strategy)\n\n    with patch(\"builtins.open\", smart_open.open):\n        framework.run()\n\n\nif __name__ == \"__main__\":\n    path = \"\/home\/antonypapadimitriou\/betfair\"\n    markets = []\n    win_market_ids = MARKET_IDS\n\n    for root, dirs, files in os.walk(path):\n        for file in files:\n            if file.split(\".bz2\")[0] in win_market_ids:\n                markets.append(os.path.join(root, file))\n\n    with futures.ProcessPoolExecutor(max_workers=48) as pool:\n        all_futures = [\n            pool.submit(\n                run_backtest,\n                market=market\n            )\n            for market in markets\n        ]\n\n    for i, future in enumerate(futures.as_completed(all_futures)):\n        try:\n            print('Future %i of %i completed' % (i + 1, len(all_futures)))\n        except:\n            print('Error %i of %i' % (i + 1, len(all_futures)))```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g51b5871ab46",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/51b5871ab46e5ef289d9e90376cacaab.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0001-72.png",
+            "first_name": "AP",
+            "real_name": "AP",
+            "display_name": "AP",
+            "team": "T4G9NBD2M",
+            "name": "ant.papa22",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "SaN4",
+                "elements": [
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "import smart_open\nimport os\nimport time\nimport logging\nfrom unittest.mock import patch\nfrom concurrent import futures\nfrom pythonjsonlogger import jsonlogger\nfrom flumine import FlumineBacktest, clients\n\nfrom inplay_bot.backtest.strategies.data_collection import DataCollectWOM\nfrom inplay_bot.backtest import MARKET_IDS\n\nlogger = logging.getLogger()\n\ncustom_format = \"%(asctime) %(levelname) %(message)\"\nlog_handler = logging.StreamHandler()\nformatter = jsonlogger.JsonFormatter(custom_format)\nformatter.converter = time.gmtime\nlog_handler.setFormatter(formatter)\nlogger.addHandler(log_handler)\nlogger.setLevel(logging.INFO)\n\n\ndef run_backtest(market):\n    client = clients.BacktestClient()\n    client.min_bet_validation = False\n    framework = FlumineBacktest(client=client)\n\n    strategy = DataCollectWOM(\n            market_filter={\n                \"markets\": [market],\n                \"listener_kwargs\": {\n                    \"seconds_to_start\": 600,\n                    \"calculate_market_tv\": True,\n                    \"cumulative_runner_tv\": True,\n                },\n            },\n            context={\n                \"update_seconds\": 5,\n            }\n    )\n\n    framework.add_strategy(strategy)\n\n    with patch(\"builtins.open\", smart_open.open):\n        framework.run()\n\n\nif __name__ == \"__main__\":\n    path = \"\/home\/antonypapadimitriou\/betfair\"\n    markets = []\n    win_market_ids = MARKET_IDS\n\n    for root, dirs, files in os.walk(path):\n        for file in files:\n            if file.split(\".bz2\")[0] in win_market_ids:\n                markets.append(os.path.join(root, file))\n\n    with futures.ProcessPoolExecutor(max_workers=48) as pool:\n        all_futures = [\n            pool.submit(\n                run_backtest,\n                market=market\n            )\n            for market in markets\n        ]\n\n    for i, future in enumerate(futures.as_completed(all_futures)):\n        try:\n            print('Future %i of %i completed' % (i + 1, len(all_futures)))\n        except:\n            print('Error %i of %i' % (i + 1, len(all_futures)))"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1637616582.100600",
+        "client_msg_id": "EE862F7B-5544-4BEE-BF67-8EF71D22F410",
+        "text": "That strategy isn’t coded for multi processing ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "dN21r",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "That strategy isn’t coded for multi processing "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UNQGKT0CR",
+        "type": "message",
+        "ts": "1637616649.100800",
+        "client_msg_id": "197887ed-8877-4a3a-b3de-eef6e9e3259f",
+        "text": "Ah ok",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g51b5871ab46",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/51b5871ab46e5ef289d9e90376cacaab.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0001-72.png",
+            "first_name": "AP",
+            "real_name": "AP",
+            "display_name": "AP",
+            "team": "T4G9NBD2M",
+            "name": "ant.papa22",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "d+mP",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Ah ok"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1637616684.101700",
+        "client_msg_id": "B9DAADBE-964B-4E97-89BA-2CA1A8D6771D",
+        "text": "Nothing in those logs about adding the market \/ starting, can you try a single process and market?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "vlo",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Nothing in those logs about adding the market \/ starting, can you try a single process and market?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UNQGKT0CR",
+        "type": "message",
+        "ts": "1637616715.101900",
+        "client_msg_id": "1c65791b-0d90-44c0-bc8e-577196ae9b9f",
+        "text": "Yep let me try",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g51b5871ab46",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/51b5871ab46e5ef289d9e90376cacaab.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0001-72.png",
+            "first_name": "AP",
+            "real_name": "AP",
+            "display_name": "AP",
+            "team": "T4G9NBD2M",
+            "name": "ant.papa22",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "+\/xZ4",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Yep let me try"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UNQGKT0CR",
+        "type": "message",
+        "ts": "1637617015.102200",
+        "client_msg_id": "5c104f7e-b8cd-4ab1-bb5f-1dd665ce8d81",
+        "text": "Yep single process worked fine",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g51b5871ab46",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/51b5871ab46e5ef289d9e90376cacaab.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0001-72.png",
+            "first_name": "AP",
+            "real_name": "AP",
+            "display_name": "AP",
+            "team": "T4G9NBD2M",
+            "name": "ant.papa22",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "qES6",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Yep single process worked fine"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UNQGKT0CR",
+        "type": "message",
+        "ts": "1637617054.102700",
+        "client_msg_id": "d6e0f868-27ef-4cb1-b721-7465152bb9fb",
+        "text": "What would be the required changes to that strategy to allow it to use multi processing?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g51b5871ab46",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/51b5871ab46e5ef289d9e90376cacaab.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0001-72.png",
+            "first_name": "AP",
+            "real_name": "AP",
+            "display_name": "AP",
+            "team": "T4G9NBD2M",
+            "name": "ant.papa22",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1637617054.102700",
+        "reply_count": 2,
+        "reply_users_count": 2,
+        "latest_reply": "1637663611.107700",
+        "reply_users": [
+            "U4H19D1D2",
+            "U0136FHM84T"
+        ],
+        "replies": [
+            {
+                "user": "U4H19D1D2",
+                "ts": "1637658211.104900"
+            },
+            {
+                "user": "U0136FHM84T",
+                "ts": "1637663611.107700"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": true,
+        "last_read": "1637663611.107700",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "mil",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "What would be the required changes to that strategy to allow it to use multi processing?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UNQGKT0CR",
+        "type": "message",
+        "ts": "1637617297.103000",
+        "client_msg_id": "bcb253f3-1007-4110-8f15-e0cb5b530824",
+        "text": "I tried to leverage the example someone posted a few months back",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g51b5871ab46",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/51b5871ab46e5ef289d9e90376cacaab.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0001-72.png",
+            "first_name": "AP",
+            "real_name": "AP",
+            "display_name": "AP",
+            "team": "T4G9NBD2M",
+            "name": "ant.papa22",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Sf+",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I tried to leverage the example someone posted a few months back"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U010GM77S4W",
+        "type": "message",
+        "ts": "1637651031.104700",
+        "client_msg_id": "d51edaba-db49-4d61-aaf9-ca888653e789",
+        "text": "So it seems MarketOnCloseOrders aren't being cleared properly on flumine because no price\n`{\"asctime\": \"2021-11-23 06:57:50,183\", \"levelname\": \"ERROR\", \"message\": \"_process_cleared_orders_meta: 'MarketOnCloseOrder' object has no attribute 'price'\", \"order\": \"Order 251408671038: Execution complete\", \"error\": \"'MarketOnCloseOrder' object has no attribute 'price'\"}`\nMaybe this is why they aren't making it to the logging control?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "66cae8f5399c",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-03-20\/1004508356769_66cae8f5399cf91a07ae_72.jpg",
+            "first_name": "",
+            "real_name": "mandelbot",
+            "display_name": "mandelbot",
+            "team": "T4G9NBD2M",
+            "name": "demhadbale",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1637651031.104700",
+        "reply_count": 7,
+        "reply_users_count": 2,
+        "latest_reply": "1637837475.112200",
+        "reply_users": [
+            "U010GM77S4W",
+            "U4H19D1D2"
+        ],
+        "replies": [
+            {
+                "user": "U010GM77S4W",
+                "ts": "1637780600.109600"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1637783846.110800"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1637835302.111300"
+            },
+            {
+                "user": "U010GM77S4W",
+                "ts": "1637835376.111500"
+            },
+            {
+                "user": "U010GM77S4W",
+                "ts": "1637835521.111800"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1637835744.112000"
+            },
+            {
+                "user": "U010GM77S4W",
+                "ts": "1637837475.112200"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": true,
+        "last_read": "1637837475.112200",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "3KAi",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "So it seems MarketOnCloseOrders aren't being cleared properly on flumine because no price\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "{\"asctime\": \"2021-11-23 06:57:50,183\", \"levelname\": \"ERROR\", \"message\": \"_process_cleared_orders_meta: 'MarketOnCloseOrder' object has no attribute 'price'\", \"order\": \"Order 251408671038: Execution complete\", \"error\": \"'MarketOnCloseOrder' object has no attribute 'price'\"}",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\nMaybe this is why they aren't making it to the logging control?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "100",
+                "users": [
+                    "U4H19D1D2"
+                ],
+                "count": 1
+            }
+        ]
+    }
+]

@@ -1,0 +1,63 @@
+[
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1673867446.687019",
+        "client_msg_id": "fbbaa299-bff9-4b19-a99f-327455168b71",
+        "text": "This is very tricky to isolate however the only regression I can find is that the simulation engine will now continue to match when an order is in a 'CANCELLING'\/'REPLACING'\/'UPDATING' state which is theoretically more accurate to live, can you try running `1.21` with the following patch to confirm this is what is causing the differences\n\n```from flumine.markets.middleware import SimulatedMiddleware\nfrom flumine.order.order import OrderStatus\n\n\ndef __process_simulated_orders(self, market, market_analytics: dict) -&gt; None:\n    for order in market.blotter.live_orders:\n        if order.status == OrderStatus.EXECUTABLE and order.simulated:\n            runner_analytics = market_analytics[\n                (order.selection_id, order.handicap)\n            ]\n            order.simulated(market.market_book, runner_analytics.traded)\n\n\nSimulatedMiddleware._process_simulated_orders = __process_simulated_orders\n\n# your code```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1673445415.756589",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "dqLe",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "This is very tricky to isolate however the only regression I can find is that the simulation engine will now continue to match when an order is in a 'CANCELLING'\/'REPLACING'\/'UPDATING' state which is theoretically more accurate to live, can you try running "
+                            },
+                            {
+                                "type": "text",
+                                "text": "1.21",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " with the following patch to confirm this is what is causing the differences\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "from flumine.markets.middleware import SimulatedMiddleware\nfrom flumine.order.order import OrderStatus\n\n\ndef __process_simulated_orders(self, market, market_analytics: dict) -> None:\n    for order in market.blotter.live_orders:\n        if order.status == OrderStatus.EXECUTABLE and order.simulated:\n            runner_analytics = market_analytics[\n                (order.selection_id, order.handicap)\n            ]\n            order.simulated(market.market_book, runner_analytics.traded)\n\n\nSimulatedMiddleware._process_simulated_orders = __process_simulated_orders\n\n# your code"
+                            }
+                        ],
+                        "border": 0
+                    }
+                ]
+            }
+        ]
+    }
+]

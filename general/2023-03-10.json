@@ -1,0 +1,528 @@
+[
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1678442795.456989",
+        "client_msg_id": "feda9d6b-d1af-4bad-b790-f2076d1809b9",
+        "text": "Here is a hopefully an easier to understand script and considerably faster, few caveats:\n\n• Half time isn't possible without some assumptions and\/or other data\n• All odds movements would be a massive list, is that what you actually want?\n```import logging\nimport csv\nimport smart_open\nfrom unittest.mock import patch as mock_patch\nimport betfairlightweight\n\nCOLUMNS = [\n    \"market_id\",\n    \"event_date\",\n    \"event_name\",\n    \"country\",\n    \"market_name\",\n    \"selection_id\",\n    \"selection_name\",\n    \"result\",\n    \"actual_sp\",\n    \"pp_min\",\n    \"pp_max\",\n    \"pp_wap\",\n    \"pp_ltp\",\n    \"pp_volume\",\n    \"ip_min\",\n    \"ip_max\",\n    \"ip_wap\",\n    \"ip_ltp\",\n    \"ip_volume\"\n]\n\nfile_path = \"\/Users\/liampauling\/Documents\/tmp\/marketdata\/1.177242007.gz\"\n\n# setup logging\nlogging.basicConfig(level=<http:\/\/logging.INFO|logging.INFO>)\n\n# create trading instance (don't need username\/password)\ntrading = betfairlightweight.APIClient(\"username\", \"password\", \"appKey\")\n\n# create listener\nlistener = betfairlightweight.StreamListener(\n    max_latency=None,  # ignore latency errors\n    output_queue=None,  # use generator rather than a queue (faster)\n    lightweight=True,  # lightweight mode is faster\n    update_clk=False,  # do not update clk on updates (not required when backtesting)\n    cumulative_runner_tv=True,\n    calculate_market_tv=True,\n)\n\nwith mock_patch(\"builtins.open\", smart_open.open):\n    # create generator\n    stream = trading.streaming.create_historical_generator_stream(\n        file_path=file_path,\n        listener=listener,\n    )\n    market_data = {}  # store all data\n\n    # loop all markets\n    for i in stream.get_generator()():\n        for market_book in i:\n            market_id = market_book[\"marketId\"]\n            if market_id not in market_data:\n                market_data[market_id] = {\n                    \"market_definition\": market_book[\"marketDefinition\"],\n                    \"selections\": {\n                        i[\"id\"]: {\n                            \"id\": i[\"id\"],\n                            \"name\": i.get(\"name\"),\n                            \"pp_min\": None,\n                            \"pp_max\": None,\n                            \"pp_ltp\": None,\n                            \"pp_volume\": None,\n                            \"ip_min\": None,\n                            \"ip_max\": None,\n                            \"ip_ltp\": None,\n                            \"ip_volume\": None,\n                        } for i in market_book[\"marketDefinition\"][\"runners\"]\n                    },\n                    \"inplay\": False,\n                    \"final_market_book\": None,\n                }\n            market = market_data[market_id]\n\n            # update selection values when prePlay\n            if market_book[\"status\"] == \"OPEN\" and not market_book[\"inplay\"]:\n                for selection in market_book[\"runners\"]:\n                    selection_data = market[\"selections\"][selection[\"selectionId\"]]\n                    if selection_data[\"pp_min\"] is None:\n                        selection_data[\"pp_min\"] = selection[\"lastPriceTraded\"]\n                        selection_data[\"pp_max\"] = selection[\"lastPriceTraded\"]\n                        selection_data[\"pp_ltp\"] = selection[\"lastPriceTraded\"]\n                        selection_data[\"pp_volume\"] = selection[\"totalMatched\"]\n                    else:\n                        selection_data[\"pp_min\"] = min(selection_data[\"pp_min\"], selection[\"lastPriceTraded\"])\n                        selection_data[\"pp_max\"] = max(selection_data[\"pp_max\"], selection[\"lastPriceTraded\"])\n                        selection_data[\"pp_ltp\"] = selection[\"lastPriceTraded\"]\n                        selection_data[\"pp_volume\"] = selection[\"totalMatched\"]\n\n            # update selection values when inPlay\n            if market_book[\"status\"] == \"OPEN\" and market_book[\"inplay\"]:\n                for selection in market_book[\"runners\"]:\n                    selection_data = market[\"selections\"][selection[\"selectionId\"]]\n                    if selection_data[\"ip_min\"] is None:\n                        selection_data[\"ip_min\"] = selection[\"lastPriceTraded\"]\n                        selection_data[\"ip_max\"] = selection[\"lastPriceTraded\"]\n                        selection_data[\"ip_ltp\"] = selection[\"lastPriceTraded\"]\n                        selection_data[\"ip_volume\"] = selection[\"totalMatched\"]\n                    else:\n                        selection_data[\"ip_min\"] = min(selection_data[\"ip_min\"], selection[\"lastPriceTraded\"])\n                        selection_data[\"ip_max\"] = max(selection_data[\"ip_max\"], selection[\"lastPriceTraded\"])\n                        selection_data[\"ip_ltp\"] = selection[\"lastPriceTraded\"]\n                        selection_data[\"ip_volume\"] = selection[\"totalMatched\"]\n                        selection_data[\"actual_sp\"] = selection[\"sp\"][\"actualSP\"]\n\n            # final book\n            market[\"final_market_book\"] = market_book\n\n# write data to csv\nwith open(\"output_bflw_new.csv\", \"w\") as f:\n    writer = csv.DictWriter(f, fieldnames=COLUMNS)\n    writer.writeheader()\n    for market_id, market in market_data.items():\n        market_definition = market[\"market_definition\"]\n        selection_lookup = {i[\"selectionId\"]: i for i in market[\"final_market_book\"][\"runners\"]}\n        for selection in market[\"selections\"].values():\n            writer.writerow(\n                {\n                    # market level data\n                    'market_id': market_id,\n                    'event_date': market_definition[\"marketTime\"],\n                    'event_name': market_definition.get(\"eventName\"),\n                    'country': market_definition[\"countryCode\"],\n                    'market_name': market_definition.get(\"name\"),\n                    # selection level data\n                    'selection_id': selection[\"id\"],\n                    'selection_name': selection[\"name\"],\n                    'result': selection_lookup[selection[\"id\"]][\"status\"],\n                    'actual_sp': selection[\"actual_sp\"],\n                    \"pp_min\": selection[\"pp_min\"],\n                    \"pp_max\": selection[\"pp_max\"],\n                    # \"pp_wap\",\n                    \"pp_ltp\": selection[\"pp_ltp\"],\n                    \"pp_volume\": selection[\"pp_volume\"],\n                    \"ip_min\": selection[\"ip_min\"],\n                    \"ip_max\": selection[\"ip_max\"],\n                    # \"ip_wap\",\n                    \"ip_ltp\": selection[\"ip_ltp\"],\n                    \"ip_volume\": selection[\"ip_volume\"],\n                }\n            )```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1678265787.998179",
+        "parent_user_id": "U04SMSJH4KG",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Y20I",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Here is a hopefully an easier to understand script and considerably faster, few caveats:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_list",
+                        "elements": [
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "Half time isn't possible without some assumptions and\/or other data"
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "All odds movements would be a massive list, is that what you actually want?"
+                                    }
+                                ]
+                            }
+                        ],
+                        "style": "bullet",
+                        "indent": 0,
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "import logging\nimport csv\nimport smart_open\nfrom unittest.mock import patch as mock_patch\nimport betfairlightweight\n\nCOLUMNS = [\n    \"market_id\",\n    \"event_date\",\n    \"event_name\",\n    \"country\",\n    \"market_name\",\n    \"selection_id\",\n    \"selection_name\",\n    \"result\",\n    \"actual_sp\",\n    \"pp_min\",\n    \"pp_max\",\n    \"pp_wap\",\n    \"pp_ltp\",\n    \"pp_volume\",\n    \"ip_min\",\n    \"ip_max\",\n    \"ip_wap\",\n    \"ip_ltp\",\n    \"ip_volume\"\n]\n\nfile_path = \"\/Users\/liampauling\/Documents\/tmp\/marketdata\/1.177242007.gz\"\n\n# setup logging\nlogging.basicConfig(level=logging.INFO)\n\n# create trading instance (don't need username\/password)\ntrading = betfairlightweight.APIClient(\"username\", \"password\", \"appKey\")\n\n# create listener\nlistener = betfairlightweight.StreamListener(\n    max_latency=None,  # ignore latency errors\n    output_queue=None,  # use generator rather than a queue (faster)\n    lightweight=True,  # lightweight mode is faster\n    update_clk=False,  # do not update clk on updates (not required when backtesting)\n    cumulative_runner_tv=True,\n    calculate_market_tv=True,\n)\n\nwith mock_patch(\"builtins.open\", smart_open.open):\n    # create generator\n    stream = trading.streaming.create_historical_generator_stream(\n        file_path=file_path,\n        listener=listener,\n    )\n    market_data = {}  # store all data\n\n    # loop all markets\n    for i in stream.get_generator()():\n        for market_book in i:\n            market_id = market_book[\"marketId\"]\n            if market_id not in market_data:\n                market_data[market_id] = {\n                    \"market_definition\": market_book[\"marketDefinition\"],\n                    \"selections\": {\n                        i[\"id\"]: {\n                            \"id\": i[\"id\"],\n                            \"name\": i.get(\"name\"),\n                            \"pp_min\": None,\n                            \"pp_max\": None,\n                            \"pp_ltp\": None,\n                            \"pp_volume\": None,\n                            \"ip_min\": None,\n                            \"ip_max\": None,\n                            \"ip_ltp\": None,\n                            \"ip_volume\": None,\n                        } for i in market_book[\"marketDefinition\"][\"runners\"]\n                    },\n                    \"inplay\": False,\n                    \"final_market_book\": None,\n                }\n            market = market_data[market_id]\n\n            # update selection values when prePlay\n            if market_book[\"status\"] == \"OPEN\" and not market_book[\"inplay\"]:\n                for selection in market_book[\"runners\"]:\n                    selection_data = market[\"selections\"][selection[\"selectionId\"]]\n                    if selection_data[\"pp_min\"] is None:\n                        selection_data[\"pp_min\"] = selection[\"lastPriceTraded\"]\n                        selection_data[\"pp_max\"] = selection[\"lastPriceTraded\"]\n                        selection_data[\"pp_ltp\"] = selection[\"lastPriceTraded\"]\n                        selection_data[\"pp_volume\"] = selection[\"totalMatched\"]\n                    else:\n                        selection_data[\"pp_min\"] = min(selection_data[\"pp_min\"], selection[\"lastPriceTraded\"])\n                        selection_data[\"pp_max\"] = max(selection_data[\"pp_max\"], selection[\"lastPriceTraded\"])\n                        selection_data[\"pp_ltp\"] = selection[\"lastPriceTraded\"]\n                        selection_data[\"pp_volume\"] = selection[\"totalMatched\"]\n\n            # update selection values when inPlay\n            if market_book[\"status\"] == \"OPEN\" and market_book[\"inplay\"]:\n                for selection in market_book[\"runners\"]:\n                    selection_data = market[\"selections\"][selection[\"selectionId\"]]\n                    if selection_data[\"ip_min\"] is None:\n                        selection_data[\"ip_min\"] = selection[\"lastPriceTraded\"]\n                        selection_data[\"ip_max\"] = selection[\"lastPriceTraded\"]\n                        selection_data[\"ip_ltp\"] = selection[\"lastPriceTraded\"]\n                        selection_data[\"ip_volume\"] = selection[\"totalMatched\"]\n                    else:\n                        selection_data[\"ip_min\"] = min(selection_data[\"ip_min\"], selection[\"lastPriceTraded\"])\n                        selection_data[\"ip_max\"] = max(selection_data[\"ip_max\"], selection[\"lastPriceTraded\"])\n                        selection_data[\"ip_ltp\"] = selection[\"lastPriceTraded\"]\n                        selection_data[\"ip_volume\"] = selection[\"totalMatched\"]\n                        selection_data[\"actual_sp\"] = selection[\"sp\"][\"actualSP\"]\n\n            # final book\n            market[\"final_market_book\"] = market_book\n\n# write data to csv\nwith open(\"output_bflw_new.csv\", \"w\") as f:\n    writer = csv.DictWriter(f, fieldnames=COLUMNS)\n    writer.writeheader()\n    for market_id, market in market_data.items():\n        market_definition = market[\"market_definition\"]\n        selection_lookup = {i[\"selectionId\"]: i for i in market[\"final_market_book\"][\"runners\"]}\n        for selection in market[\"selections\"].values():\n            writer.writerow(\n                {\n                    # market level data\n                    'market_id': market_id,\n                    'event_date': market_definition[\"marketTime\"],\n                    'event_name': market_definition.get(\"eventName\"),\n                    'country': market_definition[\"countryCode\"],\n                    'market_name': market_definition.get(\"name\"),\n                    # selection level data\n                    'selection_id': selection[\"id\"],\n                    'selection_name': selection[\"name\"],\n                    'result': selection_lookup[selection[\"id\"]][\"status\"],\n                    'actual_sp': selection[\"actual_sp\"],\n                    \"pp_min\": selection[\"pp_min\"],\n                    \"pp_max\": selection[\"pp_max\"],\n                    # \"pp_wap\",\n                    \"pp_ltp\": selection[\"pp_ltp\"],\n                    \"pp_volume\": selection[\"pp_volume\"],\n                    \"ip_min\": selection[\"ip_min\"],\n                    \"ip_max\": selection[\"ip_max\"],\n                    # \"ip_wap\",\n                    \"ip_ltp\": selection[\"ip_ltp\"],\n                    \"ip_volume\": selection[\"ip_volume\"],\n                }\n            )"
+                            }
+                        ],
+                        "border": 0
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U04SMSJH4KG",
+        "type": "message",
+        "ts": "1678444149.000079",
+        "client_msg_id": "46E2B63D-0D3D-443F-B486-36D9DF22E351",
+        "text": "Thank you so much Liam, I will have a run through this shortly, looks exactly what I’m after. All odds movements would probably be overkill, the inplay highs and lows are already more than I ever expected to get out! The reason I was thinking about having the odds movements listed out is I could then make some crude calculations on half time prices… but maybe something for me to think about in the background. I can try and work through your code and try to out some sort of spin on it… maybe try and find the odds at around 55 minutes after the market opens",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "af8c633631f1",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2023-03-07\/4909569272213_af8c633631f14406d7bd_72.png",
+            "first_name": "Richard",
+            "real_name": "Richard Cornish",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "r.h.cornish",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1678265787.998179",
+        "parent_user_id": "U04SMSJH4KG",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "r8JV",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Thank you so much Liam, I will have a run through this shortly, looks exactly what "
+                            },
+                            {
+                                "type": "text",
+                                "text": "I’m"
+                            },
+                            {
+                                "type": "text",
+                                "text": " after. All odds movements would probably be overkill, the inplay highs and lows are already more than I ever expected to get out! The reason I was thinking about having the odds movements listed out is I could then make some crude calculations on half time prices"
+                            },
+                            {
+                                "type": "text",
+                                "text": "…"
+                            },
+                            {
+                                "type": "text",
+                                "text": " but maybe something for me to think about in the background. I can try and work through your code and try to out some sort of spin on it"
+                            },
+                            {
+                                "type": "text",
+                                "text": "…"
+                            },
+                            {
+                                "type": "text",
+                                "text": " maybe try and find the odds at around 55 minutes after the market opens"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U04SMSJH4KG",
+        "type": "message",
+        "ts": "1678456853.184659",
+        "client_msg_id": "e08ec4d6-b23c-4549-a146-92e39ef553a6",
+        "text": "Hi Liam, thank you so much for your help, that is now exporting exactly the data I was after! One final question, I'm just trying to modify the code so it will run through all the folders I have and extract the bz2 files for analysis and pop them all in the one csv file. Can you point me in the direction of amending the code for this? Many thanks again",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "af8c633631f1",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2023-03-07\/4909569272213_af8c633631f14406d7bd_72.png",
+            "first_name": "Richard",
+            "real_name": "Richard Cornish",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "r.h.cornish",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1678265787.998179",
+        "parent_user_id": "U04SMSJH4KG",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "=UqG",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Hi Liam, thank you so much for your help, that is now exporting exactly the data I was after! One final question, I'm just trying to modify the code so it will run through all the folders I have and extract the bz2 files for analysis and pop them all in the one csv file. Can you point me in the direction of amending the code for this? Many thanks again"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1678457113.814339",
+        "client_msg_id": "2f6bb46c-4073-49b0-b367-c837c55d6887",
+        "text": "Do you want to use smart_open?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1678265787.998179",
+        "parent_user_id": "U04SMSJH4KG",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "P2PAx",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Do you want to use smart_open?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U04SMSJH4KG",
+        "type": "message",
+        "ts": "1678457363.371519",
+        "client_msg_id": "5f41f28e-aed5-4872-8847-cef461400d1e",
+        "text": "Whatever you think would be best for running through the files, I'm happy to use smart_open",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "af8c633631f1",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2023-03-07\/4909569272213_af8c633631f14406d7bd_72.png",
+            "first_name": "Richard",
+            "real_name": "Richard Cornish",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "r.h.cornish",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1678265787.998179",
+        "parent_user_id": "U04SMSJH4KG",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "ffjcH",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Whatever you think would be best for running through the files, I'm happy to use smart_open"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U04SMSJH4KG",
+        "type": "message",
+        "ts": "1678457372.747349",
+        "client_msg_id": "70894123-9a06-4a07-8bd2-a4296bf327e0",
+        "text": "Thank you again by the way",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "af8c633631f1",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2023-03-07\/4909569272213_af8c633631f14406d7bd_72.png",
+            "first_name": "Richard",
+            "real_name": "Richard Cornish",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "r.h.cornish",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1678265787.998179",
+        "parent_user_id": "U04SMSJH4KG",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "AMW",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Thank you again by the way"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1678458389.624609",
+        "client_msg_id": "ddd0ee70-734a-4a95-889b-3e196fc44fad",
+        "text": "You can just copy the original code\n\n```with mock_patch(\"builtins.open\", smart_open.open):\n    for path in glob.iglob(file_path + \"**\/**\/*.bz2\", recursive=True):\n        # create generator\n        stream = trading.streaming.create_historical_generator_stream(\n            file_path=path,\n            listener=listener,\n        )\n        ...```\nOne thing to note is that this will write the data once complete so if there is an error it won't have recorded anything, you might want to refactor to write to file after each market",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1678265787.998179",
+        "parent_user_id": "U04SMSJH4KG",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "pM+",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "You can just copy the original code\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "with mock_patch(\"builtins.open\", smart_open.open):\n    for path in glob.iglob(file_path + \"**\/**\/*.bz2\", recursive=True):\n        # create generator\n        stream = trading.streaming.create_historical_generator_stream(\n            file_path=path,\n            listener=listener,\n        )\n        ..."
+                            }
+                        ],
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\nOne thing to note is that this will write the data once complete so if there is an error it won't have recorded anything, you might want to refactor to write to file after each market"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "text": "Sorry to take up so much of your time, I am a bit further along but still getting some error messages when running the following script:",
+        "files": [
+            {
+                "id": "F04SYKUBJHM",
+                "created": 1678461044,
+                "timestamp": 1678461044,
+                "name": "Exporter v2.0",
+                "title": "Exporter v2.0",
+                "mimetype": "text\/plain",
+                "filetype": "python",
+                "pretty_type": "Python",
+                "user": "U04SMSJH4KG",
+                "user_team": "T4G9NBD2M",
+                "editable": true,
+                "size": 7535,
+                "mode": "snippet",
+                "is_external": false,
+                "external_type": "",
+                "is_public": true,
+                "public_url_shared": false,
+                "display_as_bot": false,
+                "username": "",
+                "url_private": "https:\/\/files.slack.com\/files-pri\/T4G9NBD2M-F04SYKUBJHM\/exporter_v2.0?t=xoxe-152328387089-8357743338709-8373272928225-dfe8ebcd8ca3d2f633bcafeb95191840",
+                "url_private_download": "https:\/\/files.slack.com\/files-pri\/T4G9NBD2M-F04SYKUBJHM\/download\/exporter_v2.0?t=xoxe-152328387089-8357743338709-8373272928225-dfe8ebcd8ca3d2f633bcafeb95191840",
+                "permalink": "https:\/\/betcode-org.slack.com\/files\/U04SMSJH4KG\/F04SYKUBJHM\/exporter_v2.0",
+                "permalink_public": "https:\/\/slack-files.com\/T4G9NBD2M-F04SYKUBJHM-947c09359f",
+                "edit_link": "https:\/\/betcode-org.slack.com\/files\/U04SMSJH4KG\/F04SYKUBJHM\/exporter_v2.0\/edit",
+                "is_starred": false,
+                "has_rich_preview": false,
+                "file_access": "visible"
+            }
+        ],
+        "upload": false,
+        "user": "U04SMSJH4KG",
+        "display_as_bot": false,
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "cNtMF",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Sorry to take up so much of your time, I am a bit further along but still getting some error messages when running the following script:"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "type": "message",
+        "ts": "1678461073.279469",
+        "client_msg_id": "e573b6b5-f35a-47cc-80d5-c4ff4c68a61d",
+        "thread_ts": "1678265787.998179",
+        "parent_user_id": "U04SMSJH4KG"
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1678465018.381269",
+        "client_msg_id": "eb0e4dc4-aa20-49d8-88d0-4c367e72251d",
+        "text": "and the error?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1678265787.998179",
+        "parent_user_id": "U04SMSJH4KG",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "fYC",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "and the error?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "text": "Thanks for looking, this is what I'm getting. It is reading the markets but then I am getting this.",
+        "files": [
+            {
+                "id": "F04T73VGJAJ",
+                "created": 1678465595,
+                "timestamp": 1678465595,
+                "name": "Error File.txt",
+                "title": "Error File.txt",
+                "mimetype": "text\/plain",
+                "filetype": "text",
+                "pretty_type": "Plain Text",
+                "user": "U04SMSJH4KG",
+                "user_team": "T4G9NBD2M",
+                "editable": true,
+                "size": 1392,
+                "mode": "snippet",
+                "is_external": false,
+                "external_type": "",
+                "is_public": true,
+                "public_url_shared": false,
+                "display_as_bot": false,
+                "username": "",
+                "url_private": "https:\/\/files.slack.com\/files-pri\/T4G9NBD2M-F04T73VGJAJ\/error_file.txt?t=xoxe-152328387089-8357743338709-8373272928225-dfe8ebcd8ca3d2f633bcafeb95191840",
+                "url_private_download": "https:\/\/files.slack.com\/files-pri\/T4G9NBD2M-F04T73VGJAJ\/download\/error_file.txt?t=xoxe-152328387089-8357743338709-8373272928225-dfe8ebcd8ca3d2f633bcafeb95191840",
+                "permalink": "https:\/\/betcode-org.slack.com\/files\/U04SMSJH4KG\/F04T73VGJAJ\/error_file.txt",
+                "permalink_public": "https:\/\/slack-files.com\/T4G9NBD2M-F04T73VGJAJ-7d9f583fe7",
+                "edit_link": "https:\/\/betcode-org.slack.com\/files\/U04SMSJH4KG\/F04T73VGJAJ\/error_file.txt\/edit",
+                "is_starred": false,
+                "has_rich_preview": false,
+                "file_access": "visible"
+            }
+        ],
+        "upload": false,
+        "user": "U04SMSJH4KG",
+        "display_as_bot": false,
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "FDGQ9",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Thanks for looking, this is what I'm getting. It is reading the markets but then I am getting this."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "type": "message",
+        "ts": "1678465616.531429",
+        "client_msg_id": "0f7c6655-127f-43d5-bc46-bb848e6dd68c",
+        "thread_ts": "1678265787.998179",
+        "parent_user_id": "U04SMSJH4KG"
+    }
+]

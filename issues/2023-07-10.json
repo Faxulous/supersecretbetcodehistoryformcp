@@ -1,0 +1,408 @@
+[
+    {
+        "user": "U04J6LUGCFM",
+        "type": "message",
+        "ts": "1688974789.872029",
+        "client_msg_id": "9f98e76c-8d2b-45b5-adc4-427371675f20",
+        "text": "def start_stream(bfl_trading, bfl_client, event_types=[\"horse\", \"greyhound\"]):\n    \"\"\"Retrieves a json dictionary with the stream data from the specified event types.\"\"\"\n    for event in event_types:\n        event_types[event_types.index(event)] = EVENT_TYPE_IDS[event]\n\n    # create queue\n    output_queue = queue.Queue()\n\n    # create stream listener\n    listener = betfairlightweight.StreamListener(output_queue=output_queue)\n\n    # create stream\n    streamH = bfl_trading.streaming.create_stream(listener=listener)\n    streamG = bfl_trading.streaming.create_stream(listener=listener)\n\n    # Create filters to get the events\n    horse_market_filter=betfairlightweight.filters.streaming_market_filter(\n        event_type_ids=[\"7\"],\n        country_codes=[\"AU\"],\n        market_types=[\"PLACE\", \"WIN\"]\n    )\n    greyhound_market_filter=betfairlightweight.filters.streaming_market_filter(\n        event_type_ids=[\"4339\"],\n        country_codes=[\"AU\"],\n        market_types=[\"WIN\"]\n    )\n\n    market_data_filter = filters.streaming_market_data_filter(\n        fields=[\"EX_BEST_OFFERS\", \"EX_MARKET_DEF\"], ladder_levels=3\n    )\n\n\n    # subscribe\n    horse_streaming_unique_id = streamH.subscribe_to_markets(\n        market_filter=horse_market_filter,\n        market_data_filter=market_data_filter,\n        conflate_ms=5000,  # send update every 1000ms\n    )\n\n    greyhound_streaming_unique_id = streamG.subscribe_to_markets(\n        market_filter=greyhound_market_filter,\n        market_data_filter=market_data_filter,\n        conflate_ms=5000,  # send update every 1000ms\n    )\n\n    # start stream in a new thread (in production would need err handling)\n    tH = threading.Thread(target=streamH.start, daemon=True)\n    tH.start()\n    tG = threading.Thread(target=streamG.start, daemon=True)\n    tG.start()\n\n    return streamH, output_queue",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "89086bbff64a",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2023-01-10\/4604281940487_89086bbff64aee88bfe0_72.png",
+            "first_name": "Andy",
+            "real_name": "Andy",
+            "display_name": "Andy",
+            "team": "T4G9NBD2M",
+            "name": "andreworourke84",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1688821380.058179",
+        "parent_user_id": "U04J6LUGCFM",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "VXDo",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "def start_stream(bfl_trading, bfl_client, event_types=[\"horse\", \"greyhound\"]):\n    \"\"\"Retrieves a json dictionary with the stream data from the specified event types.\"\"\"\n    for event in event_types:\n        event_types[event_types.index(event)] = EVENT_TYPE_IDS[event]\n\n    # create queue\n    output_queue = queue.Queue()\n\n    # create stream listener\n    listener = betfairlightweight.StreamListener(output_queue=output_queue)\n\n    # create stream\n    streamH = bfl_trading.streaming.create_stream(listener=listener)\n    streamG = bfl_trading.streaming.create_stream(listener=listener)\n\n    # Create filters to get the events\n    horse_market_filter=betfairlightweight.filters.streaming_market_filter(\n        event_type_ids=[\"7\"],\n        country_codes=[\"AU\"],\n        market_types=[\"PLACE\", \"WIN\"]\n    )\n    greyhound_market_filter=betfairlightweight.filters.streaming_market_filter(\n        event_type_ids=[\"4339\"],\n        country_codes=[\"AU\"],\n        market_types=[\"WIN\"]\n    )\n\n    market_data_filter = filters.streaming_market_data_filter(\n        fields=[\"EX_BEST_OFFERS\", \"EX_MARKET_DEF\"], ladder_levels=3\n    )\n\n\n    # subscribe\n    horse_streaming_unique_id = streamH.subscribe_to_markets(\n        market_filter=horse_market_filter,\n        market_data_filter=market_data_filter,\n        conflate_ms=5000,  # send update every 1000ms\n    )\n\n    greyhound_streaming_unique_id = streamG.subscribe_to_markets(\n        market_filter=greyhound_market_filter,\n        market_data_filter=market_data_filter,\n        conflate_ms=5000,  # send update every 1000ms\n    )\n\n    # start stream in a new thread (in production would need err handling)\n    tH = threading.Thread(target=streamH.start, daemon=True)\n    tH.start()\n    tG = threading.Thread(target=streamG.start, daemon=True)\n    tG.start()\n\n    return streamH, output_queue"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1689007090.180769",
+        "client_msg_id": "EA194BFB-65F7-4C71-8047-F6B55513BE1C",
+        "text": "Have you seen the examples? Few things wrong with this ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1688821380.058179",
+        "parent_user_id": "U04J6LUGCFM",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "yA+",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Have you seen the examples? Few things wrong with this "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U04J6LUGCFM",
+        "type": "message",
+        "ts": "1689037074.046889",
+        "edited": {
+            "user": "U04J6LUGCFM",
+            "ts": "1689062306.000000"
+        },
+        "client_msg_id": "1a404cf3-97c3-4da5-9b02-6a0f05697fd5",
+        "text": "Yea have seen the examples. My code is slightly different but I think basically doing the same thing. Thinking back to when I put the code together, I think S_cenario 2_ didn't work for me originally but S_cenario 6_ did\/does - I assume that's your main concern with the code. The problem with the examples is that none of them have a scenario for passing multiple event ids or multiple market types codes and that's where I'm falling down",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "89086bbff64a",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2023-01-10\/4604281940487_89086bbff64aee88bfe0_72.png",
+            "first_name": "Andy",
+            "real_name": "Andy",
+            "display_name": "Andy",
+            "team": "T4G9NBD2M",
+            "name": "andreworourke84",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1688821380.058179",
+        "parent_user_id": "U04J6LUGCFM",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "\/YbF",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Yea have seen the examples. My code is slightly different but I think basically doing the same thing. Thinking back to when I put the code together, I think S"
+                            },
+                            {
+                                "type": "text",
+                                "text": "cenario 2",
+                                "style": {
+                                    "italic": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " didn't work for me originally but S"
+                            },
+                            {
+                                "type": "text",
+                                "text": "cenario 6 ",
+                                "style": {
+                                    "italic": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "did\/does - I assume that's your main concern with the code. The problem with the examples is that none of them have a scenario for passing multiple event ids or multiple market types codes and that's where I'm falling down"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U04J6LUGCFM",
+        "type": "message",
+        "ts": "1689042224.548209",
+        "edited": {
+            "user": "U04J6LUGCFM",
+            "ts": "1689059684.000000"
+        },
+        "client_msg_id": "d2e41feb-e5ce-44a9-aa31-2f7aae1090c5",
+        "text": "• Wanting to get WIN and PLC markets for horse and greyhounds but currently it's impossible.\nIdeally would have one filters.streaming_market_filter with event_type_ids=[\"7\",\"4339\"] and market_types=[\"WIN\",\"PLACE\"]\n\n• Scenario 1) Using 1 streaming_market_filter with both of the above settings shows the following error multiple times and returns nothing:\nEncountered an error (connection_id: 208-110723015800-1550840, data: {\"op\":\"status\",\"statusCode\":\"FAILURE\",\"errorCode\":\"TIMEOUT\",\"errorMessage\":\"Connection is\nnot subscribed and is idle: 15000 ms\",\"connectionClosed\":true,\"connectionId\":\"208-110723015800-1550840\"}) when starting or running the stream.\n\n• Scenario 2) Using 1 streaming_market_filter with both of the above settings works for market_types=[WIN] only.\n• *Scenario 3) Using 1 filter - event_type_ids=[\"7\"] and market_types=[\"WIN\", \"PLACE\"] works?? (only scenario with multiple parameters set where any place markets are received)*\n• Scenario 4) Using 1 filter - event_type_ids=[\"4339\"] and market_types=[\"WIN\", \"PLACE\"] *does not work*. Same error as trying event_type_ids=[\"7\",\"4339\"] and market_types=[\"WIN\",\"PLACE\"]\nEncountered an error (connection_id: 210-110723020837-1593171, data: {\"op\":\"status\",\"statusCode\":\"FAILURE\",\"errorCode\":\"TIMEOUT\",\"errorMessage\":\"Connection is not subscribed and is idle: 15000 ms\",\"connectionClosed\":true,\"connectionId\":\"210-110723020837-1593171\"}) when starting or running the stream.\n\n• Scenario 5) trying two streaming_market_filters (one with event_type_ids=[\"7\"] and another one with event_type_ids=[\"4339\"]) and market_types=[\"WIN\",\"PLACE\"] for both does not work, throws error:\nEncountered an error (connection_id: 203-110723021056-1561190, data: {\"op\":\"status\",\"statusCode\":\"FAILURE\",\"errorCode\":\"TIMEOUT\",\"errorMessage\":\"Connection is not subscribed and is idle: 15000 ms\",\"connectionClosed\":true,\"connectionId\":\"203-110723021056-1561190\"}) when starting or running the stream.\n\n• *Scenario 6) trying two streaming_market_filters (one with event_type_ids=[\"7\"] and another one with event_type_ids=[\"4339\"]) and market_types=[\"WIN\"] also works..*\n• Scenario 7) Subscribing with 4 different streaming filters shows this error twice:\nEncountered an error (connection_id: 210-110723013905-1590774, data: {\"op\":\"status\",\"statusCode\":\"FAILURE\",\"errorCode\":\"TIMEOUT\",\"errorMessage\":\"Connection is\nnot subscribed and is idle: 15000 ms\",\"connectionClosed\":true,\"connectionId\":\"210-110723013905-1590774\"}) when starting or running the stream.\nVery ocassionally get this issue:\nEncountered an error ([Connect: 5]: Socket [SSL: WRONG_VERSION_NUMBER] wrong version number (_ssl.c:2546)) when starting or running the stream\n\nUsing Live API key which I'm told has 10 max connections by default",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "89086bbff64a",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2023-01-10\/4604281940487_89086bbff64aee88bfe0_72.png",
+            "first_name": "Andy",
+            "real_name": "Andy",
+            "display_name": "Andy",
+            "team": "T4G9NBD2M",
+            "name": "andreworourke84",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1688821380.058179",
+        "parent_user_id": "U04J6LUGCFM",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "jMCo",
+                "elements": [
+                    {
+                        "type": "rich_text_list",
+                        "elements": [
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "Wanting to get WIN and PLC markets for horse and greyhounds but currently it's impossible."
+                                    }
+                                ]
+                            }
+                        ],
+                        "style": "bullet",
+                        "indent": 0,
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Ideally would have one filters.streaming_market_filter with event_type_ids=[\"7\",\"4339\"] and market_types=[\"WIN\",\"PLACE\"]\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_list",
+                        "elements": [
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "Scenario 1) Using 1 streaming_market_filter with both of the above settings shows the following error multiple times and returns nothing:"
+                                    }
+                                ]
+                            }
+                        ],
+                        "style": "bullet",
+                        "indent": 0,
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Encountered an error (connection_id: 208-110723015800-1550840, data: {\"op\":\"status\",\"statusCode\":\"FAILURE\",\"errorCode\":\"TIMEOUT\",\"errorMessage\":\"Connection is\nnot subscribed and is idle: 15000 ms\",\"connectionClosed\":true,\"connectionId\":\"208-110723015800-1550840\"}) when starting or running the stream.\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_list",
+                        "elements": [
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "Scenario 2) Using 1 streaming_market_filter with both of the above settings works for market_types=[WIN] only."
+                                    }
+                                ]
+                            }
+                        ],
+                        "style": "bullet",
+                        "indent": 0,
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_list",
+                        "elements": [
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "Scenario 3) Using 1 filter - event_type_ids=[\"7\"] and market_types=[\"WIN\", \"PLACE\"] works?? (only scenario with multiple parameters set where any place markets are received)",
+                                        "style": {
+                                            "bold": true
+                                        }
+                                    }
+                                ]
+                            }
+                        ],
+                        "style": "bullet",
+                        "indent": 0,
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_list",
+                        "elements": [
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "Scenario 4) Using 1 filter - event_type_ids=[\"4339\"] and market_types=[\"WIN\", \"PLACE\"] "
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": "does not work",
+                                        "style": {
+                                            "bold": true
+                                        }
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": ". Same error as trying event_type_ids=[\"7\",\"4339\"] and market_types=[\"WIN\",\"PLACE\"]"
+                                    }
+                                ]
+                            }
+                        ],
+                        "style": "bullet",
+                        "indent": 0,
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Encountered an error (connection_id: 210-110723020837-1593171, data: {\"op\":\"status\",\"statusCode\":\"FAILURE\",\"errorCode\":\"TIMEOUT\",\"errorMessage\":\"Connection is not subscribed and is idle: 15000 ms\",\"connectionClosed\":true,\"connectionId\":\"210-110723020837-1593171\"}) when starting or running the stream.\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_list",
+                        "elements": [
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "Scenario 5) trying two streaming_market_filters (one with event_type_ids=[\"7\"] and another one with event_type_ids=[\"4339\"]) and market_types=[\"WIN\",\"PLACE\"] for both does not work, throws error:"
+                                    }
+                                ]
+                            }
+                        ],
+                        "style": "bullet",
+                        "indent": 0,
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Encountered an error (connection_id: 203-110723021056-1561190, data: {\"op\":\"status\",\"statusCode\":\"FAILURE\",\"errorCode\":\"TIMEOUT\",\"errorMessage\":\"Connection is not subscribed and is idle: 15000 ms\",\"connectionClosed\":true,\"connectionId\":\"203-110723021056-1561190\"}) when starting or running the stream.\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_list",
+                        "elements": [
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "Scenario 6) trying two streaming_market_filters (one with event_type_ids=[\"7\"] and another one with event_type_ids=[\"4339\"]) and market_types=[\"WIN\"] also works..",
+                                        "style": {
+                                            "bold": true
+                                        }
+                                    }
+                                ]
+                            }
+                        ],
+                        "style": "bullet",
+                        "indent": 0,
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_list",
+                        "elements": [
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "Scenario 7) Subscribing with 4 different streaming filters shows this error twice:"
+                                    }
+                                ]
+                            }
+                        ],
+                        "style": "bullet",
+                        "indent": 0,
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Encountered an error (connection_id: 210-110723013905-1590774, data: {\"op\":\"status\",\"statusCode\":\"FAILURE\",\"errorCode\":\"TIMEOUT\",\"errorMessage\":\"Connection is\nnot subscribed and is idle: 15000 ms\",\"connectionClosed\":true,\"connectionId\":\"210-110723013905-1590774\"}) when starting or running the stream.\nVery ocassionally get this issue:\nEncountered an error ([Connect: 5]: Socket [SSL: WRONG_VERSION_NUMBER] wrong version number (_ssl.c:2546)) when starting or running the stream\n\nUsing Live API key which I'm told has 10 max connections by default"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

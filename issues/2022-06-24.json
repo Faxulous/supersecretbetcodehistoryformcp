@@ -1,0 +1,142 @@
+[
+    {
+        "user": "U01DVUAE2G1",
+        "type": "message",
+        "ts": "1656085656.391289",
+        "client_msg_id": "19021393-12ef-4f6d-9b44-1c7d5de94fd5",
+        "text": "Hi ppl!\nI m trying to extract bsp (and result) from historic streaming files. Here is what i do:\n\n```def get_selection_id_to_result(trading, streaming_file: str) -&gt; dict:\n    stream = trading.streaming.create_historical_generator_stream(\n        file_path=streaming_file,\n        listener=StreamListener(\n            max_latency=None, update_clk=False,\n        ),\n    )\n    with patch(\"builtins.open\", smart_open.open):\n        g = stream.get_generator()\n        selection_id_to_result = {}\n        for market_book in g():\n            market_book = market_book[0]\n            if market_book.status == 'OPEN':\n                continue\n            for rb in market_book.runners:\n                if rb.selection_id not in selection_id_to_result:\n                    selection_id_to_result[rb.selection_id] = {'bsp': float('nan'), 'result': ''}\n                sp = get_sp(rb)\n                if isinstance(sp, float):\n                    if not math.isnan(sp):\n                        selection_id_to_result[rb.selection_id]['bsp'] = round(sp, 3)\n                selection_id_to_result[rb.selection_id]['result'] = rb.status\n\n    return selection_id_to_result```\n`get_sp`  is liams function from flumine\/utils.\nMostly it works, but sometimes it doesnt get the sp even though there is one. Does anyone have an idea what could be causing this?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gd87aca58eae",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/d87aca58eaeabd0a953b4bc4204bbbaf.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Aaron Smith",
+            "display_name": "Aaron Smith",
+            "team": "T4G9NBD2M",
+            "name": "smiffyaaron",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "wp85d",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Hi ppl!\nI m trying to extract bsp (and result) from historic streaming files. Here is what i do:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "def get_selection_id_to_result(trading, streaming_file: str) -> dict:\n    stream = trading.streaming.create_historical_generator_stream(\n        file_path=streaming_file,\n        listener=StreamListener(\n            max_latency=None, update_clk=False,\n        ),\n    )\n    with patch(\"builtins.open\", smart_open.open):\n        g = stream.get_generator()\n        selection_id_to_result = {}\n        for market_book in g():\n            market_book = market_book[0]\n            if market_book.status == 'OPEN':\n                continue\n            for rb in market_book.runners:\n                if rb.selection_id not in selection_id_to_result:\n                    selection_id_to_result[rb.selection_id] = {'bsp': float('nan'), 'result': ''}\n                sp = get_sp(rb)\n                if isinstance(sp, float):\n                    if not math.isnan(sp):\n                        selection_id_to_result[rb.selection_id]['bsp'] = round(sp, 3)\n                selection_id_to_result[rb.selection_id]['result'] = rb.status\n\n    return selection_id_to_result"
+                            }
+                        ],
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "get_sp",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "  is liams function from flumine\/utils.\nMostly it works, but sometimes it doesnt get the sp even though there is one. Does anyone have an idea what could be causing this?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1656090132.064259",
+        "client_msg_id": "27082821-d45a-4ea6-82ee-4f3f196838d2",
+        "text": "just chuck an else and print",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "9mm",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "just chuck an else and print"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01DVUAE2G1",
+        "type": "message",
+        "ts": "1656092918.225689",
+        "client_msg_id": "0b7c5663-7b69-4882-b5f6-5bcd7eaffa8f",
+        "text": "looks like the issue was that whenever bsp hits a round number, its not a float but an int",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gd87aca58eae",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/d87aca58eaeabd0a953b4bc4204bbbaf.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Aaron Smith",
+            "display_name": "Aaron Smith",
+            "team": "T4G9NBD2M",
+            "name": "smiffyaaron",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Fgxm9",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "looks like the issue was that whenever bsp hits a round number, its not a float but an int"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

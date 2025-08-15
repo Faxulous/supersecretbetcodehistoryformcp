@@ -1,0 +1,483 @@
+[
+    {
+        "user": "U02RN7YDRQ9",
+        "type": "message",
+        "ts": "1686681277.366349",
+        "edited": {
+            "user": "U02RN7YDRQ9",
+            "ts": "1686681979.000000"
+        },
+        "client_msg_id": "beb18be3-644f-4d38-8448-549022f4b14a",
+        "text": "Is cancel and change price function for an order supposed to work in simulation ? My code to play with this is basically\n```for order in market.blotter:\n\tif order.size_remaining != 0.0 :\n\t\tprice = ...\n\t\torder.replace(price)```\nand that sets the order status to \"Replacing\" but as shown in log below it doesn't switch to \"Execution complete\" until 44 seconds later when the market closes and no matching done on the order. Originally placed lay bet at 7.4 none of which was matched then replaced asking for  8.8 which should have taken lower current lay price of which there were many trades less than that. Haven't found anywhere in the simulation code yet that seems to be aware of the replacing operation ?\nAm I just using it wrong or it doesn't work as I think it should ?\nEDIT: I am using a build from last April but still can't see any signs it would work looking at latest github ?\n```......\n{\"asctime\": \"2023-06-13 18:23:50,367\", \"levelname\": \"DEBUG\", \"message\": \"Simulated order 139059698302594198 traded: 7.6 - 1.2\"}\n{\"asctime\": \"2023-06-13 18:23:50,368\", \"levelname\": \"DEBUG\", \"message\": \"getSecondsToStart: 29.829\"}\n{\"asctime\": \"2023-06-13 18:23:50,368\", \"levelname\": \"INFO\", \"message\": \"Order status update: Replacing\" ...\n\t\"status\": \"Replacing\", \"status_log\": \"Pending, Executable, Replacing\", ...\n{\"asctime\": \"2023-06-13 18:23:50,368\", \"levelname\": \"DEBUG\", \"message\": \"Replacing odds for 53923661 from odds 7.4 to 8.8\"}\n{\"asctime\": \"2023-06-13 18:23:50,368\", \"levelname\": \"DEBUG\", \"message\": \"getSecondsToStart: 29.62\"}\n{\"asctime\": \"2023-06-13 18:23:50,369\", \"levelname\": \"DEBUG\", \"message\": \"getSecondsToStart: 29.517\"}\n{\"asctime\": \"2023-06-13 18:23:50,369\", \"levelname\": \"DEBUG\", \"message\": \"Simulated order 139059698302594198 traded: 7.6 - 0.08\"}\n{\"asctime\": \"2023-06-13 18:23:50,370\", \"levelname\": \"DEBUG\", \"message\": \"getSecondsToStart: 29.304\"}\n......\n\"asctime\": \"2023-06-13 18:23:50,509\", \"levelname\": \"DEBUG\", \"message\": \"Simulated order 139059698302594198 traded: 8 - 11.52\"}\n{\"asctime\": \"2023-06-13 18:23:50,510\", \"levelname\": \"DEBUG\", \"message\": \"getSecondsToStart: -13.085\"}\n{\"asctime\": \"2023-06-13 18:23:50,510\", \"levelname\": \"DEBUG\", \"message\": \"getSecondsToStart: -13.189\"}\n{\"asctime\": \"2023-06-13 18:23:50,510\", \"levelname\": \"DEBUG\", \"message\": \"getSecondsToStart: -13.293\"}\n{\"asctime\": \"2023-06-13 18:23:50,511\", \"levelname\": \"DEBUG\", \"message\": \"getSecondsToStart: -13.352\"}\n{\"asctime\": \"2023-06-13 18:23:50,511\", \"levelname\": \"DEBUG\", \"message\": \"getSecondsToStart: -13.457\"}\n{\"asctime\": \"2023-06-13 18:23:50,512\", \"levelname\": \"DEBUG\", \"message\": \"getSecondsToStart: -14.183\"}\n{\"asctime\": \"2023-06-13 18:23:50,513\", \"levelname\": \"INFO\", \"message\": \"Order status update: Execution complete\" ......\n{\"asctime\": \"2023-06-13 18:23:50,513\", \"levelname\": \"INFO\", \"message\": \"Trade status update: Complete\"......\n{\"asctime\": \"2023-06-13 18:23:50,515\", \"levelname\": \"INFO\", \"message\": \"Market 1.215094455 closed\" ......\n......```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "ge46f1f8b708",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/e46f1f8b708a630e3191de7b2c42b1d1.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0023-72.png",
+            "first_name": "edblock",
+            "real_name": "edblock",
+            "display_name": "foxwood",
+            "team": "T4G9NBD2M",
+            "name": "eanb",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "vImV",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Is cancel and change price function for an order supposed to work in simulation ? My code to play with this is basically\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "for order in market.blotter:\n\tif order.size_remaining != 0.0 :\n\t\tprice = ...\n\t\torder.replace(price)"
+                            }
+                        ],
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "and that sets the order status to \"Replacing\" but as shown in log below it doesn't switch to \"Execution complete\" until 44 seconds later when the market closes and no matching done on the order. Originally placed lay bet at 7.4 none of which was matched then replaced asking for  8.8 which should have taken lower current lay price of which there were many trades less than that. Haven't found anywhere in the simulation code yet that seems to be aware of the replacing operation ?\nAm I just using it wrong or it doesn't work as I think it should ?\nEDIT: I am using a build from last April but still can't see any signs it would work looking at latest github ?\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "......\n{\"asctime\": \"2023-06-13 18:23:50,367\", \"levelname\": \"DEBUG\", \"message\": \"Simulated order 139059698302594198 traded: 7.6 - 1.2\"}\n{\"asctime\": \"2023-06-13 18:23:50,368\", \"levelname\": \"DEBUG\", \"message\": \"getSecondsToStart: 29.829\"}\n{\"asctime\": \"2023-06-13 18:23:50,368\", \"levelname\": \"INFO\", \"message\": \"Order status update: Replacing\" ...\n\t\"status\": \"Replacing\", \"status_log\": \"Pending, Executable, Replacing\", ...\n{\"asctime\": \"2023-06-13 18:23:50,368\", \"levelname\": \"DEBUG\", \"message\": \"Replacing odds for 53923661 from odds 7.4 to 8.8\"}\n{\"asctime\": \"2023-06-13 18:23:50,368\", \"levelname\": \"DEBUG\", \"message\": \"getSecondsToStart: 29.62\"}\n{\"asctime\": \"2023-06-13 18:23:50,369\", \"levelname\": \"DEBUG\", \"message\": \"getSecondsToStart: 29.517\"}\n{\"asctime\": \"2023-06-13 18:23:50,369\", \"levelname\": \"DEBUG\", \"message\": \"Simulated order 139059698302594198 traded: 7.6 - 0.08\"}\n{\"asctime\": \"2023-06-13 18:23:50,370\", \"levelname\": \"DEBUG\", \"message\": \"getSecondsToStart: 29.304\"}\n......\n\"asctime\": \"2023-06-13 18:23:50,509\", \"levelname\": \"DEBUG\", \"message\": \"Simulated order 139059698302594198 traded: 8 - 11.52\"}\n{\"asctime\": \"2023-06-13 18:23:50,510\", \"levelname\": \"DEBUG\", \"message\": \"getSecondsToStart: -13.085\"}\n{\"asctime\": \"2023-06-13 18:23:50,510\", \"levelname\": \"DEBUG\", \"message\": \"getSecondsToStart: -13.189\"}\n{\"asctime\": \"2023-06-13 18:23:50,510\", \"levelname\": \"DEBUG\", \"message\": \"getSecondsToStart: -13.293\"}\n{\"asctime\": \"2023-06-13 18:23:50,511\", \"levelname\": \"DEBUG\", \"message\": \"getSecondsToStart: -13.352\"}\n{\"asctime\": \"2023-06-13 18:23:50,511\", \"levelname\": \"DEBUG\", \"message\": \"getSecondsToStart: -13.457\"}\n{\"asctime\": \"2023-06-13 18:23:50,512\", \"levelname\": \"DEBUG\", \"message\": \"getSecondsToStart: -14.183\"}\n{\"asctime\": \"2023-06-13 18:23:50,513\", \"levelname\": \"INFO\", \"message\": \"Order status update: Execution complete\" ......\n{\"asctime\": \"2023-06-13 18:23:50,513\", \"levelname\": \"INFO\", \"message\": \"Trade status update: Complete\"......\n{\"asctime\": \"2023-06-13 18:23:50,515\", \"levelname\": \"INFO\", \"message\": \"Market 1.215094455 closed\" ......\n......"
+                            }
+                        ],
+                        "border": 0
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01MPC0GUK1",
+        "type": "message",
+        "ts": "1686683395.581239",
+        "client_msg_id": "605504c5-4489-4717-8014-c107415bc3e4",
+        "text": "Don't you need to use market.replace_order() rather than order.replace()?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "3be8fa875ec4",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2021-02-15\/1752388211523_3be8fa875ec4866620ff_72.png",
+            "first_name": "Beeblebrox",
+            "real_name": "Beeblebrox",
+            "display_name": "Beeblebrox",
+            "team": "T4G9NBD2M",
+            "name": "arch4672",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "+A8H",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Don't you need to use market.replace_order() rather than order.replace()?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "pray",
+                "users": [
+                    "U02RN7YDRQ9"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "U02RN7YDRQ9",
+        "type": "message",
+        "ts": "1686684342.143959",
+        "client_msg_id": "a0ca9a69-b716-4960-801d-40635f2c4788",
+        "text": "Doh - that works exactly as expected - thanks so much. Followed that through and can see it gets placed on the pending set of orders which is what I couldn't find following it down through the order !",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "ge46f1f8b708",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/e46f1f8b708a630e3191de7b2c42b1d1.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0023-72.png",
+            "first_name": "edblock",
+            "real_name": "edblock",
+            "display_name": "foxwood",
+            "team": "T4G9NBD2M",
+            "name": "eanb",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "VOK",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Doh - that works exactly as expected - thanks so much. Followed that through and can see it gets placed on the pending set of orders which is what I couldn't find following it down through the order !"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01MPC0GUK1",
+        "type": "message",
+        "ts": "1686684401.551859",
+        "client_msg_id": "c2a46e8a-92dc-47b0-b252-d3bc23cc8b45",
+        "text": "No worries. I only know it because I've been there and got the t-shirt.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "3be8fa875ec4",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2021-02-15\/1752388211523_3be8fa875ec4866620ff_72.png",
+            "first_name": "Beeblebrox",
+            "real_name": "Beeblebrox",
+            "display_name": "Beeblebrox",
+            "team": "T4G9NBD2M",
+            "name": "arch4672",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1686684401.551859",
+        "reply_count": 3,
+        "reply_users_count": 3,
+        "latest_reply": "1686717088.875189",
+        "reply_users": [
+            "UCQB6S222",
+            "U01D23DDMTQ",
+            "U4H19D1D2"
+        ],
+        "replies": [
+            {
+                "user": "UCQB6S222",
+                "ts": "1686692401.515269"
+            },
+            {
+                "user": "U01D23DDMTQ",
+                "ts": "1686694919.889919"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1686717088.875189"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": true,
+        "last_read": "1686717088.875189",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "xzsr",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "No worries. I only know it because I've been there and got the t-shirt."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "joy",
+                "users": [
+                    "U02RN7YDRQ9"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "UCQB6S222",
+        "type": "message",
+        "ts": "1686692401.515269",
+        "edited": {
+            "user": "UCQB6S222",
+            "ts": "1686692418.000000"
+        },
+        "client_msg_id": "87c36ac3-863b-4bce-bd25-a827bb15273b",
+        "text": "me too. i asked about it on here a few days ago! those order methods really ought to be renamed because they don't do what you'd think they do.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g953ffd5e3b7",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/5813be539113b05ece8212c2a06d006a.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "George",
+            "real_name": "George",
+            "display_name": "George",
+            "team": "T4G9NBD2M",
+            "name": "gd",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1686684401.551859",
+        "parent_user_id": "U01MPC0GUK1",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "gLMBj",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "me too. i asked about it on here a few days ago! those order methods really ought to be renamed because they don't do what you'd think they do."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U04J6LUGCFM",
+        "type": "message",
+        "ts": "1686694022.724979",
+        "client_msg_id": "4DA96AB2-8A57-486A-B5FF-79E41BEDDDA8",
+        "text": "Are we able to get anything from Australian racing with either BFLW or Flumine any other way? Even just the BSP and\/or whether the bet won or lost? ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "89086bbff64a",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2023-01-10\/4604281940487_89086bbff64aee88bfe0_72.png",
+            "first_name": "Andy",
+            "real_name": "Andy",
+            "display_name": "Andy",
+            "team": "T4G9NBD2M",
+            "name": "andreworourke84",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1686133962.756019",
+        "parent_user_id": "U042NB80A1X",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "uj\/vv",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Are we able to get anything from Australian racing with either BFLW or Flumine any other way? Even just the BSP and\/or whether the bet won or lost? "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01D23DDMTQ",
+        "type": "message",
+        "ts": "1686694919.889919",
+        "client_msg_id": "0C78F7B6-57FF-4481-8D57-855121A2127B",
+        "text": "Too many of us thinking I have an object so I’ll call a method on that object :blush:",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "5d6a9e5a85c0",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2021-06-26\/2219792322468_5d6a9e5a85c01e3abc9e_72.png",
+            "first_name": "Andrew",
+            "real_name": "Andrew",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "agruskin",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1686684401.551859",
+        "parent_user_id": "U01MPC0GUK1",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "kTe",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Too many of us thinking I have an object so "
+                            },
+                            {
+                                "type": "text",
+                                "text": "I’ll"
+                            },
+                            {
+                                "type": "text",
+                                "text": " call a method on that object "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "blush",
+                                "unicode": "1f60a"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "see_no_evil",
+                "users": [
+                    "UCQB6S222"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1686717088.875189",
+        "client_msg_id": "704D76BA-D857-4BC7-9490-F78EEF98779B",
+        "text": "Just waiting for the PR guys… :face_with_rolling_eyes: ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1686684401.551859",
+        "parent_user_id": "U01MPC0GUK1",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "ckL",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Just waiting for the PR guys"
+                            },
+                            {
+                                "type": "text",
+                                "text": "…"
+                            },
+                            {
+                                "type": "text",
+                                "text": " "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "face_with_rolling_eyes",
+                                "unicode": "1f644"
+                            },
+                            {
+                                "type": "text",
+                                "text": " "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1686717333.669809",
+        "client_msg_id": "5AB75DF2-B1A9-49F1-A2B8-ADF66FC592FE",
+        "text": "BSP is in the market book",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1686133962.756019",
+        "parent_user_id": "U042NB80A1X",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "aKT",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "BSP is in the market book"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "white_check_mark",
+                "users": [
+                    "U04J6LUGCFM"
+                ],
+                "count": 1
+            }
+        ]
+    }
+]

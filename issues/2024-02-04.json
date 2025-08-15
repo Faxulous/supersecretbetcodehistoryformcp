@@ -1,0 +1,675 @@
+[
+    {
+        "user": "U013K4VNB6D",
+        "type": "message",
+        "ts": "1707073097.504839",
+        "edited": {
+            "user": "U013K4VNB6D",
+            "ts": "1707073156.000000"
+        },
+        "client_msg_id": "0a6552a8-5ac8-4496-b98a-51f16aa6aa0d",
+        "text": "I've been experimenting with the Betfair Lightweight sample code at <https:\/\/github.com\/betcode-org\/betfair\/blob\/master\/examples\/examplestreaming.py>.\n\nI've tried changing the event type id field from \"9\" to \"4339\" like so (\"4339\" being the event type id for greyhounds - <https:\/\/betfair-datascientists.github.io\/api\/apiPythontutorial\/>):\n\n```market_filter = streaming_market_filter(\n    event_type_ids=[\"4339\"], country_codes=[\"GB\"], market_types=[\"WIN\"]\n)```\nHowever, the app pauses for about 30 seconds, and I then get this error message:\n\nbetfairlightweight.exceptions.ListenerError: connection_id: [deleted], data: {\"op\":\"status\",\"statusCode\":\"FAILURE\",\"errorCode\":\"TIMEOUT\",\"errorMessage\":\"Connection is not subscribed and is idle: 15000 ms\",\"connectionClosed\":true,\"connectionId\":\"deleted\"}\n\nWhere am I going wrong, please?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gf188478b89f",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/f188478b89f4a5e2c5af9eafa0433712.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0004-72.png",
+            "first_name": "",
+            "real_name": "Jeff Waters",
+            "display_name": "Jeff Waters",
+            "team": "T4G9NBD2M",
+            "name": "watersjg",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1707073097.504839",
+        "reply_count": 12,
+        "reply_users_count": 5,
+        "latest_reply": "1707126752.579699",
+        "reply_users": [
+            "U9JHLMZB4",
+            "U013K4VNB6D",
+            "UQL0QDEKA",
+            "UUCD6P13J",
+            "U04NWADNCFR"
+        ],
+        "replies": [
+            {
+                "user": "U9JHLMZB4",
+                "ts": "1707074121.760319"
+            },
+            {
+                "user": "U013K4VNB6D",
+                "ts": "1707075740.670919"
+            },
+            {
+                "user": "UQL0QDEKA",
+                "ts": "1707076040.492399"
+            },
+            {
+                "user": "U013K4VNB6D",
+                "ts": "1707076352.157549"
+            },
+            {
+                "user": "UUCD6P13J",
+                "ts": "1707076389.863049"
+            },
+            {
+                "user": "U013K4VNB6D",
+                "ts": "1707077750.117139"
+            },
+            {
+                "user": "U9JHLMZB4",
+                "ts": "1707077916.221889"
+            },
+            {
+                "user": "U013K4VNB6D",
+                "ts": "1707078765.040429"
+            },
+            {
+                "user": "U04NWADNCFR",
+                "ts": "1707122067.629959"
+            },
+            {
+                "user": "U013K4VNB6D",
+                "ts": "1707122584.339669"
+            },
+            {
+                "user": "UQL0QDEKA",
+                "ts": "1707124685.850019"
+            },
+            {
+                "user": "U013K4VNB6D",
+                "ts": "1707126752.579699"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": false,
+        "attachments": [
+            {
+                "from_url": "https:\/\/betfair-datascientists.github.io\/api\/apiPythontutorial\/",
+                "service_icon": "https:\/\/betfair-datascientists.github.io\/img\/BetfairFavicon.ico",
+                "id": 1,
+                "original_url": "https:\/\/betfair-datascientists.github.io\/api\/apiPythontutorial\/",
+                "fallback": "API tutorial in Python - The Automation Hub",
+                "text": "Documentation, guides and articles on creating, developing and implementing automated betting strategies, using data analysis to inform betting models and how to interact with the Betfair API.",
+                "title": "API tutorial in Python - The Automation Hub",
+                "title_link": "https:\/\/betfair-datascientists.github.io\/api\/apiPythontutorial\/",
+                "service_name": "betfair-datascientists.github.io"
+            },
+            {
+                "id": 2,
+                "footer_icon": "https:\/\/slack.github.com\/static\/img\/favicon-neutral.png",
+                "color": "24292f",
+                "bot_id": "B021ZJYSBMW",
+                "app_unfurl_url": "https:\/\/github.com\/betcode-org\/betfair\/blob\/master\/examples\/examplestreaming.py",
+                "is_app_unfurl": true,
+                "app_id": "A01BP7R4KNY",
+                "fallback": "<https:\/\/github.com\/betcode-org\/betfair\/blob\/master\/examples\/examplestreaming.py | examplestreaming.py>",
+                "text": "```\nimport logging\nimport queue\nimport threading\n\nimport betfairlightweight\nfrom betfairlightweight.filters import (\n    streaming_market_filter,\n    streaming_market_data_filter,\n)\n\n\n# setup logging\nlogging.basicConfig(level=<http:\/\/logging.INFO|logging.INFO>)  # change to DEBUG to see log all updates\n\n# create trading instance (app key must be activated for streaming)\ntrading = betfairlightweight.APIClient(\"username\", \"password\", app_key=\"appKey\")\n\n# login\ntrading.login()\n\n# create queue\noutput_queue = queue.Queue()\n\n# create stream listener\nlistener = betfairlightweight.StreamListener(output_queue=output_queue)\n\n# create stream\nstream = trading.streaming.create_stream(listener=listener)\n\n# create filters (GB WIN racing)\nmarket_filter = streaming_market_filter(\n    event_type_ids=[\"7\"], country_codes=[\"GB\"], market_types=[\"WIN\"]\n)\nmarket_data_filter = streaming_market_data_filter(\n    fields=[\"EX_BEST_OFFERS\", \"EX_MARKET_DEF\"], ladder_levels=3\n)\n\n# subscribe\nstreaming_unique_id = stream.subscribe_to_markets(\n    market_filter=market_filter,\n    market_data_filter=market_data_filter,\n    conflate_ms=1000,  # send update every 1000ms\n)\n\n# start stream in a new thread (in production would need err handling)\nt = threading.Thread(target=stream.start, daemon=True)\nt.start()\n\n\"\"\"\nData can also be accessed by using the snap function in the listener, e.g:\n\n    market_books = listener.snap(\n        market_ids=[1.12345323]\n    )\n\nErrors need to be caught at stream.start, resubscribe can then be used to\nprevent full image being sent, e.g:\n\n    streaming_unique_id = stream.subscribe_to_markets(\n        market_filter=market_filter,\n        market_data_filter=market_data_filter,\n        conflate_ms=1000,  # send update every 1000ms\n        initial_clk=listener.initial_clk,\n        clk=listener.clk,\n    )\n\nThe streaming unique id is returned in the market book which allows multiple\nstreams to be differentiated if multiple streams feed into the same queue.\n\"\"\"\n\n# check for updates in output queue\nwhile True:\n    market_books = output_queue.get()\n    print(market_books)\n\n    for market_book in market_books:\n        print(\n            market_book,\n            market_book.streaming_unique_id,  # unique id of stream (returned from subscribe request)\n            market_book.streaming_update,  # json update received\n            market_book.market_definition,  # streaming definition, similar to catalogue request\n            market_book.publish_time,  # betfair publish time of update\n        )\n\n```",
+                "title": "<https:\/\/github.com\/betcode-org\/betfair\/blob\/master\/examples\/examplestreaming.py | examplestreaming.py>",
+                "footer": "<https:\/\/github.com\/betcode-org\/betfair|betcode-org\/betfair>",
+                "mrkdwn_in": [
+                    "text"
+                ]
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "O1Bd+",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I've been experimenting with the Betfair Lightweight sample code at "
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/betcode-org\/betfair\/blob\/master\/examples\/examplestreaming.py"
+                            },
+                            {
+                                "type": "text",
+                                "text": ".\n\nI've tried changing the event type id field from \"9\" to \"4339\" like so (\"4339\" being the event type id for greyhounds - "
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/betfair-datascientists.github.io\/api\/apiPythontutorial\/"
+                            },
+                            {
+                                "type": "text",
+                                "text": "):\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "market_filter = streaming_market_filter(\n    event_type_ids=[\"4339\"], country_codes=[\"GB\"], market_types=[\"WIN\"]\n)"
+                            }
+                        ],
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\nHowever, the app pauses for about 30 seconds, and I then get this error message:\n\nbetfairlightweight.exceptions.ListenerError: connection_id: [deleted], data: {\"op\":\"status\",\"statusCode\":\"FAILURE\",\"errorCode\":\"TIMEOUT\",\"errorMessage\":\"Connection is not subscribed and is idle: 15000 ms\",\"connectionClosed\":true,\"connectionId\":\"deleted\"}\n\nWhere am I going wrong, please?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U9JHLMZB4",
+        "type": "message",
+        "ts": "1707074121.760319",
+        "client_msg_id": "c28d2962-02aa-4b3c-be45-ef9fd96c483d",
+        "text": "Nothing obviously wrong with your market filter. What do your logs say?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g951ddcb43e7",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/3951ddcb43e788a387d6daf330dad5ca.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0018-72.png",
+            "first_name": "",
+            "real_name": "Peter Coles",
+            "display_name": "Peter",
+            "team": "T4G9NBD2M",
+            "name": "peter",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1707073097.504839",
+        "parent_user_id": "U013K4VNB6D",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "pXA6e",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Nothing obviously wrong with your market filter. What do your logs say?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U013K4VNB6D",
+        "type": "message",
+        "ts": "1707075740.670919",
+        "client_msg_id": "2d77a263-d95d-475d-8b92-1d942d481d4f",
+        "text": "Hi Peter\n\nThanks for taking a look.\n\nI'm not using logging. This is the stack trace, though:\n\n*Exception in thread Thread-1:*\n*Traceback (most recent call last):*\n  *File \"C:\\Users\\User\\AppData\\Local\\Programs\\Python\\Python39\\lib\\threading.py\", line 973, in _bootstrap_inner*\n    *self.run()*\n  *File \"C:\\Users\\User\\AppData\\Local\\Programs\\Python\\Python39\\lib\\threading.py\", line 910, in run*\n    *self._target(*self._args, **self._kwargs)*\n  *File \"C:\\Users\\User\\Documents\\golive\\venv\\lib\\site-packages\\betfairlightweight\\streaming\\betfairstream.py\", line 60, in start*\n    *self._read_loop()*\n  *File \"C:\\Users\\User\\Documents\\golive\\venv\\lib\\site-packages\\betfairlightweight\\streaming\\betfairstream.py\", line 232, in _read_loop*\n    *self._data(received_data)*\n  *File \"C:\\Users\\User\\Documents\\golive\\venv\\lib\\site-packages\\betfairlightweight\\streaming\\betfairstream.py\", line 273, in _data*\n    *raise ListenerError(self.listener.connection_id, received_data)*\n\nThis is my full code:\n\n```import betfairlightweight\nimport queue\nimport threading\nimport json\n\nfrom betfairlightweight.filters import streaming_market_filter, streaming_market_data_filter\nfrom log_in import log_in_and_get_API_client_object\n\n# <https:\/\/github.com\/betcode-org\/betfair\/blob\/master\/examples\/examplestreaming.py>\n\ntrading = log_in_and_get_API_client_object()\noutput_queue = queue.Queue()\n\n# create stream listener\nlistener = betfairlightweight.StreamListener(output_queue=output_queue)\n\n# create stream\nstream = trading.streaming.create_stream(listener=listener)\n\n# create filters (GB WIN racing)\nmarket_filter = streaming_market_filter(\n    event_type_ids=[\"4339\"], country_codes=[\"GB\"], market_types=[\"WIN\"]\n)\nmarket_data_filter = streaming_market_data_filter(\n    fields=[\"EX_BEST_OFFERS\", \"EX_MARKET_DEF\"], ladder_levels=3\n)\n\n# subscribe\nstreaming_unique_id = stream.subscribe_to_markets(\n    market_filter=market_filter,\n    market_data_filter=market_data_filter,\n    conflate_ms=1000,  # send update every 1000ms\n)\n\n# start stream in a new thread (in production would need err handling)\nt = threading.Thread(target=stream.start, daemon=True)\nt.start()\n\n\"\"\"\nData can also be accessed by using the snap function in the listener, e.g:\n\n    market_books = listener.snap(\n        market_ids=[1.12345323]\n    )\n\nErrors need to be caught at stream.start, resubscribe can then be used to\nprevent full image being sent, e.g:\n\n    streaming_unique_id = stream.subscribe_to_markets(\n        market_filter=market_filter,\n        market_data_filter=market_data_filter,\n        conflate_ms=1000,  # send update every 1000ms\n        initial_clk=listener.initial_clk,\n        clk=listener.clk,\n    )\n\nThe streaming unique id is returned in the market book which allows multiple\nstreams to be differentiated if multiple streams feed into the same queue.\n\"\"\"\n\n# check for updates in output queue\nwhile True:\n    market_books = output_queue.get()\n    print(market_books)\n\n    for market_book in market_books:\n        print(\n            json.dumps(market_book.streaming_update),  # json update received\n        )```\nIf I change the event type id back from \"4339\" to \"7\", the app works fine.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gf188478b89f",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/f188478b89f4a5e2c5af9eafa0433712.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0004-72.png",
+            "first_name": "",
+            "real_name": "Jeff Waters",
+            "display_name": "Jeff Waters",
+            "team": "T4G9NBD2M",
+            "name": "watersjg",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1707073097.504839",
+        "parent_user_id": "U013K4VNB6D",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "koHp\/",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Hi Peter\n\nThanks for taking a look.\n\nI'm not using logging. This is the stack trace, though:\n\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "Exception in thread Thread-1:",
+                                "style": {
+                                    "bold": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "Traceback (most recent call last):",
+                                "style": {
+                                    "bold": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "  File \"C:\\Users\\User\\AppData\\Local\\Programs\\Python\\Python39\\lib\\threading.py\", line 973, in _bootstrap_inner",
+                                "style": {
+                                    "bold": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "    self.run()",
+                                "style": {
+                                    "bold": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "  File \"C:\\Users\\User\\AppData\\Local\\Programs\\Python\\Python39\\lib\\threading.py\", line 910, in run",
+                                "style": {
+                                    "bold": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "    self._target(*self._args, **self._kwargs)",
+                                "style": {
+                                    "bold": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "  File \"C:\\Users\\User\\Documents\\golive\\venv\\lib\\site-packages\\betfairlightweight\\streaming\\betfairstream.py\", line 60, in start",
+                                "style": {
+                                    "bold": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "    self._read_loop()",
+                                "style": {
+                                    "bold": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "  File \"C:\\Users\\User\\Documents\\golive\\venv\\lib\\site-packages\\betfairlightweight\\streaming\\betfairstream.py\", line 232, in _read_loop",
+                                "style": {
+                                    "bold": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "    self._data(received_data)",
+                                "style": {
+                                    "bold": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "  File \"C:\\Users\\User\\Documents\\golive\\venv\\lib\\site-packages\\betfairlightweight\\streaming\\betfairstream.py\", line 273, in _data",
+                                "style": {
+                                    "bold": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "    raise ListenerError(self.listener.connection_id, received_data)",
+                                "style": {
+                                    "bold": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n\nThis is my full code:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "import betfairlightweight\nimport queue\nimport threading\nimport json\n\nfrom betfairlightweight.filters import streaming_market_filter, streaming_market_data_filter\nfrom log_in import log_in_and_get_API_client_object\n\n# "
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/betcode-org\/betfair\/blob\/master\/examples\/examplestreaming.py"
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n\ntrading = log_in_and_get_API_client_object()\noutput_queue = queue.Queue()\n\n# create stream listener\nlistener = betfairlightweight.StreamListener(output_queue=output_queue)\n\n# create stream\nstream = trading.streaming.create_stream(listener=listener)\n\n# create filters (GB WIN racing)\nmarket_filter = streaming_market_filter(\n    event_type_ids=[\"4339\"], country_codes=[\"GB\"], market_types=[\"WIN\"]\n)\nmarket_data_filter = streaming_market_data_filter(\n    fields=[\"EX_BEST_OFFERS\", \"EX_MARKET_DEF\"], ladder_levels=3\n)\n\n# subscribe\nstreaming_unique_id = stream.subscribe_to_markets(\n    market_filter=market_filter,\n    market_data_filter=market_data_filter,\n    conflate_ms=1000,  # send update every 1000ms\n)\n\n# start stream in a new thread (in production would need err handling)\nt = threading.Thread(target=stream.start, daemon=True)\nt.start()\n\n\"\"\"\nData can also be accessed by using the snap function in the listener, e.g:\n\n    market_books = listener.snap(\n        market_ids=[1.12345323]\n    )\n\nErrors need to be caught at stream.start, resubscribe can then be used to\nprevent full image being sent, e.g:\n\n    streaming_unique_id = stream.subscribe_to_markets(\n        market_filter=market_filter,\n        market_data_filter=market_data_filter,\n        conflate_ms=1000,  # send update every 1000ms\n        initial_clk=listener.initial_clk,\n        clk=listener.clk,\n    )\n\nThe streaming unique id is returned in the market book which allows multiple\nstreams to be differentiated if multiple streams feed into the same queue.\n\"\"\"\n\n# check for updates in output queue\nwhile True:\n    market_books = output_queue.get()\n    print(market_books)\n\n    for market_book in market_books:\n        print(\n            json.dumps(market_book.streaming_update),  # json update received\n        )"
+                            }
+                        ],
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\nIf I change the event type id back from \"4339\" to \"7\", the app works fine."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UQL0QDEKA",
+        "type": "message",
+        "ts": "1707076040.492399",
+        "client_msg_id": "DC3EC3E2-E2AA-4E2D-8947-092F57EB36CA",
+        "text": "Think you can use type Id 15 for todays greyhounds too Jeff",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g444d10128c0",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/444d10128c0aaf094041a52a76796602.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0005-72.png",
+            "first_name": "Peter",
+            "real_name": "Peter Lenagh",
+            "display_name": "PeterLe",
+            "team": "T4G9NBD2M",
+            "name": "lenagh",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1707073097.504839",
+        "parent_user_id": "U013K4VNB6D",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "GImvY",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Think you can use type "
+                            },
+                            {
+                                "type": "text",
+                                "text": "I"
+                            },
+                            {
+                                "type": "text",
+                                "text": "d 15 for todays greyhounds too Jeff"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U013K4VNB6D",
+        "type": "message",
+        "ts": "1707076352.157549",
+        "client_msg_id": "a190eff7-219a-4048-983d-0a2143c318b9",
+        "text": "Thanks Peter. I've just tried that. It's did absolutely nothing for a minute, so I gave up. I'm surprised it didn't time out after 15 seconds, like the other greyhound code I tried did. By contrast, when I use \"7\", I get the JSON instantly.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gf188478b89f",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/f188478b89f4a5e2c5af9eafa0433712.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0004-72.png",
+            "first_name": "",
+            "real_name": "Jeff Waters",
+            "display_name": "Jeff Waters",
+            "team": "T4G9NBD2M",
+            "name": "watersjg",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1707073097.504839",
+        "parent_user_id": "U013K4VNB6D",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Eby27",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Thanks Peter. I've just tried that. It's did absolutely nothing for a minute, so I gave up. I'm surprised it didn't time out after 15 seconds, like the other greyhound code I tried did. By contrast, when I use \"7\", I get the JSON instantly."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UUCD6P13J",
+        "type": "message",
+        "ts": "1707076389.863049",
+        "client_msg_id": "498f5194-ec95-4152-ba53-d71084702540",
+        "text": "check\/add the logs, probably hitting the market limit per connection",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6898272ab81",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6898272ab810e419c2c9ca9af1e53da8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0012-72.png",
+            "first_name": "Lee",
+            "real_name": "Lee U",
+            "display_name": "Lee",
+            "team": "T4G9NBD2M",
+            "name": "lunswor",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1707073097.504839",
+        "parent_user_id": "U013K4VNB6D",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "du12O",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "check\/add the logs, probably hitting the market limit per connection"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U013K4VNB6D",
+        "type": "message",
+        "ts": "1707077750.117139",
+        "client_msg_id": "b211cbbb-e9b1-4ed7-ab2a-51d611bb882a",
+        "text": "It's now working, with the exact same code as I posted above! Bizarre. I can only assume it was a server side issue that's now been resolved? Either that or there was something stuck in the cache locally that was causing issues?\n\nAnyway, thanks guys.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gf188478b89f",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/f188478b89f4a5e2c5af9eafa0433712.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0004-72.png",
+            "first_name": "",
+            "real_name": "Jeff Waters",
+            "display_name": "Jeff Waters",
+            "team": "T4G9NBD2M",
+            "name": "watersjg",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1707073097.504839",
+        "parent_user_id": "U013K4VNB6D",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "mjCs4",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "It's now working, with the exact same code as I posted above! Bizarre. I can only assume it was a server side issue that's now been resolved? Either that or there was something stuck in the cache locally that was causing issues?\n\nAnyway, thanks guys."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U9JHLMZB4",
+        "type": "message",
+        "ts": "1707077916.221889",
+        "client_msg_id": "325de015-6766-4bd5-9b19-de2aa7c8e137",
+        "text": "Or, as <@UUCD6P13J> suggested you could have been hitting your market limit and it works now because the day's racing is over so you're only getting tomorrow's races. If you were logging this would be much easier to track down.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g951ddcb43e7",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/3951ddcb43e788a387d6daf330dad5ca.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0018-72.png",
+            "first_name": "",
+            "real_name": "Peter Coles",
+            "display_name": "Peter",
+            "team": "T4G9NBD2M",
+            "name": "peter",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1707073097.504839",
+        "parent_user_id": "U013K4VNB6D",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "EnYUg",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Or, as "
+                            },
+                            {
+                                "type": "user",
+                                "user_id": "UUCD6P13J"
+                            },
+                            {
+                                "type": "text",
+                                "text": " suggested you could have been hitting your market limit and it works now because the day's racing is over so you're only getting tomorrow's races. If you were logging this would be much easier to track down."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U013K4VNB6D",
+        "type": "message",
+        "ts": "1707078765.040429",
+        "client_msg_id": "c1e83a91-778f-4ca9-b4bb-7e67bb9d322d",
+        "text": "Fair point, Peter, and working out how to do logging that is more useful than the basic  logging.DEBUG(\"message\") stuff is on my to do list.\n\nMy situation at the moment is that I have a system that I've back tested, which I'd like to try applying on automated betting on. However, before I can do that, I need to properly investigate how this stuff works, and then build a bet placement app that also keeps track of how my bets fare. At the moment, I'm just at the research\/exploration phase (which I'm finding really interesting, by the way! :slightly_smiling_face: ).\n\nThanks.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gf188478b89f",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/f188478b89f4a5e2c5af9eafa0433712.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0004-72.png",
+            "first_name": "",
+            "real_name": "Jeff Waters",
+            "display_name": "Jeff Waters",
+            "team": "T4G9NBD2M",
+            "name": "watersjg",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1707073097.504839",
+        "parent_user_id": "U013K4VNB6D",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "yH+kp",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Fair point, Peter, and working out how to do logging that is more useful than the basic  logging.DEBUG(\"message\") stuff is on my to do list.\n\nMy situation at the moment is that I have a system that I've back tested, which I'd like to try applying on automated betting on. However, before I can do that, I need to properly investigate how this stuff works, and then build a bet placement app that also keeps track of how my bets fare. At the moment, I'm just at the research\/exploration phase (which I'm finding really interesting, by the way! "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "slightly_smiling_face",
+                                "unicode": "1f642"
+                            },
+                            {
+                                "type": "text",
+                                "text": " ).\n\nThanks."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

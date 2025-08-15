@@ -1,0 +1,693 @@
+[
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1642239023.013700",
+        "client_msg_id": "f2791ef9-a49f-4733-8cdc-ecd6ca37bee0",
+        "text": "Apologies as this is a bit open ended, but I'm not understanding what went wrong here, last night around 1 am, out of (seemingly) no-where it looks like I suddenly got latency warnings and then eventually the process killed:\n\n```{\"asctime\": \"2022-01-15 01:00:05,664\", \"levelname\": \"INFO\", \"message\": \"Placing new LAY order for runner ('Jaime Jamel', 35971913, 0), runner exposure is: {'selection_id': 35971913, 'handicap': 0, 'if_win': 0.539, 'runner_matched_stake': 0.0, 'runner_matched_exposure': 0.0, 'min_market_exposure': -18.509999999999998} and limit is: 0.3.\"}\n{\"asctime\": \"2022-01-15 01:00:05,664\", \"levelname\": \"INFO\", \"message\": \"Order status update: Pending\", \"market_id\": \"1.193372878\", \"selection_id\": 35971913, \"handicap\": 0, \"id\": \"138615012056645370\", \"customer_order_ref\": \"7c44d7544ce40O138615012056645370\", \"bet_id\": null, \"date_time_created\": \"2022-01-15 01:00:05.664573\", \"publish_time\": \"2022-01-15 01:00:05.647000\", \"market_version\": null, \"async\": false, \"trade\": {\"id\": \"7a2c3bee-759e-11ec-b096-02054918c7c6\", \"strategy\": \"betting_market_lay\", \"place_reset_seconds\": 0.0, \"reset_seconds\": 0.0, \"orders\": [\"138615012056645370\"], \"offset_orders\": [], \"notes\": \"R3 5f Allw,2022-01-15 01:02:00,WIN,Flat,US,Charles Town,False,False,None,False,Jaime Jamel,2.64,2479.75,8,1,False,None,0,Charles Town (US) 14th Jan,31175177,7,{'strategy_name': 'betting_market_lay', 'selection_id': 35971913, 'handicap': 0, 'price_percentage': 0.768, 'min_valid_external_value': 0.8, 'current_back_price': 48, 'current_mid_price': 56.5, 'current_lay_price': 65, 'previous_back_price': 50, 'previous_mid_price': 62.5, 'previous_lay_price': 75},1\", \"market_notes\": null, \"status\": \"Live\", \"status_log\": \"\"}, \"order_type\": {\"order_type\": \"Limit\", \"price\": 50.0, \"size\": 0.31, \"persistence_type\": \"LAPSE\", \"time_in_force\": null, \"min_fill_size\": null, \"bet_target_type\": null, \"bet_target_size\": null}, \"info\": {\"side\": \"LAY\", \"size_matched\": 0.0, \"size_remaining\": 0.31, \"size_cancelled\": 0.0, \"size_lapsed\": 0.0, \"size_voided\": 0.0, \"average_price_matched\": 0.0}, \"responses\": {\"date_time_placed\": null, \"elapsed_seconds_executable\": null}, \"runner_status\": null, \"status\": \"Pending\", \"status_log\": \"Pending\", \"violation_msg\": null, \"simulated\": {\"profit\": 0.0, \"piq\": 0.0, \"matched\": []}, \"notes\": \"R3 5f Allw,2022-01-15 01:02:00,WIN,Flat,US,Charles Town,False,False,None,False,Jaime Jamel,2.64,2479.75,8,1,False,None,0,Charles Town (US) 14th Jan,31175177,7,{'strategy_name': 'betting_market_lay', 'selection_id': 35971913, 'handicap': 0, 'price_percentage': 0.768, 'min_valid_external_value': 0.8, 'current_back_price': 48, 'current_mid_price': 56.5, 'current_lay_price': 65, 'previous_back_price': 50, 'previous_mid_price': 62.5, 'previous_lay_price': 75},1\", \"market_notes\": null}\n{\"asctime\": \"2022-01-15 01:00:30,284\", \"levelname\": \"INFO\", \"message\": \"1.193373059: 0 cleared orders found, more available: False\"}\n{\"asctime\": \"2022-01-15 01:01:13,244\", \"levelname\": \"WARNING\", \"message\": \"[FlumineStream: 4002]: Latency high: 0.9758524894714355\"}\n{\"asctime\": \"2022-01-15 01:01:13,245\", \"levelname\": \"WARNING\", \"message\": \"[MarketStream: 3001]: Latency high: 0.9100987911224365\"}\n{\"asctime\": \"2022-01-15 01:01:13,245\", \"levelname\": \"WARNING\", \"message\": \"[MarketStream: 2001]: Latency high: 0.8022336959838867\"}\n{\"asctime\": \"2022-01-15 01:12:41,802\", \"levelname\": \"INFO\", \"message\": \"Deleting requests.Session\", \"sessions_created\": 36, \"session\": \"&lt;requests.sessions.Session object at 0x7f2c6a5195d0&gt;\", \"session_time_created\": 1642208309.3769233, \"session_time_returned\": 1642208405.607362, \"live_sessions_count\": 1, \"err\": true}\n{\"asctime\": \"2022-01-15 01:12:41,813\", \"levelname\": \"WARNING\", \"message\": \"[MarketStream: 3001]: Latency high: 689.2287058830261\"}\n{\"asctime\": \"2022-01-15 01:12:41,814\", \"levelname\": \"WARNING\", \"message\": \"[FlumineStream: 4002]: Latency high: 689.5181279182434\"}\n{\"asctime\": \"2022-01-15 01:12:41,814\", \"levelname\": \"WARNING\", \"message\": \"[MarketStream: 2001]: Latency high: 689.121832370758\"}```\nThe only change I've made (and so at this stage I'm assuming is the culprit) is to run the market recorder on my live instance, as opposed to my local test instance (previously I recorded locally and kept my live stuff separate), so I added this just before framework.run() on my live code in AWS:\n\n```recorder = MarketRecorder(\n            name=\"MR_horse_greyhounds\",\n            market_filter=streaming_market_filter(\n                    event_type_ids=[7],\n                    country_codes=['GB','IE','US','FR', 'AU'],\n                    market_types=['WIN', 'PLACE', 'EACH_WAY'],\n                ),\n            stream_class=DataStream,\n            context={\n                \"local_dir\": ai.unprocessed_data,\n                \"bucket\": \"fluminetest\",\n                \"force_update\": False,\n                \"remove_file\": True,\n            },\n        )\n\n        framework.add_strategy(recorder)```\nAm I potentially trying to record too much in one go and\/or from the error am I somehow creating too many sessions (and if so how might I stop this)?\n\nAgain apologies for the open ended nature, I'm clearly not understanding something about sessions I feel!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "vIIC4",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Apologies as this is a bit open ended, but I'm not understanding what went wrong here, last night around 1 am, out of (seemingly) no-where it looks like I suddenly got latency warnings and then eventually the process killed:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "{\"asctime\": \"2022-01-15 01:00:05,664\", \"levelname\": \"INFO\", \"message\": \"Placing new LAY order for runner ('Jaime Jamel', 35971913, 0), runner exposure is: {'selection_id': 35971913, 'handicap': 0, 'if_win': 0.539, 'runner_matched_stake': 0.0, 'runner_matched_exposure': 0.0, 'min_market_exposure': -18.509999999999998} and limit is: 0.3.\"}\n{\"asctime\": \"2022-01-15 01:00:05,664\", \"levelname\": \"INFO\", \"message\": \"Order status update: Pending\", \"market_id\": \"1.193372878\", \"selection_id\": 35971913, \"handicap\": 0, \"id\": \"138615012056645370\", \"customer_order_ref\": \"7c44d7544ce40O138615012056645370\", \"bet_id\": null, \"date_time_created\": \"2022-01-15 01:00:05.664573\", \"publish_time\": \"2022-01-15 01:00:05.647000\", \"market_version\": null, \"async\": false, \"trade\": {\"id\": \"7a2c3bee-759e-11ec-b096-02054918c7c6\", \"strategy\": \"betting_market_lay\", \"place_reset_seconds\": 0.0, \"reset_seconds\": 0.0, \"orders\": [\"138615012056645370\"], \"offset_orders\": [], \"notes\": \"R3 5f Allw,2022-01-15 01:02:00,WIN,Flat,US,Charles Town,False,False,None,False,Jaime Jamel,2.64,2479.75,8,1,False,None,0,Charles Town (US) 14th Jan,31175177,7,{'strategy_name': 'betting_market_lay', 'selection_id': 35971913, 'handicap': 0, 'price_percentage': 0.768, 'min_valid_external_value': 0.8, 'current_back_price': 48, 'current_mid_price': 56.5, 'current_lay_price': 65, 'previous_back_price': 50, 'previous_mid_price': 62.5, 'previous_lay_price': 75},1\", \"market_notes\": null, \"status\": \"Live\", \"status_log\": \"\"}, \"order_type\": {\"order_type\": \"Limit\", \"price\": 50.0, \"size\": 0.31, \"persistence_type\": \"LAPSE\", \"time_in_force\": null, \"min_fill_size\": null, \"bet_target_type\": null, \"bet_target_size\": null}, \"info\": {\"side\": \"LAY\", \"size_matched\": 0.0, \"size_remaining\": 0.31, \"size_cancelled\": 0.0, \"size_lapsed\": 0.0, \"size_voided\": 0.0, \"average_price_matched\": 0.0}, \"responses\": {\"date_time_placed\": null, \"elapsed_seconds_executable\": null}, \"runner_status\": null, \"status\": \"Pending\", \"status_log\": \"Pending\", \"violation_msg\": null, \"simulated\": {\"profit\": 0.0, \"piq\": 0.0, \"matched\": []}, \"notes\": \"R3 5f Allw,2022-01-15 01:02:00,WIN,Flat,US,Charles Town,False,False,None,False,Jaime Jamel,2.64,2479.75,8,1,False,None,0,Charles Town (US) 14th Jan,31175177,7,{'strategy_name': 'betting_market_lay', 'selection_id': 35971913, 'handicap': 0, 'price_percentage': 0.768, 'min_valid_external_value': 0.8, 'current_back_price': 48, 'current_mid_price': 56.5, 'current_lay_price': 65, 'previous_back_price': 50, 'previous_mid_price': 62.5, 'previous_lay_price': 75},1\", \"market_notes\": null}\n{\"asctime\": \"2022-01-15 01:00:30,284\", \"levelname\": \"INFO\", \"message\": \"1.193373059: 0 cleared orders found, more available: False\"}\n{\"asctime\": \"2022-01-15 01:01:13,244\", \"levelname\": \"WARNING\", \"message\": \"[FlumineStream: 4002]: Latency high: 0.9758524894714355\"}\n{\"asctime\": \"2022-01-15 01:01:13,245\", \"levelname\": \"WARNING\", \"message\": \"[MarketStream: 3001]: Latency high: 0.9100987911224365\"}\n{\"asctime\": \"2022-01-15 01:01:13,245\", \"levelname\": \"WARNING\", \"message\": \"[MarketStream: 2001]: Latency high: 0.8022336959838867\"}\n{\"asctime\": \"2022-01-15 01:12:41,802\", \"levelname\": \"INFO\", \"message\": \"Deleting requests.Session\", \"sessions_created\": 36, \"session\": \"<requests.sessions.Session object at 0x7f2c6a5195d0>\", \"session_time_created\": 1642208309.3769233, \"session_time_returned\": 1642208405.607362, \"live_sessions_count\": 1, \"err\": true}\n{\"asctime\": \"2022-01-15 01:12:41,813\", \"levelname\": \"WARNING\", \"message\": \"[MarketStream: 3001]: Latency high: 689.2287058830261\"}\n{\"asctime\": \"2022-01-15 01:12:41,814\", \"levelname\": \"WARNING\", \"message\": \"[FlumineStream: 4002]: Latency high: 689.5181279182434\"}\n{\"asctime\": \"2022-01-15 01:12:41,814\", \"levelname\": \"WARNING\", \"message\": \"[MarketStream: 2001]: Latency high: 689.121832370758\"}"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\nThe only change I've made (and so at this stage I'm assuming is the culprit) is to run the market recorder on my live instance, as opposed to my local test instance (previously I recorded locally and kept my live stuff separate), so I added this just before framework.run() on my live code in AWS:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "recorder = MarketRecorder(\n            name=\"MR_horse_greyhounds\",\n            market_filter=streaming_market_filter(\n                    event_type_ids=[7],\n                    country_codes=['GB','IE','US','FR', 'AU'],\n                    market_types=['WIN', 'PLACE', 'EACH_WAY'],\n                ),\n            stream_class=DataStream,\n            context={\n                \"local_dir\": ai.unprocessed_data,\n                \"bucket\": \"fluminetest\",\n                \"force_update\": False,\n                \"remove_file\": True,\n            },\n        )\n\n        framework.add_strategy(recorder)"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\nAm I potentially trying to record too much in one go and\/or from the error am I somehow creating too many sessions (and if so how might I stop this)?\n\nAgain apologies for the open ended nature, I'm clearly not understanding something about sessions I feel!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1642239937.014300",
+        "client_msg_id": "C3A173B4-F03A-4B96-A684-8E24543E3A4E",
+        "text": "Got any monitoring on the instance? CPU? Memory? ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "QAs=S",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Got any monitoring on the instance? CPU? Memory? "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "text": "CPU doesn't seem too stretched, don't seem to have a memory log (I haven't played around with CloudWatch much, perhaps I need to look at that)",
+        "files": [
+            {
+                "id": "F02UW23S116",
+                "mode": "hidden_by_limit"
+            }
+        ],
+        "upload": false,
+        "user": "UFTBRB3F1",
+        "display_as_bot": false,
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "PEuc",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "CPU doesn't seem too stretched, don't seem to have a memory log (I haven't played around with CloudWatch much, perhaps I need to look at that)"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "type": "message",
+        "ts": "1642240707.015100",
+        "client_msg_id": "6155507c-d284-4edb-bfaa-dc9bd25d53d1"
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1642243210.016000",
+        "edited": {
+            "user": "UBS7QANF3",
+            "ts": "1642243489.000000"
+        },
+        "client_msg_id": "a328222f-9be1-4ac9-af46-a00da5dff69e",
+        "text": "Given the process got killed, presumably by the OOM Killer, seems like memory would have to have been the problem",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "j7x",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Given the process got killed, presumably by the OOM Killer, seems like memory would have to have been the problem"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1642243332.016600",
+        "client_msg_id": "3d8fc012-a9f4-42b9-9fff-1cf849667b3c",
+        "text": "Ok cool, I'll have to play around with cloudwatch and setup some monitoring in case it happens again",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "xnWzG",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Ok cool, I'll have to play around with cloudwatch and setup some monitoring in case it happens again"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1642243988.017400",
+        "client_msg_id": "2ECA8CCF-F1CC-45CD-892F-BF79C88BA962",
+        "text": "MarketRecorder but placing orders as well? Or am I misunderstanding the logs? ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "EpjZ",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "MarketRecorder but placing orders as well? Or am I misunderstanding the logs? "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1642244613.019300",
+        "client_msg_id": "0ced3b2c-5137-4e28-8dc6-232e47034926",
+        "text": "yes, thats correct, so 1 instance which effectively does:\n\n```framework.add_strategy(strategy)\n\nrecorder = MarketRecorder(\n            name=\"MR_horse_greyhounds\",\n            market_filter=streaming_market_filter(\n                    event_type_ids=[7],\n                    country_codes=['GB','IE','US','FR', 'AU'],\n                    market_types=['WIN', 'PLACE', 'EACH_WAY'],\n                ),\n            stream_class=DataStream,\n            context={\n                \"local_dir\": ai.unprocessed_data,\n                \"bucket\": \"fluminetest\",\n                \"force_update\": False,\n                \"remove_file\": True,\n            },\n        )\nframework.add_strategy(recorder)\n\nframework.run()```\nIs that not a sensible approach (previously I did have it on a separate instance, but I thought people on here suggested they had everyone on one and it might be simpler)?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "JO+",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "yes, thats correct, so 1 instance which effectively does:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "framework.add_strategy(strategy)\n\nrecorder = MarketRecorder(\n            name=\"MR_horse_greyhounds\",\n            market_filter=streaming_market_filter(\n                    event_type_ids=[7],\n                    country_codes=['GB','IE','US','FR', 'AU'],\n                    market_types=['WIN', 'PLACE', 'EACH_WAY'],\n                ),\n            stream_class=DataStream,\n            context={\n                \"local_dir\": ai.unprocessed_data,\n                \"bucket\": \"fluminetest\",\n                \"force_update\": False,\n                \"remove_file\": True,\n            },\n        )\nframework.add_strategy(recorder)\n\nframework.run()"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\nIs that not a sensible approach (previously I did have it on a separate instance, but I thought people on here suggested they had everyone on one and it might be simpler)?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U9JHLMZB4",
+        "type": "message",
+        "ts": "1642246597.021400",
+        "edited": {
+            "user": "U9JHLMZB4",
+            "ts": "1642246627.000000"
+        },
+        "client_msg_id": "3e8a279d-fceb-443f-a0c5-30c5ea36e08c",
+        "text": "Last conversation I remember here o this topic said the opposite, i.e. keep data collection separate from strategy execution. However it's very possible to combine the execution of multiple strategies on a single server and this is generally what people advise.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g951ddcb43e7",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/3951ddcb43e788a387d6daf330dad5ca.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0018-72.png",
+            "first_name": "",
+            "real_name": "Peter Coles",
+            "display_name": "Peter",
+            "team": "T4G9NBD2M",
+            "name": "peter",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "+q+pe",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Last conversation I remember here o this topic said the opposite, i.e. keep data collection separate from strategy execution. However it's very possible to combine the execution of multiple strategies on a single server and this is generally what people advise."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1642246946.023700",
+        "client_msg_id": "e12d5b28-f483-42bb-81f9-599c8a634fe9",
+        "text": "I guess the problem then is you might run out of connections (as presumably if you are collecting data using the same filters as a live strategy flumine shouldn't open up a new connection). But if that is the best approach then I can revert back to that, in a sense its easier to record locally as it saves transferring everything and then can test on the same machine!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "7ni",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I guess the problem then is you might run out of connections (as presumably if you are collecting data using the same filters as a live strategy flumine shouldn't open up a new connection). But if that is the best approach then I can revert back to that, in a sense its easier to record locally as it saves transferring everything and then can test on the same machine!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1642247548.024800",
+        "client_msg_id": "2A347CB4-9871-40C1-BEB9-39AE562C01E5",
+        "text": "Market recorders actually use different stream types so no benefit when sharing an instance, hence recommendation to use separate ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "HEvvm",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Market recorders actually use different stream types so no benefit when sharing an instance, hence recommendation to use separate "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "subtype": "channel_join",
+        "user": "U02TZNSVC3Y",
+        "text": "<@U02TZNSVC3Y> has joined the channel",
+        "type": "message",
+        "ts": "1642248211.025000"
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1642250688.025400",
+        "client_msg_id": "b5527d7d-8602-40b7-be84-21af89432b57",
+        "text": "Cool, I will make that change then :slightly_smiling_face: Thanks all!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "jcu",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Cool, I will make that change then "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "slightly_smiling_face",
+                                "unicode": "1f642"
+                            },
+                            {
+                                "type": "text",
+                                "text": " Thanks all!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UPMUFSGCR",
+        "type": "message",
+        "ts": "1642281502.027900",
+        "client_msg_id": "5e0fecd8-065f-4960-b480-27a9109c691e",
+        "text": "When doing A\/B testing, what do people use to check whether to choose A or B?\n\nSo I have a strategy, and given a market_id, I want to always choose the same A or B, but at random.\n\nI currently have the following code, but it is the slowest part of my program and is causing performance issues:\n\n```def rand_int_from_market_id(\n        market_id: str,\n        low: int=0,\n        high: int = 2\n):\n    \"\"\"\n    Deterministic way to generate a random int from a market id.\n    The purpose of this is to help us do A\/B testing\n    Parameters\n    ----------\n    market_id\n\n    Returns\n    -------\n\n    \"\"\"\n    seed = int(market_id.replace('.', ''[-6:]))\n    state = np.random.RandomState(seed)\n    return state.randint(low, high)```\nWould it be safe to just choose odd market ids for A, and even numbers for B? Or could something like this be safer:\n\n```(((market_id % 7) % 5) % 3) % 2```\n",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "31c0bb5a442c",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2019-10-28\/812386967189_31c0bb5a442c5b8d2c61_72.png",
+            "first_name": "Jon",
+            "real_name": "Jon Jon Jon Jon Jon Jon Jon Jon",
+            "display_name": "Jonjonjon",
+            "team": "T4G9NBD2M",
+            "name": "fcmisc",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "JIiz",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "When doing A\/B testing, what do people use to check whether to choose A or B?\n\nSo I have a strategy, and given a market_id, I want to always choose the same A or B, but at random.\n\nI currently have the following code, but it is the slowest part of my program and is causing performance issues:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "def rand_int_from_market_id(\n        market_id: str,\n        low: int=0,\n        high: int = 2\n):\n    \"\"\"\n    Deterministic way to generate a random int from a market id.\n    The purpose of this is to help us do A\/B testing\n    Parameters\n    ----------\n    market_id\n\n    Returns\n    -------\n\n    \"\"\"\n    seed = int(market_id.replace('.', ''[-6:]))\n    state = np.random.RandomState(seed)\n    return state.randint(low, high)"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\nWould it be safe to just choose odd market ids for A, and even numbers for B? Or could something like this be safer:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "(((market_id % 7) % 5) % 3) % 2"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": []
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UUCD6P13J",
+        "type": "message",
+        "ts": "1642283165.033000",
+        "client_msg_id": "B4E23F51-0CE4-4630-A50A-E41813E60101",
+        "text": "I’ve tried using part of the market id before but gives quite a poor distribution. I use random to pick a side when a market is added.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6898272ab81",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6898272ab810e419c2c9ca9af1e53da8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0012-72.png",
+            "first_name": "Lee",
+            "real_name": "Lee U",
+            "display_name": "Lee",
+            "team": "T4G9NBD2M",
+            "name": "lunswor",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "CXU",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I’ve tried using part of the market id before but gives quite a poor distribution. I use random to pick a side when a market is added."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "rocket",
+                "users": [
+                    "UPMUFSGCR"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "UPMUFSGCR",
+        "type": "message",
+        "ts": "1642283545.033500",
+        "client_msg_id": "7f484d2e-e340-468e-b4b6-0aa17a94efe2",
+        "text": "I realised I can just use lru_cache on the function above.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "31c0bb5a442c",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2019-10-28\/812386967189_31c0bb5a442c5b8d2c61_72.png",
+            "first_name": "Jon",
+            "real_name": "Jon Jon Jon Jon Jon Jon Jon Jon",
+            "display_name": "Jonjonjon",
+            "team": "T4G9NBD2M",
+            "name": "fcmisc",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "EW8Z",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I realised I can just use lru_cache on the function above."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UUCD6P13J",
+        "type": "message",
+        "ts": "1642283589.034000",
+        "client_msg_id": "498A0972-D412-409F-B7F4-96DDEF3942E3",
+        "text": "Or just call it once and store in context",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6898272ab81",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6898272ab810e419c2c9ca9af1e53da8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0012-72.png",
+            "first_name": "Lee",
+            "real_name": "Lee U",
+            "display_name": "Lee",
+            "team": "T4G9NBD2M",
+            "name": "lunswor",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "WJDm",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Or just call it once and store in context"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "100",
+                "users": [
+                    "UPMUFSGCR"
+                ],
+                "count": 1
+            }
+        ]
+    }
+]

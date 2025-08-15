@@ -1,0 +1,303 @@
+[
+    {
+        "text": "Hello all,\n\nPlease, does anyone suggest a way to get a historical database for the Corner`s event in a timeline view (minute of the event) ? Thanks!",
+        "files": [
+            {
+                "id": "F047J02A5T8",
+                "mode": "hidden_by_limit"
+            }
+        ],
+        "upload": false,
+        "user": "U046459BYCV",
+        "display_as_bot": false,
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "TFdHf",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Hello all,\n\nPlease, does anyone suggest a way to get a historical database for the Corner`s event in a timeline view (minute of the event) ? Thanks!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "type": "message",
+        "ts": "1666533343.817339",
+        "edited": {
+            "user": "U046459BYCV",
+            "ts": "1666533399.000000"
+        },
+        "client_msg_id": "b1d93fee-d1a1-48bc-995d-f57ed351e7cd",
+        "thread_ts": "1666533343.817339",
+        "reply_count": 6,
+        "reply_users_count": 3,
+        "latest_reply": "1667613485.668829",
+        "reply_users": [
+            "UBS7QANF3",
+            "U046459BYCV",
+            "U013ZS16QJZ"
+        ],
+        "replies": [
+            {
+                "user": "UBS7QANF3",
+                "ts": "1666537076.581489"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1666537409.376739"
+            },
+            {
+                "user": "U046459BYCV",
+                "ts": "1666539243.809629"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1666539503.874249"
+            },
+            {
+                "user": "U013ZS16QJZ",
+                "ts": "1667613405.108769"
+            },
+            {
+                "user": "U013ZS16QJZ",
+                "ts": "1667613485.668829"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": false
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1666537076.581489",
+        "client_msg_id": "A211738D-61AF-4845-ADD3-2B7DF9B03DD3",
+        "text": "You want to scrape the inplayservice endpoint <https:\/\/github.com\/betcode-org\/betfair\/blob\/master\/betfairlightweight\/endpoints\/inplayservice.py|https:\/\/github.com\/betcode-org\/betfair\/blob\/master\/betfairlightweight\/endpoints\/inplayservice.py>",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1666533343.817339",
+        "parent_user_id": "U046459BYCV",
+        "attachments": [
+            {
+                "id": 1,
+                "footer_icon": "https:\/\/slack.github.com\/static\/img\/favicon-neutral.png",
+                "color": "24292f",
+                "bot_id": "B021ZJYSBMW",
+                "app_unfurl_url": "https:\/\/github.com\/betcode-org\/betfair\/blob\/master\/betfairlightweight\/endpoints\/inplayservice.py",
+                "is_app_unfurl": true,
+                "app_id": "A01BP7R4KNY",
+                "fallback": "<https:\/\/github.com\/betcode-org\/betfair\/blob\/master\/betfairlightweight\/endpoints\/inplayservice.py | inplayservice.py>",
+                "text": "```\nimport time\nimport requests\nfrom typing import Union, List\n\nfrom ..exceptions import APIError, InvalidResponse\nfrom ..utils import check_status_code\nfrom .baseendpoint import BaseEndpoint\nfrom .. import resources\nfrom ..compat import json\n\n\nclass InPlayService(BaseEndpoint):\n    \"\"\"\n    In play service operations.\n    \"\"\"\n\n    def get_event_timeline(\n        self, event_id: int, session: requests.Session = None, lightweight: bool = None\n    ) -> Union[list, resources.EventTimeline]:\n        \"\"\"\n        Returns event timeline for event id provided.\n\n        :param int event_id: Event id to return\n        :param requests.session session: Requests session object\n        :param bool lightweight: If True will return dict not a resource\n\n        :rtype: resources.EventTimeline\n        \"\"\"\n        url = \"%s%s\" % (self.url, \"eventTimeline\")\n        params = {\n            \"eventId\": event_id,\n            \"alt\": \"json\",\n            \"regionCode\": \"UK\",\n            \"locale\": \"en_GB\",\n        }\n        (response, response_json, elapsed_time) = self.request(\n            params=params, session=session, url=url\n        )\n        return self.process_response(\n            response_json, resources.EventTimeline, elapsed_time, lightweight\n        )\n\n    def get_event_timelines(\n        self,\n        event_ids: list,\n        session: requests.Session = None,\n        lightweight: bool = None,\n    ) -> Union[list, List[resources.EventTimeline]]:\n        \"\"\"\n        Returns a list of event timelines based on event id's\n        supplied.\n\n        :param list event_ids: List of event id's to return\n        :param requests.session session: Requests session object\n        :param bool lightweight: If True will return dict not a resource\n\n        :rtype: list[resources.EventTimeline]\n        \"\"\"\n        url = \"%s%s\" % (self.url, \"eventTimelines\")\n        params = {\n            \"eventIds\": \",\".join(str(x) for x in event_ids),\n            \"alt\": \"json\",\n            \"regionCode\": \"UK\",\n            \"locale\": \"en_GB\",\n        }\n        (response, response_json, elapsed_time) = self.request(\n            params=params, session=session, url=url\n        )\n        return self.process_response(\n            response_json, resources.EventTimeline, elapsed_time, lightweight\n        )\n\n    def get_scores(\n        self,\n        event_ids: list,\n        session: requests.Session = None,\n        lightweight: bool = None,\n    ) -> Union[list, List[resources.Scores]]:\n        \"\"\"\n        Returns a list of scores based on event id's\n        supplied.\n\n        :param list event_ids: List of event id's to return\n        :param requests.session session: Requests session object\n        :param bool lightweight: If True will return dict not a resource\n\n        :rtype: list[resources.Scores]\n        \"\"\"\n        url = \"%s%s\" % (self.url, \"scores\")\n        params = {\n            \"eventIds\": \",\".join(str(x) for x in event_ids),\n            \"alt\": \"json\",\n            \"regionCode\": \"UK\",\n            \"locale\": \"en_GB\",\n        }\n        (response, response_json, elapsed_time) = self.request(\n            params=params, session=session, url=url\n        )\n        return self.process_response(\n            response_json, resources.Scores, elapsed_time, lightweight\n        )\n\n    def request(\n        self,\n        method: str = None,\n        params: dict = None,\n        session: requests.Session = None,\n        url: str = None,\n    ) -> (dict, float):\n        session = session or self.client.session\n        time_sent = time.time()\n        try:\n            response = session.get(\n                url,\n                params=params,\n                headers=self.headers,\n                timeout=(self.connect_timeout, self.read_timeout),\n            )\n        except requests.ConnectionError as e:\n            raise APIError(None, method, params, e)\n        except Exception as e:\n            raise APIError(None, method, params, e)\n        elapsed_time = time.time() - time_sent\n\n        check_status_code(response)\n        try:\n            response_json = json.loads(response.content.decode(\"utf-8\"))\n        except ValueError:\n            raise InvalidResponse(response.text)\n\n        return response, response_json, elapsed_time\n\n    @property\n    def headers(self) -> dict:\n        return {\"Connection\": \"keep-alive\", \"Content-Type\": \"application\/json\"}\n\n    @property\n    def url(self) -> str:\n        return \"<https:\/\/ips.betfair.com\/inplayservice\/v1.1\/>\"\n\n```",
+                "title": "<https:\/\/github.com\/betcode-org\/betfair\/blob\/master\/betfairlightweight\/endpoints\/inplayservice.py | inplayservice.py>",
+                "footer": "<https:\/\/github.com\/betcode-org\/betfair|betcode-org\/betfair>",
+                "mrkdwn_in": [
+                    "text"
+                ]
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "69lv3",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "You want to scrape the inplayservice endpoint "
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/betcode-org\/betfair\/blob\/master\/betfairlightweight\/endpoints\/inplayservice.py",
+                                "text": "https:\/\/github.com\/betcode-org\/betfair\/blob\/master\/betfairlightweight\/endpoints\/inplayservice.py"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1666537098.460359",
+        "client_msg_id": "70797C03-9033-47B1-B005-DD3D3E122930",
+        "text": "They had some problems with that endpoint a couple of days ago. Should be fixed now",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1666497326.514149",
+        "parent_user_id": "U015RCWABRV",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "4CLk",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "They had some problems with that endpoint a couple of days ago"
+                            },
+                            {
+                                "type": "text",
+                                "text": "."
+                            },
+                            {
+                                "type": "text",
+                                "text": " Should be fixed now"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1666537409.376739",
+        "client_msg_id": "B6164CE5-4F85-4988-8751-985528FB8A31",
+        "text": "Not available historically ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1666533343.817339",
+        "parent_user_id": "U046459BYCV",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "3g=dV",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Not available historically "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "text": "I`m afraid the inplayservice doesn`t return corner:",
+        "files": [
+            {
+                "id": "F0483AFH6D7",
+                "mode": "hidden_by_limit"
+            },
+            {
+                "id": "F048ECAS4BS",
+                "mode": "hidden_by_limit"
+            }
+        ],
+        "upload": false,
+        "user": "U046459BYCV",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "DJe",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I`m afraid the inplayservice doesn`t return corner:"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "type": "message",
+        "ts": "1666539243.809629",
+        "client_msg_id": "297501d4-2b74-451c-a03e-898be839a247",
+        "thread_ts": "1666533343.817339",
+        "parent_user_id": "U046459BYCV"
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1666539503.874249",
+        "client_msg_id": "e61bba4f-b8a8-4aa1-8b80-2bf159072f29",
+        "text": "Sorry you're right, it'll only be cards and goals",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1666533343.817339",
+        "parent_user_id": "U046459BYCV",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "odP",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Sorry you're right, it'll only be cards and goals"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

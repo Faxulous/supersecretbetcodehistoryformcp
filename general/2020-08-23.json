@@ -1,0 +1,816 @@
+[
+    {
+        "text": "To anyone that uses FlumineBacktest... I've been experimenting with a slightly modified version of <https:\/\/betfairlightweight.slack.com\/files\/UPMUFSGCR\/F013J0H5F3M\/backtest_multi.py|backtest_multi.py> using simple strategies and running them on a low spec AWS Lightsail instance (1 CPU, 2gb RAM).\n\nIterating 100 markets takes about 3.5 minutes - is that normal?",
+        "files": [
+            {
+                "id": "F013J0H5F3M",
+                "created": 1589315889,
+                "timestamp": 1589315889,
+                "name": "backtest_multi.py",
+                "title": "backtest_multi.py",
+                "mimetype": "text\/plain",
+                "filetype": "python",
+                "pretty_type": "Python",
+                "user": "UPMUFSGCR",
+                "user_team": "T4G9NBD2M",
+                "editable": true,
+                "size": 2553,
+                "mode": "snippet",
+                "is_external": false,
+                "external_type": "",
+                "is_public": true,
+                "public_url_shared": false,
+                "display_as_bot": false,
+                "username": "",
+                "url_private": "https:\/\/files.slack.com\/files-pri\/T4G9NBD2M-F013J0H5F3M\/backtest_multi.py?t=xoxe-152328387089-8357743338709-8373272928225-dfe8ebcd8ca3d2f633bcafeb95191840",
+                "url_private_download": "https:\/\/files.slack.com\/files-pri\/T4G9NBD2M-F013J0H5F3M\/download\/backtest_multi.py?t=xoxe-152328387089-8357743338709-8373272928225-dfe8ebcd8ca3d2f633bcafeb95191840",
+                "permalink": "https:\/\/betcode-org.slack.com\/files\/UPMUFSGCR\/F013J0H5F3M\/backtest_multi.py",
+                "permalink_public": "https:\/\/slack-files.com\/T4G9NBD2M-F013J0H5F3M-f520f6ee1a",
+                "edit_link": "https:\/\/betcode-org.slack.com\/files\/UPMUFSGCR\/F013J0H5F3M\/backtest_multi.py\/edit",
+                "is_starred": false,
+                "has_rich_preview": false,
+                "file_access": "visible"
+            }
+        ],
+        "upload": false,
+        "user": "U016TGY3676",
+        "display_as_bot": false,
+        "x_files": [
+            "F013J0H5F3M"
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "v5Iw",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "To anyone that uses FlumineBacktest... I've been experimenting with a slightly modified version of "
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/betfairlightweight.slack.com\/files\/UPMUFSGCR\/F013J0H5F3M\/backtest_multi.py",
+                                "text": "backtest_multi.py"
+                            },
+                            {
+                                "type": "text",
+                                "text": " using simple strategies and running them on a low spec AWS Lightsail instance (1 CPU, 2gb RAM).\n\nIterating 100 markets takes about 3.5 minutes - is that normal?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "type": "message",
+        "ts": "1598171342.144900",
+        "client_msg_id": "45150e59-9209-4ca8-9953-88f97ba88e43"
+    },
+    {
+        "user": "UUCD6P13J",
+        "type": "message",
+        "ts": "1598171731.148300",
+        "client_msg_id": "EB92B0C2-0135-4C2B-84AC-8CBF13D303CD",
+        "text": "Sounds reasonable. The process pool you have set to 24 workers but with only 1 cpu will not give any benefit and potentially even slow things down",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6898272ab81",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6898272ab810e419c2c9ca9af1e53da8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0012-72.png",
+            "first_name": "Lee",
+            "real_name": "Lee U",
+            "display_name": "Lee",
+            "team": "T4G9NBD2M",
+            "name": "lunswor",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "2nvn",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Sounds reasonable. The process pool you have set to 24 workers but with only 1 cpu will not give any benefit and potentially even slow things down"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U016TGY3676",
+        "type": "message",
+        "ts": "1598174441.157300",
+        "client_msg_id": "d1ea758c-4851-4c2b-bf55-31036a30d354",
+        "text": "I've got workers=multiprocessing.cpu_count(), which in this case is 1. When testing the same strategy against pickled data gathered by my bespokebots polling library at 1 second intervals, backtesting 100 markets completes in a few seconds, which is why I'm wondering if 3.5 minutes is normal. The bigger issue is when I test against 1000+ markets as it's going to take hours rather than minutes. :thinking_face:",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6a681220e11",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6a681220e11c1a2ed3685375d658dadb.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0001-72.png",
+            "first_name": "",
+            "real_name": "birchy",
+            "display_name": "birchy",
+            "team": "T4G9NBD2M",
+            "name": "birchy",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "NfA",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I've got workers=multiprocessing.cpu_count(), which in this case is 1. When testing the same strategy against pickled data gathered by my bespokebots polling library at 1 second intervals, backtesting 100 markets completes in a few seconds, which is why I'm wondering if 3.5 minutes is normal. The bigger issue is when I test against 1000+ markets as it's going to take hours rather than minutes. "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "thinking_face",
+                                "unicode": "1f914"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U016535QCJ2",
+        "type": "message",
+        "ts": "1598177097.158400",
+        "client_msg_id": "11d1030f-5065-430b-9b27-6695b202233d",
+        "text": "Just for my own curiosity, how many \"streaming price updates\" do you process per second (roughly)?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "048f61bdc189",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-07-01\/1216267094995_048f61bdc189acecaafc_72.jpg",
+            "first_name": "Misha",
+            "real_name": "Misha Charrett",
+            "display_name": "Misha",
+            "team": "T4G9NBD2M",
+            "name": "misha",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "d95c",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Just for my own curiosity, how many \"streaming price updates\" do you process per second (roughly)?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U016TGY3676",
+        "type": "message",
+        "ts": "1598178188.159300",
+        "client_msg_id": "050f1486-f235-49be-ab4a-057ae1bf544a",
+        "text": "In Flumine or my lib?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6a681220e11",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6a681220e11c1a2ed3685375d658dadb.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0001-72.png",
+            "first_name": "",
+            "real_name": "birchy",
+            "display_name": "birchy",
+            "team": "T4G9NBD2M",
+            "name": "birchy",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "oszH",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "In Flumine or my lib?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U016535QCJ2",
+        "type": "message",
+        "ts": "1598180269.160100",
+        "client_msg_id": "f3cf2760-c53b-40c8-8b15-6fd39dbef681",
+        "text": "For historical data. The number of updates live is limited by how many there are at the time :wink:",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "048f61bdc189",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-07-01\/1216267094995_048f61bdc189acecaafc_72.jpg",
+            "first_name": "Misha",
+            "real_name": "Misha Charrett",
+            "display_name": "Misha",
+            "team": "T4G9NBD2M",
+            "name": "misha",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Qeu",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "For historical data. The number of updates live is limited by how many there are at the time "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "wink",
+                                "unicode": "1f609"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U016535QCJ2",
+        "type": "message",
+        "ts": "1598180311.160500",
+        "client_msg_id": "fa4cea51-7c9b-4601-a41d-1727b493fd2a",
+        "text": "(maybe that wasn't a good answer)",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "048f61bdc189",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-07-01\/1216267094995_048f61bdc189acecaafc_72.jpg",
+            "first_name": "Misha",
+            "real_name": "Misha Charrett",
+            "display_name": "Misha",
+            "team": "T4G9NBD2M",
+            "name": "misha",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "niq",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "(maybe that wasn't a good answer)"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U016535QCJ2",
+        "type": "message",
+        "ts": "1598180319.160800",
+        "client_msg_id": "2d888e9e-6ce5-457f-b1dd-ee4ef2117482",
+        "text": "So let's just say your lib",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "048f61bdc189",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-07-01\/1216267094995_048f61bdc189acecaafc_72.jpg",
+            "first_name": "Misha",
+            "real_name": "Misha Charrett",
+            "display_name": "Misha",
+            "team": "T4G9NBD2M",
+            "name": "misha",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "3WS",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "So let's just say your lib"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1598180686.161400",
+        "client_msg_id": "68F9D93D-A3AC-49DC-A41A-2E49AF71FB1C",
+        "text": "<@U016TGY3676> 100 markets in a few seconds? How?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "G88ts",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "user",
+                                "user_id": "U016TGY3676"
+                            },
+                            {
+                                "type": "text",
+                                "text": " 100 markets in a few seconds? How?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1598180714.162000",
+        "client_msg_id": "D2F26FB1-6B3B-4E4F-84C1-AD30B57839E3",
+        "text": "Ah 1 second intervals ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "RnVl",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Ah 1 second intervals "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "UBS7QANF3"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "U016TGY3676",
+        "type": "message",
+        "ts": "1598182340.170300",
+        "client_msg_id": "98d354ff-6543-4669-8d95-b7c5a37b0ca5",
+        "text": "1 second intervals, saving market when LTP or volume has changed and only saving data from 30 minutes before scheduled start time. My data is much smaller to start with, so one market is only a few mb as a pickle file. Obviously I lose a lot of the updates that happened in the 1 second between calls.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6a681220e11",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6a681220e11c1a2ed3685375d658dadb.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0001-72.png",
+            "first_name": "",
+            "real_name": "birchy",
+            "display_name": "birchy",
+            "team": "T4G9NBD2M",
+            "name": "birchy",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Qf17",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "1 second intervals, saving market when LTP or volume has changed and only saving data from 30 minutes before scheduled start time. My data is much smaller to start with, so one market is only a few mb as a pickle file. Obviously I lose a lot of the updates that happened in the 1 second between calls."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U016535QCJ2",
+        "type": "message",
+        "ts": "1598182637.172100",
+        "client_msg_id": "78f97727-f2f4-4673-9a98-72b82c24e1f4",
+        "text": "If you aren't \"trading\" so much as checking the price at certain intervals, having a second-by-second summary is very useful. I do this for tennis as I am only interested in the price at a particular time for back testing\/modelling",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "048f61bdc189",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-07-01\/1216267094995_048f61bdc189acecaafc_72.jpg",
+            "first_name": "Misha",
+            "real_name": "Misha Charrett",
+            "display_name": "Misha",
+            "team": "T4G9NBD2M",
+            "name": "misha",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "w+KC",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "If you aren't \"trading\" so much as checking the price at certain intervals, having a second-by-second summary is very useful. I do this for tennis as I am only interested in the price at a particular time for back testing\/modelling"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U016535QCJ2",
+        "type": "message",
+        "ts": "1598182710.173500",
+        "edited": {
+            "user": "U016535QCJ2",
+            "ts": "1598182730.000000"
+        },
+        "client_msg_id": "1cf80141-ed83-479c-98ec-281f257e506d",
+        "text": "In fact I process the historical stream for tennis in two phases. Firstly I pre-parse the full stream to get a list of one-second summaries for all markets and all times. Then I can process this to get specific snapshot prices and put them into a database",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "048f61bdc189",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-07-01\/1216267094995_048f61bdc189acecaafc_72.jpg",
+            "first_name": "Misha",
+            "real_name": "Misha Charrett",
+            "display_name": "Misha",
+            "team": "T4G9NBD2M",
+            "name": "misha",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "2o4",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "In fact I process the historical stream for tennis in two phases. Firstly I pre-parse the full stream to get a list of one-second summaries for all markets and all times. Then I can process this to get specific snapshot prices and put them into a database"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "U016TGY3676"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "U016TGY3676",
+        "type": "message",
+        "ts": "1598185110.187100",
+        "edited": {
+            "user": "U016TGY3676",
+            "ts": "1598185178.000000"
+        },
+        "client_msg_id": "db13eab7-7191-46f0-94f4-5e17c6600b0d",
+        "text": "All of my strategies are based on some form of \"value\" betting, so as such my bots already have a pre-calculated \"true price\" they work from. Obviously the trigger prices change as the market develops\/new info is acquired, etc. For that reason, I'm only really backtesting if the bets would of been matched and for that, 1 second intervals is sufficient. \nI want to investigate trading and for that, I think streaming is pretty much essential and it seems pointless writing my own when bflw\/flumine exists.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6a681220e11",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6a681220e11c1a2ed3685375d658dadb.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0001-72.png",
+            "first_name": "",
+            "real_name": "birchy",
+            "display_name": "birchy",
+            "team": "T4G9NBD2M",
+            "name": "birchy",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "QbR",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "All of my strategies are based on some form of \"value\" betting, so as such my bots already have a pre-calculated \"true price\" they work from. Obviously the trigger prices change as the market develops\/new info is acquired, etc. For that reason, I'm only really backtesting if the bets would of been matched and for that, 1 second intervals is sufficient. \nI want to investigate trading and for that, I think streaming is pretty much essential and it seems pointless writing my own when bflw\/flumine exists."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "U016535QCJ2",
+                    "U4H19D1D2"
+                ],
+                "count": 2
+            }
+        ]
+    },
+    {
+        "user": "U016535QCJ2",
+        "type": "message",
+        "ts": "1598185304.188900",
+        "client_msg_id": "6fc6d77a-2859-4856-b2ef-266e0c080725",
+        "text": "Similar for me. Will be running from calculated probabilities (and tennis in-play has a 3 second delay anyway), so a snapshot at a particular time lets me know the price and volume available",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "048f61bdc189",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-07-01\/1216267094995_048f61bdc189acecaafc_72.jpg",
+            "first_name": "Misha",
+            "real_name": "Misha Charrett",
+            "display_name": "Misha",
+            "team": "T4G9NBD2M",
+            "name": "misha",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "wamNJ",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Similar for me. Will be running from calculated probabilities (and tennis in-play has a 3 second delay anyway), so a snapshot at a particular time lets me know the price and volume available"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "100",
+                "users": [
+                    "U016TGY3676"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1598192327.193800",
+        "client_msg_id": "232922B8-444E-404C-93DA-BE4ABEB19EA8",
+        "text": "So streaming data contains all\/any updates which is probably 50-100x more data to process over a markets lifetime. This doesn’t include the limiting to 30minutes, however you can limit the data to process in flumine with the following on the market filter `”... listener_kwargs”: {“seconds_to_start”: 600, “inplay”: False}`",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "DRaB",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "So streaming data contains all\/any updates which is probably 50-100x more data to process over a markets lifetime. This doesn’t include the limiting to 30minutes, however you can limit the data to process in flumine with the following on the market filter "
+                            },
+                            {
+                                "type": "text",
+                                "text": "”... listener_kwargs”: {“seconds_to_start”: 600, “inplay”: False}",
+                                "style": {
+                                    "code": true
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "U016TGY3676"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "U016TGY3676",
+        "type": "message",
+        "ts": "1598196619.196300",
+        "client_msg_id": "ce04ce8a-5cde-4736-827f-7536d66584b7",
+        "text": "<@U4H19D1D2> I don't have access to the backtest source code right now, but I presume that if `market_book.inplay=True` then all preplay data is ignored?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6a681220e11",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6a681220e11c1a2ed3685375d658dadb.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0001-72.png",
+            "first_name": "",
+            "real_name": "birchy",
+            "display_name": "birchy",
+            "team": "T4G9NBD2M",
+            "name": "birchy",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "NXuL",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "user",
+                                "user_id": "U4H19D1D2"
+                            },
+                            {
+                                "type": "text",
+                                "text": " I don't have access to the backtest source code right now, but I presume that if "
+                            },
+                            {
+                                "type": "text",
+                                "text": "market_book.inplay=True",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " then all preplay data is ignored?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1598196633.196500",
+        "client_msg_id": "C0967768-8E67-43AF-B95D-ABD85DDE6102",
+        "text": "Yep",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "yV2",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Yep"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "U016TGY3676"
+                ],
+                "count": 1
+            }
+        ]
+    }
+]

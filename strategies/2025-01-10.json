@@ -1,0 +1,1741 @@
+[
+    {
+        "text": "I haven't really settled on a definitive schedule for publishing these but I figured I'd probably be too busy this weekend so I'm getting this week's update in early\n\nIt's been a hard and frustrating week grinding away on `Strategy2`\n\nFirst up, as mentioned in my <https:\/\/betcode-org.slack.com\/archives\/CTPL3R3FU\/p1736081164005719|last post>, I increased stakes on `Strategy0` and `Strategy1` on Monday (2025-01-06). My plan is for these to increase in line with the notional bankroll I have set aside for this collection of personal strategies, and for this bankroll to grow organically. If I find a strategy that I'm extremely bullish on and think it could benefit from an injection of capital then I will obviously do so but that's not (yet?) the case for `Strategy0` or `Strategy1`.\n\nSo, `Strategy2`. I've been alternating between thinking I've cracked it and thinking all I have is a horribly overfit hot mess. I started off very quickly making progress in overhauling the model and staking which:\n\n1. Permitted trading on all runners, not just the favourite\n2. Widened the number of markets that could potentially be traded\n3. Takes current position into account, hopefully resulting in smoother returns\nThe progress was such that on Wednesday (2025-01-08), I switched off \"V1\" and deployed \"V2\". I observed the bets for V2 in a few races and noticed it wasn't doing a great job of beating BSP. Small sample size obviously but I decided to switch it off and dig into the backtests a bit more\n\nFirst up I confirmed in the backtest that bets which beat BSP do great and bets which don't beat BSP are bad. So it's not like my model is so good that it can identify times BSP is wrong (at least in aggregate)\n\nThis strategy and, to a lesser extent, `Strategy1`, has a variety of filters applied to the trading signals. Things like requiring a minimum expected ROI (EROI) to bet, but also not exceeding a maximum EROI. Also some traded volume and other market \"quality\" indicators like overround\/spread in an attempt to restrict to situations where confidence in the model predictions is likely to be highest\n\nInitially I had optimised these filters using backtest realised returns but based on my increased understanding of the importance of beating BSP for this strategy, I went back and included expected value calculations in the optimisation process. This suggested that I'd overfit many of these filters and so I went back and re-optimised them using expected value with the result that several of the filters were discarded in their entirety. The backtest performance although arguably now more likely to reflect future returns looked significantly less impressive by the end of this process\n\nFor both backtesting and the live trading that's been done with the strategy, such that it is, I've been focusing on UK horse racing. However, I'm very keen to get it working in other jurisdictions and also on greyhounds. For obvious reasons:\n\n1. The more markets it can trade, the quicker live feedback can be had\n2. More markets traded = smoother returns\n3. If it can widely scaled then the per bet performance doesn't need to be amazing\nI do have some problems with lack of data, however:\n\n1. I haven't been scraping greyhound markets for very long\n2. I only realised this week I haven't been scraping horse racing `OTHER_PLACE` markets (now corrected)\n3. No doubt there are other market types I'm still not scraping that I am ultimately interested in (e.g. Each Way, AvB, Without favourite, all exactas\/quinellas\/forecasts\/reverse forecasts\/perfectas\/superfectas\/trifectas\/etc. and all aliases thereof)\nThis lack of market data to backtest against is one reason why I'm so keen to nail down the model building process and to rely less heavily on the market based filters. If I can be confident that I'm building a market beating model in cases where I do have the market data, then I am more inclined to cautiously deploy the model to other markets and rely on live results for feedback\n\nI mentioned in my last update that as part of this strategy I wanted to look at extending both Shin's method and Kelly staking to handle markets with multiple winners. I've had some generic insights into these that I think people may find useful:\n\n1. The R package <https:\/\/cran.r-project.org\/web\/packages\/implied\/index.html|implied> already implements Shin's method for multiple winners. However, it simply finds a value of `z` numerically using the existing formula. I don't believe this is correct as the starting assumptions under which Shin derived his model are not applicable for multiple winners. Nevertheless, this approach may be practically useful if not conceptually sound\n2. A recently developed alternative to Shin is <https:\/\/github.com\/gotoConversion\/goto_conversion|GOTO (Gambling Odds To Outcome) Conversion>. This method apparently has serious chops, having been used in several gold medal winning solutions on Kaggle. It appears to be able to handle cases with multiple winners trivially. However, I observed some issues using the method in practice. Firstly, the code does not seem to be very well written, requiring me to fork the repo and make some changes. Secondly, the method produced negative probabilities for the BSP on a completely unremarkable horse racing WIN market. Also worth noting that most if not all of the motivating analysis supporting the method focuses on markets with few winners like football and therefore there's much weaker evidence that it would outperform Shin in horse racing. The repo is not configured for me to create a GitHub issue to discuss these concerns with the author so I have reached out to him on LinkedIn but have yet to receive a response\n3. ChatGPT, o1 specifically, has been extremely useful for strategic discussions about developing `Strategy2`. In my opinion, a product like it is becoming increasingly essential if you work by yourself\n4. I'm no longer planning on extending Kelly staking to handle market with multiple winners but while looking at it I noticed that the way I've always done fractional Kelly staking is wrong. This has implications for my existing strategies and it's gratifying that looking at new markets in new ways can lead to widely applicable fresh insights in this way\nUpdate on performance with reference to the attached plots:\n\n1. I got rotated back into the syndicate strategies for a day, made a load of money and got rotated out\n2. New strategies took a few days to dig themselves out of the hole but they've done it\n3. Looks like `Strategy1` in play is really carrying water\nNew strategies net profit up to 0.77% (from 0.4%) of net profit of existing strategies so everything is moving in the right direction!\n\nPlan for the coming week is to continue to grind away on `Strategy2`, mainly focusing on the model, and hopefully getting it to the point where it can be redeployed to UK racing. Next step after that will be getting it deployed to Australian racing then US racing then perhaps rest of world if it seems worthwhile, followed by greyhounds. I haven't thought about what's next after `Strategy2` but last count I have ideas for 11 other strategies on my list. Other syndicate members will be back to work on Monday so I'll be back to working on existing strategies next week as well",
+        "files": [
+            {
+                "id": "F087XCWT4T0",
+                "created": 1736508134,
+                "timestamp": 1736508134,
+                "name": "cumulative-net-profit.png",
+                "title": "cumulative-net-profit.png",
+                "mimetype": "image\/png",
+                "filetype": "png",
+                "pretty_type": "PNG",
+                "user": "UBS7QANF3",
+                "user_team": "T4G9NBD2M",
+                "editable": false,
+                "size": 27300,
+                "mode": "hosted",
+                "is_external": false,
+                "external_type": "",
+                "is_public": true,
+                "public_url_shared": false,
+                "display_as_bot": false,
+                "username": "",
+                "url_private": "https:\/\/files.slack.com\/files-pri\/T4G9NBD2M-F087XCWT4T0\/cumulative-net-profit.png?t=xoxe-152328387089-8357743338709-8373272928225-dfe8ebcd8ca3d2f633bcafeb95191840",
+                "url_private_download": "https:\/\/files.slack.com\/files-pri\/T4G9NBD2M-F087XCWT4T0\/download\/cumulative-net-profit.png?t=xoxe-152328387089-8357743338709-8373272928225-dfe8ebcd8ca3d2f633bcafeb95191840",
+                "media_display_type": "unknown",
+                "thumb_64": "https:\/\/files.slack.com\/files-tmb\/T4G9NBD2M-F087XCWT4T0-7603615c7a\/cumulative-net-profit_64.png?t=xoxe-152328387089-8357743338709-8373272928225-dfe8ebcd8ca3d2f633bcafeb95191840",
+                "thumb_80": "https:\/\/files.slack.com\/files-tmb\/T4G9NBD2M-F087XCWT4T0-7603615c7a\/cumulative-net-profit_80.png?t=xoxe-152328387089-8357743338709-8373272928225-dfe8ebcd8ca3d2f633bcafeb95191840",
+                "thumb_360": "https:\/\/files.slack.com\/files-tmb\/T4G9NBD2M-F087XCWT4T0-7603615c7a\/cumulative-net-profit_360.png?t=xoxe-152328387089-8357743338709-8373272928225-dfe8ebcd8ca3d2f633bcafeb95191840",
+                "thumb_360_w": 360,
+                "thumb_360_h": 270,
+                "thumb_480": "https:\/\/files.slack.com\/files-tmb\/T4G9NBD2M-F087XCWT4T0-7603615c7a\/cumulative-net-profit_480.png?t=xoxe-152328387089-8357743338709-8373272928225-dfe8ebcd8ca3d2f633bcafeb95191840",
+                "thumb_480_w": 480,
+                "thumb_480_h": 360,
+                "thumb_160": "https:\/\/files.slack.com\/files-tmb\/T4G9NBD2M-F087XCWT4T0-7603615c7a\/cumulative-net-profit_160.png?t=xoxe-152328387089-8357743338709-8373272928225-dfe8ebcd8ca3d2f633bcafeb95191840",
+                "original_w": 640,
+                "original_h": 480,
+                "thumb_tiny": "AwAkADDRbPOKUDjmhe\/1pcn0oAMUYo59KOfSgBMZoxiloPSgBAOv1paQ9aQduetADqKb+PfFB789KAHUHpSd8ZpB296AHUYFFFABgUmOPWlooAMUYFFFAH\/\/2Q==",
+                "permalink": "https:\/\/betcode-org.slack.com\/files\/UBS7QANF3\/F087XCWT4T0\/cumulative-net-profit.png",
+                "permalink_public": "https:\/\/slack-files.com\/T4G9NBD2M-F087XCWT4T0-564a4a3406",
+                "is_starred": false,
+                "has_rich_preview": false,
+                "file_access": "visible"
+            },
+            {
+                "id": "F087PFFJ4QP",
+                "created": 1736508157,
+                "timestamp": 1736508157,
+                "name": "cumulative-net-profit-only-new.png",
+                "title": "cumulative-net-profit-only-new.png",
+                "mimetype": "image\/png",
+                "filetype": "png",
+                "pretty_type": "PNG",
+                "user": "UBS7QANF3",
+                "user_team": "T4G9NBD2M",
+                "editable": false,
+                "size": 35855,
+                "mode": "hosted",
+                "is_external": false,
+                "external_type": "",
+                "is_public": true,
+                "public_url_shared": false,
+                "display_as_bot": false,
+                "username": "",
+                "url_private": "https:\/\/files.slack.com\/files-pri\/T4G9NBD2M-F087PFFJ4QP\/cumulative-net-profit-only-new.png?t=xoxe-152328387089-8357743338709-8373272928225-dfe8ebcd8ca3d2f633bcafeb95191840",
+                "url_private_download": "https:\/\/files.slack.com\/files-pri\/T4G9NBD2M-F087PFFJ4QP\/download\/cumulative-net-profit-only-new.png?t=xoxe-152328387089-8357743338709-8373272928225-dfe8ebcd8ca3d2f633bcafeb95191840",
+                "media_display_type": "unknown",
+                "thumb_64": "https:\/\/files.slack.com\/files-tmb\/T4G9NBD2M-F087PFFJ4QP-003caf156a\/cumulative-net-profit-only-new_64.png?t=xoxe-152328387089-8357743338709-8373272928225-dfe8ebcd8ca3d2f633bcafeb95191840",
+                "thumb_80": "https:\/\/files.slack.com\/files-tmb\/T4G9NBD2M-F087PFFJ4QP-003caf156a\/cumulative-net-profit-only-new_80.png?t=xoxe-152328387089-8357743338709-8373272928225-dfe8ebcd8ca3d2f633bcafeb95191840",
+                "thumb_360": "https:\/\/files.slack.com\/files-tmb\/T4G9NBD2M-F087PFFJ4QP-003caf156a\/cumulative-net-profit-only-new_360.png?t=xoxe-152328387089-8357743338709-8373272928225-dfe8ebcd8ca3d2f633bcafeb95191840",
+                "thumb_360_w": 360,
+                "thumb_360_h": 270,
+                "thumb_480": "https:\/\/files.slack.com\/files-tmb\/T4G9NBD2M-F087PFFJ4QP-003caf156a\/cumulative-net-profit-only-new_480.png?t=xoxe-152328387089-8357743338709-8373272928225-dfe8ebcd8ca3d2f633bcafeb95191840",
+                "thumb_480_w": 480,
+                "thumb_480_h": 360,
+                "thumb_160": "https:\/\/files.slack.com\/files-tmb\/T4G9NBD2M-F087PFFJ4QP-003caf156a\/cumulative-net-profit-only-new_160.png?t=xoxe-152328387089-8357743338709-8373272928225-dfe8ebcd8ca3d2f633bcafeb95191840",
+                "original_w": 640,
+                "original_h": 480,
+                "thumb_tiny": "AwAkADDRIJ6GlxQvf60e9AC4oxRQaAE4oxS4oPSgBMYyPU0tJ3oBPHvQAZ4o6mk\/xoJPPtQA6g9KTnOM0nXHvQA6jAoooAMCkxx60tFABijAoooA\/9k=",
+                "permalink": "https:\/\/betcode-org.slack.com\/files\/UBS7QANF3\/F087PFFJ4QP\/cumulative-net-profit-only-new.png",
+                "permalink_public": "https:\/\/slack-files.com\/T4G9NBD2M-F087PFFJ4QP-1569f6be19",
+                "is_starred": false,
+                "has_rich_preview": false,
+                "file_access": "visible"
+            },
+            {
+                "id": "F088GN8M7FB",
+                "created": 1736508187,
+                "timestamp": 1736508187,
+                "name": "relative-profit.png",
+                "title": "relative-profit.png",
+                "mimetype": "image\/png",
+                "filetype": "png",
+                "pretty_type": "PNG",
+                "user": "UBS7QANF3",
+                "user_team": "T4G9NBD2M",
+                "editable": false,
+                "size": 32034,
+                "mode": "hosted",
+                "is_external": false,
+                "external_type": "",
+                "is_public": true,
+                "public_url_shared": false,
+                "display_as_bot": false,
+                "username": "",
+                "url_private": "https:\/\/files.slack.com\/files-pri\/T4G9NBD2M-F088GN8M7FB\/relative-profit.png?t=xoxe-152328387089-8357743338709-8373272928225-dfe8ebcd8ca3d2f633bcafeb95191840",
+                "url_private_download": "https:\/\/files.slack.com\/files-pri\/T4G9NBD2M-F088GN8M7FB\/download\/relative-profit.png?t=xoxe-152328387089-8357743338709-8373272928225-dfe8ebcd8ca3d2f633bcafeb95191840",
+                "media_display_type": "unknown",
+                "thumb_64": "https:\/\/files.slack.com\/files-tmb\/T4G9NBD2M-F088GN8M7FB-205ee76878\/relative-profit_64.png?t=xoxe-152328387089-8357743338709-8373272928225-dfe8ebcd8ca3d2f633bcafeb95191840",
+                "thumb_80": "https:\/\/files.slack.com\/files-tmb\/T4G9NBD2M-F088GN8M7FB-205ee76878\/relative-profit_80.png?t=xoxe-152328387089-8357743338709-8373272928225-dfe8ebcd8ca3d2f633bcafeb95191840",
+                "thumb_360": "https:\/\/files.slack.com\/files-tmb\/T4G9NBD2M-F088GN8M7FB-205ee76878\/relative-profit_360.png?t=xoxe-152328387089-8357743338709-8373272928225-dfe8ebcd8ca3d2f633bcafeb95191840",
+                "thumb_360_w": 360,
+                "thumb_360_h": 360,
+                "thumb_480": "https:\/\/files.slack.com\/files-tmb\/T4G9NBD2M-F088GN8M7FB-205ee76878\/relative-profit_480.png?t=xoxe-152328387089-8357743338709-8373272928225-dfe8ebcd8ca3d2f633bcafeb95191840",
+                "thumb_480_w": 480,
+                "thumb_480_h": 480,
+                "thumb_160": "https:\/\/files.slack.com\/files-tmb\/T4G9NBD2M-F088GN8M7FB-205ee76878\/relative-profit_160.png?t=xoxe-152328387089-8357743338709-8373272928225-dfe8ebcd8ca3d2f633bcafeb95191840",
+                "original_w": 600,
+                "original_h": 600,
+                "thumb_tiny": "AwAwADDS70uKRe\/1paAKdxPJHMVU4Ax2q2BxWfd\/8fDfhU7XTLN5e0YzjNU0SmWsUhFLQelSURv5oP7sJjvmmvB5uGdmVsYIU8VKw\/nQR0+tFxWIXtUdslmzgChrVGk3ktnOamI5FGPm\/CndhZCbW3Z3nHpgVXiuJHlCsoAPfBqzj5vwoHU0ADdPxoPUfWgjI\/GlxmkMQ\/eFH8Q+lKfWkHPPNAB\/EfpQPvGjHzZ9qXHOaAP\/2Q==",
+                "permalink": "https:\/\/betcode-org.slack.com\/files\/UBS7QANF3\/F088GN8M7FB\/relative-profit.png",
+                "permalink_public": "https:\/\/slack-files.com\/T4G9NBD2M-F088GN8M7FB-895bd047cb",
+                "is_starred": false,
+                "has_rich_preview": false,
+                "file_access": "visible"
+            }
+        ],
+        "upload": false,
+        "user": "UBS7QANF3",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "TwgUV",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I haven't really settled on a definitive schedule for publishing these but I figured I'd probably be too busy this weekend so I'm getting this week's update in early\n\nIt's been a hard and frustrating week grinding away on "
+                            },
+                            {
+                                "type": "text",
+                                "text": "Strategy2",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n\nFirst up, as mentioned in my "
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/betcode-org.slack.com\/archives\/CTPL3R3FU\/p1736081164005719",
+                                "text": "last post"
+                            },
+                            {
+                                "type": "text",
+                                "text": ", I increased stakes on "
+                            },
+                            {
+                                "type": "text",
+                                "text": "Strategy0",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " and "
+                            },
+                            {
+                                "type": "text",
+                                "text": "Strategy1",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " on Monday (2025-01-06). My plan is for these to increase in line with the notional bankroll I have set aside for this collection of personal strategies, and for this bankroll to grow organically. If I find a strategy that I'm extremely bullish on and think it could benefit from an injection of capital then I will obviously do so but that's not (yet?) the case for "
+                            },
+                            {
+                                "type": "text",
+                                "text": "Strategy0",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " or "
+                            },
+                            {
+                                "type": "text",
+                                "text": "Strategy1",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": ".\n\nSo, "
+                            },
+                            {
+                                "type": "text",
+                                "text": "Strategy2",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": ". I've been alternating between thinking I've cracked it and thinking all I have is a horribly overfit hot mess. I started off very quickly making progress in overhauling the model and staking which:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_list",
+                        "elements": [
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "Permitted trading on all runners, not just the favourite"
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "Widened the number of markets that could potentially be traded"
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "Takes current position into account, hopefully resulting in smoother returns"
+                                    }
+                                ]
+                            }
+                        ],
+                        "style": "ordered",
+                        "indent": 0,
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\nThe progress was such that on Wednesday (2025-01-08), I switched off \"V1\" and deployed \"V2\". I observed the bets for V2 in a few races and noticed it wasn't doing a great job of beating BSP. Small sample size obviously but I decided to switch it off and dig into the backtests a bit more\n\nFirst up I confirmed in the backtest that bets which beat BSP do great and bets which don't beat BSP are bad. So it's not like my model is so good that it can identify times BSP is wrong (at least in aggregate)\n\nThis strategy and, to a lesser extent, "
+                            },
+                            {
+                                "type": "text",
+                                "text": "Strategy1",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": ", has a variety of filters applied to the trading signals. Things like requiring a minimum expected ROI (EROI) to bet, but also not exceeding a maximum EROI. Also some traded volume and other market \"quality\" indicators like overround\/spread in an attempt to restrict to situations where confidence in the model predictions is likely to be highest\n\nInitially I had optimised these filters using backtest realised returns but based on my increased understanding of the importance of beating BSP for this strategy, I went back and included expected value calculations in the optimisation process. This suggested that I'd overfit many of these filters and so I went back and re-optimised them using expected value with the result that several of the filters were discarded in their entirety. The backtest performance although arguably now more likely to reflect future returns looked significantly less impressive by the end of this process\n\nFor both backtesting and the live trading that's been done with the strategy, such that it is, I've been focusing on UK horse racing. However, I'm very keen to get it working in other jurisdictions and also on greyhounds. For obvious reasons:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_list",
+                        "elements": [
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "The more markets it can trade, the quicker live feedback can be had"
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "More markets traded = smoother returns"
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "If it can widely scaled then the per bet performance doesn't need to be amazing"
+                                    }
+                                ]
+                            }
+                        ],
+                        "style": "ordered",
+                        "indent": 0,
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\nI do have some problems with lack of data, however:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_list",
+                        "elements": [
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "I haven't been scraping greyhound markets for very long"
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "I only realised this week I haven't been scraping horse racing "
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": "OTHER_PLACE",
+                                        "style": {
+                                            "code": true
+                                        }
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": " markets (now corrected)"
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "No doubt there are other market types I'm still not scraping that I am ultimately interested in (e.g. Each Way, AvB, Without favourite, all exactas\/quinellas\/forecasts\/reverse forecasts\/perfectas\/superfectas\/trifectas\/etc. and all aliases thereof)"
+                                    }
+                                ]
+                            }
+                        ],
+                        "style": "ordered",
+                        "indent": 0,
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\nThis lack of market data to backtest against is one reason why I'm so keen to nail down the model building process and to rely less heavily on the market based filters. If I can be confident that I'm building a market beating model in cases where I do have the market data, then I am more inclined to cautiously deploy the model to other markets and rely on live results for feedback\n\nI mentioned in my last update that as part of this strategy I wanted to look at extending both Shin's method and Kelly staking to handle markets with multiple winners. I've had some generic insights into these that I think people may find useful:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_list",
+                        "elements": [
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "The R package "
+                                    },
+                                    {
+                                        "type": "link",
+                                        "url": "https:\/\/cran.r-project.org\/web\/packages\/implied\/index.html",
+                                        "text": "implied"
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": " already implements Shin's method for multiple winners. However, it simply finds a value of "
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": "z",
+                                        "style": {
+                                            "code": true
+                                        }
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": " numerically using the existing formula. I don't believe this is correct as the starting assumptions under which Shin derived his model are not applicable for multiple winners. Nevertheless, this approach may be practically useful if not conceptually sound"
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "A recently developed alternative to Shin is "
+                                    },
+                                    {
+                                        "type": "link",
+                                        "url": "https:\/\/github.com\/gotoConversion\/goto_conversion",
+                                        "text": "GOTO (Gambling Odds To Outcome) Conversion"
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": ". This method apparently has serious chops, having been used in several gold medal winning solutions on Kaggle. It appears to be able to handle cases with multiple winners trivially. However, I observed some issues using the method in practice. Firstly, the code does not seem to be very well written, requiring me to fork the repo and make some changes. Secondly, the method produced negative probabilities for the BSP on a completely unremarkable horse racing WIN market. Also worth noting that most if not all of the motivating analysis supporting the method focuses on markets with few winners like football and therefore there's much weaker evidence that it would outperform Shin in horse racing. The repo is not configured for me to create a GitHub issue to discuss these concerns with the author so I have reached out to him on LinkedIn but have yet to receive a response"
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "ChatGPT, o1 specifically, has been extremely useful for strategic discussions about developing "
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": "Strategy2",
+                                        "style": {
+                                            "code": true
+                                        }
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": ". In my opinion, a product like it is becoming increasingly essential if you work by yourself"
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "I'm no longer planning on extending Kelly staking to handle market with multiple winners but while looking at it I noticed that the way I've always done fractional Kelly staking is wrong. This has implications for my existing strategies and it's gratifying that looking at new markets in new ways can lead to widely applicable fresh insights in this way"
+                                    }
+                                ]
+                            }
+                        ],
+                        "style": "ordered",
+                        "indent": 0,
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\nUpdate on performance with reference to the attached plots:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_list",
+                        "elements": [
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "I got rotated back into the syndicate strategies for a day, made a load of money and got rotated out"
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "New strategies took a few days to dig themselves out of the hole but they've done it"
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "Looks like "
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": "Strategy1",
+                                        "style": {
+                                            "code": true
+                                        }
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": " in play is really carrying water"
+                                    }
+                                ]
+                            }
+                        ],
+                        "style": "ordered",
+                        "indent": 0,
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\nNew strategies net profit up to 0.77% (from 0.4%) of net profit of existing strategies so everything is moving in the right direction!\n\nPlan for the coming week is to continue to grind away on "
+                            },
+                            {
+                                "type": "text",
+                                "text": "Strategy2",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": ", mainly focusing on the model, and hopefully getting it to the point where it can be redeployed to UK racing. Next step after that will be getting it deployed to Australian racing then US racing then perhaps rest of world if it seems worthwhile, followed by greyhounds. I haven't thought about what's next after "
+                            },
+                            {
+                                "type": "text",
+                                "text": "Strategy2",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " but last count I have ideas for 11 other strategies on my list. Other syndicate members will be back to work on Monday so I'll be back to working on existing strategies next week as well"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "type": "message",
+        "ts": "1736508241.279659",
+        "client_msg_id": "12238aa0-ab03-4ce8-959d-c1f3ecb6e8c4",
+        "thread_ts": "1736508241.279659",
+        "reply_count": 38,
+        "reply_users_count": 10,
+        "latest_reply": "1736886726.612799",
+        "reply_users": [
+            "U05N9773A23",
+            "UBS7QANF3",
+            "UUE6E1LA1",
+            "US2RWCWKY",
+            "U030GKBMCBF",
+            "U016TGY3676",
+            "U01PQ9SR9MJ",
+            "UPMUFSGCR",
+            "U0128E7BEHW",
+            "UNQGKT0CR"
+        ],
+        "replies": [
+            {
+                "user": "U05N9773A23",
+                "ts": "1736510489.030209"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1736511269.048309"
+            },
+            {
+                "user": "UUE6E1LA1",
+                "ts": "1736511353.445089"
+            },
+            {
+                "user": "U05N9773A23",
+                "ts": "1736511369.564459"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1736511809.010409"
+            },
+            {
+                "user": "US2RWCWKY",
+                "ts": "1736512063.103069"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1736512087.893469"
+            },
+            {
+                "user": "US2RWCWKY",
+                "ts": "1736512145.153099"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1736512203.547309"
+            },
+            {
+                "user": "UUE6E1LA1",
+                "ts": "1736512834.154249"
+            },
+            {
+                "user": "U030GKBMCBF",
+                "ts": "1736513016.155439"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1736513130.522459"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1736513238.236549"
+            },
+            {
+                "user": "U016TGY3676",
+                "ts": "1736515420.907269"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1736516324.095359"
+            },
+            {
+                "user": "U030GKBMCBF",
+                "ts": "1736518939.372009"
+            },
+            {
+                "user": "U030GKBMCBF",
+                "ts": "1736519143.899479"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1736522390.561149"
+            },
+            {
+                "user": "U030GKBMCBF",
+                "ts": "1736524554.807009"
+            },
+            {
+                "user": "U016TGY3676",
+                "ts": "1736528397.763399"
+            },
+            {
+                "user": "U01PQ9SR9MJ",
+                "ts": "1736582518.271489"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1736582978.009449"
+            },
+            {
+                "user": "UPMUFSGCR",
+                "ts": "1736587392.455409"
+            },
+            {
+                "user": "U01PQ9SR9MJ",
+                "ts": "1736588129.571289"
+            },
+            {
+                "user": "U0128E7BEHW",
+                "ts": "1736592434.076189"
+            },
+            {
+                "user": "U0128E7BEHW",
+                "ts": "1736592550.941979"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1736593490.816719"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1736593592.101499"
+            },
+            {
+                "user": "UPMUFSGCR",
+                "ts": "1736594456.092729"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1736595611.259859"
+            },
+            {
+                "user": "UPMUFSGCR",
+                "ts": "1736595861.085259"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1736596045.968519"
+            },
+            {
+                "user": "U0128E7BEHW",
+                "ts": "1736670836.703119"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1736688551.568679"
+            },
+            {
+                "user": "UNQGKT0CR",
+                "ts": "1736886457.428759"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1736886635.631259"
+            },
+            {
+                "user": "UNQGKT0CR",
+                "ts": "1736886684.946139"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1736886726.612799"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": true,
+        "last_read": "1736886726.612799"
+    },
+    {
+        "text": "Recently came across this which some might find useful. Easily translatable into other languages",
+        "files": [
+            {
+                "id": "F088437N2G3",
+                "created": 1736510402,
+                "timestamp": 1736510402,
+                "name": "image.png",
+                "title": "image.png",
+                "mimetype": "image\/png",
+                "filetype": "png",
+                "pretty_type": "PNG",
+                "user": "U05N9773A23",
+                "user_team": "T4G9NBD2M",
+                "editable": false,
+                "size": 1794364,
+                "mode": "hosted",
+                "is_external": false,
+                "external_type": "",
+                "is_public": true,
+                "public_url_shared": false,
+                "display_as_bot": false,
+                "username": "",
+                "url_private": "https:\/\/files.slack.com\/files-pri\/T4G9NBD2M-F088437N2G3\/image.png?t=xoxe-152328387089-8357743338709-8373272928225-dfe8ebcd8ca3d2f633bcafeb95191840",
+                "url_private_download": "https:\/\/files.slack.com\/files-pri\/T4G9NBD2M-F088437N2G3\/download\/image.png?t=xoxe-152328387089-8357743338709-8373272928225-dfe8ebcd8ca3d2f633bcafeb95191840",
+                "media_display_type": "unknown",
+                "thumb_64": "https:\/\/files.slack.com\/files-tmb\/T4G9NBD2M-F088437N2G3-29c7217e54\/image_64.png?t=xoxe-152328387089-8357743338709-8373272928225-dfe8ebcd8ca3d2f633bcafeb95191840",
+                "thumb_80": "https:\/\/files.slack.com\/files-tmb\/T4G9NBD2M-F088437N2G3-29c7217e54\/image_80.png?t=xoxe-152328387089-8357743338709-8373272928225-dfe8ebcd8ca3d2f633bcafeb95191840",
+                "thumb_360": "https:\/\/files.slack.com\/files-tmb\/T4G9NBD2M-F088437N2G3-29c7217e54\/image_360.png?t=xoxe-152328387089-8357743338709-8373272928225-dfe8ebcd8ca3d2f633bcafeb95191840",
+                "thumb_360_w": 302,
+                "thumb_360_h": 360,
+                "thumb_480": "https:\/\/files.slack.com\/files-tmb\/T4G9NBD2M-F088437N2G3-29c7217e54\/image_480.png?t=xoxe-152328387089-8357743338709-8373272928225-dfe8ebcd8ca3d2f633bcafeb95191840",
+                "thumb_480_w": 403,
+                "thumb_480_h": 480,
+                "thumb_160": "https:\/\/files.slack.com\/files-tmb\/T4G9NBD2M-F088437N2G3-29c7217e54\/image_160.png?t=xoxe-152328387089-8357743338709-8373272928225-dfe8ebcd8ca3d2f633bcafeb95191840",
+                "thumb_720": "https:\/\/files.slack.com\/files-tmb\/T4G9NBD2M-F088437N2G3-29c7217e54\/image_720.png?t=xoxe-152328387089-8357743338709-8373272928225-dfe8ebcd8ca3d2f633bcafeb95191840",
+                "thumb_720_w": 604,
+                "thumb_720_h": 720,
+                "thumb_800": "https:\/\/files.slack.com\/files-tmb\/T4G9NBD2M-F088437N2G3-29c7217e54\/image_800.png?t=xoxe-152328387089-8357743338709-8373272928225-dfe8ebcd8ca3d2f633bcafeb95191840",
+                "thumb_800_w": 800,
+                "thumb_800_h": 953,
+                "thumb_960": "https:\/\/files.slack.com\/files-tmb\/T4G9NBD2M-F088437N2G3-29c7217e54\/image_960.png?t=xoxe-152328387089-8357743338709-8373272928225-dfe8ebcd8ca3d2f633bcafeb95191840",
+                "thumb_960_w": 806,
+                "thumb_960_h": 960,
+                "thumb_1024": "https:\/\/files.slack.com\/files-tmb\/T4G9NBD2M-F088437N2G3-29c7217e54\/image_1024.png?t=xoxe-152328387089-8357743338709-8373272928225-dfe8ebcd8ca3d2f633bcafeb95191840",
+                "thumb_1024_w": 859,
+                "thumb_1024_h": 1024,
+                "original_w": 2372,
+                "original_h": 2826,
+                "thumb_tiny": "AwAwACipnjv+dJx6frSjp0zRxnlaAExRijPtSUAFFFFACilz\/nNIKDQAlFLxSUAFFFFACgZoIoH0\/SlI+o\/CgBMGk6UcUUAFFFFAH\/\/Z",
+                "permalink": "https:\/\/betcode-org.slack.com\/files\/U05N9773A23\/F088437N2G3\/image.png",
+                "permalink_public": "https:\/\/slack-files.com\/T4G9NBD2M-F088437N2G3-cc7b9b4dfb",
+                "is_starred": false,
+                "has_rich_preview": false,
+                "file_access": "visible"
+            }
+        ],
+        "upload": false,
+        "user": "U05N9773A23",
+        "display_as_bot": false,
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "uXyR3",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Recently came across this which some might find useful. Easily translatable into other languages"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "type": "message",
+        "ts": "1736510489.030209",
+        "client_msg_id": "e2e9b8bc-7f55-4bf2-b9cb-50c952fcad75",
+        "thread_ts": "1736508241.279659",
+        "parent_user_id": "UBS7QANF3"
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1736511269.048309",
+        "client_msg_id": "e92314e3-9f6b-4f7f-a6a0-9c00dd613d77",
+        "text": "This is just the power method?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1736508241.279659",
+        "parent_user_id": "UBS7QANF3",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "4qHm7",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "This is just the power method?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UUE6E1LA1",
+        "type": "message",
+        "ts": "1736511353.445089",
+        "edited": {
+            "user": "UUE6E1LA1",
+            "ts": "1736511370.000000"
+        },
+        "client_msg_id": "12c0b30c-3b11-40fd-a065-74efcaa41fec",
+        "text": "Maybe post the original tweet <@U05N9773A23> as IIRC the guy mentioned adding other methods of margin removal to the code base (I looked but can't find the tweet but I recognise the code that you've posted here). Assuming you got it the same place of course...",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gf53cae45edd",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/f53cae45edd7f7b67bbe98819597612e.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0017-72.png",
+            "first_name": "",
+            "real_name": "D C",
+            "display_name": "D C",
+            "team": "T4G9NBD2M",
+            "name": "oddsvantage",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1736508241.279659",
+        "parent_user_id": "UBS7QANF3",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "3FatC",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Maybe post the original tweet "
+                            },
+                            {
+                                "type": "user",
+                                "user_id": "U05N9773A23"
+                            },
+                            {
+                                "type": "text",
+                                "text": " as IIRC the guy mentioned adding other methods of margin removal to the code base (I looked but can't find the tweet but I recognise the code that you've posted here). Assuming you got it the same place of course..."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U05N9773A23",
+        "type": "message",
+        "ts": "1736511369.564459",
+        "client_msg_id": "807bcdc0-e0b4-4124-b962-919364601c23",
+        "text": "The OP: <https:\/\/x.com\/BettingIsCool\/status\/1875162674952065051>",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g9a60fb53f27",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/9a60fb53f27a5eefe4207d5f5b9ce4bc.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0021-72.png",
+            "first_name": "Justice",
+            "real_name": "Justice",
+            "display_name": "Justice",
+            "team": "T4G9NBD2M",
+            "name": "bkwdev",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1736508241.279659",
+        "parent_user_id": "UBS7QANF3",
+        "attachments": [
+            {
+                "image_url": "https:\/\/pbs.twimg.com\/media\/GgXqU3WXkAA-FWA.jpg:large",
+                "image_width": 1719,
+                "image_height": 2048,
+                "image_bytes": 135740,
+                "from_url": "https:\/\/x.com\/BettingIsCool\/status\/1875162674952065051",
+                "service_icon": "http:\/\/abs.twimg.com\/favicons\/twitter.3.ico",
+                "id": 1,
+                "original_url": "https:\/\/x.com\/BettingIsCool\/status\/1875162674952065051",
+                "fallback": "X (formerly Twitter): BettingIsCool (@BettingIsCool) on X",
+                "text": "Available for download! :file_folder:\n\nA #python script to properly remove the overround (=vig or margin) from bookmaker odds <https:\/\/t.co\/uxiG8m6rt3>\n\n:new: Updated for multiway markets: This alllows you to compute de-vigged odds for markets with any number of outcomes (i.e. Halftime\/Fulltime,",
+                "title": "BettingIsCool (@BettingIsCool) on X",
+                "title_link": "https:\/\/x.com\/BettingIsCool\/status\/1875162674952065051",
+                "service_name": "X (formerly Twitter)"
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "WoeTX",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "The OP: "
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/x.com\/BettingIsCool\/status\/1875162674952065051"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "pray",
+                "users": [
+                    "UUE6E1LA1"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1736511809.010409",
+        "client_msg_id": "4f7261db-ee26-4065-8308-60142d253c96",
+        "text": "Answer to my question appears to be: yes",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1736508241.279659",
+        "parent_user_id": "UBS7QANF3",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "9qq9j",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Answer to my question appears to be: yes"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "US2RWCWKY",
+        "type": "message",
+        "ts": "1736512063.103069",
+        "client_msg_id": "dedacc21-ded9-4255-88e7-6b18aecb6658",
+        "text": "So, does the syndicate work by basically each day whichever of you has the least running profit runs your strategy in their personal account and the others chill?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gf934fece8db",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/f934fece8db401123296fc3e9f70453a.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0009-72.png",
+            "first_name": "",
+            "real_name": "Alex A",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "alexander.abboud",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1736508241.279659",
+        "parent_user_id": "UBS7QANF3",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "q2sCD",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "So, does the syndicate work by basically each day whichever of you has the least running profit runs your strategy in their personal account and the others chill?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1736512087.893469",
+        "client_msg_id": "47afb5f3-00df-4c01-bf6d-8baae26d75d4",
+        "text": "<@US2RWCWKY> yes",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1736508241.279659",
+        "parent_user_id": "UBS7QANF3",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "ftffq",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "user",
+                                "user_id": "US2RWCWKY"
+                            },
+                            {
+                                "type": "text",
+                                "text": " yes"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "US2RWCWKY",
+        "type": "message",
+        "ts": "1736512145.153099",
+        "client_msg_id": "908eec5d-a74c-44cc-a839-0f79b17bf29e",
+        "text": "Interesting, thanks.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gf934fece8db",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/f934fece8db401123296fc3e9f70453a.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0009-72.png",
+            "first_name": "",
+            "real_name": "Alex A",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "alexander.abboud",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1736508241.279659",
+        "parent_user_id": "UBS7QANF3",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "2gTvG",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Interesting, thanks."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1736512203.547309",
+        "client_msg_id": "34b9c85e-febd-4b19-be39-ce771f7d93c9",
+        "text": "Almost certainly not how the larger syndicates work but this way there is no transferring of money between people and everyone is legitimately making personal betting profits",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1736508241.279659",
+        "parent_user_id": "UBS7QANF3",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "3CaFd",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Almost certainly not how the larger syndicates work but this way there is no transferring of money between people and everyone is legitimately making personal betting profits"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UUE6E1LA1",
+        "type": "message",
+        "ts": "1736512834.154249",
+        "client_msg_id": "69b406b2-2835-4577-b5c3-e1bdbe8a422a",
+        "text": "That's really interesting to know. Do you ever get aggro from Betfair or does the fact that you all must be paying PC mean that you evade any attempts at them detecting similar strategies across accounts? I only ask because I understand that they look for this as part of premium charge evasion - or is that just a social media myth??",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gf53cae45edd",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/f53cae45edd7f7b67bbe98819597612e.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0017-72.png",
+            "first_name": "",
+            "real_name": "D C",
+            "display_name": "D C",
+            "team": "T4G9NBD2M",
+            "name": "oddsvantage",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1736508241.279659",
+        "parent_user_id": "UBS7QANF3",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "7URRJ",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "That's really interesting to know. Do you ever get aggro from Betfair or does the fact that you all must be paying PC mean that you evade any attempts at them detecting similar strategies across accounts? I only ask because I understand that they look for this as part of premium charge evasion - or is that just a social media myth??"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U030GKBMCBF",
+        "type": "message",
+        "ts": "1736513016.155439",
+        "edited": {
+            "user": "U030GKBMCBF",
+            "ts": "1736513035.000000"
+        },
+        "client_msg_id": "01457D8C-173D-4EB9-B748-4F8DE3E63F20",
+        "text": "Are these all price action based strategies\/models ? ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "c8efe9a619a7",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2022-01-27\/3012906420054_c8efe9a619a784f8fc22_72.png",
+            "first_name": "Leo",
+            "real_name": "Leo",
+            "display_name": "Leo",
+            "team": "T4G9NBD2M",
+            "name": "leomccarthy709",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1736508241.279659",
+        "parent_user_id": "UBS7QANF3",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "7Vfui",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Are these all price action based strategies"
+                            },
+                            {
+                                "type": "text",
+                                "text": "\/models"
+                            },
+                            {
+                                "type": "text",
+                                "text": " ? "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1736513130.522459",
+        "client_msg_id": "c061513b-682a-4ade-8f97-a5cc6aed25dd",
+        "text": "<@UUE6E1LA1> short answer is Betfair are well aware and we are treated as one entity for PC purposes",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1736508241.279659",
+        "parent_user_id": "UBS7QANF3",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "O2ljS",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "user",
+                                "user_id": "UUE6E1LA1"
+                            },
+                            {
+                                "type": "text",
+                                "text": " short answer is Betfair are well aware and we are treated as one entity for PC purposes"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "UUE6E1LA1"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1736513238.236549",
+        "client_msg_id": "c8efd8cd-cff1-46b1-8308-f3cbbaad119a",
+        "text": "<@U030GKBMCBF> almost exclusively price action based",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1736508241.279659",
+        "parent_user_id": "UBS7QANF3",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "K6Say",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "user",
+                                "user_id": "U030GKBMCBF"
+                            },
+                            {
+                                "type": "text",
+                                "text": " almost exclusively price action based"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U016TGY3676",
+        "type": "message",
+        "ts": "1736515420.907269",
+        "client_msg_id": "84fcd4c0-d4c0-4575-b5b1-cf05203bf882",
+        "text": "<@UBS7QANF3> if I understand correctly, your basic premise is to beat BSP, normalised using Shin? And presumably you need to beat it by some margin that accounts for commission? I've done similar work over the years and had a couple of strategies that were beating BSP &gt; 70% of the time but they didn't survive the long haul. So now I'm curious - either 70% wasn't good enough OR my implementation\/execution was shit... :thinking_face:",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6a681220e11",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6a681220e11c1a2ed3685375d658dadb.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0001-72.png",
+            "first_name": "",
+            "real_name": "birchy",
+            "display_name": "birchy",
+            "team": "T4G9NBD2M",
+            "name": "birchy",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1736508241.279659",
+        "parent_user_id": "UBS7QANF3",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "coiY5",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "user",
+                                "user_id": "UBS7QANF3"
+                            },
+                            {
+                                "type": "text",
+                                "text": " if I understand correctly, your basic premise is to beat BSP, normalised using Shin? And presumably you need to beat it by some margin that accounts for commission? I've done similar work over the years and had a couple of strategies that were beating BSP > 70% of the time but they didn't survive the long haul. So now I'm curious - either 70% wasn't good enough OR my implementation\/execution was shit... "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "thinking_face",
+                                "unicode": "1f914"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1736516324.095359",
+        "client_msg_id": "7c74e227-e293-442a-9995-74b947ce4b6e",
+        "text": "For beating BSP, normalisation doesn't come into it. Do you BACK at a higher price than BSP or LAY at a lower price than BSP? That's beating it. All I'm saying is that I've observed (on average) that I need to get a better price than BSP for a bet to be a positive value bet\n\nAgain, beating it by some margin doesn't come into it in this context. Obviously having a good prediction is only the start of it. You have to consider how much confidence you have in this specific prediction and you need to size your stake appropriately\n\nIf you got a better price than BSP 70% of the time I don't know why you're not retired",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1736508241.279659",
+        "parent_user_id": "UBS7QANF3",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "ryPpb",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "For beating BSP, normalisation doesn't come into it. Do you BACK at a higher price than BSP or LAY at a lower price than BSP? That's beating it. All I'm saying is that I've observed (on average) that I need to get a better price than BSP for a bet to be a positive value bet\n\nAgain, beating it by some margin doesn't come into it in this context. Obviously having a good prediction is only the start of it. You have to consider how much confidence you have in this specific prediction and you need to size your stake appropriately\n\nIf you got a better price than BSP 70% of the time I don't know why you're not retired"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U030GKBMCBF",
+        "type": "message",
+        "ts": "1736518939.372009",
+        "client_msg_id": "A499A7D1-5FEB-4DA8-A17E-3A4168A0671D",
+        "text": "Lots of caveats I know but how often would you expect to be beating bsp to be confident ? ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "c8efe9a619a7",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2022-01-27\/3012906420054_c8efe9a619a784f8fc22_72.png",
+            "first_name": "Leo",
+            "real_name": "Leo",
+            "display_name": "Leo",
+            "team": "T4G9NBD2M",
+            "name": "leomccarthy709",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1736508241.279659",
+        "parent_user_id": "UBS7QANF3",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "sc\/0D",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Lots of caveats I know but how often would you expect to be beating bsp to be confident ? "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U030GKBMCBF",
+        "type": "message",
+        "ts": "1736519143.899479",
+        "client_msg_id": "E8D1D9C6-F0D1-407E-9FB2-EFC534CDFA90",
+        "text": "I suppose you can probably work that out actually, depending on how confident you are that bsp is the correct price :smile: ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "c8efe9a619a7",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2022-01-27\/3012906420054_c8efe9a619a784f8fc22_72.png",
+            "first_name": "Leo",
+            "real_name": "Leo",
+            "display_name": "Leo",
+            "team": "T4G9NBD2M",
+            "name": "leomccarthy709",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1736508241.279659",
+        "parent_user_id": "UBS7QANF3",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "9Um2L",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I suppose you can probably work that out actually, depending on how confident you are that bsp is the correct price "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "smile",
+                                "unicode": "1f604"
+                            },
+                            {
+                                "type": "text",
+                                "text": " "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1736522390.561149",
+        "client_msg_id": "1FEB42FF-201A-4DB1-8F3B-B5D400ED77C3",
+        "text": "No idea <@U030GKBMCBF>, it’s not something I’ve given a lot of thought to before. Also depends how much you make when you beat it versus how much you lose when you don’t ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1736508241.279659",
+        "parent_user_id": "UBS7QANF3",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "WGuwW",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "No idea "
+                            },
+                            {
+                                "type": "user",
+                                "user_id": "U030GKBMCBF"
+                            },
+                            {
+                                "type": "text",
+                                "text": ", "
+                            },
+                            {
+                                "type": "text",
+                                "text": "it’s"
+                            },
+                            {
+                                "type": "text",
+                                "text": " not something "
+                            },
+                            {
+                                "type": "text",
+                                "text": "I’ve"
+                            },
+                            {
+                                "type": "text",
+                                "text": " given a lot of thought to before"
+                            },
+                            {
+                                "type": "text",
+                                "text": "."
+                            },
+                            {
+                                "type": "text",
+                                "text": " Also depends how much you make when you beat it versus how much you lose when you "
+                            },
+                            {
+                                "type": "text",
+                                "text": "don’t"
+                            },
+                            {
+                                "type": "text",
+                                "text": " "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U030GKBMCBF",
+        "type": "message",
+        "ts": "1736524554.807009",
+        "client_msg_id": "4AC987B1-C05A-44EB-ADFD-2DA3F55F1BE6",
+        "text": "Yeah how much I beat bsp by hasn't been as great marker of profit for my strategies, but they are fundamentals based so quite different ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "c8efe9a619a7",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2022-01-27\/3012906420054_c8efe9a619a784f8fc22_72.png",
+            "first_name": "Leo",
+            "real_name": "Leo",
+            "display_name": "Leo",
+            "team": "T4G9NBD2M",
+            "name": "leomccarthy709",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1736508241.279659",
+        "parent_user_id": "UBS7QANF3",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Tf9K5",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Yeah how much I beat bsp by hasn't been as "
+                            },
+                            {
+                                "type": "text",
+                                "text": "great "
+                            },
+                            {
+                                "type": "text",
+                                "text": "marker "
+                            },
+                            {
+                                "type": "text",
+                                "text": "of profit "
+                            },
+                            {
+                                "type": "text",
+                                "text": "for my strategies, but they are fundamentals based so quite different "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U016TGY3676",
+        "type": "message",
+        "ts": "1736528397.763399",
+        "client_msg_id": "6b0d3bcb-d453-4f87-a4a4-30ca499623c9",
+        "text": "Tired, yes. Retired...not yet. :grinning: \nTo clarify, 70% of the bets I got _matched_ beat BSP, but that was obviously only when the BSP was wrong. And of course BSP rarely sums to exactly 1.0, hence the question regarding normalisation. So yeah, I suspected that simply 'beating BSP' wasn't your strategy. :wink:",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6a681220e11",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6a681220e11c1a2ed3685375d658dadb.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0001-72.png",
+            "first_name": "",
+            "real_name": "birchy",
+            "display_name": "birchy",
+            "team": "T4G9NBD2M",
+            "name": "birchy",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1736508241.279659",
+        "parent_user_id": "UBS7QANF3",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "ZV2FP",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Tired, yes. Retired...not yet. "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "grinning",
+                                "unicode": "1f600"
+                            },
+                            {
+                                "type": "text",
+                                "text": " \nTo clarify, 70% of the bets I got "
+                            },
+                            {
+                                "type": "text",
+                                "text": "matched",
+                                "style": {
+                                    "italic": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " beat BSP, but that was obviously only when the BSP was wrong. And of course BSP rarely sums to exactly 1.0, hence the question regarding normalisation. So yeah, I suspected that simply 'beating BSP' wasn't your strategy. "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "wink",
+                                "unicode": "1f609"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

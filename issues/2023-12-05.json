@@ -1,0 +1,485 @@
+[
+    {
+        "user": "UNW8Q88EL",
+        "type": "message",
+        "ts": "1701771025.817089",
+        "client_msg_id": "4d5d0cab-075a-492e-b383-6be1230964da",
+        "text": "Hi <@UFTBRB3F1> - I can confirm that listClearedOrders returned to normal service yesterday morning. We haven't found any underlying issues with the service itself but believe the errors were caused by a network issue.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "cc2c2669d548",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2021-10-21\/2643683806753_cc2c2669d548a3476e65_72.jpg",
+            "first_name": "Neil",
+            "real_name": "Neil T (Betfair)",
+            "display_name": "Neil T (Betfair)",
+            "team": "T4G9NBD2M",
+            "name": "neil.thomas",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1701620109.005539",
+        "parent_user_id": "UUCD6P13J",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "8v05c",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Hi "
+                            },
+                            {
+                                "type": "user",
+                                "user_id": "UFTBRB3F1"
+                            },
+                            {
+                                "type": "text",
+                                "text": " - I can confirm that listClearedOrders returned to normal service yesterday morning. We haven't found any underlying issues with the service itself but believe the errors were caused by a network issue."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "UUCD6P13J",
+                    "UUE6E1LA1"
+                ],
+                "count": 2
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1701773934.048169",
+        "client_msg_id": "42b687bf-40e6-4541-a7e7-abf72e667a18",
+        "text": "ah okay cool, thank you for updating!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1701620109.005539",
+        "parent_user_id": "UUCD6P13J",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "\/9sUV",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "ah okay cool, thank you for updating!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U068HV9HA7Q",
+        "type": "message",
+        "ts": "1701791964.046119",
+        "client_msg_id": "19f4b698-e44e-4d21-9e03-79b65fa71fa2",
+        "text": "Wonder if anyone can help, just started to play with streaming, ive started by using the example '<https:\/\/github.com\/betcode-org\/betfair\/blob\/master\/examples\/examplestreamingerrhandling.py|examplestreamingerrhandling.py>'  running it locally or on a linode instance it seems to hang\/timeout after initial connecting\/subscribing correctly",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g0263df10739",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/0263df107392045bda55fe0358267386.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0013-72.png",
+            "first_name": "ChrisM",
+            "real_name": "ChrisM",
+            "display_name": "ChrisM",
+            "team": "T4G9NBD2M",
+            "name": "lee",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "attachments": [
+            {
+                "id": 1,
+                "footer_icon": "https:\/\/slack.github.com\/static\/img\/favicon-neutral.png",
+                "color": "24292f",
+                "bot_id": "B021ZJYSBMW",
+                "app_unfurl_url": "https:\/\/github.com\/betcode-org\/betfair\/blob\/master\/examples\/examplestreamingerrhandling.py",
+                "is_app_unfurl": true,
+                "app_id": "A01BP7R4KNY",
+                "fallback": "<https:\/\/github.com\/betcode-org\/betfair\/blob\/master\/examples\/examplestreamingerrhandling.py | examplestreamingerrhandling.py>",
+                "text": "```\nimport logging\nimport queue\nimport threading\nfrom tenacity import retry, wait_exponential\n\nimport betfairlightweight\nfrom betfairlightweight import StreamListener\nfrom betfairlightweight import BetfairError\nfrom betfairlightweight.filters import (\n    streaming_market_filter,\n    streaming_market_data_filter,\n)\n\n\"\"\"\nStreaming example to handle timeouts or connection errors, \nwith reconnect.\n\nCode uses 'tenacity' library for retrying.\n\nStreaming class inherits threading module to simplify start\/\nstop.\n\"\"\"\n\n# setup logging\nlogging.basicConfig(level=<http:\/\/logging.INFO|logging.INFO>)  # change to DEBUG to see log all updates\nlogger = logging.getLogger(__name__)\n\n\nclass Streaming(threading.Thread):\n    def __init__(\n        self,\n        client: betfairlightweight.APIClient,\n        market_filter: dict,\n        market_data_filter: dict,\n        conflate_ms: int = None,\n        streaming_unique_id: int = 1000,\n    ):\n        threading.Thread.__init__(self, daemon=True, name=self.__class__.__name__)\n        self.client = client\n        self.market_filter = market_filter\n        self.market_data_filter = market_data_filter\n        self.conflate_ms = conflate_ms\n        self.streaming_unique_id = streaming_unique_id\n        self.stream = None\n        self.output_queue = queue.Queue()\n        self.listener = StreamListener(output_queue=self.output_queue)\n\n    @retry(wait=wait_exponential(multiplier=1, min=2, max=20))\n    def run(self) -> None:\n        <http:\/\/logger.info|logger.info>(\"Starting MarketStreaming\")\n        self.client.login()\n        self.stream = self.client.streaming.create_stream(\n            unique_id=self.streaming_unique_id, listener=self.listener\n        )\n        try:\n            self.streaming_unique_id = self.stream.subscribe_to_markets(\n                market_filter=self.market_filter,\n                market_data_filter=self.market_data_filter,\n                conflate_ms=self.conflate_ms,\n                initial_clk=self.listener.initial_clk,  # supplying these two values allows a reconnect\n                clk=self.listener.clk,\n            )\n            self.stream.start()\n        except BetfairError:\n            logger.error(\"MarketStreaming run error\", exc_info=True)\n            raise\n        except Exception:\n            logger.critical(\"MarketStreaming run error\", exc_info=True)\n            raise\n        <http:\/\/logger.info|logger.info>(\"Stopped MarketStreaming %s\", self.streaming_unique_id)\n\n    def stop(self) -> None:\n        if self.stream:\n            self.stream.stop()\n\n\n# create trading instance (app key must be activated for streaming)\ntrading = betfairlightweight.APIClient(\"username\", \"password\", app_key=\"appKey\")\n\n# login\ntrading.login()\n\n# create filters (GB WIN racing)\nmarket_filter = streaming_market_filter(\n    event_type_ids=[\"7\"], country_codes=[\"GB\"], market_types=[\"WIN\"]\n)\nmarket_data_filter = streaming_market_data_filter(\n    fields=[\"EX_BEST_OFFERS\", \"EX_MARKET_DEF\"], ladder_levels=3\n)\n\n# create streaming object\nstreaming = Streaming(trading, market_filter, market_data_filter)\n\n# start streaming (runs in new thread and handles any errors)\nstreaming.start()\n\n# check for updates in output queue\nwhile True:\n    market_books = streaming.output_queue.get()\n    print(market_books)\n\n    for market_book in market_books:\n        print(\n            market_book,\n            market_book.streaming_unique_id,  # unique id of stream (returned from subscribe request)\n            market_book.streaming_update,  # json update received\n            market_book.market_definition,  # streaming definition, similar to catalogue request\n            market_book.publish_time,  # betfair publish time of update\n        )\n\n```",
+                "title": "<https:\/\/github.com\/betcode-org\/betfair\/blob\/master\/examples\/examplestreamingerrhandling.py | examplestreamingerrhandling.py>",
+                "footer": "<https:\/\/github.com\/betcode-org\/betfair|betcode-org\/betfair>",
+                "mrkdwn_in": [
+                    "text"
+                ]
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Y45yH",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Wonder if anyone can help, just started to play with streaming, ive started by using the example '"
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/betcode-org\/betfair\/blob\/master\/examples\/examplestreamingerrhandling.py",
+                                "text": "examplestreamingerrhandling.py",
+                                "unsafe": true
+                            },
+                            {
+                                "type": "text",
+                                "text": "'  running it locally or on a linode instance it seems to hang\/timeout after initial connecting\/subscribing correctly"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U068HV9HA7Q",
+        "type": "message",
+        "ts": "1701792036.048209",
+        "client_msg_id": "828bc64a-463d-4ac5-bb67-4978d755ade3",
+        "text": "ive previously built applications using the rest betfair api, so not coming in completely green",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g0263df10739",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/0263df107392045bda55fe0358267386.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0013-72.png",
+            "first_name": "ChrisM",
+            "real_name": "ChrisM",
+            "display_name": "ChrisM",
+            "team": "T4G9NBD2M",
+            "name": "lee",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "upxph",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "ive previously built applications using the rest betfair api, so not coming in completely green"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U068HV9HA7Q",
+        "type": "message",
+        "ts": "1701792112.703129",
+        "client_msg_id": "12a64c8a-6787-4dde-98cb-f5f0d2d23c52",
+        "text": "as you can see from the attached a subscribed to all uk horse racing about 30 minutes ago",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g0263df10739",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/0263df107392045bda55fe0358267386.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0013-72.png",
+            "first_name": "ChrisM",
+            "real_name": "ChrisM",
+            "display_name": "ChrisM",
+            "team": "T4G9NBD2M",
+            "name": "lee",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "qqfTd",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "as you can see from the attached a subscribed to all uk horse racing about 30 minutes ago"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "text": "",
+        "files": [
+            {
+                "id": "F068QTXFY7M",
+                "mode": "hidden_by_limit"
+            }
+        ],
+        "upload": false,
+        "user": "U068HV9HA7Q",
+        "display_as_bot": false,
+        "type": "message",
+        "ts": "1701792119.439399",
+        "client_msg_id": "6bdf1939-8ea7-4f1d-92d0-6948dc3bfb1e"
+    },
+    {
+        "user": "U068HV9HA7Q",
+        "type": "message",
+        "ts": "1701792163.055079",
+        "client_msg_id": "756c10d5-9c0e-4d7d-a64f-496945d6b4d5",
+        "text": "i would expect changes to be printed as they come in..",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g0263df10739",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/0263df107392045bda55fe0358267386.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0013-72.png",
+            "first_name": "ChrisM",
+            "real_name": "ChrisM",
+            "display_name": "ChrisM",
+            "team": "T4G9NBD2M",
+            "name": "lee",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "9JznI",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "i would expect changes to be printed as they come in.."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1701792163.662569",
+        "client_msg_id": "99cc3bec-2b30-4861-ad59-49a3ea8082a0",
+        "text": "live or delayed key?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "TRXrZ",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "live or delayed key?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U068HV9HA7Q",
+        "type": "message",
+        "ts": "1701792178.518559",
+        "client_msg_id": "e7bd933c-989f-446f-830d-6f92c84b0136",
+        "text": "delayed currently",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g0263df10739",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/0263df107392045bda55fe0358267386.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0013-72.png",
+            "first_name": "ChrisM",
+            "real_name": "ChrisM",
+            "display_name": "ChrisM",
+            "team": "T4G9NBD2M",
+            "name": "lee",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "exSHD",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "delayed currently"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1701792215.461499",
+        "client_msg_id": "a17491c9-4be2-4bf6-ad3b-dca4fbd2ea25",
+        "text": "thats your problem, all delayed key use is banned on here, send me a message with your live key and i can get it activated if not already",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "ZWlL\/",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "thats your problem, all delayed key use is banned on here, send me a message with your live key and i can get it activated if not already"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U068HV9HA7Q",
+        "type": "message",
+        "ts": "1701792365.467499",
+        "client_msg_id": "6697486b-f602-4d4a-b822-6f325a814d89",
+        "text": "ah ok, the live key is the one you pay the £299 fee for? which is not a problem i was just hoping to get setup in testing first",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g0263df10739",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/0263df107392045bda55fe0358267386.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0013-72.png",
+            "first_name": "ChrisM",
+            "real_name": "ChrisM",
+            "display_name": "ChrisM",
+            "team": "T4G9NBD2M",
+            "name": "lee",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "oVzxW",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "ah ok, the live key is the one you pay the £299 fee for? which is not a problem i was just hoping to get setup in testing first"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U068HV9HA7Q",
+        "type": "message",
+        "ts": "1701792375.538749",
+        "client_msg_id": "15885cd6-3554-45c7-95da-72424b145f46",
+        "text": "thanks btw",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g0263df10739",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/0263df107392045bda55fe0358267386.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0013-72.png",
+            "first_name": "ChrisM",
+            "real_name": "ChrisM",
+            "display_name": "ChrisM",
+            "team": "T4G9NBD2M",
+            "name": "lee",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "gJoeM",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "thanks btw"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

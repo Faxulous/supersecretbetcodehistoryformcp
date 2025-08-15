@@ -1,0 +1,1122 @@
+[
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1567763358.093300",
+        "client_msg_id": "956f8020-b25f-4e48-8c25-0203f2073a92",
+        "text": "I thought my new threading approach was working...but now I've noticed that not all messages are getting through (they appear to be received correctly, i.e. I am getting them from Betfair and processing as expected), but they don't seem to be passed correctly to the queue. Typically either the order or market queue messages work, but not both, so I'm guessing I need to tweak something...but I'm not really very clued up on threads, so can't quite figure out where!\n\n```\ndef producer1(queue, event):\n    while not event.is_set():\n        order_books = order_queue.get()\n        order_list = {'order_list': view_orders(order_books)}\n        queue.put(order_list)\n        print(order_list)\n\ndef producer2(queue, event):\n    while not event.is_set():\n        market_books = market_queue.get()\n        runner_list = {'runner_list': view_runners(market_books)}\n        queue.put(runner_list)\n        print(runner_list)\n\ndef consumer(queue, event):\n    while not event.is_set() or not queue.empty():\n        message = queue.get()\n        <http:\/\/logging.info|logging.info>(\n            \"Consumer storing message: %s (size=%d)\", message, queue.qsize()\n        )\n\nwhile True:\n    if __name__ == \"__main__\":\n        format = \"%(asctime)s: %(message)s\"\n        logging.basicConfig(format=format, level=<http:\/\/logging.INFO|logging.INFO>, datefmt=\"%H:%M:%S\")\n        pipeline = queue.Queue(maxsize=50)\n        event = threading.Event()\n        with concurrent.futures.ThreadPoolExecutor(max_workers=3) as executor:\n            executor.submit(producer1, pipeline, event)\n            executor.submit(producer2, pipeline, event)\n            executor.submit(consumer, pipeline, event)\n            time.sleep(0.1)\n            event.set()\n```\n\nIs there anything obvious that jumps out to anyone by chance?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "0iY4",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I thought my new threading approach was working...but now I've noticed that not all messages are getting through (they appear to be received correctly, i.e. I am getting them from Betfair and processing as expected), but they don't seem to be passed correctly to the queue. Typically either the order or market queue messages work, but not both, so I'm guessing I need to tweak something...but I'm not really very clued up on threads, so can't quite figure out where!\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "def producer1(queue, event):\n    while not event.is_set():\n        order_books = order_queue.get()\n        order_list = {'order_list': view_orders(order_books)}\n        queue.put(order_list)\n        print(order_list)\n\ndef producer2(queue, event):\n    while not event.is_set():\n        market_books = market_queue.get()\n        runner_list = {'runner_list': view_runners(market_books)}\n        queue.put(runner_list)\n        print(runner_list)\n\ndef consumer(queue, event):\n    while not event.is_set() or not queue.empty():\n        message = queue.get()\n        "
+                            },
+                            {
+                                "type": "link",
+                                "url": "http:\/\/logging.info",
+                                "text": "logging.info"
+                            },
+                            {
+                                "type": "text",
+                                "text": "(\n            \"Consumer storing message: %s (size=%d)\", message, queue.qsize()\n        )\n\nwhile True:\n    if __name__ == \"__main__\":\n        format = \"%(asctime)s: %(message)s\"\n        logging.basicConfig(format=format, level="
+                            },
+                            {
+                                "type": "link",
+                                "url": "http:\/\/logging.INFO",
+                                "text": "logging.INFO"
+                            },
+                            {
+                                "type": "text",
+                                "text": ", datefmt=\"%H:%M:%S\")\n        pipeline = queue.Queue(maxsize=50)\n        event = threading.Event()\n        with concurrent.futures.ThreadPoolExecutor(max_workers=3) as executor:\n            executor.submit(producer1, pipeline, event)\n            executor.submit(producer2, pipeline, event)\n            executor.submit(consumer, pipeline, event)\n            time.sleep(0.1)\n            event.set()\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\n\nIs there anything obvious that jumps out to anyone by chance?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1567763495.093700",
+        "client_msg_id": "2ad30f13-8ca5-4715-915a-db0178903308",
+        "text": "odd to use an executor when you will have 3 fixed threads",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "w9Mf",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "odd to use an executor when you will have 3 fixed threads"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1567763799.094500",
+        "client_msg_id": "d9a3c3e5-0008-444b-bf01-30ce2b51f2af",
+        "text": "i dont understand, you only create one queue but expect market and order data to come out of it? Can you show the rest (without creds)",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "fe0y2",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "i dont understand, you only create one queue but expect market and order data to come out of it? Can you show the rest (without creds)"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1567764162.095300",
+        "client_msg_id": "248bfd8b-d7a8-4517-950e-17338bbc6a0f",
+        "text": "it is most likely my misunderstanding of how it works! Here is the rest:\n\n```\nlogging.basicConfig(level=<http:\/\/logging.INFO|logging.INFO>)\n\ntrading = betfairlightweight.APIClient(accname, accpass, acckey, certs=path)\ntrading.login()\n\norder_queue = queue.Queue()\norder_listener = betfairlightweight.StreamListener(output_queue=order_queue)\norder_stream = trading.streaming.create_stream(listener=order_listener)\norder_filter = streaming_order_filter(\n    include_overall_position=True\n)\norder_stream.subscribe_to_orders(\n    order_filter=order_filter)\norder_stream.start(async_=True)\n\nmarket_queue = queue.Queue()\nmarket_listener = betfairlightweight.StreamListener(output_queue=market_queue)\nmarket_stream = trading.streaming.create_stream(listener=market_listener)\nmarket_filter = streaming_market_filter(\nmarket_ids=['1.130856098','1.132099836'])\n\nmarket_data_filter = streaming_market_data_filter(\n    fields=['EX_BEST_OFFERS', 'EX_MARKET_DEF', 'EX_TRADED', 'EX_LTP'],\n    ladder_levels=3)\n\nmarket_stream.subscribe_to_markets(\n    market_filter=market_filter,\n    market_data_filter=market_data_filter)\n\nmarket_stream.start(async_=True)\n```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "a7A4",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "it is most likely my misunderstanding of how it works! Here is the rest:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "logging.basicConfig(level="
+                            },
+                            {
+                                "type": "link",
+                                "url": "http:\/\/logging.INFO",
+                                "text": "logging.INFO"
+                            },
+                            {
+                                "type": "text",
+                                "text": ")\n\ntrading = betfairlightweight.APIClient(accname, accpass, acckey, certs=path)\ntrading.login()\n\norder_queue = queue.Queue()\norder_listener = betfairlightweight.StreamListener(output_queue=order_queue)\norder_stream = trading.streaming.create_stream(listener=order_listener)\norder_filter = streaming_order_filter(\n    include_overall_position=True\n)\norder_stream.subscribe_to_orders(\n    order_filter=order_filter)\norder_stream.start(async_=True)\n\nmarket_queue = queue.Queue()\nmarket_listener = betfairlightweight.StreamListener(output_queue=market_queue)\nmarket_stream = trading.streaming.create_stream(listener=market_listener)\nmarket_filter = streaming_market_filter(\nmarket_ids=['1.130856098','1.132099836'])\n\nmarket_data_filter = streaming_market_data_filter(\n    fields=['EX_BEST_OFFERS', 'EX_MARKET_DEF', 'EX_TRADED', 'EX_LTP'],\n    ladder_levels=3)\n\nmarket_stream.subscribe_to_markets(\n    market_filter=market_filter,\n    market_data_filter=market_data_filter)\n\nmarket_stream.start(async_=True)\n"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1567764579.096500",
+        "client_msg_id": "3e22676f-c307-42e7-88c9-c3c4744efe47",
+        "text": "I thought, that the whole point of threading and queues was to combine, so I have my order_queue, my market_queue and then I receive in the main queue, which then handles everything...that was the theory!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "auC",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I thought, that the whole point of threading and queues was to combine, so I have my order_queue, my market_queue and then I receive in the main queue, which then handles everything...that was the theory!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1567764898.096800",
+        "client_msg_id": "fe2ddfb9-0b71-4ee6-8275-df80f0f708ff",
+        "text": "you can give both listeners the same queue",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "gLVB",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "you can give both listeners the same queue"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1567764902.097000",
+        "client_msg_id": "7e5f5b1d-9282-4ae9-84cd-466e34f941b6",
+        "text": "and handle on the output",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "7udLp",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "and handle on the output"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1567764934.097200",
+        "client_msg_id": "46dafaa8-a862-4fa1-b578-e490dea1b866",
+        "text": "your logic is wrong",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "2\/Uj",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "your logic is wrong"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1567764946.097500",
+        "client_msg_id": "e7a96a19-6c2b-46bf-82f7-b36aeb21e66f",
+        "text": "i dont understand the set business tbh but this works:",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "cE\/R",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "i dont understand the set business tbh but this works:"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "text": "",
+        "files": [
+            {
+                "id": "FN507Q01M",
+                "created": 1567765171,
+                "timestamp": 1567765171,
+                "name": "Untitled",
+                "title": "Untitled",
+                "mimetype": "text\/plain",
+                "filetype": "text",
+                "pretty_type": "Plain Text",
+                "user": "U4H19D1D2",
+                "user_team": "T4G9NBD2M",
+                "editable": true,
+                "size": 993,
+                "mode": "snippet",
+                "is_external": false,
+                "external_type": "",
+                "is_public": true,
+                "public_url_shared": false,
+                "display_as_bot": false,
+                "username": "",
+                "url_private": "https:\/\/files.slack.com\/files-pri\/T4G9NBD2M-FN507Q01M\/untitled?t=xoxe-152328387089-8357743338709-8373272928225-dfe8ebcd8ca3d2f633bcafeb95191840",
+                "url_private_download": "https:\/\/files.slack.com\/files-pri\/T4G9NBD2M-FN507Q01M\/download\/untitled?t=xoxe-152328387089-8357743338709-8373272928225-dfe8ebcd8ca3d2f633bcafeb95191840",
+                "permalink": "https:\/\/betcode-org.slack.com\/files\/U4H19D1D2\/FN507Q01M\/untitled",
+                "permalink_public": "https:\/\/slack-files.com\/T4G9NBD2M-FN507Q01M-090e6f75b5",
+                "edit_link": "https:\/\/betcode-org.slack.com\/files\/U4H19D1D2\/FN507Q01M\/untitled\/edit",
+                "is_starred": false,
+                "has_rich_preview": false,
+                "file_access": "visible"
+            }
+        ],
+        "upload": true,
+        "user": "U4H19D1D2",
+        "display_as_bot": false,
+        "type": "message",
+        "ts": "1567765171.097700",
+        "client_msg_id": "1ca10602-2aa2-4863-b070-3e3728c0594b"
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1567765183.098300",
+        "client_msg_id": "fea1573e-ceda-4a5a-9608-222af795884e",
+        "text": "the set business is actually a bit redundant, that was just me playing around with something!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "CeXl",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "the set business is actually a bit redundant, that was just me playing around with something!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1567765209.098700",
+        "client_msg_id": "75039f07-a876-40cc-bbc3-6df1c4894020",
+        "text": "before it was just exiting all the threads and then restarting",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "qGeO",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "before it was just exiting all the threads and then restarting"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1567765216.099000",
+        "client_msg_id": "a64d6138-e5f0-4ba2-994b-89a076a48ee0",
+        "text": "hence why you were only getting one output",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "16z",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "hence why you were only getting one output"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1567765256.099800",
+        "client_msg_id": "1a9bec1a-c409-4ed8-bbd8-18a3616a0e38",
+        "text": "Ah, okay cool that makes sense actually, I was getting some odd results on the logging I wasn't understanding. Cool tks, threading has proved to be a bit of a nemesis!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "LRXTn",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Ah, okay cool that makes sense actually, I was getting some odd results on the logging I wasn't understanding. Cool tks, threading has proved to be a bit of a nemesis!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1567765280.100000",
+        "client_msg_id": "7504180a-db5f-4cb5-afb9-1f0602277a05",
+        "text": "i try to limit it",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "TZ7T",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "i try to limit it"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1567765298.100400",
+        "client_msg_id": "6d94c949-5ab0-4830-adfc-0d4bb09e9998",
+        "text": "do you need the producer?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "w3l",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "do you need the producer?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1567765313.100800",
+        "client_msg_id": "468eb5a4-e5bb-4563-9b80-9c608859e054",
+        "text": "why not just the consumer and handle the output based on what comes out of it",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "N+x7",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "why not just the consumer and handle the output based on what comes out of it"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1567765322.101100",
+        "client_msg_id": "8f1aa6e6-a29e-483b-9d69-9320c3743bc6",
+        "text": "with a single queue passed to both listeners",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "AdOo",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "with a single queue passed to both listeners"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1567765442.101700",
+        "client_msg_id": "47502367-f7bc-4e4e-9c02-a4afa364b02b",
+        "text": "I tried that previously and it didn't seem to work, but that was with my old code. There's no logical reason why I couldn't do that",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "vsPJ",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I tried that previously and it didn't seem to work, but that was with my old code. There's no logical reason why I couldn't do that"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1567765453.102100",
+        "client_msg_id": "314407d2-d6c5-44ba-8f9d-b153510e8ee8",
+        "text": "I don't technically need the producer",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "8Z0ml",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I don't technically need the producer"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1567765458.102300",
+        "client_msg_id": "00a3aaf8-8f08-4852-aed6-5056f2ea71a4",
+        "text": "just thought maybe that was a better way",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "u4e",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "just thought maybe that was a better way"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1567765788.103400",
+        "client_msg_id": "c6b95fe9-a7be-4e0f-8a6b-9a5632ebfcfe",
+        "text": "depends on what this is for? I have a single 'main' event queue which handles all events, so the application would take a marketBook from a streaming queue do some validation and place it in an Event class and place in the main event queue to be handled",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "iBLW",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "depends on what this is for? I have a single 'main' event queue which handles all events, so the application would take a marketBook from a streaming queue do some validation and place it in an Event class and place in the main event queue to be handled"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1567765824.103900",
+        "client_msg_id": "c0e6150b-fb7c-4d47-9d94-4c1ad13a45a9",
+        "text": "so its an event driven application which suits trading \/ finance",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "VvTD",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "so its an event driven application which suits trading \/ finance"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1567766210.107300",
+        "client_msg_id": "975bf17d-e350-4f3d-a24f-572ee791828f",
+        "text": "So broadly speaking, what I was thinking was a structure as follows:\n\nmarket_queue -&gt; do stuff (e.g. format market book in the desired way) -&gt; output to main queue in required format\n\norder_queue -&gt; do stuff (e.g. risk calculations) -&gt; output to main queue in required format\n\nmain queue -&gt; receive inputs from other queues then run function based on those (e.g. has order x been filled, if so place order y or has market moved to target a, if so place order b)\n\nWhere I kept going wrong before was that I was always losing messages somewhere, so my goal from this was to try and eliminate that!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "bBP",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "So broadly speaking, what I was thinking was a structure as follows:\n\nmarket_queue -> do stuff (e.g. format market book in the desired way) -> output to main queue in required format\n\norder_queue -> do stuff (e.g. risk calculations) -> output to main queue in required format\n\nmain queue -> receive inputs from other queues then run function based on those (e.g. has order x been filled, if so place order y or has market moved to target a, if so place order b)\n\nWhere I kept going wrong before was that I was always losing messages somewhere, so my goal from this was to try and eliminate that!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1567766248.107800",
+        "client_msg_id": "088bdcae-9c0f-4af4-adf3-3542f9107e48",
+        "text": "yeah that seems wise, just keep it simple with a queue per stream",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "PASa",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "yeah that seems wise, just keep it simple with a queue per stream"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1567766281.108400",
+        "client_msg_id": "44c6f1b2-4b4b-4948-b8f2-54ccc0638ffd",
+        "text": "i use a ThreadPoolExecutor for placing\/cancel\/replace orders",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "fgP",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "i use a ThreadPoolExecutor for placing\/cancel\/replace orders"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1567766293.108700",
+        "client_msg_id": "50eb5304-5b0b-4cbc-ba37-6c44db2c2ee2",
+        "text": "not for streaming as these are fixed known threads",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "mFF+x",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "not for streaming as these are fixed known threads"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1567766853.109100",
+        "client_msg_id": "be5c9e4b-628b-4556-a699-84db806ef63c",
+        "text": "okay cool tks, will try to go down that route instead",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "a=frs",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "okay cool tks, will try to go down that route instead"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

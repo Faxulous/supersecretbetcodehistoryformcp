@@ -1,0 +1,251 @@
+[
+    {
+        "user": "U02RN7YDRQ9",
+        "type": "message",
+        "ts": "1708890472.806419",
+        "client_msg_id": "25beab7a-4d7e-462d-ae5a-626f3164fcd1",
+        "text": "Probably doing something stupid but I'm getting an exception `Execution unknown error` thrown live (ok on backtest) using `market.replace_order()` called from within override of `stratBase.process_orders()` From the log the exception is thrown because the dictionary item `new_price` is missing from `update_data` although generated solely by `order.replace()` as part of the normal flow.\nThe scenario is playing with sub £1 bets by laying at very low odds, changing the size (works ok every time) and then replacing the order with a new price - which fails on about 2% of bets - I have a workaround that ensures the size\/price combo doesn't hit `INVALID_PROFIT_RATIO` error.\nAll seems to happen on different thread - sample stack trace below. Can't reproduce at will. Feels like could possibly be python assign\/copy issue around the \"lost\" dictionary item. Any clues \/ ideas welcome\n\n`{\"asctime\": \"2024-02-25 18:26:59,554\", \"levelname\": \"CRITICAL\", \"message\": \"Execution unknown error\", \"exc_info\": \"Traceback (most recent call last):`\n  `File \\\"\\\\flumine\\\\execution\\\\betfairexecution.py\\\", line 251, in _execution_helper  response = trading_function(order_package, http_session)`\n  `File \\\"\\\\flumine\\\\execution\\\\betfairexecution.py\\\", line 222, in replace  instructions=order_package.replace_instructions,`\n  `File \\\"\\\\flumine\\\\order\\\\orderpackage.py\\\", line 164, in replace_instructions  return [`\n  `File \\\"\\\\flumine\\\\order\\\\orderpackage.py\\\", line 165, in &lt;listcomp&gt;  order.create_replace_instruction()`\n  `File \\\"\\\\flumine\\\\order\\\\order.py\\\", line 425, in create_replace_instruction  return {\\\"betId\\\": self.bet_id, \\\"newPrice\\\": self.update_data[\\\"new_price\\\"]}`\n  `KeyError: 'new_price'\", \"trading_function\": \"replace\", \"exception\": \"'new_price'\", \"order_package\": {\"id\": \"4baba968-543d-49d4-84b4-a75355ab6a94\", \"client\": \"&lt;flumine.clients.betfairclient.BetfairClient object at 0x000001FE966E3EB0&gt;\", \"market_id\": \"1.225213820\", \"orders\": [\"139281784190412005\"], \"order_count\": 1, \"package_type\": \"Replace\", \"customer_strategy_ref\": \"stratXX\", \"bet_delay\": 0, \"market_version\": null, \"retry\": true, \"retry_count\": 0, \"async\": false}}`",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "ge46f1f8b708",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/e46f1f8b708a630e3191de7b2c42b1d1.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0023-72.png",
+            "first_name": "edblock",
+            "real_name": "edblock",
+            "display_name": "foxwood",
+            "team": "T4G9NBD2M",
+            "name": "eanb",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1708890472.806419",
+        "reply_count": 12,
+        "reply_users_count": 2,
+        "latest_reply": "1709036832.084569",
+        "reply_users": [
+            "U4H19D1D2",
+            "U02RN7YDRQ9"
+        ],
+        "replies": [
+            {
+                "user": "U4H19D1D2",
+                "ts": "1708936201.310029"
+            },
+            {
+                "user": "U02RN7YDRQ9",
+                "ts": "1708940535.293169"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1708941007.464339"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1708941017.165779"
+            },
+            {
+                "user": "U02RN7YDRQ9",
+                "ts": "1708941046.732609"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1708941064.129059"
+            },
+            {
+                "user": "U02RN7YDRQ9",
+                "ts": "1708941096.832329"
+            },
+            {
+                "user": "U02RN7YDRQ9",
+                "ts": "1708941126.776939"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1708941167.246219"
+            },
+            {
+                "user": "U02RN7YDRQ9",
+                "ts": "1708942696.273689"
+            },
+            {
+                "user": "U02RN7YDRQ9",
+                "ts": "1708955062.886789"
+            },
+            {
+                "user": "U02RN7YDRQ9",
+                "ts": "1709036832.084569"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": true,
+        "last_read": "1709036832.084569",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "WTG6N",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Probably doing something stupid but I'm getting an exception "
+                            },
+                            {
+                                "type": "text",
+                                "text": "Execution unknown error",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " thrown live (ok on backtest) using "
+                            },
+                            {
+                                "type": "text",
+                                "text": "market.replace_order() ",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "called from within override of "
+                            },
+                            {
+                                "type": "text",
+                                "text": "stratBase.process_orders()",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " From the log the exception is thrown because the dictionary item "
+                            },
+                            {
+                                "type": "text",
+                                "text": "new_price",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " is missing from "
+                            },
+                            {
+                                "type": "text",
+                                "text": "update_data",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " although generated solely by "
+                            },
+                            {
+                                "type": "text",
+                                "text": "order.replace()",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " as part of the normal flow.\nThe scenario is playing with sub £1 bets by laying at very low odds, changing the size (works ok every time) and then replacing the order with a new price - which fails on about 2% of bets - I have a workaround that ensures the size\/price combo doesn't hit "
+                            },
+                            {
+                                "type": "text",
+                                "text": "INVALID_PROFIT_RATIO",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " error.\nAll seems to happen on different thread - sample stack trace below. Can't reproduce at will. Feels like could possibly be python assign\/copy issue around the \"lost\" dictionary item. Any clues \/ ideas welcome\n\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "{\"asctime\": \"2024-02-25 18:26:59,554\", \"levelname\": \"CRITICAL\", \"message\": \"Execution unknown error\", \"exc_info\": \"Traceback (most recent call last):",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "  File \\\"\\\\flumine\\\\execution\\\\betfairexecution.py\\\", line 251, in _execution_helper  response = trading_function(order_package, http_session)",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "  File \\\"\\\\flumine\\\\execution\\\\betfairexecution.py\\\", line 222, in replace  instructions=order_package.replace_instructions,",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "  File \\\"\\\\flumine\\\\order\\\\orderpackage.py\\\", line 164, in replace_instructions  return [",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "  File \\\"\\\\flumine\\\\order\\\\orderpackage.py\\\", line 165, in <listcomp>  order.create_replace_instruction()",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "  File \\\"\\\\flumine\\\\order\\\\order.py\\\", line 425, in create_replace_instruction  return {\\\"betId\\\": self.bet_id, \\\"newPrice\\\": self.update_data[\\\"new_price\\\"]}",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "  KeyError: 'new_price'\", \"trading_function\": \"replace\", \"exception\": \"'new_price'\", \"order_package\": {\"id\": \"4baba968-543d-49d4-84b4-a75355ab6a94\", \"client\": \"<flumine.clients.betfairclient.BetfairClient object at 0x000001FE966E3EB0>\", \"market_id\": \"1.225213820\", \"orders\": [\"139281784190412005\"], \"order_count\": 1, \"package_type\": \"Replace\", \"customer_strategy_ref\": \"stratXX\", \"bet_delay\": 0, \"market_version\": null, \"retry\": true, \"retry_count\": 0, \"async\": false}}",
+                                "style": {
+                                    "code": true
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

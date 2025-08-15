@@ -1,0 +1,1596 @@
+[
+    {
+        "user": "U4H3EEV45",
+        "type": "message",
+        "ts": "1496411045.272716",
+        "text": "<@U4H19D1D2> am running into situations quite frequently today where the stream \/ socket stops receiving data but I'm not getting an exception or the read loop isn't exiting as I'm expecting; I know there was something recent discussion on subscribing multiple times on a socket, or perhaps creating multiple streams or something - I'm about to go look at the issues to refresh my memory - I'm still on v1.0.0 so it might be the problem is fixed just thought I'd check to see whether describing that behaviour made you think of anything obvious",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "ga8143e60fb6",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/ea8143e60fb603cad63a14bfd181f72d.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0025-72.png",
+            "first_name": "Aaron",
+            "real_name": "Aaron Berk",
+            "display_name": "agberk",
+            "team": "T4G9NBD2M",
+            "name": "agberk",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "nf+",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "user",
+                                "user_id": "U4H19D1D2"
+                            },
+                            {
+                                "type": "text",
+                                "text": " am running into situations quite frequently today where the stream \/ socket stops receiving data but I'm not getting an exception or the read loop isn't exiting as I'm expecting; I know there was something recent discussion on subscribing multiple times on a socket, or perhaps creating multiple streams or something - I'm about to go look at the issues to refresh my memory - I'm still on v1.0.0 so it might be the problem is fixed just thought I'd check to see whether describing that behaviour made you think of anything obvious"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H3EEV45",
+        "type": "message",
+        "ts": "1496411076.282793",
+        "text": "The main read loop is in my own thread\n```\ndef betfair_stream_run(config, order_queue):\n    betfair_api = betfairlightweight.APIClient(\n        config['betfair_username'],\n        config['betfair_password'],\n        config['betfair_application_key'],\n        config['betfair_certificate_dir'])\n\n    while True:\n        try:\n            betfair_api.login()\n            betfair_stream_socket = betfair_api.streaming.create_stream(\n                unique_id=1,\n                description=config['description'],\n                listener=StreamListener(output_queue=order_queue)\n            )\n            betfair_stream_socket.subscribe_to_orders(\n                unique_id=12345,\n            )\n            betfair_stream_socket.start()\n        except betfairlightweight.exceptions.SocketError:\n            logger.warning('SocketError in betfair stream thread.')\n            time.sleep(5.0)\n        except betfairlightweight.exceptions.APIError as e:\n            logger.error(e, exc_info=True)\n            time.sleep(5.0)\n```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "ga8143e60fb6",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/ea8143e60fb603cad63a14bfd181f72d.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0025-72.png",
+            "first_name": "Aaron",
+            "real_name": "Aaron Berk",
+            "display_name": "agberk",
+            "team": "T4G9NBD2M",
+            "name": "agberk",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "HrARI",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "The main read loop is in my own thread"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "def betfair_stream_run(config, order_queue):\n    betfair_api = betfairlightweight.APIClient(\n        config['betfair_username'],\n        config['betfair_password'],\n        config['betfair_application_key'],\n        config['betfair_certificate_dir'])\n\n    while True:\n        try:\n            betfair_api.login()\n            betfair_stream_socket = betfair_api.streaming.create_stream(\n                unique_id=1,\n                description=config['description'],\n                listener=StreamListener(output_queue=order_queue)\n            )\n            betfair_stream_socket.subscribe_to_orders(\n                unique_id=12345,\n            )\n            betfair_stream_socket.start()\n        except betfairlightweight.exceptions.SocketError:\n            logger.warning('SocketError in betfair stream thread.')\n            time.sleep(5.0)\n        except betfairlightweight.exceptions.APIError as e:\n            logger.error(e, exc_info=True)\n            time.sleep(5.0)\n"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H3EEV45",
+        "type": "message",
+        "ts": "1496411191.320261",
+        "text": "So even if the _error_handler on the listener causes _data to call stop() it should loop again, create a fresh stream and subscribe on that new stream object",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "ga8143e60fb6",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/ea8143e60fb603cad63a14bfd181f72d.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0025-72.png",
+            "first_name": "Aaron",
+            "real_name": "Aaron Berk",
+            "display_name": "agberk",
+            "team": "T4G9NBD2M",
+            "name": "agberk",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "qivwG",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "So even if the _error_handler on the listener causes _data to call stop() it should loop again, create a fresh stream and subscribe on that new stream object"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H3EEV45",
+        "type": "message",
+        "ts": "1496411206.325283",
+        "text": "Although the unique ids are the same",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "ga8143e60fb6",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/ea8143e60fb603cad63a14bfd181f72d.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0025-72.png",
+            "first_name": "Aaron",
+            "real_name": "Aaron Berk",
+            "display_name": "agberk",
+            "team": "T4G9NBD2M",
+            "name": "agberk",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "llN",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Although the unique ids are the same"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H3EEV45",
+        "type": "message",
+        "ts": "1496411244.337174",
+        "text": "I've got debug level logging switched on for betfairlightweight now so I'll be able to see what output there is if any when it happens again",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "ga8143e60fb6",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/ea8143e60fb603cad63a14bfd181f72d.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0025-72.png",
+            "first_name": "Aaron",
+            "real_name": "Aaron Berk",
+            "display_name": "agberk",
+            "team": "T4G9NBD2M",
+            "name": "agberk",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "VH0Ce",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I've got debug level logging switched on for betfairlightweight now so I'll be able to see what output there is if any when it happens again"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1496411320.362183",
+        "text": "Going to assume it's a parameter missing from one of the resources, v1.0-1.6 had a fe of those I think ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "syL",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Going to assume it's a parameter missing from one of the resources, v1.0-1.6 had a fe of those I think"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1496411543.436418",
+        "text": "Are you running that in a thread? Python has a habit of not showing an error if a thread dies due to a third party library like lightweight erroring ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "C38j",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Are you running that in a thread? Python has a habit of not showing an error if a thread dies due to a third party library like lightweight erroring"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H3EEV45",
+        "type": "message",
+        "ts": "1496411694.488177",
+        "text": "Yeah it's in a thread but I've got an excepthook for logging uncaught exceptions and I'm aware of <https:\/\/bugs.python.org\/issue1230540> and am using one of the workarounds in there",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "ga8143e60fb6",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/ea8143e60fb603cad63a14bfd181f72d.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0025-72.png",
+            "first_name": "Aaron",
+            "real_name": "Aaron Berk",
+            "display_name": "agberk",
+            "team": "T4G9NBD2M",
+            "name": "agberk",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "TX9hz",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Yeah it's in a thread but I've got an excepthook for logging uncaught exceptions and I'm aware of "
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/bugs.python.org\/issue1230540"
+                            },
+                            {
+                                "type": "text",
+                                "text": " and am using one of the workarounds in there"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H3EEV45",
+        "type": "message",
+        "ts": "1496411752.508723",
+        "text": "so most likely if I update to the latest version it should resolve it",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "ga8143e60fb6",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/ea8143e60fb603cad63a14bfd181f72d.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0025-72.png",
+            "first_name": "Aaron",
+            "real_name": "Aaron Berk",
+            "display_name": "agberk",
+            "team": "T4G9NBD2M",
+            "name": "agberk",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "cbdnD",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "so most likely if I update to the latest version it should resolve it"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U5D4ZBEAG",
+        "type": "message",
+        "ts": "1496411768.514145",
+        "text": "I got a few params missing from Selection(**i) the other day",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g147ed91a398",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/7147ed91a39866d363a9cfa66ef64cb8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0015-72.png",
+            "first_name": "",
+            "real_name": "seaders",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "seaders",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "r6dB",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I got a few params missing from Selection(**i) the other day"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U5D4ZBEAG",
+        "type": "message",
+        "ts": "1496411779.518045",
+        "text": "was (kinda) silenly failing in the background",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g147ed91a398",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/7147ed91a39866d363a9cfa66ef64cb8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0015-72.png",
+            "first_name": "",
+            "real_name": "seaders",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "seaders",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "E0k",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "was (kinda) silenly failing in the background"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U5D4ZBEAG",
+        "type": "message",
+        "ts": "1496411806.527388",
+        "text": "there's still a few areas where BF send really odd variants of stuff that breaks the library",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g147ed91a398",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/7147ed91a39866d363a9cfa66ef64cb8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0015-72.png",
+            "first_name": "",
+            "real_name": "seaders",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "seaders",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "s\/W=j",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "there's still a few areas where BF send really odd variants of stuff that breaks the library"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1496411818.531695",
+        "text": "Maybe we need to add **kwargs to all resources to prevent this...",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Qeqbz",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Maybe we need to add **kwargs to all resources to prevent this..."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U5D4ZBEAG",
+        "type": "message",
+        "ts": "1496411819.531938",
+        "text": "could easily be something like that",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g147ed91a398",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/7147ed91a39866d363a9cfa66ef64cb8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0015-72.png",
+            "first_name": "",
+            "real_name": "seaders",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "seaders",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "bWI",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "could easily be something like that"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U5D4ZBEAG",
+        "type": "message",
+        "ts": "1496411828.535134",
+        "text": "no, the other way around",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g147ed91a398",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/7147ed91a39866d363a9cfa66ef64cb8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0015-72.png",
+            "first_name": "",
+            "real_name": "seaders",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "seaders",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "VO1",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "no, the other way around"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U5D4ZBEAG",
+        "type": "message",
+        "ts": "1496411834.537410",
+        "text": "a necessary arg wasn't there",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g147ed91a398",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/7147ed91a39866d363a9cfa66ef64cb8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0015-72.png",
+            "first_name": "",
+            "real_name": "seaders",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "seaders",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "JmT3",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "a necessary arg wasn't there"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U5D4ZBEAG",
+        "type": "message",
+        "ts": "1496411843.540708",
+        "text": "I don't know what wasn't there, my log didn't tell me",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g147ed91a398",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/7147ed91a39866d363a9cfa66ef64cb8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0015-72.png",
+            "first_name": "",
+            "real_name": "seaders",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "seaders",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "qjab",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I don't know what wasn't there, my log didn't tell me"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1496411865.548139",
+        "text": "Painful ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "9OZKd",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Painful"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U5D4ZBEAG",
+        "type": "message",
+        "ts": "1496411939.573581",
+        "text": "you've seen my PRs",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g147ed91a398",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/7147ed91a39866d363a9cfa66ef64cb8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0015-72.png",
+            "first_name": "",
+            "real_name": "seaders",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "seaders",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "lmwsG",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "you've seen my PRs"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U5D4ZBEAG",
+        "type": "message",
+        "ts": "1496411958.580348",
+        "text": "90% just adding `__init__(something=None)`",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g147ed91a398",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/7147ed91a39866d363a9cfa66ef64cb8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0015-72.png",
+            "first_name": "",
+            "real_name": "seaders",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "seaders",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "41\/1\/",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "90% just adding "
+                            },
+                            {
+                                "type": "text",
+                                "text": "__init__(something=None)",
+                                "style": {
+                                    "code": true
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U5D4ZBEAG",
+        "type": "message",
+        "ts": "1496411960.580797",
+        "text": ":smile:",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g147ed91a398",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/7147ed91a39866d363a9cfa66ef64cb8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0015-72.png",
+            "first_name": "",
+            "real_name": "seaders",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "seaders",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "3EqN",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "emoji",
+                                "name": "smile",
+                                "unicode": "1f604"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1496412040.611682",
+        "text": "Haha, I would love to match the library up to the docs but starting to think it's not worth the pain ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "gpNu=",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Haha, I would love to match the library up to the docs but starting to think it's not worth the pain"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U5D4ZBEAG",
+        "type": "message",
+        "ts": "1496412100.634299",
+        "text": "I've poked them a few times about auto-generating models from that thing definition they have",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g147ed91a398",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/7147ed91a39866d363a9cfa66ef64cb8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0015-72.png",
+            "first_name": "",
+            "real_name": "seaders",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "seaders",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "jmz",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I've poked them a few times about auto-generating models from that thing definition they have"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U5D4ZBEAG",
+        "type": "message",
+        "ts": "1496412118.640679",
+        "text": "your library is nearly at the stage that all the models follow nearly the exact same pattern,",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g147ed91a398",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/7147ed91a39866d363a9cfa66ef64cb8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0015-72.png",
+            "first_name": "",
+            "real_name": "seaders",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "seaders",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "KxvZJ",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "your library is nearly at the stage that all the models follow nearly the exact same pattern,"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U5D4ZBEAG",
+        "type": "message",
+        "ts": "1496412133.646124",
+        "text": "that using their thing, you *could* potentially generate directly from there",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g147ed91a398",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/7147ed91a39866d363a9cfa66ef64cb8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0015-72.png",
+            "first_name": "",
+            "real_name": "seaders",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "seaders",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "OtEe6",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "that using their thing, you "
+                            },
+                            {
+                                "type": "text",
+                                "text": "could",
+                                "style": {
+                                    "bold": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " potentially generate directly from there"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U5D4ZBEAG",
+        "type": "message",
+        "ts": "1496412143.650179",
+        "text": "(but again, as you said, it may well not be worth the pain)",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g147ed91a398",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/7147ed91a39866d363a9cfa66ef64cb8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0015-72.png",
+            "first_name": "",
+            "real_name": "seaders",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "seaders",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "myBvd",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "(but again, as you said, it may well not be worth the pain)"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H3EEV45",
+        "type": "message",
+        "ts": "1496412995.950664",
+        "text": "These streams have been stopping all day for me and of course now that I've put in the logging they won't bloody die to tell me what was wrong lol sods law they won't go down for a week",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "ga8143e60fb6",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/ea8143e60fb603cad63a14bfd181f72d.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0025-72.png",
+            "first_name": "Aaron",
+            "real_name": "Aaron Berk",
+            "display_name": "agberk",
+            "team": "T4G9NBD2M",
+            "name": "agberk",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "KMNz",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "These streams have been stopping all day for me and of course now that I've put in the logging they won't bloody die to tell me what was wrong lol sods law they won't go down for a week"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H3EEV45",
+        "type": "message",
+        "ts": "1496413625.176888",
+        "text": "Just tried running the order feed with the latest version",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "ga8143e60fb6",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/ea8143e60fb603cad63a14bfd181f72d.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0025-72.png",
+            "first_name": "Aaron",
+            "real_name": "Aaron Berk",
+            "display_name": "agberk",
+            "team": "T4G9NBD2M",
+            "name": "agberk",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "QD8",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Just tried running the order feed with the latest version"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H3EEV45",
+        "type": "message",
+        "ts": "1496413643.183558",
+        "text": "```\nTraceback (most recent call last):\n  File \"\/usr\/lib\/python2.7\/threading.py\", line 801, in __bootstrap_inner\n    self.run()\n  File \"\/usr\/lib\/python2.7\/threading.py\", line 754, in run\n    self.__target(*self.__args, **self.__kwargs)\n  File \"\/home\/aaron\/workspace\/xxx\/betfair_order_feed.py\", line 94, in betfair_stream_run\n    betfair_stream_socket.start()\n  File \"\/home\/aaron\/tmp\/venv\/betfairlightweight\/local\/lib\/python2.7\/site-packages\/betfairlightweight\/streaming\/betfairstream.py\", line 49, in start\n    self._read_loop()\n  File \"\/home\/aaron\/tmp\/venv\/betfairlightweight\/local\/lib\/python2.7\/site-packages\/betfairlightweight\/streaming\/betfairstream.py\", line 177, in _read_loop\n    self._data(received_data)\n  File \"\/home\/aaron\/tmp\/venv\/betfairlightweight\/local\/lib\/python2.7\/site-packages\/betfairlightweight\/streaming\/betfairstream.py\", line 204, in _data\n    if self.listener.on_data(received_data) is False:\n  File \"\/home\/aaron\/tmp\/venv\/betfairlightweight\/local\/lib\/python2.7\/site-packages\/betfairlightweight\/streaming\/listener.py\", line 83, in on_data\n    self._on_change_message(data, unique_id)\n  File \"\/home\/aaron\/tmp\/venv\/betfairlightweight\/local\/lib\/python2.7\/site-packages\/betfairlightweight\/streaming\/listener.py\", line 108, in _on_change_message\n    self.stream.on_subscribe(data)\n  File \"\/home\/aaron\/tmp\/venv\/betfairlightweight\/local\/lib\/python2.7\/site-packages\/betfairlightweight\/streaming\/stream.py\", line 40, in on_subscribe\n    self._process(book_data, publish_time)\n  File \"\/home\/aaron\/tmp\/venv\/betfairlightweight\/local\/lib\/python2.7\/site-packages\/betfairlightweight\/streaming\/stream.py\", line 132, in _process\n    self._caches[market_id] = OrderBookCache(publish_time=publish_time, **order_book)\n  File \"\/home\/aaron\/tmp\/venv\/betfairlightweight\/local\/lib\/python2.7\/site-packages\/betfairlightweight\/resources\/streamingresources.py\", line 488, in __init__\n    self.runners = [OrderBookRunner(**i) for i in kwargs.get('orc', [])]\nTypeError: __init__() got an unexpected keyword argument 'hc'\n```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "ga8143e60fb6",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/ea8143e60fb603cad63a14bfd181f72d.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0025-72.png",
+            "first_name": "Aaron",
+            "real_name": "Aaron Berk",
+            "display_name": "agberk",
+            "team": "T4G9NBD2M",
+            "name": "agberk",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "ee2g",
+                "elements": [
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Traceback (most recent call last):\n  File \"\/usr\/lib\/python2.7\/threading.py\", line 801, in __bootstrap_inner\n    self.run()\n  File \"\/usr\/lib\/python2.7\/threading.py\", line 754, in run\n    self.__target(*self.__args, **self.__kwargs)\n  File \"\/home\/aaron\/workspace\/xxx\/betfair_order_feed.py\", line 94, in betfair_stream_run\n    betfair_stream_socket.start()\n  File \"\/home\/aaron\/tmp\/venv\/betfairlightweight\/local\/lib\/python2.7\/site-packages\/betfairlightweight\/streaming\/betfairstream.py\", line 49, in start\n    self._read_loop()\n  File \"\/home\/aaron\/tmp\/venv\/betfairlightweight\/local\/lib\/python2.7\/site-packages\/betfairlightweight\/streaming\/betfairstream.py\", line 177, in _read_loop\n    self._data(received_data)\n  File \"\/home\/aaron\/tmp\/venv\/betfairlightweight\/local\/lib\/python2.7\/site-packages\/betfairlightweight\/streaming\/betfairstream.py\", line 204, in _data\n    if self.listener.on_data(received_data) is False:\n  File \"\/home\/aaron\/tmp\/venv\/betfairlightweight\/local\/lib\/python2.7\/site-packages\/betfairlightweight\/streaming\/listener.py\", line 83, in on_data\n    self._on_change_message(data, unique_id)\n  File \"\/home\/aaron\/tmp\/venv\/betfairlightweight\/local\/lib\/python2.7\/site-packages\/betfairlightweight\/streaming\/listener.py\", line 108, in _on_change_message\n    self.stream.on_subscribe(data)\n  File \"\/home\/aaron\/tmp\/venv\/betfairlightweight\/local\/lib\/python2.7\/site-packages\/betfairlightweight\/streaming\/stream.py\", line 40, in on_subscribe\n    self._process(book_data, publish_time)\n  File \"\/home\/aaron\/tmp\/venv\/betfairlightweight\/local\/lib\/python2.7\/site-packages\/betfairlightweight\/streaming\/stream.py\", line 132, in _process\n    self._caches[market_id] = OrderBookCache(publish_time=publish_time, **order_book)\n  File \"\/home\/aaron\/tmp\/venv\/betfairlightweight\/local\/lib\/python2.7\/site-packages\/betfairlightweight\/resources\/streamingresources.py\", line 488, in __init__\n    self.runners = [OrderBookRunner(**i) for i in kwargs.get('orc', [])]\nTypeError: __init__() got an unexpected keyword argument 'hc'\n"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H3EEV45",
+        "type": "message",
+        "ts": "1496414080.346803",
+        "text": "Here we go",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "ga8143e60fb6",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/ea8143e60fb603cad63a14bfd181f72d.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0025-72.png",
+            "first_name": "Aaron",
+            "real_name": "Aaron Berk",
+            "display_name": "agberk",
+            "team": "T4G9NBD2M",
+            "name": "agberk",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "OvkU",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Here we go"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H3EEV45",
+        "type": "message",
+        "ts": "1496414095.352186",
+        "text": "```\n{\n\t\t\t\"id\": \"1.131975445\",\n\t\t\t\"orc\": [\n\t\t\t\t{\n\t\t\t\t\t\"hc\": -0.25,\n\t\t\t\t\t\"fullImage\": true,\n\t\t\t\t\t\"id\": 4917452,\n\t\t\t\t\t\"mb\": [\n\t\t\t\t\t\t[\n\t\t\t\t\t\t\t1.27,\n\t\t\t\t\t\t\t4.37\n\t\t\t\t\t\t]\n\t\t\t\t\t]\n\t\t\t\t}\n\t\t\t]\n\t\t}\n```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "ga8143e60fb6",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/ea8143e60fb603cad63a14bfd181f72d.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0025-72.png",
+            "first_name": "Aaron",
+            "real_name": "Aaron Berk",
+            "display_name": "agberk",
+            "team": "T4G9NBD2M",
+            "name": "agberk",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "KU3k",
+                "elements": [
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "{\n            \"id\": \"1.131975445\",\n            \"orc\": [\n                {\n                    \"hc\": -0.25,\n                    \"fullImage\": true,\n                    \"id\": 4917452,\n                    \"mb\": [\n                        [\n                            1.27,\n                            4.37\n                        ]\n                    ]\n                }\n            ]\n        }\n"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H3EEV45",
+        "type": "message",
+        "ts": "1496414108.357201",
+        "text": "hc must be handicap",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "ga8143e60fb6",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/ea8143e60fb603cad63a14bfd181f72d.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0025-72.png",
+            "first_name": "Aaron",
+            "real_name": "Aaron Berk",
+            "display_name": "agberk",
+            "team": "T4G9NBD2M",
+            "name": "agberk",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "wB+",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "hc must be handicap"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H3EEV45",
+        "type": "message",
+        "ts": "1496414132.366365",
+        "text": "Conveniently not mentioned as a field in the docs",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "ga8143e60fb6",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/ea8143e60fb603cad63a14bfd181f72d.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0025-72.png",
+            "first_name": "Aaron",
+            "real_name": "Aaron Berk",
+            "display_name": "agberk",
+            "team": "T4G9NBD2M",
+            "name": "agberk",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Cdg",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Conveniently not mentioned as a field in the docs"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1496416364.206789",
+        "text": "Useless ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "EiW=",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Useless"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H3EEV45",
+        "type": "message",
+        "ts": "1496416392.216545",
+        "text": "What's going on with the classes in bettingresources? Some are object some are BaseResource?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "ga8143e60fb6",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/ea8143e60fb603cad63a14bfd181f72d.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0025-72.png",
+            "first_name": "Aaron",
+            "real_name": "Aaron Berk",
+            "display_name": "agberk",
+            "team": "T4G9NBD2M",
+            "name": "agberk",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "HBey",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "What's going on with the classes in bettingresources? Some are object some are BaseResource?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1496416440.234501",
+        "text": "Top level is a base resource, anything else is a class ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "j1u",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Top level is a base resource, anything else is a class"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1496416460.242134",
+        "text": "Ie EventTypeResult is a base resource ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "yU5C",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Ie EventTypeResult is a base resource"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H3EEV45",
+        "type": "message",
+        "ts": "1496416524.265845",
+        "text": "Right - so I can get the json on the top level one",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "ga8143e60fb6",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/ea8143e60fb603cad63a14bfd181f72d.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0025-72.png",
+            "first_name": "Aaron",
+            "real_name": "Aaron Berk",
+            "display_name": "agberk",
+            "team": "T4G9NBD2M",
+            "name": "agberk",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "ASG",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Right - so I can get the json on the top level one"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1496416534.269961",
+        "text": "Yep",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "AGry",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Yep"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H3EEV45",
+        "type": "message",
+        "ts": "1496418159.866230",
+        "text": "I've opened a ticket with BDP about that hc field",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "ga8143e60fb6",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/ea8143e60fb603cad63a14bfd181f72d.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0025-72.png",
+            "first_name": "Aaron",
+            "real_name": "Aaron Berk",
+            "display_name": "agberk",
+            "team": "T4G9NBD2M",
+            "name": "agberk",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "\/+T",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I've opened a ticket with BDP about that hc field"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1496425076.160056",
+        "text": "Will merge your or tomorrow, cheers ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "EIsl",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Will merge your or tomorrow, cheers"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1496425399.263513",
+        "text": "Also wasn't even aware of exception hooks ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Ch3",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Also wasn't even aware of exception hooks"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

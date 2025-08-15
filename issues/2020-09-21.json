@@ -1,0 +1,227 @@
+[
+    {
+        "user": "UGVF3MELE",
+        "type": "message",
+        "ts": "1600703085.013600",
+        "client_msg_id": "7FA696F6-E71E-4977-B351-9903A4D3BF4F",
+        "text": "Hi all, almost certainly doing something dim here.  Using flumine, I seem unable to access market_books with a \"CLOSED\" status (so can't pick out the winner for example).  Illustrative code here:\n\n```class ExamplePrinter(BaseStrategy):\n    \n    def start(self) -&gt; None:\n        print(\"starting strategy 'ExamplePrinter'\")\n    \n    def check_market_book(self, market: Market, market_book: MarketBook) -&gt; bool:\n        # process_market_book only executed if this returns True\n        return True\n\n    def process_market_book(self, market: Market, market_book: MarketBook) -&gt; None:\n        # process marketBook object\n        if market_book.status != 'OPEN':\n            print(f'status: {market_book.status}')\n\nclient = clients.BetfairClient(trading)\n\nframework = Flumine(\n    client=client,\n)\n\nstrategy = ExamplePrinter(\n    market_filter=streaming_market_filter(\n        market_ids=['1.173247293']\n    ),\n)\n\nframework.add_strategy(strategy)\n\nframework.run()```\nThis only outputs when the market_book is \"SUSPENDED\", it never outputs \"CLOSED\". I can tell from logging that the market closes and the stream stops, so how would I access closed market books?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g887ab83942e",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/c887ab83942e43333af18e5bba2022b4.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0018-72.png",
+            "first_name": "",
+            "real_name": "JonM",
+            "display_name": "JonM",
+            "team": "T4G9NBD2M",
+            "name": "jon",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "ubgAA",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Hi all, almost certainly doing something dim here.  Using flumine, I seem unable to access market_books with a \"CLOSED\" status (so can't pick out the winner for example).  Illustrative code here:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "class ExamplePrinter(BaseStrategy):\n    \n    def start(self) -> None:\n        print(\"starting strategy 'ExamplePrinter'\")\n    \n    def check_market_book(self, market: Market, market_book: MarketBook) -> bool:\n        # process_market_book only executed if this returns True\n        return True\n\n    def process_market_book(self, market: Market, market_book: MarketBook) -> None:\n        # process marketBook object\n        if market_book.status != 'OPEN':\n            print(f'status: {market_book.status}')\n\nclient = clients.BetfairClient(trading)\n\nframework = Flumine(\n    client=client,\n)\n\nstrategy = ExamplePrinter(\n    market_filter=streaming_market_filter(\n        market_ids=['1.173247293']\n    ),\n)\n\nframework.add_strategy(strategy)\n\nframework.run()"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "This only outputs when the market_book is \"SUSPENDED\", it never outputs \"CLOSED\". I can tell from logging that the market closes and the stream stops, so how would I access closed market books?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1600703189.014600",
+        "client_msg_id": "a780fd6f-0993-4668-9b8d-09dbdc73c870",
+        "text": "It doesn't currently, see this <https:\/\/github.com\/liampauling\/flumine\/blob\/3728274bce91cf3d56f42da67b43d116bc2f860e\/flumine\/baseflumine.py#L132|line>, instead `strategy.process_closed_market` is <https:\/\/github.com\/liampauling\/flumine\/blob\/3728274bce91cf3d56f42da67b43d116bc2f860e\/flumine\/strategy\/strategy.py#L101|called> but not always, was thinking of changing it this morning",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "attachments": [
+            {
+                "fallback": "[liampauling\/flumine] flumine\/baseflumine.py:132",
+                "title": "flumine\/baseflumine.py:132",
+                "footer": "<https:\/\/github.com\/liampauling\/flumine|liampauling\/flumine>",
+                "id": 1,
+                "title_link": "https:\/\/github.com\/liampauling\/flumine\/blob\/3728274bce91cf3d56f42da67b43d116bc2f860e\/flumine\/baseflumine.py#L132",
+                "footer_icon": "https:\/\/github.githubassets.com\/favicon.ico",
+                "color": "24292f",
+                "mrkdwn_in": [
+                    "text"
+                ],
+                "bot_id": "B01144Z0734",
+                "app_unfurl_url": "https:\/\/github.com\/liampauling\/flumine\/blob\/3728274bce91cf3d56f42da67b43d116bc2f860e\/flumine\/baseflumine.py#L132",
+                "is_app_unfurl": true
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "NTDIR",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "It doesn't currently, see this "
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/liampauling\/flumine\/blob\/3728274bce91cf3d56f42da67b43d116bc2f860e\/flumine\/baseflumine.py#L132",
+                                "text": "line"
+                            },
+                            {
+                                "type": "text",
+                                "text": ", instead "
+                            },
+                            {
+                                "type": "text",
+                                "text": "strategy.process_closed_market",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " is "
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/liampauling\/flumine\/blob\/3728274bce91cf3d56f42da67b43d116bc2f860e\/flumine\/strategy\/strategy.py#L101",
+                                "text": "called"
+                            },
+                            {
+                                "type": "text",
+                                "text": " but not always, was thinking of changing it this morning"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UGVF3MELE",
+        "type": "message",
+        "ts": "1600703406.016100",
+        "client_msg_id": "26B50DFC-CD6E-4EF5-A161-73CA6EBE46A2",
+        "text": "Ah, gotcha. So I can whack some logic in here to get winners etc? Thanks. ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g887ab83942e",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/c887ab83942e43333af18e5bba2022b4.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0018-72.png",
+            "first_name": "",
+            "real_name": "JonM",
+            "display_name": "JonM",
+            "team": "T4G9NBD2M",
+            "name": "jon",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "rG4D+",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Ah, gotcha. So I can whack some logic in here to get winners etc? Thanks. "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1600703412.016300",
+        "client_msg_id": "e23627c0-03c9-4212-b9aa-12f5a68bbe9a",
+        "text": "correct",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "7EQ",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "correct"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "UGVF3MELE"
+                ],
+                "count": 1
+            }
+        ]
+    }
+]

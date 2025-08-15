@@ -1,0 +1,840 @@
+[
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1647418749.450809",
+        "client_msg_id": "E63A26DF-B4F4-40FF-AFDA-C4D5BEF6CE21",
+        "text": "Not really but if you are doing a lookup more than once per selection it would be more efficient to create a dictionary of `{tradedOdds: tradedVolume}`",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1647347909.042809",
+        "parent_user_id": "UVB1RFEP5",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "MRwfm",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Not really but if you are doing a lookup more than once per selection it would be more efficient to create a dictionary of "
+                            },
+                            {
+                                "type": "text",
+                                "text": "{tradedOdds: tradedVolume}",
+                                "style": {
+                                    "code": true
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U031YHV2MLL",
+        "type": "message",
+        "ts": "1647423158.888179",
+        "client_msg_id": "e6fe1e12-bf85-409a-b5df-390456b50acd",
+        "text": "Can do! So essentially a typical situation is this:\n\n1. you have a strategy name. say it's called \"back_strat_42\". it's betting on UK horseracing.\n2. you have a single market_id and a single selection_id that you want to place a bet on\n3. you have the liability to stake (back or lay doesn't matter).\n4. you want to place just a single bet on the selection at anytime and leave it in the market. so for simplicity say a OrderType=MARKET_ON_CLOSE with PersistenceType=MARKET_ON_CLOSE\n5. you want a log\/trace of the result of the bet that you placed for post-race analysis (typically with a database dump)\n\nThis is to be repeated multiple times from a few different strategies but the logic is essentially as above and the current system design is to place these bets from individual threads or processes.\nA follow up question is if you have dozens of these happening in parallel will it be an issue from a betfair api perspective? I'm connecting with a live api key with bot login (certs) and it seems you're only allowed 9 connections. Would this be an issue with the above setup?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gabb83882349",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/abb83882349ea21f8e239477f67b1f93.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0006-72.png",
+            "first_name": "anomaly",
+            "real_name": "anomaly",
+            "display_name": "anomaly",
+            "team": "T4G9NBD2M",
+            "name": "ganymedeblack",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1647397398.601009",
+        "parent_user_id": "U031YHV2MLL",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "n1u",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Can do! So essentially a typical situation is this:\n\n1. you have a strategy name. say it's called \"back_strat_42\". it's betting on UK horseracing.\n2. you have a single market_id and a single selection_id that you want to place a bet on\n3. you have the liability to stake (back or lay doesn't matter).\n4. you want to place just a single bet on the selection at anytime and leave it in the market. so for simplicity say a OrderType=MARKET_ON_CLOSE with PersistenceType=MARKET_ON_CLOSE\n5. you want a log\/trace of the result of the bet that you placed for post-race analysis (typically with a database dump)\n\nThis is to be repeated multiple times from a few different strategies but the logic is essentially as above and the current system design is to place these bets from individual threads or processes.\nA follow up question is if you have dozens of these happening in parallel will it be an issue from a betfair api perspective? I'm connecting with a live api key with bot login (certs) and it seems you're only allowed 9 connections. Would this be an issue with the above setup?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1647426381.396649",
+        "client_msg_id": "6d03fa19-b411-4c0c-b585-71a1e012616d",
+        "text": "Have a look at <https:\/\/github.com\/liampauling\/flumine\/pull\/568\/files|this>\n\nThis is the flumine\/event driven way of using the stream so that you use a single market stream and make decisions based off the updates. Note that this is just laying at 1.01 but you just need to change this to a MarketOnCloseOrder and add your selections to the context for it to do what you want.\n\nHaven't added your part 5, but this would involve a variation of <https:\/\/github.com\/liampauling\/flumine\/blob\/master\/examples\/controls\/backtestloggingcontrol.py|this> example.\n\nMoving forward you would probably want to pull these selections from a csv, api or database rather than hardcoding into the context.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1647397398.601009",
+        "parent_user_id": "U031YHV2MLL",
+        "attachments": [
+            {
+                "id": 1,
+                "footer_icon": "https:\/\/slack.github.com\/static\/img\/favicon-neutral.png",
+                "color": "24292f",
+                "bot_id": "B021ZJYSBMW",
+                "app_unfurl_url": "https:\/\/github.com\/liampauling\/flumine\/blob\/master\/examples\/controls\/backtestloggingcontrol.py",
+                "is_app_unfurl": true,
+                "app_id": "A01BP7R4KNY",
+                "fallback": "<https:\/\/github.com\/liampauling\/flumine\/blob\/master\/examples\/controls\/backtestloggingcontrol.py | backtestloggingcontrol.py>",
+                "title": "<https:\/\/github.com\/liampauling\/flumine\/blob\/master\/examples\/controls\/backtestloggingcontrol.py | backtestloggingcontrol.py>",
+                "footer": "<https:\/\/github.com\/liampauling\/flumine|liampauling\/flumine>",
+                "mrkdwn_in": [
+                    "text"
+                ]
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "=NH",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Have a look at "
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/liampauling\/flumine\/pull\/568\/files",
+                                "text": "this"
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n\nThis is the flumine\/event driven way of using the stream so that you use a single market stream and make decisions based off the updates. Note that this is just laying at 1.01 but you just need to change this to a MarketOnCloseOrder and add your selections to the context for it to do what you want.\n\nHaven't added your part 5, but this would involve a variation of "
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/liampauling\/flumine\/blob\/master\/examples\/controls\/backtestloggingcontrol.py",
+                                "text": "this"
+                            },
+                            {
+                                "type": "text",
+                                "text": " example.\n\nMoving forward you would probably want to pull these selections from a csv, api or database rather than hardcoding into the context."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "hugging_face",
+                "users": [
+                    "U031YHV2MLL"
+                ],
+                "count": 1
+            },
+            {
+                "name": "+1",
+                "users": [
+                    "U02QDJCK3NW"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "U031YHV2MLL",
+        "type": "message",
+        "ts": "1647427003.679699",
+        "client_msg_id": "27c4b3f8-23db-40f9-8a67-1098fab67c39",
+        "text": "amazing. thanks so much liam",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gabb83882349",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/abb83882349ea21f8e239477f67b1f93.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0006-72.png",
+            "first_name": "anomaly",
+            "real_name": "anomaly",
+            "display_name": "anomaly",
+            "team": "T4G9NBD2M",
+            "name": "ganymedeblack",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1647397398.601009",
+        "parent_user_id": "U031YHV2MLL",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "tS5jP",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "amazing. thanks so much liam"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UVB1RFEP5",
+        "type": "message",
+        "ts": "1647429873.101069",
+        "client_msg_id": "1c1e8998-67c7-487a-9a30-258c99450a21",
+        "text": "Thanks for the feedback Liam, appreciated.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g26c77fdeb3e",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/26c77fdeb3e6b0f4fdf4d1ae1c1d7b4f.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0015-72.png",
+            "first_name": "",
+            "real_name": "JFP",
+            "display_name": "JFP",
+            "team": "T4G9NBD2M",
+            "name": "justinfpearce",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1647347909.042809",
+        "parent_user_id": "UVB1RFEP5",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "K0s",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Thanks for the feedback Liam, appreciated."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "subtype": "channel_join",
+        "user": "U0382CCLV08",
+        "text": "<@U0382CCLV08> has joined the channel",
+        "type": "message",
+        "ts": "1647452983.532639"
+    },
+    {
+        "user": "U0266A8579B",
+        "type": "message",
+        "ts": "1647454507.017649",
+        "client_msg_id": "afffdd06-cd2e-4ca9-b524-1e3d9a226c84",
+        "text": "<@U4H19D1D2> I will look at it, thanks!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "9716da07d96d",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2021-06-25\/2219629138132_9716da07d96d5116cddf_72.png",
+            "first_name": "Laybot",
+            "real_name": "Laybot McBackbot",
+            "display_name": "Laybot McBackbot",
+            "team": "T4G9NBD2M",
+            "name": "zarulshahrin",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1647032643.268099",
+        "parent_user_id": "U0266A8579B",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "taZ3",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "user",
+                                "user_id": "U4H19D1D2"
+                            },
+                            {
+                                "type": "text",
+                                "text": " I will look at it, thanks!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U0266A8579B",
+        "type": "message",
+        "ts": "1647454549.482479",
+        "client_msg_id": "3e812ec4-de7f-41f3-b78f-effed71ea449",
+        "text": "Question - how do I change the default commission when backtesting? I assume it's already calculated and is 5%?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "9716da07d96d",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2021-06-25\/2219629138132_9716da07d96d5116cddf_72.png",
+            "first_name": "Laybot",
+            "real_name": "Laybot McBackbot",
+            "display_name": "Laybot McBackbot",
+            "team": "T4G9NBD2M",
+            "name": "zarulshahrin",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1647454549.482479",
+        "reply_count": 6,
+        "reply_users_count": 3,
+        "latest_reply": "1647529146.073839",
+        "reply_users": [
+            "U0266A8579B",
+            "U4H19D1D2",
+            "UEA14GBRR"
+        ],
+        "replies": [
+            {
+                "user": "U0266A8579B",
+                "ts": "1647455856.132289"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1647456693.447649"
+            },
+            {
+                "user": "U0266A8579B",
+                "ts": "1647458615.475989"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1647458781.451399"
+            },
+            {
+                "user": "U0266A8579B",
+                "ts": "1647458910.923319"
+            },
+            {
+                "user": "UEA14GBRR",
+                "ts": "1647529146.073839"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": true,
+        "last_read": "1647529146.073839",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "M5EDS",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Question - how do I change the default commission when backtesting? I assume it's already calculated and is 5%?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U036XGWGWQJ",
+        "type": "message",
+        "ts": "1647455444.217989",
+        "client_msg_id": "9bda4c20-8748-40bd-b84d-b3b99ba2f821",
+        "text": "hello <!everyone> i am new to betfairlightweight have been looking for documention but have had no luck online does anybody have a link or file that i can get my hands on thanks in advance",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "dae5b72f50f7",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2022-03-14\/3248190006641_dae5b72f50f765ae4e67_72.jpg",
+            "first_name": "NOT",
+            "real_name": "NOT Damien",
+            "display_name": "NOT Damien",
+            "team": "T4G9NBD2M",
+            "name": "lewisdamien1991",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "F885F",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "hello "
+                            },
+                            {
+                                "type": "broadcast",
+                                "range": "everyone"
+                            },
+                            {
+                                "type": "text",
+                                "text": " i am new to betfairlightweight have been looking for documention but have had no luck online does anybody have a link or file that i can get my hands on thanks in advance"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U0266A8579B",
+        "type": "message",
+        "ts": "1647455606.606819",
+        "client_msg_id": "95c49c33-188a-4bc5-9063-2a290c407e50",
+        "text": "<https:\/\/liampauling.github.io\/betfair\/>",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "9716da07d96d",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2021-06-25\/2219629138132_9716da07d96d5116cddf_72.png",
+            "first_name": "Laybot",
+            "real_name": "Laybot McBackbot",
+            "display_name": "Laybot McBackbot",
+            "team": "T4G9NBD2M",
+            "name": "zarulshahrin",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "attachments": [
+            {
+                "from_url": "https:\/\/liampauling.github.io\/betfair\/",
+                "id": 1,
+                "original_url": "https:\/\/liampauling.github.io\/betfair\/",
+                "fallback": "betfairlightweight",
+                "text": "Lightweight, super fast (uses c libraries) pythonic wrapper for Betfair API-NG.",
+                "title": "betfairlightweight",
+                "title_link": "https:\/\/liampauling.github.io\/betfair\/",
+                "service_name": "liampauling.github.io"
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "4gOfF",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "link",
+                                "url": "https:\/\/liampauling.github.io\/betfair\/"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U0266A8579B",
+        "type": "message",
+        "ts": "1647455663.424309",
+        "client_msg_id": "a441cd0d-7e08-4033-84ac-8ba277d3f93d",
+        "text": "<https:\/\/liampauling.github.io\/flumine\/>",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "9716da07d96d",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2021-06-25\/2219629138132_9716da07d96d5116cddf_72.png",
+            "first_name": "Laybot",
+            "real_name": "Laybot McBackbot",
+            "display_name": "Laybot McBackbot",
+            "team": "T4G9NBD2M",
+            "name": "zarulshahrin",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "attachments": [
+            {
+                "from_url": "https:\/\/liampauling.github.io\/flumine\/",
+                "id": 1,
+                "original_url": "https:\/\/liampauling.github.io\/flumine\/",
+                "fallback": "flumine",
+                "text": "Trading framework for Betfair API-NG.",
+                "title": "flumine",
+                "title_link": "https:\/\/liampauling.github.io\/flumine\/",
+                "service_name": "liampauling.github.io"
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "t\/B",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "link",
+                                "url": "https:\/\/liampauling.github.io\/flumine\/"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U0266A8579B",
+        "type": "message",
+        "ts": "1647455856.132289",
+        "edited": {
+            "user": "U0266A8579B",
+            "ts": "1647455948.000000"
+        },
+        "client_msg_id": "e7b72249-e0e8-496e-bab5-4c0f964bde57",
+        "text": "Nevermind, found it in blotter.py",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "9716da07d96d",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2021-06-25\/2219629138132_9716da07d96d5116cddf_72.png",
+            "first_name": "Laybot",
+            "real_name": "Laybot McBackbot",
+            "display_name": "Laybot McBackbot",
+            "team": "T4G9NBD2M",
+            "name": "zarulshahrin",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1647454549.482479",
+        "parent_user_id": "U0266A8579B",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "9tovN",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Nevermind, found it in blotter.py"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1647456693.447649",
+        "client_msg_id": "d448db42-e32c-4849-8751-9b6adb0ead5e",
+        "text": "don't think this is fully implemented btw",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1647454549.482479",
+        "parent_user_id": "U0266A8579B",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "ekf6",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "don't think this is fully implemented btw"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U0266A8579B",
+        "type": "message",
+        "ts": "1647458615.475989",
+        "client_msg_id": "107c4b23-71f5-4b0e-85dd-3537a0b53640",
+        "text": "<@U4H19D1D2>: Does that mean commission is not taken into account?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "9716da07d96d",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2021-06-25\/2219629138132_9716da07d96d5116cddf_72.png",
+            "first_name": "Laybot",
+            "real_name": "Laybot McBackbot",
+            "display_name": "Laybot McBackbot",
+            "team": "T4G9NBD2M",
+            "name": "zarulshahrin",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1647454549.482479",
+        "parent_user_id": "U0266A8579B",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "YUO",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "user",
+                                "user_id": "U4H19D1D2"
+                            },
+                            {
+                                "type": "text",
+                                "text": ": Does that mean commission is not taken into account?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1647458781.451399",
+        "client_msg_id": "88ABA9C8-7047-4541-B55B-71B43272B9B2",
+        "text": "Certainly isn't at the order (simulated) level ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1647454549.482479",
+        "parent_user_id": "U0266A8579B",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "KzlSQ",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Certainly isn't at the order (simulated) level "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U0266A8579B",
+        "type": "message",
+        "ts": "1647458910.923319",
+        "client_msg_id": "9890b34a-61d1-4b1b-a413-4ebe2db20d3d",
+        "text": "Aight, then. I will add it myself. Thanks.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "9716da07d96d",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2021-06-25\/2219629138132_9716da07d96d5116cddf_72.png",
+            "first_name": "Laybot",
+            "real_name": "Laybot McBackbot",
+            "display_name": "Laybot McBackbot",
+            "team": "T4G9NBD2M",
+            "name": "zarulshahrin",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1647454549.482479",
+        "parent_user_id": "U0266A8579B",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "NOFo9",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Aight, then. I will add it myself. Thanks."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U031YHV2MLL",
+        "type": "message",
+        "ts": "1647494703.764949",
+        "edited": {
+            "user": "U031YHV2MLL",
+            "ts": "1647499142.000000"
+        },
+        "client_msg_id": "e992209e-8c30-4149-afa0-51fdf0cd40f8",
+        "text": "<@U4H19D1D2> I was able to run the code successfully! is there a way to use same framework\/betfair client to push new strategies?\n\n.run() seems to be blocking but I would like to call framework.add_strategy(strategy) on demand. i.e. a framework process is reading a queue and it constructs aribtrarily many new Strategies on demand, and pushes them to the framework.\n\nAdditionally, assuming it's possible to seamelessly add strategies, how would you safely \"remove\" them?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gabb83882349",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/abb83882349ea21f8e239477f67b1f93.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0006-72.png",
+            "first_name": "anomaly",
+            "real_name": "anomaly",
+            "display_name": "anomaly",
+            "team": "T4G9NBD2M",
+            "name": "ganymedeblack",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1647397398.601009",
+        "parent_user_id": "U031YHV2MLL",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "\/+h",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "user",
+                                "user_id": "U4H19D1D2"
+                            },
+                            {
+                                "type": "text",
+                                "text": " I was able to run the code successfully! is there a way to use same framework\/betfair client to push new strategies?\n\n.run() seems to be blocking but I would like to call framework.add_strategy(strategy) on demand. i.e. a framework process is reading a queue and it constructs aribtrarily many new Strategies on demand, and pushes them to the framework.\n\nAdditionally, assuming it's possible to seamelessly add strategies, how would you safely \"remove\" them?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U031YHV2MLL",
+        "type": "message",
+        "ts": "1647496658.525109",
+        "edited": {
+            "user": "U031YHV2MLL",
+            "ts": "1647498261.000000"
+        },
+        "client_msg_id": "27cc12c8-3312-4b7e-92ec-bf168376f0c3",
+        "text": "~also what's the easiest way to inspect orders that have been placed via the framework. i.e after the order is reconciled, where should i look to grab the order details, if it was fully matched, failed, how much it was matched for, the id, customer order ref etc. I can see it printing a bunch of logging stuff at runtime~ figured it out - you just need to save and inspect the order object",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gabb83882349",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/abb83882349ea21f8e239477f67b1f93.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0006-72.png",
+            "first_name": "anomaly",
+            "real_name": "anomaly",
+            "display_name": "anomaly",
+            "team": "T4G9NBD2M",
+            "name": "ganymedeblack",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1647397398.601009",
+        "parent_user_id": "U031YHV2MLL",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "39Km",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "also what's the easiest way to inspect orders that have been placed via the framework. i.e after the order is reconciled, where should i look to grab the order details, if it was fully matched, failed, how much it was matched for, the id, customer order ref etc. I can see it printing a bunch of logging stuff at runtime ",
+                                "style": {
+                                    "strike": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "figured it out - you just need to save and inspect the order object"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

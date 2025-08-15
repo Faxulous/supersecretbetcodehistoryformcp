@@ -1,0 +1,1259 @@
+[
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1657787332.747439",
+        "client_msg_id": "d4beb460-928f-4b7e-a0b1-5abd83d9a649",
+        "text": "I use the market catalogue middleware example when backtesting and it all works fine:\n\n<https:\/\/github.com\/betcode-org\/flumine\/blob\/master\/examples\/middleware\/marketcatalogue.py>\n\nHowever, when self recording, the market catalogues are saved as a .json.gz, so if I run the following in a standalone script:\n\n```mc_path = '\/1.200396929.json.gz'\n\nwith open(mc_path, \"rb\") as r:\n    data = gzip.GzipFile(fileobj=r).read()\n    catalogue_json_data = json.loads(data)\n    print(catalogue_json_data)```\nAs expected it returns:\n\n```{'marketId': '1.200396929', 'marketName': 'Over\/Under 2.5 Goals', 'marketStartTime': '2022-06-22T16:00:00.000Z', 'description': {'persistenceEnabled': True, 'bspMarket': False, 'marketTime': '2022-06-22T16:00:00.000Z', 'suspendTime': '2022-06-22T16:00:00.000Z', 'bettingType': 'ODDS', 'turnInPlayEnabled': True, 'marketType': 'OVER_UNDER_25', 'regulator': 'GIBRALTAR REGULATOR', 'marketBaseRate': 2.0, 'discountAllowed': False, 'wallet': 'UK wallet', 'rules': '&lt;!--Football - Over\/Unders --&gt;&lt;br&gt;How many goals will be scored in this match.&lt;br&gt; All bets apply to Full Time according to the match officials, plus any stoppage time. Extra-time\/penalty shoot-outs are not included.&lt;br&gt;&lt;br&gt;&lt;\/b&gt;For further information please see &lt;a href=<http:\/\/content.betfair.com\/aboutus\/content.asp?sWhichKey=Rules%20and%20Regulations#undefined.do> style=color:0163ad; text-decoration: underline; target=_blank&gt;Rules &amp; Regs&lt;br&gt;&lt;br&gt;\\n', 'rulesHasDate': True, 'priceLadderDescription': {'type': 'CLASSIC'}}, 'totalMatched': 35.4, 'runners': [{'selectionId': 47972, 'runnerName': 'Under 2.5 Goals', 'handicap': 0.0, 'sortPriority': 1, 'metadata': {'runnerId': '47972'}}, {'selectionId': 47973, 'runnerName': 'Over 2.5 Goals', 'handicap': 0.0, 'sortPriority': 2, 'metadata': {'runnerId': '47973'}}], 'eventType': {'id': '1', 'name': 'Soccer'}, 'competition': {'id': '4051', 'name': 'Norwegian Cup'}, 'event': {'id': '31543907', 'name': 'Strindheim v Kristiansund', 'countryCode': 'NO', 'timezone': 'GMT', 'openDate': '2022-06-22T16:00:00.000Z'}}```\nHowever, if I try to adapt the middleware code as follows:\n\n```class MarketCatalogueMiddleware(Middleware):\n    def add_market(self, market) -&gt; None:\n        try:\n            zipped_catalogue_file_path = str(get_mc_folder(market, zipped_folder_path))\n            catalogue_file_path = os.path.join(MARKET_CATALOGUE_PATH, market.market_id + '_market_catalogue.json')\n            if zipped_catalogue_file_path is not False:\n                if os.path.exists(zipped_catalogue_file_path):\n                    with open(zipped_catalogue_file_path, \"rb\") as r:\n                        data = gzip.GzipFile(fileobj=r).read()\n                        catalogue_json_data = json.loads(data)\n                        print(catalogue_json_data)```\nThen I just get the following error:\n\n```Exception 'int' object has no attribute 'startswith' occured on market 1.200522372```\nIf I use a different approach, as follows:\n\n```class MarketCatalogueMiddleware(Middleware):\n    def add_market(self, market) -&gt; None:\n        try:\n            zipped_catalogue_file_path = str(get_mc_folder(market, zipped_folder_path))\n            catalogue_file_path = os.path.join(MARKET_CATALOGUE_PATH, market.market_id + '_market_catalogue.json')\n            if zipped_catalogue_file_path is not False:\n                if os.path.exists(zipped_catalogue_file_path):\n                    with gzip.open(zipped_catalogue_file_path, 'rb') as fin:\n                        catalogue_json_data = json.loads(fin.read().decode('utf-8'))\n                        market.market_catalogue = MarketCatalogue(**catalogue_json_data)```\nThen I get the following error:\n\n```Exception Not a gzipped file (b'{\"') occured on market 1.199593125```\nNow of course, I can get around this by unzipping the files first, but I feel I must be missing something obvious here, why can I unzip into memory from a static script, but not via middleware, I presume there is a logical reason and whilst it doesn't matter as there is an obvious alternative approach, I would like to understand why this doesn't work if possible?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1657787332.747439",
+        "reply_count": 3,
+        "reply_users_count": 2,
+        "latest_reply": "1657788420.539939",
+        "reply_users": [
+            "UBS7QANF3",
+            "UFTBRB3F1"
+        ],
+        "replies": [
+            {
+                "user": "UBS7QANF3",
+                "ts": "1657787727.520959"
+            },
+            {
+                "user": "UFTBRB3F1",
+                "ts": "1657788401.098349"
+            },
+            {
+                "user": "UFTBRB3F1",
+                "ts": "1657788420.539939"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": false,
+        "attachments": [
+            {
+                "id": 1,
+                "footer_icon": "https:\/\/slack.github.com\/static\/img\/favicon-neutral.png",
+                "color": "24292f",
+                "bot_id": "B021ZJYSBMW",
+                "app_unfurl_url": "https:\/\/github.com\/betcode-org\/flumine\/blob\/master\/examples\/middleware\/marketcatalogue.py",
+                "is_app_unfurl": true,
+                "app_id": "A01BP7R4KNY",
+                "fallback": "<https:\/\/github.com\/betcode-org\/flumine\/blob\/master\/examples\/middleware\/marketcatalogue.py | marketcatalogue.py>",
+                "text": "```\nimport json\nimport os\n\nfrom betfairlightweight.resources import MarketCatalogue\nfrom flumine.markets.middleware import Middleware\n\nMARKET_CATALOGUE_PATH = \"\"  # update to correct path\n\n\n# Will read and parse the market_catalogue file and add to the market object when simulating\n# Usage framework.add_market_middleware(MarketCatalogueMiddleware())\nclass MarketCatalogueMiddleware(Middleware):\n    def add_market(self, market) -&gt; None:\n        catalogue_file_path = os.path.join(MARKET_CATALOGUE_PATH, market.market_id)\n        if os.path.exists(catalogue_file_path):\n            with open(catalogue_file_path, \"r\") as r:\n                data = r.read()\n                catalogue_json_data = json.loads(data)\n                market.market_catalogue = MarketCatalogue(**catalogue_json_data)\n\n```",
+                "title": "<https:\/\/github.com\/betcode-org\/flumine\/blob\/master\/examples\/middleware\/marketcatalogue.py | marketcatalogue.py>",
+                "footer": "<https:\/\/github.com\/betcode-org\/flumine|betcode-org\/flumine>",
+                "mrkdwn_in": [
+                    "text"
+                ]
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "v0li",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I use the market catalogue middleware example when backtesting and it all works fine:\n\n"
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/betcode-org\/flumine\/blob\/master\/examples\/middleware\/marketcatalogue.py"
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n\nHowever, when self recording, the market catalogues are saved as a .json.gz, so if I run the following in a standalone script:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "mc_path = '\/1.200396929.json.gz'\n\nwith open(mc_path, \"rb\") as r:\n    data = gzip.GzipFile(fileobj=r).read()\n    catalogue_json_data = json.loads(data)\n    print(catalogue_json_data)"
+                            }
+                        ],
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\nAs expected it returns:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "{'marketId': '1.200396929', 'marketName': 'Over\/Under 2.5 Goals', 'marketStartTime': '2022-06-22T16:00:00.000Z', 'description': {'persistenceEnabled': True, 'bspMarket': False, 'marketTime': '2022-06-22T16:00:00.000Z', 'suspendTime': '2022-06-22T16:00:00.000Z', 'bettingType': 'ODDS', 'turnInPlayEnabled': True, 'marketType': 'OVER_UNDER_25', 'regulator': 'GIBRALTAR REGULATOR', 'marketBaseRate': 2.0, 'discountAllowed': False, 'wallet': 'UK wallet', 'rules': '<!--Football - Over\/Unders --><br>How many goals will be scored in this match.<br> All bets apply to Full Time according to the match officials, plus any stoppage time. Extra-time\/penalty shoot-outs are not included.<br><br><\/b>For further information please see <a href="
+                            },
+                            {
+                                "type": "link",
+                                "url": "http:\/\/content.betfair.com\/aboutus\/content.asp?sWhichKey=Rules%20and%20Regulations#undefined.do"
+                            },
+                            {
+                                "type": "text",
+                                "text": " style=color:0163ad; text-decoration: underline; target=_blank>Rules & Regs<br><br>\\n', 'rulesHasDate': True, 'priceLadderDescription': {'type': 'CLASSIC'}}, 'totalMatched': 35.4, 'runners': [{'selectionId': 47972, 'runnerName': 'Under 2.5 Goals', 'handicap': 0.0, 'sortPriority': 1, 'metadata': {'runnerId': '47972'}}, {'selectionId': 47973, 'runnerName': 'Over 2.5 Goals', 'handicap': 0.0, 'sortPriority': 2, 'metadata': {'runnerId': '47973'}}], 'eventType': {'id': '1', 'name': 'Soccer'}, 'competition': {'id': '4051', 'name': 'Norwegian Cup'}, 'event': {'id': '31543907', 'name': 'Strindheim v Kristiansund', 'countryCode': 'NO', 'timezone': 'GMT', 'openDate': '2022-06-22T16:00:00.000Z'}}"
+                            }
+                        ],
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\nHowever, if I try to adapt the middleware code as follows:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "class MarketCatalogueMiddleware(Middleware):\n    def add_market(self, market) -> None:\n        try:\n            zipped_catalogue_file_path = str(get_mc_folder(market, zipped_folder_path))\n            catalogue_file_path = os.path.join(MARKET_CATALOGUE_PATH, market.market_id + '_market_catalogue.json')\n            if zipped_catalogue_file_path is not False:\n                if os.path.exists(zipped_catalogue_file_path):\n                    with open(zipped_catalogue_file_path, \"rb\") as r:\n                        data = gzip.GzipFile(fileobj=r).read()\n                        catalogue_json_data = json.loads(data)\n                        print(catalogue_json_data)"
+                            }
+                        ],
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\nThen I just get the following error:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Exception 'int' object has no attribute 'startswith' occured on market 1.200522372"
+                            }
+                        ],
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\nIf I use a different approach, as follows:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "class MarketCatalogueMiddleware(Middleware):\n    def add_market(self, market) -> None:\n        try:\n            zipped_catalogue_file_path = str(get_mc_folder(market, zipped_folder_path))\n            catalogue_file_path = os.path.join(MARKET_CATALOGUE_PATH, market.market_id + '_market_catalogue.json')\n            if zipped_catalogue_file_path is not False:\n                if os.path.exists(zipped_catalogue_file_path):\n                    with gzip.open(zipped_catalogue_file_path, 'rb') as fin:\n                        catalogue_json_data = json.loads(fin.read().decode('utf-8'))\n                        market.market_catalogue = MarketCatalogue(**catalogue_json_data)"
+                            }
+                        ],
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\nThen I get the following error:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Exception Not a gzipped file (b'{\"') occured on market 1.199593125"
+                            }
+                        ],
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\nNow of course, I can get around this by unzipping the files first, but I feel I must be missing something obvious here, why can I unzip into memory from a static script, but not via middleware, I presume there is a logical reason and whilst it doesn't matter as there is an obvious alternative approach, I would like to understand why this doesn't work if possible?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1657787514.586129",
+        "edited": {
+            "user": "U4H19D1D2",
+            "ts": "1657787522.000000"
+        },
+        "client_msg_id": "a85e0484-bea0-4862-8862-92e7fc409ea1",
+        "text": "Long shot but have you already wrapped the `run()` in a smart-open patch?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "LBL",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Long shot but have you already wrapped the "
+                            },
+                            {
+                                "type": "text",
+                                "text": "run()",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " in a smart-open patch?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1657787727.520959",
+        "client_msg_id": "7CBF0777-1262-4C15-B1BB-FF9DF87E0EF5",
+        "text": "What's the code for get_mc_folder?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1657787332.747439",
+        "parent_user_id": "UFTBRB3F1",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "g7JJw",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "What's "
+                            },
+                            {
+                                "type": "text",
+                                "text": "the"
+                            },
+                            {
+                                "type": "text",
+                                "text": " "
+                            },
+                            {
+                                "type": "text",
+                                "text": "code"
+                            },
+                            {
+                                "type": "text",
+                                "text": " "
+                            },
+                            {
+                                "type": "text",
+                                "text": "for"
+                            },
+                            {
+                                "type": "text",
+                                "text": " "
+                            },
+                            {
+                                "type": "text",
+                                "text": "get_mc_folder?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1657788401.098349",
+        "client_msg_id": "548b32e6-cafe-48c4-ab30-92da51335f19",
+        "text": "```def get_mc_folder(market, zipped_folder_path, file_extension='.json.gz'):\n\n    if market.event_type_id in ['1', 1]:\n        sport = 'football'\n    elif market.event_type_id in ['4', 4]:\n        sport = 'cricket'\n    elif market.event_type_id in ['2', 2]:\n        sport = 'tennis'\n    elif market.event_type_id in ['4339', 4339]:\n        sport = 'greyhounds'\n    elif market.event_type_id in ['7', 7]:\n        sport = 'horse_racing'\n    else:\n        sport = False\n\n    if sport is False:\n        return sport\n    else:\n        market_start_time = market.market_start_datetime\n\n\n        return str(zipped_folder_path)  +'\/' + str(sport) +'\/' + str(market.country_code) + '\/' + \\\n                   str(market_start_time.year) + '\/' + str(format_date(market_start_time,'m')) + '\/' +  \\\n               str(format_date(market_start_time, 'd')) + '\/' + str(market.market_id) + str(file_extension)\n\ndef format_date(input_date, date_type):\n\n    if date_type == 'm':\n        output_date = str(input_date.month)\n        if len(output_date) == 1:\n            return '0' + output_date\n        else:\n            return output_date\n    else:\n        output_date = str(input_date.day)\n        if len(output_date) == 1:\n            return '0' + output_date\n        else:\n            return output_date```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1657787332.747439",
+        "parent_user_id": "UFTBRB3F1",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "wiblZ",
+                "elements": [
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "def get_mc_folder(market, zipped_folder_path, file_extension='.json.gz'):\n\n    if market.event_type_id in ['1', 1]:\n        sport = 'football'\n    elif market.event_type_id in ['4', 4]:\n        sport = 'cricket'\n    elif market.event_type_id in ['2', 2]:\n        sport = 'tennis'\n    elif market.event_type_id in ['4339', 4339]:\n        sport = 'greyhounds'\n    elif market.event_type_id in ['7', 7]:\n        sport = 'horse_racing'\n    else:\n        sport = False\n\n    if sport is False:\n        return sport\n    else:\n        market_start_time = market.market_start_datetime\n\n\n        return str(zipped_folder_path)  +'\/' + str(sport) +'\/' + str(market.country_code) + '\/' + \\\n                   str(market_start_time.year) + '\/' + str(format_date(market_start_time,'m')) + '\/' +  \\\n               str(format_date(market_start_time, 'd')) + '\/' + str(market.market_id) + str(file_extension)\n\ndef format_date(input_date, date_type):\n\n    if date_type == 'm':\n        output_date = str(input_date.month)\n        if len(output_date) == 1:\n            return '0' + output_date\n        else:\n            return output_date\n    else:\n        output_date = str(input_date.day)\n        if len(output_date) == 1:\n            return '0' + output_date\n        else:\n            return output_date"
+                            }
+                        ],
+                        "border": 0
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1657788420.539939",
+        "client_msg_id": "a3f30069-2a9b-421d-99d5-bdb9ea0ea868",
+        "text": "But I don't think thats the issue, as I tried hardcoding the path just to test, with the same result",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1657787332.747439",
+        "parent_user_id": "UFTBRB3F1",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "kGuA",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "But I don't think thats the issue, as I tried hardcoding the path just to test, with the same result"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1657788881.248509",
+        "client_msg_id": "56ee4203-c32a-4b2e-b6a0-7305d09d79a6",
+        "text": "I effectively just copied this:\n\n<https:\/\/betcode-org.github.io\/flumine\/performance\/#multiprocessing>\n\nand this:\n\n<https:\/\/github.com\/betcode-org\/flumine\/tree\/master\/examples\/middleware>\n\nIn terms of approach I don't think I've changed anything (other than the odd bit of formatting etc.)",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "attachments": [
+            {
+                "from_url": "https:\/\/betcode-org.github.io\/flumine\/performance\/#multiprocessing",
+                "service_icon": "https:\/\/betcode-org.github.io\/flumine\/images\/logo.png",
+                "id": 1,
+                "original_url": "https:\/\/betcode-org.github.io\/flumine\/performance\/#multiprocessing",
+                "fallback": "Performance - flumine",
+                "text": "Betting trading framework",
+                "title": "Performance - flumine",
+                "title_link": "https:\/\/betcode-org.github.io\/flumine\/performance\/#multiprocessing",
+                "service_name": "betcode-org.github.io"
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "mTT",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I effectively just copied this:\n\n"
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/betcode-org.github.io\/flumine\/performance\/#multiprocessing"
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n\nand this:\n\n"
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/betcode-org\/flumine\/tree\/master\/examples\/middleware"
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n\nIn terms of approach I don't think I've changed anything (other than the odd bit of formatting etc.)"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1657788901.760129",
+        "client_msg_id": "95e04892-c136-492f-b645-e0987fd77e8d",
+        "text": "So, there is a smart open in the main part",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "pK5wd",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "So, there is a smart open in the main part"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1657788917.845569",
+        "client_msg_id": "ea413e3a-ce40-43cf-bfe0-6e3d0f637ebc",
+        "text": "But not in the middleware",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "3EKz",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "But not in the middleware"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1657788961.123689",
+        "client_msg_id": "c65170ae-ce44-4178-8962-ca5278088a53",
+        "text": "fairly sure that will be the problem, won't smart-open do the hard work, can you run the example as is without your code?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "lt4",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "fairly sure that will be the problem, won't smart-open do the hard work, can you run the example as is without your code?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1657789140.847369",
+        "client_msg_id": "e39c86b7-4813-48fd-bc5b-528713e5f931",
+        "text": "Sure, will try that and report back",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "3pfl",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Sure, will try that and report back"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1657791429.518299",
+        "client_msg_id": "12464f94-8041-43b1-9b21-cb1c135ba43b",
+        "text": "Yes you were right! As smart open is there by adding the extra GZIP it breaks it, smart open does all the work so there's no need to change the example code in the worker :man-facepalming:",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "faQA",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Yes you were right! As smart open is there by adding the extra GZIP it breaks it, smart open does all the work so there's no need to change the example code in the worker "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "man-facepalming",
+                                "unicode": "1f926-200d-2642-fe0f"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "sunglasses",
+                "users": [
+                    "U4H19D1D2"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "UQL0QDEKA",
+        "type": "message",
+        "ts": "1657797329.928739",
+        "client_msg_id": "b9dd22a8-6ae5-448d-adad-b771d356a0f0",
+        "text": "Afternoon,\nIf you set environmental variables (so you don't hard code your details) for use in cloud\nAre these instructions credible:\n\n<https:\/\/able.bio\/rhett\/how-to-set-and-get-environment-variables-in-python--274rgt5>\n\nAlso is a .env file secure or do you need to encrypt it somehow?\nIn addition, how you you append the 2FA onto your password? (or do you input just once and leave it running?)\n\nI currently do it like this:\n\ntwofa = str(input(\"Please enter Pass and 2FA for Sub4: \"))\ntrading = betfairlightweight.APIClient(\"Removed\", twofa, app_key=\"Removed\", certs=r\"C:\\certs\")\nsorry for the noddy questions. Thanks in advance",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g444d10128c0",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/444d10128c0aaf094041a52a76796602.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0005-72.png",
+            "first_name": "Peter",
+            "real_name": "Peter Lenagh",
+            "display_name": "PeterLe",
+            "team": "T4G9NBD2M",
+            "name": "lenagh",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1657797329.928739",
+        "reply_count": 11,
+        "reply_users_count": 3,
+        "latest_reply": "1657988466.465099",
+        "reply_users": [
+            "UBS7QANF3",
+            "UQL0QDEKA",
+            "U016TGY3676"
+        ],
+        "replies": [
+            {
+                "user": "UBS7QANF3",
+                "ts": "1657798366.458749"
+            },
+            {
+                "user": "UQL0QDEKA",
+                "ts": "1657799277.853089"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1657799398.523719"
+            },
+            {
+                "user": "UQL0QDEKA",
+                "ts": "1657799605.910919"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1657799709.726139"
+            },
+            {
+                "user": "UQL0QDEKA",
+                "ts": "1657799775.594309"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1657799858.363619"
+            },
+            {
+                "user": "UQL0QDEKA",
+                "ts": "1657799924.869599"
+            },
+            {
+                "user": "U016TGY3676",
+                "ts": "1657984000.914839"
+            },
+            {
+                "user": "UQL0QDEKA",
+                "ts": "1657987782.433109"
+            },
+            {
+                "user": "U016TGY3676",
+                "ts": "1657988466.465099"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": false,
+        "attachments": [
+            {
+                "from_url": "https:\/\/able.bio\/rhett\/how-to-set-and-get-environment-variables-in-python--274rgt5",
+                "service_icon": "https:\/\/assets.able.bio\/static\/img\/able_thumb.png",
+                "id": 1,
+                "original_url": "https:\/\/able.bio\/rhett\/how-to-set-and-get-environment-variables-in-python--274rgt5",
+                "fallback": "Able: How to Set and Get Environment Variables in Python",
+                "text": "To set and get environment variables in Python you can just use the os module: import os # Set environment variables os.environ['API_USER'] = 'username' os.environ['API_PASSWORD'] = 'secret' # Ge...",
+                "title": "How to Set and Get Environment Variables in Python",
+                "title_link": "https:\/\/able.bio\/rhett\/how-to-set-and-get-environment-variables-in-python--274rgt5",
+                "service_name": "Able"
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "BJvgw",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Afternoon,\nIf you set environmental variables (so you don't hard code your details) for use in cloud\nAre these instructions credible:\n\n"
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/able.bio\/rhett\/how-to-set-and-get-environment-variables-in-python--274rgt5"
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n\nAlso is a .env file secure or do you need to encrypt it somehow?\nIn addition, how you you append the 2FA onto your password? (or do you input just once and leave it running?)\n\nI currently do it like this:\n\ntwofa = str(input(\"Please enter Pass and 2FA for Sub4: \"))\ntrading = betfairlightweight.APIClient(\"Removed\", twofa, app_key=\"Removed\", certs=r\"C:\\certs\")\nsorry for the noddy questions. Thanks in advance"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1657798366.458749",
+        "edited": {
+            "user": "UBS7QANF3",
+            "ts": "1657798375.000000"
+        },
+        "client_msg_id": "da5b505a-b481-4f2d-94cd-c3e81715f06f",
+        "text": "1. At a glance the instructions seem reasonable\n2. The file is not secure in the sense that if someone could log into your account they could read the file in plain text on disk. This is going to apply to pretty much every solution\n3. I've only ever used 2FA on my master so can't comment\nSome additional comments:\n\n1. Do you not already have a configuration file for your strategy? If you do then you might as well just add the credentials to that rather than using environment variables\n2. I use <https:\/\/github.com\/fugue\/credstash|credstash> for managing secrets in AWS",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1657797329.928739",
+        "parent_user_id": "UQL0QDEKA",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "A6C",
+                "elements": [
+                    {
+                        "type": "rich_text_list",
+                        "elements": [
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "At a glance the instructions seem reasonable"
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "The file is not secure in the sense that if someone could log into your account they could read the file in plain text on disk. This is going to apply to pretty much every solution"
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "I've only ever used 2FA on my master so can't comment"
+                                    }
+                                ]
+                            }
+                        ],
+                        "style": "ordered",
+                        "indent": 0,
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\nSome additional comments:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_list",
+                        "elements": [
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "Do you not already have a configuration file for your strategy? If you do then you might as well just add the credentials to that rather than using environment variables"
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "I use "
+                                    },
+                                    {
+                                        "type": "link",
+                                        "url": "https:\/\/github.com\/fugue\/credstash",
+                                        "text": "credstash"
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": " for managing secrets in AWS"
+                                    }
+                                ]
+                            }
+                        ],
+                        "style": "ordered",
+                        "indent": 0,
+                        "border": 0
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UQL0QDEKA",
+        "type": "message",
+        "ts": "1657799277.853089",
+        "client_msg_id": "4605ec37-cc82-42ed-8819-3ee704b0f01d",
+        "text": "Thanks Mo\n1. :+1:\n2. :+1:\n3. Just curious why only the MSA? Maybe you keep minimum funds the he sub accounts?\n1a. I need to check (Ive only used the basic examples and then modified them). Think Wright brothers aviation and thats where Im at with Python (Strings; wire and sellotape)\n1b. Need to read up on this :grinning:\n\nThanks for the reply",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g444d10128c0",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/444d10128c0aaf094041a52a76796602.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0005-72.png",
+            "first_name": "Peter",
+            "real_name": "Peter Lenagh",
+            "display_name": "PeterLe",
+            "team": "T4G9NBD2M",
+            "name": "lenagh",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1657797329.928739",
+        "parent_user_id": "UQL0QDEKA",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "+j7Mj",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Thanks Mo\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_list",
+                        "elements": [
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "emoji",
+                                        "name": "+1",
+                                        "unicode": "1f44d"
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "emoji",
+                                        "name": "+1",
+                                        "unicode": "1f44d"
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "Just curious why only the MSA? Maybe you keep minimum funds the he sub accounts?"
+                                    }
+                                ]
+                            }
+                        ],
+                        "style": "ordered",
+                        "indent": 0,
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "1a. I need to check (Ive only used the basic examples and then modified them). Think Wright brothers aviation and thats where Im at with Python (Strings; wire and sellotape)\n1b. Need to read up on this "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "grinning",
+                                "unicode": "1f600"
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n\nThanks for the reply"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1657799398.523719",
+        "client_msg_id": "c17f83c5-a7e8-4e60-8af2-347b1266b48e",
+        "text": "Probably for this exact reason - if it's running automated strategies I don't want to have to manually provide the 2FA code every time it logs in. But is that how it works with the API? I don't know because I've never done it",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1657797329.928739",
+        "parent_user_id": "UQL0QDEKA",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "ka=",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Probably for this exact reason - if it's running automated strategies I don't want to have to manually provide the 2FA code every time it logs in. But is that how it works with the API? I don't know because I've never done it"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UQL0QDEKA",
+        "type": "message",
+        "ts": "1657799605.910919",
+        "client_msg_id": "4e3d8dec-a960-4475-83d6-78a3ff14bf25",
+        "text": "Well I'm not sure if that is the best way, but its the only way I've ever done it (entering password and appending the 2FA for each account), If I remember correctly, it fails if I don't have the 2FA on it. I guess i could take the 2FA off on the subs at account level. Ill have a think thanks",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g444d10128c0",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/444d10128c0aaf094041a52a76796602.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0005-72.png",
+            "first_name": "Peter",
+            "real_name": "Peter Lenagh",
+            "display_name": "PeterLe",
+            "team": "T4G9NBD2M",
+            "name": "lenagh",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1657797329.928739",
+        "parent_user_id": "UQL0QDEKA",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "cKQhc",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Well I'm not sure if that is the best way, but its the only way I've ever done it (entering password and appending the 2FA for each account), If I remember correctly, it fails if I don't have the 2FA on it. I guess i could take the 2FA off on the subs at account level. Ill have a think thanks"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1657799709.726139",
+        "client_msg_id": "108f98db-2f7b-4ec0-90d1-274545cacf3d",
+        "text": "I'm not a big security guy but I think conceptually the certificate is the second factor with the API login (password obviously being the first)",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1657797329.928739",
+        "parent_user_id": "UQL0QDEKA",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "odb",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I'm not a big security guy but I think conceptually the certificate is the second factor with the API login (password obviously being the first)"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UQL0QDEKA",
+        "type": "message",
+        "ts": "1657799775.594309",
+        "edited": {
+            "user": "UQL0QDEKA",
+            "ts": "1657799793.000000"
+        },
+        "client_msg_id": "b1feeb35-5c93-48c1-afa8-5837c5c510c5",
+        "text": "I have the certs setup, so maybe im making it more complicated than need be.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g444d10128c0",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/444d10128c0aaf094041a52a76796602.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0005-72.png",
+            "first_name": "Peter",
+            "real_name": "Peter Lenagh",
+            "display_name": "PeterLe",
+            "team": "T4G9NBD2M",
+            "name": "lenagh",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1657797329.928739",
+        "parent_user_id": "UQL0QDEKA",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "r3qb",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I have the certs setup, so maybe im making it more complicated than need be."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1657799858.363619",
+        "client_msg_id": "8c1e78b1-2bbc-4e80-952f-e9c9f62dd61c",
+        "text": "I certainly wouldn't want to be responsible for you making your setup less secure :hot_face:",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1657797329.928739",
+        "parent_user_id": "UQL0QDEKA",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "4Iq",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I certainly wouldn't want to be responsible for you making your setup less secure "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "hot_face",
+                                "unicode": "1f975"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UQL0QDEKA",
+        "type": "message",
+        "ts": "1657799924.869599",
+        "client_msg_id": "6eb206e0-c84f-44a8-82a8-0e13397e4eec",
+        "text": "Yes understand; many thanks Mo",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g444d10128c0",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/444d10128c0aaf094041a52a76796602.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0005-72.png",
+            "first_name": "Peter",
+            "real_name": "Peter Lenagh",
+            "display_name": "PeterLe",
+            "team": "T4G9NBD2M",
+            "name": "lenagh",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1657797329.928739",
+        "parent_user_id": "UQL0QDEKA",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "hU=Dr",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Yes understand; many thanks Mo"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

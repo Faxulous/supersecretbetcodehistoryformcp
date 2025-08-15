@@ -1,0 +1,501 @@
+[
+    {
+        "user": "U01697K27UY",
+        "type": "message",
+        "ts": "1677230275.107069",
+        "edited": {
+            "user": "U01697K27UY",
+            "ts": "1677230418.000000"
+        },
+        "client_msg_id": "e007bc10-888b-4c2d-b98f-5de546a88ef9",
+        "text": "I have a function set up to pull through cleared orders from record that started to fail on the 15th. Nothing has changed about the function which executes 3 times a day, depsite it working for weeks prior. This code executes in a loop with \"iteration\" being incremented from 0, 1, 2, 3, ... while the returned moreAvailable firled is True.\n\nbet_status = 'SETTLED'\ngroup_by = 'BET'\nfrom_record = iteration *100\nrecord_count = (iteration+1) *100\n\norders = trading.betting.list_cleared_orders(\n            group_by=group_by,\n            bet_status=bet_status,\n            from_record=from_record,\n            record_count=record_count,\n            lightweight=True,\n\n        )\n\nThe full exception is quite long but the final traceback handled states the following:\n\nTraceback (most recent call last):\n  File \"\/mnt\/syndicate_middleware\/adjustFunctions\/betfairLadderOperations.py\", line 1290, in getFilteredClearedOrders\n    orders = trading.betting.list_cleared_orders(\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"\/usr\/local\/lib\/python3.11\/site-packages\/betfairlightweight\/endpoints\/betting.py\", line 434, in list_cleared_orders\n    (response, response_json, elapsed_time) = self.request(method, params, session)\n                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"\/usr\/local\/lib\/python3.11\/site-packages\/betfairlightweight\/endpoints\/baseendpoint.py\", line 45, in request\n    raise APIError(None, method, params, e)\nbetfairlightweight.exceptions.APIError: SportsAPING\/v1.0\/listClearedOrders\nParams: {'betStatus': 'SETTLED', 'settledDateRange': {'from': None, 'to': None}, 'groupBy': 'BET', 'fromRecord': '0', 'recordCount': '100'}\nException: HTTPSConnectionPool(host='<http:\/\/api.betfair.com|api.betfair.com>', port=443): Read timed out. (read timeout=16)\n\nIve tried messing with the parameters  ie reducing volume records requested in each call but nothing seems to be solving this issue. From docemunetation you should be able to retrieve up to 1000 records at a time. Current order requests still work fine. Anything obvious im missing for succesfully retrieving the cleared orders from record?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g3030500b138",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/3030500b13896539426bd540fe2bdab7.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0006-72.png",
+            "first_name": "JW",
+            "real_name": "JW",
+            "display_name": "EJono",
+            "team": "T4G9NBD2M",
+            "name": "jonowads380",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1677230275.107069",
+        "reply_count": 6,
+        "reply_users_count": 3,
+        "latest_reply": "1677235854.595179",
+        "reply_users": [
+            "UBS7QANF3",
+            "U01697K27UY",
+            "UFTBRB3F1"
+        ],
+        "replies": [
+            {
+                "user": "UBS7QANF3",
+                "ts": "1677230390.549929"
+            },
+            {
+                "user": "U01697K27UY",
+                "ts": "1677230782.695999"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1677230964.835119"
+            },
+            {
+                "user": "U01697K27UY",
+                "ts": "1677230989.817369"
+            },
+            {
+                "user": "UFTBRB3F1",
+                "ts": "1677233595.501709"
+            },
+            {
+                "user": "U01697K27UY",
+                "ts": "1677235854.595179"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": false,
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "s0HM",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I have a function set up to pull through cleared orders from record that started to fail on the 15th. Nothing has changed about the function which executes 3 times a day, depsite it working for weeks prior. This code executes in a loop with \"iteration\" being incremented from 0, 1, 2, 3, ... while the returned moreAvailable firled is True.\n\nbet_status = 'SETTLED'\ngroup_by = 'BET'\nfrom_record = iteration *100\nrecord_count = (iteration+1) *100\n\norders = trading.betting.list_cleared_orders(\n            group_by=group_by,\n            bet_status=bet_status,\n            from_record=from_record,\n            record_count=record_count,\n            lightweight=True,\n\n        )\n\nThe full exception is quite long but the final traceback handled states the following:\n\nTraceback (most recent call last):\n  File \"\/mnt\/syndicate_middleware\/adjustFunctions\/betfairLadderOperations.py\", line 1290, in getFilteredClearedOrders\n    orders = trading.betting.list_cleared_orders(\n             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"\/usr\/local\/lib\/python3.11\/site-packages\/betfairlightweight\/endpoints\/betting.py\", line 434, in list_cleared_orders\n    (response, response_json, elapsed_time) = self.request(method, params, session)\n                                              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"\/usr\/local\/lib\/python3.11\/site-packages\/betfairlightweight\/endpoints\/baseendpoint.py\", line 45, in request\n    raise APIError(None, method, params, e)\nbetfairlightweight.exceptions.APIError: SportsAPING\/v1.0\/listClearedOrders\nParams: {'betStatus': 'SETTLED', 'settledDateRange': {'from': None, 'to': None}, 'groupBy': 'BET', 'fromRecord': '0', 'recordCount': '100'}\nException: HTTPSConnectionPool(host='"
+                            },
+                            {
+                                "type": "link",
+                                "url": "http:\/\/api.betfair.com",
+                                "text": "api.betfair.com"
+                            },
+                            {
+                                "type": "text",
+                                "text": "', port=443): Read timed out. (read timeout=16)\n\nIve tried messing with the parameters  ie reducing volume records requested in each call but nothing seems to be solving this issue. From docemunetation you should be able to retrieve up to 1000 records at a time. Current order requests still work fine. Anything obvious im missing for succesfully retrieving the cleared orders from record?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1677230390.549929",
+        "client_msg_id": "6bbd076d-9912-48c5-af0e-13d9cfdaae9e",
+        "text": "Try increasing the timeout",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1677230275.107069",
+        "parent_user_id": "U01697K27UY",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "9gv",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Try increasing the timeout"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01697K27UY",
+        "type": "message",
+        "ts": "1677230782.695999",
+        "client_msg_id": "76f66fc6-eb35-4706-ab21-3b5a4c4cb0b0",
+        "text": "hmmm is there a parameter easily passed in the trading.betting.list_cleared_orders() request to increaase the timeout? Where would this be set?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g3030500b138",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/3030500b13896539426bd540fe2bdab7.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0006-72.png",
+            "first_name": "JW",
+            "real_name": "JW",
+            "display_name": "EJono",
+            "team": "T4G9NBD2M",
+            "name": "jonowads380",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1677230275.107069",
+        "parent_user_id": "U01697K27UY",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Skybm",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "hmmm is there a parameter easily passed in the trading.betting.list_cleared_orders() request to increaase the timeout? Where would this be set?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1677230964.835119",
+        "client_msg_id": "4760421b-eb7d-4227-b035-a9f0d53eea21",
+        "text": "Use the `read_timeout` attribute of `betting`: <https:\/\/github.com\/betcode-org\/betfair\/blob\/00e9abb2b4d228408eea1620cbeb55cbaed0e0c6\/betfairlightweight\/endpoints\/baseendpoint.py#L15>",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1677230275.107069",
+        "parent_user_id": "U01697K27UY",
+        "attachments": [
+            {
+                "id": 1,
+                "footer_icon": "https:\/\/slack.github.com\/static\/img\/favicon-neutral.png",
+                "color": "24292f",
+                "bot_id": "B021ZJYSBMW",
+                "app_unfurl_url": "https:\/\/github.com\/betcode-org\/betfair\/blob\/00e9abb2b4d228408eea1620cbeb55cbaed0e0c6\/betfairlightweight\/endpoints\/baseendpoint.py#L15",
+                "is_app_unfurl": true,
+                "app_id": "A01BP7R4KNY",
+                "fallback": "<https:\/\/github.com\/betcode-org\/betfair\/blob\/00e9abb2b4d228408eea1620cbeb55cbaed0e0c6\/betfairlightweight\/endpoints\/baseendpoint.py | baseendpoint.py>",
+                "text": "```\n    read_timeout = 16\n```",
+                "title": "<https:\/\/github.com\/betcode-org\/betfair\/blob\/00e9abb2b4d228408eea1620cbeb55cbaed0e0c6\/betfairlightweight\/endpoints\/baseendpoint.py | baseendpoint.py>",
+                "footer": "<https:\/\/github.com\/betcode-org\/betfair|betcode-org\/betfair>",
+                "mrkdwn_in": [
+                    "text"
+                ]
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "AzPJ",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Use the "
+                            },
+                            {
+                                "type": "text",
+                                "text": "read_timeout",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " attribute of "
+                            },
+                            {
+                                "type": "text",
+                                "text": "betting",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": ": "
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/betcode-org\/betfair\/blob\/00e9abb2b4d228408eea1620cbeb55cbaed0e0c6\/betfairlightweight\/endpoints\/baseendpoint.py#L15"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "U01697K27UY"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "U01697K27UY",
+        "type": "message",
+        "ts": "1677230989.817369",
+        "client_msg_id": "448f488c-facf-4d02-b2eb-2bac712c7311",
+        "text": "thank you will give that a spin",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g3030500b138",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/3030500b13896539426bd540fe2bdab7.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0006-72.png",
+            "first_name": "JW",
+            "real_name": "JW",
+            "display_name": "EJono",
+            "team": "T4G9NBD2M",
+            "name": "jonowads380",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1677230275.107069",
+        "parent_user_id": "U01697K27UY",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "bMs9",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "thank you will give that a spin"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1677233595.501709",
+        "client_msg_id": "9499B32B-F888-47CA-B60D-95D0876EB8BC",
+        "text": "This error just randomly seems to happen from time to time, normally if you try again later it’s fine.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1677230275.107069",
+        "parent_user_id": "U01697K27UY",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "PFK4q",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "This error just randomly seems to happen from time to time, normally if you try again later "
+                            },
+                            {
+                                "type": "text",
+                                "text": "it’s"
+                            },
+                            {
+                                "type": "text",
+                                "text": " fine."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "U01697K27UY"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "U01697K27UY",
+        "type": "message",
+        "ts": "1677235854.595179",
+        "edited": {
+            "user": "U01697K27UY",
+            "ts": "1677235886.000000"
+        },
+        "client_msg_id": "06eca630-a57c-459f-83e8-4c1b6ef649de",
+        "text": "<@UBS7QANF3> altering the time out value has worked in this scenario thank you for pointin me in towards the documentation!\n\n<@UFTBRB3F1> I have noticed this too from time to time and handle it appropraitely. In this case my requests were consistently failing over a number of different time frames and parameter submissions. Hence me retreating to this slack group where all is quickly explained :100:",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g3030500b138",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/3030500b13896539426bd540fe2bdab7.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0006-72.png",
+            "first_name": "JW",
+            "real_name": "JW",
+            "display_name": "EJono",
+            "team": "T4G9NBD2M",
+            "name": "jonowads380",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1677230275.107069",
+        "parent_user_id": "U01697K27UY",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "j\/P",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "user",
+                                "user_id": "UBS7QANF3"
+                            },
+                            {
+                                "type": "text",
+                                "text": " altering the time out value has worked in this scenario thank you for pointin me in towards the documentation!\n\n"
+                            },
+                            {
+                                "type": "user",
+                                "user_id": "UFTBRB3F1"
+                            },
+                            {
+                                "type": "text",
+                                "text": " I have noticed this too from time to time and handle it appropraitely. In this case my requests were consistently failing over a number of different time frames and parameter submissions. Hence me retreating to this slack group where all is quickly explained "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "100",
+                                "unicode": "1f4af"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U04LPHL9AFP",
+        "type": "message",
+        "ts": "1677261208.934209",
+        "client_msg_id": "a2035b68-7b10-4657-9d1d-001d67f83f15",
+        "text": "It does not return data for greyhounds that way, mind that I'm using betfairlightweight, I am not opening the stream with Flumine.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "3561d3f8545a",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2023-01-26\/4709009100916_3561d3f8545af07d8b92_72.png",
+            "first_name": "Jose",
+            "real_name": "Jose Maquia",
+            "display_name": "Jose Maquia",
+            "team": "T4G9NBD2M",
+            "name": "eeseljose",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1677224266.705349",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "J4fo",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "It does not return data for greyhounds that way, mind that I'm using betfairlightweight, I am not opening the stream with Flumine."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1677267068.922059",
+        "client_msg_id": "AE063607-5FF3-485D-B1FA-1D651B643524",
+        "text": "It should do ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1677224266.705349",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "OiW",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "It should do "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

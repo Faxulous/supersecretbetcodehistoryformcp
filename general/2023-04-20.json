@@ -1,0 +1,609 @@
+[
+    {
+        "user": "U01DCR5PXDY",
+        "type": "message",
+        "ts": "1681981466.095549",
+        "client_msg_id": "1769c990-b587-485b-863f-1a2c4cba1b0d",
+        "text": "Certainly useful, but not always present",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "903bc20cd9db",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-10-26\/1448127317798_903bc20cd9dba9a758e0_72.png",
+            "first_name": "thambie1",
+            "real_name": "thambie1",
+            "display_name": "thambie1",
+            "team": "T4G9NBD2M",
+            "name": "thambie1",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1681928973.838059",
+        "parent_user_id": "UPMUFSGCR",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "cPe",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Certainly useful, but not always present"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U9JHLMZB4",
+        "type": "message",
+        "ts": "1681995675.688619",
+        "edited": {
+            "user": "U9JHLMZB4",
+            "ts": "1682008260.000000"
+        },
+        "client_msg_id": "5101c365-9fb7-48c0-a3e0-e1146a47aaa6",
+        "text": "Flumine maintains a list of market objects that you could iterate over to find the one with the smallest seconds_to_start attribute.\n\nBut that's not how I'd do it personally. Cleaner would be to treat each market separately and within the strategy do this processing when each market's seconds_to_start &lt;= 600 (you could set a flag in market.context to ensure that it's only done once).\n\nEven cleaner would be to put this test and associated processing into the call() method in a custom middleware class.\n\nHowever, if your external site is slow to respond you may need to push this out to another process to avoid holding up stream processing.\n\nYet another approach would be to make the external calls in a worker function, in which case rather than trying to infer the next race from the stream, I'd recommend making a single call at the beginning of the day using betfairlightweight to load all the catalogues and save a local list of the day's start times and then work through that to trigger your calls to the external site.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g951ddcb43e7",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/3951ddcb43e788a387d6daf330dad5ca.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0018-72.png",
+            "first_name": "",
+            "real_name": "Peter Coles",
+            "display_name": "Peter",
+            "team": "T4G9NBD2M",
+            "name": "peter",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1681938585.624479",
+        "parent_user_id": "U01FJPFQPML",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "xN4x",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Flumine maintains a list of market objects that you could iterate over to find the one with the smallest seconds_to_start attribute.\n\nBut that's not how I'd do it personally. Cleaner would be to treat each market separately and within the strategy do this processing when each market's seconds_to_start <= 600 (you could set a flag in market.context to ensure that it's only done once).\n\nEven cleaner would be to put this test and associated processing into the call() method in a custom middleware class.\n\nHowever, if your external site is slow to respond you may need to push this out to another process to avoid holding up stream processing.\n\nYet another approach would be to make the external calls in a worker function, in which case rather than trying to infer the next race from the stream, I'd recommend making a single call at the beginning of the day using betfairlightweight to load all the catalogues and save a local list of the day's start times and then work through that to trigger your calls to the external site."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01697K27UY",
+        "type": "message",
+        "ts": "1682005045.152469",
+        "client_msg_id": "024a9072-0523-4ae1-b169-4f434287839e",
+        "text": "Can more than one flumine strategy access the same market stream on a single account simultaneously?\n\nIve spun up three flumine strategies for testing which all want to be accesing and running on the same sorts of football markets.\nThus the streaming market filter and class set up looks like the following:\n\n```SMF = streaming_market_filter(\n        event_type_ids=event_type_ids,\n        country_codes=country_codes,\n        market_types=[\"MATCH_ODDS\"]\n)\n\nstrategy_one = StrategyOne(market_filter=SMF, ... )\nstrategy_two = StrategyTwo(market_filter=SMF, ... )\nstrategy_three = StrategyThree(market_filter=SMF, ... )```\nI have noticed that sometimes a market will drop from the logs of one strategy and start up on another. Im slightly confused and wondering if there is somehting fundamental im missing such as \"a market can only be streamed by one strategy at a time\".\nAny help greatly appreciated",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g3030500b138",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/3030500b13896539426bd540fe2bdab7.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0006-72.png",
+            "first_name": "JW",
+            "real_name": "JW",
+            "display_name": "EJono",
+            "team": "T4G9NBD2M",
+            "name": "jonowads380",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1682005045.152469",
+        "reply_count": 4,
+        "reply_users_count": 3,
+        "latest_reply": "1682194427.333579",
+        "reply_users": [
+            "U4H19D1D2",
+            "U01697K27UY",
+            "U03B4S0K1T2"
+        ],
+        "replies": [
+            {
+                "user": "U4H19D1D2",
+                "ts": "1682006998.267659"
+            },
+            {
+                "user": "U01697K27UY",
+                "ts": "1682058749.715829"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1682060269.623199"
+            },
+            {
+                "user": "U03B4S0K1T2",
+                "ts": "1682194427.333579"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": true,
+        "last_read": "1682194427.333579",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "xDy",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Can more than one flumine strategy access the same market stream on a single account simultaneously?\n\nIve spun up three flumine strategies for testing which all want to be accesing and running on the same sorts of football markets.\nThus the streaming market filter and class set up looks like the following:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "SMF = streaming_market_filter(\n        event_type_ids=event_type_ids,\n        country_codes=country_codes,\n        market_types=[\"MATCH_ODDS\"]\n)\n\nstrategy_one = StrategyOne(market_filter=SMF, ... )\nstrategy_two = StrategyTwo(market_filter=SMF, ... )\nstrategy_three = StrategyThree(market_filter=SMF, ... )"
+                            }
+                        ],
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\nI have noticed that sometimes a market will drop from the logs of one strategy and start up on another. Im slightly confused and wondering if there is somehting fundamental im missing such as \"a market can only be streamed by one strategy at a time\".\nAny help greatly appreciated"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1682006998.267659",
+        "client_msg_id": "011F3C83-8DE1-4F86-9872-2B9D42D6BEB3",
+        "text": "Would need to see the rest of … to confirm but they should be using the same stream, logs would tell you ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1682005045.152469",
+        "parent_user_id": "U01697K27UY",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "5xeKr",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Would need to see the rest of "
+                            },
+                            {
+                                "type": "text",
+                                "text": "…"
+                            },
+                            {
+                                "type": "text",
+                                "text": " to confirm but they should be using the same stream, logs would tell you "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U03B4S0K1T2",
+        "type": "message",
+        "ts": "1682016021.765599",
+        "client_msg_id": "a20a74b1-197c-4874-885f-cfa33f684e67",
+        "text": "Yes, I agree that using strategies with different instances of Flumine is not ideal, but is there a way to add or remove strategies from Flumine after running `flumine.run()`?\nTo explain further why I want this, let's say I have 4 strategies running, and one of them is performing VERY poorly, and I want to pause only that specific strategy to prevent further losses.\nNow, in another scenario, let's say I have 4 strategies running, and I want to start an additional strategy.\nIn both of these scenarios, it would be very helpful to have a way to add or remove strategies from Flumine after the instance has already been initiated. Do you know if there is a way to do this?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "cc253c3f37f9",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2022-04-06\/3348480972038_cc253c3f37f9d424c465_72.png",
+            "first_name": "Andrey",
+            "real_name": "Andrey Luiz Malheiros",
+            "display_name": "Andrey Luiz Malheiros",
+            "team": "T4G9NBD2M",
+            "name": "andreylcj",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1681780367.598099",
+        "parent_user_id": "U03B4S0K1T2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "870",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Yes, I agree that using strategies with different instances of Flumine is not ideal, but is there a way to add or remove strategies from Flumine after running "
+                            },
+                            {
+                                "type": "text",
+                                "text": "flumine.run()",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "?\nTo explain further why I want this, let's say I have 4 strategies running, and one of them is performing VERY poorly, and I want to pause only that specific strategy to prevent further losses.\nNow, in another scenario, let's say I have 4 strategies running, and I want to start an additional strategy.\nIn both of these scenarios, it would be very helpful to have a way to add or remove strategies from Flumine after the instance has already been initiated. Do you know if there is a way to do this?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1682018277.243189",
+        "client_msg_id": "DF3809CA-115E-45B0-B84C-4B5946FDF2A4",
+        "text": "Not really however I would look at an active flag in the strategy context which you update using a worker \/ text file. Adding strategies is a limitation of flumines design however maybe there is scope to make this possible ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1681780367.598099",
+        "parent_user_id": "U03B4S0K1T2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "85PQg",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Not really however "
+                            },
+                            {
+                                "type": "text",
+                                "text": "I"
+                            },
+                            {
+                                "type": "text",
+                                "text": " would look "
+                            },
+                            {
+                                "type": "text",
+                                "text": "at"
+                            },
+                            {
+                                "type": "text",
+                                "text": " an "
+                            },
+                            {
+                                "type": "text",
+                                "text": "activ"
+                            },
+                            {
+                                "type": "text",
+                                "text": "e flag in the strategy context which "
+                            },
+                            {
+                                "type": "text",
+                                "text": "you"
+                            },
+                            {
+                                "type": "text",
+                                "text": " update using a worker \/ text file. Adding strategies is a "
+                            },
+                            {
+                                "type": "text",
+                                "text": "limitation"
+                            },
+                            {
+                                "type": "text",
+                                "text": " of flumines design however "
+                            },
+                            {
+                                "type": "text",
+                                "text": "maybe"
+                            },
+                            {
+                                "type": "text",
+                                "text": " there "
+                            },
+                            {
+                                "type": "text",
+                                "text": "is"
+                            },
+                            {
+                                "type": "text",
+                                "text": " scope to make this possible "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U03B4S0K1T2",
+        "type": "message",
+        "ts": "1682030632.446389",
+        "edited": {
+            "user": "U03B4S0K1T2",
+            "ts": "1682030902.000000"
+        },
+        "client_msg_id": "f9fb772f-f636-4a12-84a6-14e8016645cd",
+        "text": "Thank you very much, Liam. I will likely use this approach, with a flag in the context indicating which strategies are active. I will also take a look at the `__enter__` and `__exit__` methods of `BaseFlumine`, as I was reviewing them this week and it seems that by creating some methods and making slight modifications to these two, it may be possible to achieve this. If I am successful, I will share what I have done with the group.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "cc253c3f37f9",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2022-04-06\/3348480972038_cc253c3f37f9d424c465_72.png",
+            "first_name": "Andrey",
+            "real_name": "Andrey Luiz Malheiros",
+            "display_name": "Andrey Luiz Malheiros",
+            "team": "T4G9NBD2M",
+            "name": "andreylcj",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1681780367.598099",
+        "parent_user_id": "U03B4S0K1T2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "1JUQ",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Thank you very much, Liam. I will likely use this approach, with a flag in the context indicating which strategies are active. I will also take a look at the "
+                            },
+                            {
+                                "type": "text",
+                                "text": "__enter__",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " and "
+                            },
+                            {
+                                "type": "text",
+                                "text": "__exit__",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " methods of "
+                            },
+                            {
+                                "type": "text",
+                                "text": "BaseFlumine",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": ", as I was reviewing them this week and it seems that by creating some methods and making slight modifications to these two, it may be possible to achieve this. If I am successful, I will share what I have done with the group."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01697K27UY",
+        "type": "message",
+        "ts": "1682058749.715829",
+        "client_msg_id": "7fa7a2d1-88c8-4b5e-81e3-3d71d118a9df",
+        "text": "the rest of the arguments passed to the strategy class look like the following:\n\n```strategy_one = StrategyOne(\n    max_order_exposure=30,\n    max_live_trade_count=20,\n    max_selection_exposure=30,\n    market_filter=streaming_market_filter(\n        event_type_ids=[\"1\"],\n        country_codes=country_codes,\n        market_types=[\"MATCH_ODDS\"],\n    ),\n    name='instance_1',\n    context={\n        \"event_type_ids\": [\"1\"],\n        \"market_types\": \"MATCH_ODDS\",\n        'number_of_markets_for_placement': eval(number_of_markets_to_place_on),\n        \"cancel_all_bets\": eval(cancel_all_bets),\n        'lower_limit': 0.0,\n        'upper_limit': 0.33333333,\n        'max_liability': 11,\n        'strategy_type': 'first_to_score',\n        'market_ids_for_placement': []\n    }\n)```\nStrategy 2 and 3 are exactly the same apart from variations in \"name\", \"lower_limit\", and \"upper_limit\"",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g3030500b138",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/3030500b13896539426bd540fe2bdab7.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0006-72.png",
+            "first_name": "JW",
+            "real_name": "JW",
+            "display_name": "EJono",
+            "team": "T4G9NBD2M",
+            "name": "jonowads380",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1682005045.152469",
+        "parent_user_id": "U01697K27UY",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "hOKK",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "the rest of the arguments passed to the strategy class look like the following:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "strategy_one = StrategyOne(\n    max_order_exposure=30,\n    max_live_trade_count=20,\n    max_selection_exposure=30,\n    market_filter=streaming_market_filter(\n        event_type_ids=[\"1\"],\n        country_codes=country_codes,\n        market_types=[\"MATCH_ODDS\"],\n    ),\n    name='instance_1',\n    context={\n        \"event_type_ids\": [\"1\"],\n        \"market_types\": \"MATCH_ODDS\",\n        'number_of_markets_for_placement': eval(number_of_markets_to_place_on),\n        \"cancel_all_bets\": eval(cancel_all_bets),\n        'lower_limit': 0.0,\n        'upper_limit': 0.33333333,\n        'max_liability': 11,\n        'strategy_type': 'first_to_score',\n        'market_ids_for_placement': []\n    }\n)"
+                            }
+                        ],
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Strategy 2 and 3 are exactly the same apart from variations in \"name\", \"lower_limit\", and \"upper_limit\""
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01FJPFQPML",
+        "type": "message",
+        "ts": "1682059250.508989",
+        "client_msg_id": "ab368f28-3e1d-4973-a62c-884520765420",
+        "text": "Thanks for these answers <@U9JHLMZB4>.  Some things for me to work through this weekend.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "4130984c3401",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-11-29\/1541691682196_4130984c3401120bcb1e_72.png",
+            "first_name": "",
+            "real_name": "Andy B",
+            "display_name": "Andy B",
+            "team": "T4G9NBD2M",
+            "name": "behrendta",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1681938585.624479",
+        "parent_user_id": "U01FJPFQPML",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "lk4Nn",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Thanks for these answers "
+                            },
+                            {
+                                "type": "user",
+                                "user_id": "U9JHLMZB4"
+                            },
+                            {
+                                "type": "text",
+                                "text": ".  Some things for me to work through this weekend."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1682060269.623199",
+        "client_msg_id": "F682EA5E-E94F-4098-AF06-D4F91D77A31C",
+        "text": "Yeah they should share, it will tell you in the lots when it starts up",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1682005045.152469",
+        "parent_user_id": "U01697K27UY",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "BaEMS",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Yeah they should share, it will tell you in the "
+                            },
+                            {
+                                "type": "text",
+                                "text": "lots"
+                            },
+                            {
+                                "type": "text",
+                                "text": " when it starts up"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "U01697K27UY"
+                ],
+                "count": 1
+            }
+        ]
+    }
+]

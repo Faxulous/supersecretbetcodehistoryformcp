@@ -1,0 +1,775 @@
+[
+    {
+        "user": "U03CL4F39M4",
+        "type": "message",
+        "ts": "1667664296.113319",
+        "client_msg_id": "b9121128-1a68-414b-bf2c-be40ed92eb52",
+        "text": "Hi everyone,\nI hope you are all keeping well!\nI just had a quick question related to understanding the MarketBook and MarketDefinition class in the betfairlightweight module. I am using the betfairlightweight module to parse the Historical Stream Data into a csv file. I am just starting out with object orientated programming, so any advice would be very much appreciated :blush::\n*Why does the attribute _.market_definition_, when applied to a MarketBook object, return a MarketDefinition object, rather than kwargs.pop(\"market_definition\", None)?*  \nI suspect that:\n Applying the attribute market_definition to a marketbook object should return: kwargs.pop(\"market_definition\", None) as that is wait is contained in the sourcecode for the MarketBook class (see: _betfairlightweight.resources.bettingresources.MarketBook')_\n However when I run: print(type(marketbookobject.market_definition),\nI get: _*&lt; class, betfairlightweight.resources.streamingresources.MarketDefinition&gt;*_, which suggesting that I have generated a class by calling the market_definition attribute on a marketbook object.\nAny help in clarifying why calling the market_definition attribute on a marketbook object generates a class would be much appreciated.\n\nThanks,\nNick",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "914e66aa98f5",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2022-04-25\/3458558719456_914e66aa98f5dcdbe576_72.png",
+            "first_name": "Nicholas",
+            "real_name": "Nicholas vizard",
+            "display_name": "Nicholas vizard",
+            "team": "T4G9NBD2M",
+            "name": "nsavizard",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1667664296.113319",
+        "reply_count": 2,
+        "reply_users_count": 2,
+        "latest_reply": "1667728793.721979",
+        "reply_users": [
+            "UBS7QANF3",
+            "U03CL4F39M4"
+        ],
+        "replies": [
+            {
+                "user": "UBS7QANF3",
+                "ts": "1667666359.852339"
+            },
+            {
+                "user": "U03CL4F39M4",
+                "ts": "1667728793.721979"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": false,
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "6gGp",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Hi everyone,\nI hope you are all keeping well!\nI just had a quick question related to understanding the MarketBook and MarketDefinition class in the betfairlightweight module. I am using the betfairlightweight module to parse the Historical Stream Data into a csv file. I am just starting out with object orientated programming, so any advice would be very much appreciated "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "blush",
+                                "unicode": "1f60a"
+                            },
+                            {
+                                "type": "text",
+                                "text": ":\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "Why does the attribute ",
+                                "style": {
+                                    "bold": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": ".market_definition",
+                                "style": {
+                                    "bold": true,
+                                    "italic": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": ", when applied to a MarketBook object, return a MarketDefinition object, rather than kwargs.pop(\"market_definition\", None)?  ",
+                                "style": {
+                                    "bold": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\nI suspect that:\n Applying the attribute market_definition to a marketbook object should return: kwargs.pop(\"market_definition\", None) as that is wait is contained in the sourcecode for the MarketBook class (see: "
+                            },
+                            {
+                                "type": "text",
+                                "text": "betfairlightweight.resources.bettingresources.MarketBook')",
+                                "style": {
+                                    "italic": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n However when I run: print(type(marketbookobject.market_definition),\nI get: "
+                            },
+                            {
+                                "type": "text",
+                                "text": "< class, betfairlightweight.resources.streamingresources.MarketDefinition>",
+                                "style": {
+                                    "bold": true,
+                                    "italic": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": ", which suggesting that I have generated a class by calling the market_definition attribute on a marketbook object.\nAny help in clarifying why calling the market_definition attribute on a marketbook object generates a class would be much appreciated.\n\nThanks,\nNick"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1667666359.852339",
+        "client_msg_id": "eabdb54d-1593-4019-9837-a434ff1defda",
+        "text": "1. `kwargs` is a dictionary of argument name (key) to value\n2. The `pop` method on the dictionary removes and returns the element with the given name (key) (in this case, `market_definition` ) from the dictionary\n3. The second argument to `pop` is a default value to return if the key does not exist in the dictionary\n4. When a MarketBook object is constructed, most likely the `market_definition` _argument_ is a MarketDefinition object\n5. In the MarketBook constructor, the result of the `pop` call is assigned to the `market_definition` _attribute_ of the MarketBook object\n6. So when you subsequently access the `market_definition` attribute of the MarketBook object you get back a MarketDefinition object",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1667664296.113319",
+        "parent_user_id": "U03CL4F39M4",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "dCpE",
+                "elements": [
+                    {
+                        "type": "rich_text_list",
+                        "elements": [
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "kwargs",
+                                        "style": {
+                                            "code": true
+                                        }
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": " is a dictionary of argument name (key) to value"
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "The "
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": "pop",
+                                        "style": {
+                                            "code": true
+                                        }
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": " method on the dictionary removes and returns the element with the given name (key) (in this case, "
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": "market_definition",
+                                        "style": {
+                                            "code": true
+                                        }
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": " ) from the dictionary"
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "The second argument to "
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": "pop",
+                                        "style": {
+                                            "code": true
+                                        }
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": " is a default value to return if the key does not exist in the dictionary"
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "When a MarketBook object is constructed, most likely the "
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": "market_definition",
+                                        "style": {
+                                            "code": true
+                                        }
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": " "
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": "argument",
+                                        "style": {
+                                            "italic": true
+                                        }
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": " is a MarketDefinition object"
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "In the MarketBook constructor, the result of the "
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": "pop",
+                                        "style": {
+                                            "code": true
+                                        }
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": " call is assigned to the "
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": "market_definition",
+                                        "style": {
+                                            "code": true
+                                        }
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": " "
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": "attribute",
+                                        "style": {
+                                            "italic": true
+                                        }
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": " of the MarketBook object"
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "So when you subsequently access the "
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": "market_definition",
+                                        "style": {
+                                            "code": true
+                                        }
+                                    },
+                                    {
+                                        "type": "text",
+                                        "text": " attribute of the MarketBook object you get back a MarketDefinition object"
+                                    }
+                                ]
+                            }
+                        ],
+                        "style": "ordered",
+                        "indent": 0,
+                        "border": 0
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "text": "I wrote some code to track price changes on a particular selection, to check my code was working as it was supposed to. There were a couple of occasions when the total amount matched on the runner decreased over time according to the print statements.\n\nWhat is happening there?",
+        "files": [
+            {
+                "id": "F04981V4WF9",
+                "mode": "hidden_by_limit"
+            },
+            {
+                "id": "F049NHRUPLJ",
+                "mode": "hidden_by_limit"
+            },
+            {
+                "id": "F04AC912T5W",
+                "mode": "hidden_by_limit"
+            }
+        ],
+        "upload": false,
+        "user": "U013K4VNB6D",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "2Af",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I wrote some code to track price changes on a particular selection, to check my code was working as it was supposed to. There were a couple of occasions when the total amount matched on the runner decreased over time according to the print statements.\n\nWhat is happening there?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "type": "message",
+        "ts": "1667683757.775849",
+        "client_msg_id": "4e140e1b-c106-4fd0-b90f-ce6ef490f560",
+        "thread_ts": "1667683757.775849",
+        "reply_count": 22,
+        "reply_users_count": 3,
+        "latest_reply": "1667726038.183759",
+        "reply_users": [
+            "UBS7QANF3",
+            "U01DCR5PXDY",
+            "U013K4VNB6D"
+        ],
+        "replies": [
+            {
+                "user": "UBS7QANF3",
+                "ts": "1667683804.068199"
+            },
+            {
+                "user": "U01DCR5PXDY",
+                "ts": "1667684081.503049"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1667684137.379489"
+            },
+            {
+                "user": "U01DCR5PXDY",
+                "ts": "1667684238.247669"
+            },
+            {
+                "user": "U013K4VNB6D",
+                "ts": "1667684264.457409"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1667718883.644729"
+            },
+            {
+                "user": "U013K4VNB6D",
+                "ts": "1667722935.942029"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1667722967.681379"
+            },
+            {
+                "user": "U013K4VNB6D",
+                "ts": "1667723026.951019"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1667723069.444059"
+            },
+            {
+                "user": "U013K4VNB6D",
+                "ts": "1667723473.478439"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1667723529.427939"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1667723583.603719"
+            },
+            {
+                "user": "U013K4VNB6D",
+                "ts": "1667723602.850089"
+            },
+            {
+                "user": "U013K4VNB6D",
+                "ts": "1667723758.220289"
+            },
+            {
+                "user": "U013K4VNB6D",
+                "ts": "1667723828.644089"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1667723844.121649"
+            },
+            {
+                "user": "U013K4VNB6D",
+                "ts": "1667724923.017129"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1667725065.314429"
+            },
+            {
+                "user": "U013K4VNB6D",
+                "ts": "1667725166.048599"
+            },
+            {
+                "user": "U013K4VNB6D",
+                "ts": "1667726025.268079"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1667726038.183759"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": false
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1667683804.068199",
+        "client_msg_id": "67CB9738-FA80-4A81-A128-4BF2CD74B66C",
+        "text": "Live key?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1667683757.775849",
+        "parent_user_id": "U013K4VNB6D",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "e4s4k",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Live key?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01DCR5PXDY",
+        "type": "message",
+        "ts": "1667684081.503049",
+        "client_msg_id": "401e0e6e-b2cd-41c1-b9e9-991aef16b83b",
+        "text": "Yeah this can happen due to currency fluctuations",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "903bc20cd9db",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-10-26\/1448127317798_903bc20cd9dba9a758e0_72.png",
+            "first_name": "thambie1",
+            "real_name": "thambie1",
+            "display_name": "thambie1",
+            "team": "T4G9NBD2M",
+            "name": "thambie1",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1667683757.775849",
+        "parent_user_id": "U013K4VNB6D",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "zRo",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Yeah this can happen due to currency fluctuations"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1667684137.379489",
+        "edited": {
+            "user": "UBS7QANF3",
+            "ts": "1667684152.000000"
+        },
+        "client_msg_id": "41E99ECD-D854-45AB-B3F5-37E0C1E020A1",
+        "text": "Yes but can it go from something matched to nothing matched because of that?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1667683757.775849",
+        "parent_user_id": "U013K4VNB6D",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "8au",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Yes but can it go from something matched to nothing matched"
+                            },
+                            {
+                                "type": "text",
+                                "text": " "
+                            },
+                            {
+                                "type": "text",
+                                "text": "because of that?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01DCR5PXDY",
+        "type": "message",
+        "ts": "1667684238.247669",
+        "client_msg_id": "c7bc8ee6-0d23-4cee-b8c5-6d3ee5a50c9d",
+        "text": "I misread the screenshots. You're right, probably not currency fluctuations.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "903bc20cd9db",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-10-26\/1448127317798_903bc20cd9dba9a758e0_72.png",
+            "first_name": "thambie1",
+            "real_name": "thambie1",
+            "display_name": "thambie1",
+            "team": "T4G9NBD2M",
+            "name": "thambie1",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1667683757.775849",
+        "parent_user_id": "U013K4VNB6D",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "gfBw",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I misread the screenshots. You're right, probably not currency fluctuations."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "text": "I'm using a back tester, and employing data supplied by Betfair.\n\nI've just tried a different dataset, and got the same issue.\n\nThis is my code: <https:\/\/github.com\/JeffW12345\/Basic-Betfair-Backtesting-App>",
+        "files": [
+            {
+                "id": "F04A17S73QR",
+                "mode": "hidden_by_limit"
+            }
+        ],
+        "upload": false,
+        "user": "U013K4VNB6D",
+        "display_as_bot": false,
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "\/uhVj",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I'm using a back tester, and employing data supplied by Betfair.\n\nI've just tried a different dataset, and got the same issue.\n\nThis is my code: "
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/JeffW12345\/Basic-Betfair-Backtesting-App"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "type": "message",
+        "ts": "1667684264.457409",
+        "client_msg_id": "e07ac381-a493-4ef0-8e22-23a1e1eed097",
+        "thread_ts": "1667683757.775849",
+        "parent_user_id": "U013K4VNB6D",
+        "attachments": [
+            {
+                "id": 1,
+                "color": "24292f",
+                "bot_id": "B021ZJYSBMW",
+                "app_unfurl_url": "https:\/\/github.com\/JeffW12345\/Basic-Betfair-Backtesting-App",
+                "is_app_unfurl": true,
+                "app_id": "A01BP7R4KNY",
+                "fallback": "JeffW12345\/Basic-Betfair-Backtesting-App",
+                "text": "Basic Betfair Backtesting App",
+                "title": "JeffW12345\/Basic-Betfair-Backtesting-App",
+                "fields": [
+                    {
+                        "value": "Python",
+                        "title": "Language",
+                        "short": true
+                    },
+                    {
+                        "value": "a minute ago",
+                        "title": "Last updated",
+                        "short": true
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U04980ZT6UX",
+        "type": "message",
+        "ts": "1667689339.581529",
+        "client_msg_id": "2b760763-21e3-4bb1-96ae-dc4b26914b19",
+        "text": "Hi gents,\nIs there any mechanism to \"converge\" orders ? i.e, I give my target orders and the function automatically compute the required orders (cancel open orders and place new orders) to achieve the target open orders? Example:  Say I currently have an open order BACK (size 10, price 1.2) and now I want to have the order BACK (size 10, price 1.1). Is there a mechanism to check my open orders and cancel my current open order and place the new desired order?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gb1b2f82a1a4",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/b1b2f82a1a49a547cbc7487b48805187.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0017-72.png",
+            "first_name": "AI",
+            "real_name": "AI Trader",
+            "display_name": "AI Trader",
+            "team": "T4G9NBD2M",
+            "name": "menocineto",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1667689339.581529",
+        "reply_count": 8,
+        "reply_users_count": 3,
+        "latest_reply": "1675763651.230569",
+        "reply_users": [
+            "U9JHLMZB4",
+            "U04980ZT6UX",
+            "U01D23DDMTQ"
+        ],
+        "replies": [
+            {
+                "user": "U9JHLMZB4",
+                "ts": "1667741889.066479"
+            },
+            {
+                "user": "U04980ZT6UX",
+                "ts": "1667746209.633859"
+            },
+            {
+                "user": "U01D23DDMTQ",
+                "ts": "1673256937.847209"
+            },
+            {
+                "user": "U01D23DDMTQ",
+                "ts": "1673257182.624259"
+            },
+            {
+                "user": "U04980ZT6UX",
+                "ts": "1675728732.594689"
+            },
+            {
+                "user": "U9JHLMZB4",
+                "ts": "1675760938.492949"
+            },
+            {
+                "user": "U01D23DDMTQ",
+                "ts": "1675763355.882179"
+            },
+            {
+                "user": "U01D23DDMTQ",
+                "ts": "1675763651.230569"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": false,
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "yODl",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Hi gents,\nIs there any mechanism to \"converge\" orders ? i.e, I give my target orders and the function automatically compute the required orders (cancel open orders and place new orders) to achieve the target open orders? Example:  Say I currently have an open order BACK (size 10, price 1.2) and now I want to have the order BACK (size 10, price 1.1). Is there a mechanism to check my open orders and cancel my current open order and place the new desired order?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

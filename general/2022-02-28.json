@@ -1,0 +1,1194 @@
+[
+    {
+        "user": "U0155J92A7Q",
+        "type": "message",
+        "ts": "1646038706.677839",
+        "edited": {
+            "user": "U0155J92A7Q",
+            "ts": "1646039059.000000"
+        },
+        "client_msg_id": "358b8218-8316-4b6d-996d-38e4696b2334",
+        "text": "Hey, is it true that if I restart the <https:\/\/github.com\/liampauling\/flumine\/blob\/master\/examples\/strategies\/marketrecorder.py|marketrecorder.py> with the same `local_dir` and `recorder_id` it will continue seamlessly?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gde8c5d51af5",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/de8c5d51af54a5ac7b501f416ddb262c.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0016-72.png",
+            "first_name": "",
+            "real_name": "Jorge",
+            "display_name": "Jorge",
+            "team": "T4G9NBD2M",
+            "name": "jgarciam95",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1646038706.677839",
+        "reply_count": 4,
+        "reply_users_count": 2,
+        "latest_reply": "1646041482.443379",
+        "reply_users": [
+            "U4H19D1D2",
+            "U0155J92A7Q"
+        ],
+        "replies": [
+            {
+                "user": "U4H19D1D2",
+                "ts": "1646039876.485469"
+            },
+            {
+                "user": "U0155J92A7Q",
+                "ts": "1646041165.396969"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1646041387.872109"
+            },
+            {
+                "user": "U0155J92A7Q",
+                "ts": "1646041482.443379"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": true,
+        "last_read": "1646041482.443379",
+        "attachments": [
+            {
+                "id": 1,
+                "footer_icon": "https:\/\/slack.github.com\/static\/img\/favicon-neutral.png",
+                "color": "24292f",
+                "bot_id": "B021ZJYSBMW",
+                "app_unfurl_url": "https:\/\/github.com\/liampauling\/flumine\/blob\/master\/examples\/strategies\/marketrecorder.py",
+                "is_app_unfurl": true,
+                "app_id": "A01BP7R4KNY",
+                "fallback": "<https:\/\/github.com\/liampauling\/flumine\/blob\/master\/examples\/strategies\/marketrecorder.py | marketrecorder.py>",
+                "text": "```\nimport os\nimport json\nimport time\nimport logging\nimport gzip\nimport boto3\nimport queue\nimport threading\nfrom boto3.s3.transfer import S3Transfer, TransferConfig\nfrom botocore.exceptions import BotoCoreError\n\nfrom flumine import BaseStrategy\nfrom flumine.utils import create_short_uuid, file_line_count\n\nlogger = logging.getLogger(__name__)\n\n\nclass MarketRecorder(BaseStrategy):\n\n    \"\"\"\n    Simple raw streaming market recorder, context:\n\n        market_expiration: int, Seconds to wait after market closure before removing files\n        remove_file: bool, Remove txt file during cleanup\n        remove_gz_file: bool, Remove gz file during cleanup\n        force_update: bool, Update zip\/closure if update received after closure\n        load_market_catalogue: bool, Store marketCatalogue as {marketId}.json\n        local_dir: str, Dir to store data\n        recorder_id: str, Directory name (defaults to random uuid)\n    \"\"\"\n\n    MARKET_ID_LOOKUP = \"id\"\n\n    def __init__(self, *args, **kwargs):\n        BaseStrategy.__init__(self, *args, **kwargs)\n        self._market_expiration = self.context.get(\"market_expiration\", 3600)  # seconds\n        self._remove_file = self.context.get(\"remove_file\", False)\n        self._remove_gz_file = self.context.get(\"remove_gz_file\", False)\n        self._force_update = self.context.get(\"force_update\", True)\n        self._load_market_catalogue = self.context.get(\"load_market_catalogue\", True)\n        self.local_dir = self.context.get(\"local_dir\", \"\/tmp\")\n        self.recorder_id = self.context.get(\"recorder_id\", create_short_uuid())\n        self._loaded_markets = []  # list of marketIds\n        self._queue = queue.Queue()\n\n    def add(self) -&gt; None:\n        <http:\/\/logger.info|logger.info>(\"Adding strategy %s with id %s\" % (self.name, self.recorder_id))\n        # check local dir\n        if not os.path.isdir(self.local_dir):\n            raise OSError(\"File dir %s does not exist\" % self.local_dir)\n        # create sub dir\n        directory = os.path.join(self.local_dir, self.recorder_id)\n        if not os.path.exists(directory):\n            os.makedirs(directory)\n\n    def start(self) -&gt; None:\n        # start load processor thread\n        threading.Thread(\n            name=\"{0}_load_processor\".format(self.name),\n            target=self._load_processor,\n            daemon=True,\n        ).start()\n\n    def process_raw_data(self, clk: str, publish_time: int, data: dict):\n        market_id = data.get(self.MARKET_ID_LOOKUP)\n        file_directory = os.path.join(self.local_dir, self.recorder_id, market_id)\n        with open(file_directory, \"a\") as f:\n            f.write(\n                json.dumps(\n                    {\"op\": \"mcm\", \"clk\": clk, \"pt\": publish_time, \"mc\": [data]},\n                    separators=(\",\", \":\"),\n                )\n                + \"\\n\"\n            )\n\n    def process_closed_market(self, market, data: dict) -&gt; None:\n        market_id = data.get(self.MARKET_ID_LOOKUP)\n        if market_id in self._loaded_markets:\n            if self._force_update:\n                logger.warning(\n                    \"File: \/{0}\/{1}\/{2} has already been loaded, updating..\".format(\n                        self.local_dir, self.recorder_id, market_id\n                    )\n                )\n            else:\n                return\n        else:\n            self._loaded_markets.append(market_id)\n        <http:\/\/logger.info|logger.info>(\"Closing market %s\" % market_id)\n\n        file_dir = os.path.join(self.local_dir, self.recorder_id, market_id)\n        market_definition = data.get(\"marketDefinition\")\n\n        # check that file actually exists\n        if not os.path.isfile(file_dir):\n            logger.error(\n                \"File: %s does not exist in \/%s\/%s\/\"\n                % (self.local_dir, market_id, self.recorder_id)\n            )\n            return\n\n        # check that file is not empty \/ 1 line (i.e. the market had already closed on startup)\n        line_count = file_line_count(file_dir)\n        if line_count == 1:\n            logger.warning(\n                \"File: %s contains one line only and will not be loaded (already closed on startup)\"\n                % file_dir\n            )\n            return\n\n        self._queue.put((market, file_dir, market_definition))\n\n    def _load_processor(self):\n        # process compression\/load in thread\n        while True:\n            market, file_dir, market_definition = self._queue.get(block=True)\n            # check file still exists (potential race condition)\n            if not os.path.isfile(file_dir):\n                logger.warning(\n                    \"File: %s does not exist in %s\" % (market.market_id, file_dir)\n                )\n                continue\n            # compress file\n            compress_file_dir = self._compress_file(file_dir)\n            # core load code\n            self._load(market, compress_file_dir, market_definition)\n            # clean up\n            self._clean_up()\n\n    def _compress_file(self, file_dir: str) -&gt; str:\n        \"\"\"compresses txt file into filename.gz\"\"\"\n        compressed_file_dir = \"{0}.gz\".format(file_dir)\n        with open(file_dir, \"rb\") as f:\n            with gzip.open(compressed_file_dir, \"wb\") as compressed_file:\n                compressed_file.writelines(f)\n        return compressed_file_dir\n\n    def _load(self, market, compress_file_dir: str, market_definition: dict) -&gt; None:\n        # store marketCatalogue data `{marketId}.json.gz`\n        if market and self._load_market_catalogue:\n            if market.market_catalogue is None:\n                logger.warning(\n                    \"No marketCatalogue data available for %s\" % market.market_id\n                )\n                return\n            market_catalogue_compressed = self._compress_catalogue(\n                market.market_catalogue\n            )\n            # save to file\n            file_dir = os.path.join(\n                self.local_dir, self.recorder_id, \"{0}.json.gz\".format(market.market_id)\n            )\n            with open(file_dir, \"wb\") as f:\n                f.write(market_catalogue_compressed)\n\n    @staticmethod\n    def _compress_catalogue(market_catalogue) -&gt; bytes:\n        market_catalogue_dumped = market_catalogue.json()\n        if isinstance(market_catalogue_dumped, str):\n            market_catalogue_dumped = market_catalogue_dumped.encode(\"utf-8\")\n        return gzip.compress(market_catalogue_dumped)\n\n    def _clean_up(self) -&gt; None:\n        \"\"\"If gz &gt; market_expiration old remove\n        gz and txt file\n        \"\"\"\n        directory = os.path.join(self.local_dir, self.recorder_id)\n        for file in os.listdir(directory):\n            if file.endswith(\".gz\"):\n                gz_path = os.path.join(directory, file)\n                file_stats = os.stat(gz_path)\n                seconds_since = time.time() - file_stats.st_mtime\n                if seconds_since &gt; self._market_expiration:\n                    if self._remove_gz_file:\n                        <http:\/\/logger.info|logger.info>(\n                            \"Removing: %s, age: %ss\"\n                            % (gz_path, round(seconds_since, 2))\n                        )\n                        os.remove(gz_path)\n                    txt_path = os.path.join(directory, file.split(\".gz\")[0])\n                    if os.path.exists(txt_path) and self._remove_file:\n                        file_stats = os.stat(txt_path)\n                        seconds_since = time.time() - file_stats.st_mtime\n                        if seconds_since &gt; self._market_expiration:\n                            <http:\/\/logger.info|logger.info>(\n                                \"Removing: %s, age: %ss\"\n                                % (txt_path, round(seconds_since, 2))\n                            )\n                            os.remove(txt_path)\n\n    @staticmethod\n    def _create_metadata(market_definition: dict) -&gt; dict:\n        try:\n            del market_definition[\"runners\"]\n        except KeyError:\n            p…",
+                "title": "<https:\/\/github.com\/liampauling\/flumine\/blob\/master\/examples\/strategies\/marketrecorder.py | marketrecorder.py>",
+                "footer": "<https:\/\/github.com\/liampauling\/flumine|liampauling\/flumine>",
+                "mrkdwn_in": [
+                    "text"
+                ]
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "My1=6",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Hey, is it true that if I restart the "
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/liampauling\/flumine\/blob\/master\/examples\/strategies\/marketrecorder.py",
+                                "text": "marketrecorder.py",
+                                "unsafe": true
+                            },
+                            {
+                                "type": "text",
+                                "text": " with the same "
+                            },
+                            {
+                                "type": "text",
+                                "text": "local_dir",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " and "
+                            },
+                            {
+                                "type": "text",
+                                "text": "recorder_id",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " it will continue seamlessly?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1646039876.485469",
+        "client_msg_id": "02e9afcf-e314-437f-9056-e0d562c2fa25",
+        "text": "Theoretically yes with the only impact being a new image in the middle of a file. I think a few do this, have you tried it?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1646038706.677839",
+        "parent_user_id": "U0155J92A7Q",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "n0WfA",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Theoretically yes with the only impact being a new image in the middle of a file. I think a few do this, have you tried it?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1646040143.432099",
+        "client_msg_id": "3516970f-5c2a-421c-b329-d7b23c0d0522",
+        "text": "<https:\/\/liampauling.github.io\/flumine\/sportsdata\/|sports-data> stream now integrated into flumine, any issues or improvements let me know",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1646040143.432099",
+        "reply_count": 13,
+        "reply_users_count": 6,
+        "latest_reply": "1646585044.742929",
+        "reply_users": [
+            "U01MPC0GUK1",
+            "U010GM77S4W",
+            "U4H19D1D2",
+            "UPMUFSGCR",
+            "U025AFDS89H",
+            "U0128E7BEHW"
+        ],
+        "replies": [
+            {
+                "user": "U01MPC0GUK1",
+                "ts": "1646043521.788679"
+            },
+            {
+                "user": "U010GM77S4W",
+                "ts": "1646060405.058529"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1646061010.566469"
+            },
+            {
+                "user": "U010GM77S4W",
+                "ts": "1646062516.556119"
+            },
+            {
+                "user": "U010GM77S4W",
+                "ts": "1646218847.877979"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1646219276.712119"
+            },
+            {
+                "user": "U010GM77S4W",
+                "ts": "1646219560.796909"
+            },
+            {
+                "user": "UPMUFSGCR",
+                "ts": "1646253802.020079"
+            },
+            {
+                "user": "U010GM77S4W",
+                "ts": "1646255636.404579"
+            },
+            {
+                "user": "U025AFDS89H",
+                "ts": "1646323369.770999"
+            },
+            {
+                "user": "U01MPC0GUK1",
+                "ts": "1646330360.210239"
+            },
+            {
+                "user": "U0128E7BEHW",
+                "ts": "1646580752.017419"
+            },
+            {
+                "user": "U01MPC0GUK1",
+                "ts": "1646585044.742929"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": true,
+        "last_read": "1646585044.742929",
+        "attachments": [
+            {
+                "from_url": "https:\/\/liampauling.github.io\/flumine\/sportsdata\/",
+                "service_icon": "https:\/\/liampauling.github.io\/flumine\/assets\/images\/favicon.png",
+                "id": 1,
+                "original_url": "https:\/\/liampauling.github.io\/flumine\/sportsdata\/",
+                "fallback": "Sports Data - flumine",
+                "text": "Trading framework for Betfair API-NG.",
+                "title": "Sports Data - flumine",
+                "title_link": "https:\/\/liampauling.github.io\/flumine\/sportsdata\/",
+                "service_name": "liampauling.github.io"
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "zTlIK",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "link",
+                                "url": "https:\/\/liampauling.github.io\/flumine\/sportsdata\/",
+                                "text": "sports-data"
+                            },
+                            {
+                                "type": "text",
+                                "text": " stream now integrated into flumine, any issues or improvements let me know"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "UBS7QANF3",
+                    "UNW8Q88EL",
+                    "U010GM77S4W",
+                    "U033HM6Q8BU"
+                ],
+                "count": 4
+            },
+            {
+                "name": "rocket",
+                "users": [
+                    "U01LD279D16",
+                    "U0155J92A7Q",
+                    "U01B8031PM1"
+                ],
+                "count": 3
+            }
+        ]
+    },
+    {
+        "user": "U0155J92A7Q",
+        "type": "message",
+        "ts": "1646041165.396969",
+        "edited": {
+            "user": "U0155J92A7Q",
+            "ts": "1646041244.000000"
+        },
+        "client_msg_id": "e492b6c0-3dc9-4b99-91f4-3774670d5732",
+        "text": "Yes:\n1. Some files were uploaded to S3 when I stopped the marketrecorder.py instance.\n2. Saw a new image created at the end of the current files which are not yet uploaded to S3.\n3.  And some new files were created after the restart.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gde8c5d51af5",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/de8c5d51af54a5ac7b501f416ddb262c.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0016-72.png",
+            "first_name": "",
+            "real_name": "Jorge",
+            "display_name": "Jorge",
+            "team": "T4G9NBD2M",
+            "name": "jgarciam95",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1646038706.677839",
+        "parent_user_id": "U0155J92A7Q",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "i9HmO",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Yes:\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_list",
+                        "elements": [
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "Some files were uploaded to S3 when I stopped the marketrecorder.py instance."
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "Saw a new image created at the end of the current files which are not yet uploaded to S3."
+                                    }
+                                ]
+                            },
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": " And some new files were created after the restart."
+                                    }
+                                ]
+                            }
+                        ],
+                        "style": "ordered",
+                        "indent": 0,
+                        "border": 0
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1646041387.872109",
+        "client_msg_id": "9f3ebe6c-86c1-47ae-bac4-6c673b8a1c2d",
+        "text": "not sure I understand, are you saying some files in s3 were overwritten as an update came through?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1646038706.677839",
+        "parent_user_id": "U0155J92A7Q",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "MIK=",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "not sure I understand, are you saying some files in s3 were overwritten as an update came through?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U0155J92A7Q",
+        "type": "message",
+        "ts": "1646041482.443379",
+        "client_msg_id": "d21be5dd-bcee-4184-b052-97b4b790f27c",
+        "text": "No, no file in s3 was overwritten. New files were uploaded after I stopped the recorder (I guess these are completed markets)",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gde8c5d51af5",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/de8c5d51af54a5ac7b501f416ddb262c.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0016-72.png",
+            "first_name": "",
+            "real_name": "Jorge",
+            "display_name": "Jorge",
+            "team": "T4G9NBD2M",
+            "name": "jgarciam95",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1646038706.677839",
+        "parent_user_id": "U0155J92A7Q",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "QnMt=",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "No, no file in s3 was overwritten. New files were uploaded after I stopped the recorder (I guess these are completed markets)"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1646042644.647579",
+        "client_msg_id": "5b7654d2-202a-4d9b-93c1-fd05b3c1df05",
+        "text": "What data does the Race Subscription show, I appear to have completely missed that (is it just a streaming version of the satus API)?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1646042644.647579",
+        "reply_count": 2,
+        "reply_users_count": 2,
+        "latest_reply": "1646043331.975089",
+        "reply_users": [
+            "U4H19D1D2",
+            "UFTBRB3F1"
+        ],
+        "replies": [
+            {
+                "user": "U4H19D1D2",
+                "ts": "1646042728.984119"
+            },
+            {
+                "user": "UFTBRB3F1",
+                "ts": "1646043331.975089"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": true,
+        "last_read": "1646043331.975089",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "DO6o",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "What data does the Race Subscription show, I appear to have completely missed that (is it just a streaming version of the satus API)?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1646042728.984119",
+        "client_msg_id": "9aeea007-c872-4088-975d-ebf1ab20d45f",
+        "text": "It's TPD data, limited number of licenses but added as it uses the same host as the cricket stream",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1646042644.647579",
+        "parent_user_id": "UFTBRB3F1",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "vjI",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "It's TPD data, limited number of licenses but added as it uses the same host as the cricket stream"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1646043331.975089",
+        "client_msg_id": "c7e7efe5-1727-4c08-a7b8-4cafb7949f35",
+        "text": "Ooh interesting, cool tks",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1646042644.647579",
+        "parent_user_id": "UFTBRB3F1",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "xU=tt",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Ooh interesting, cool tks"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01MPC0GUK1",
+        "type": "message",
+        "ts": "1646043521.788679",
+        "client_msg_id": "fbc611fe-7e5b-4b8a-a4cc-22c639de4c88",
+        "text": "Thanks Liam - the only issue for me is that the cricket stream is only currently available for premium customers.  Hopefully they'll expand it to plebs like me at some point :joy:",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "3be8fa875ec4",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2021-02-15\/1752388211523_3be8fa875ec4866620ff_72.png",
+            "first_name": "Beeblebrox",
+            "real_name": "Beeblebrox",
+            "display_name": "Beeblebrox",
+            "team": "T4G9NBD2M",
+            "name": "arch4672",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1646040143.432099",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "ZbrC",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Thanks Liam - the only issue for me is that the cricket stream is only currently available for premium customers.  Hopefully they'll expand it to plebs like me at some point "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "joy",
+                                "unicode": "1f602"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U034TBZ5H6F",
+        "type": "message",
+        "ts": "1646049126.915409",
+        "client_msg_id": "99b99aab-a952-4b9e-a8ba-eb72dfa7c42d",
+        "text": "Hi all :wave:, i am new to the channel. I am going to try create a  tennis trading bot as i already trade it daily but would like to try automate certain scenarios. I have a delayed API key but from reading around it doesn’t feel like it would allow me to get an accurate picture and also i would like to stream some data for backtest purposes but the betfair free files don’t seem to have what i would like either. What is the best place way to get the live key activated?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "22449732efe3",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2022-02-26\/3163398650530_22449732efe359b352bc_72.png",
+            "first_name": "Tony",
+            "real_name": "Tony",
+            "display_name": "Tony",
+            "team": "T4G9NBD2M",
+            "name": "tonysound101",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1646049126.915409",
+        "reply_count": 2,
+        "reply_users_count": 2,
+        "latest_reply": "1646049710.370299",
+        "reply_users": [
+            "UBS7QANF3",
+            "U034TBZ5H6F"
+        ],
+        "replies": [
+            {
+                "user": "UBS7QANF3",
+                "ts": "1646049274.986979"
+            },
+            {
+                "user": "U034TBZ5H6F",
+                "ts": "1646049710.370299"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": true,
+        "last_read": "1646049710.370299",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Tv77",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Hi all "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "wave",
+                                "unicode": "1f44b"
+                            },
+                            {
+                                "type": "text",
+                                "text": ", i am new to the channel. I am going to try create a  tennis trading bot as i already trade it daily but would like to try automate certain scenarios. I have a delayed API key but from reading around it doesn’t feel like it would allow me to get an accurate picture and also i would like to stream some data for backtest purposes but the betfair free files don’t seem to have what i would like either. What is the best place way to get the live key activated?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1646049274.986979",
+        "client_msg_id": "22DDF810-D44D-4A47-A6AD-11E458C181A7",
+        "text": "<@U4H19D1D2> can get it activated for you ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1646049126.915409",
+        "parent_user_id": "U034TBZ5H6F",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "lWN8v",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "user",
+                                "user_id": "U4H19D1D2"
+                            },
+                            {
+                                "type": "text",
+                                "text": " can get it activated for you "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U034TBZ5H6F",
+        "type": "message",
+        "ts": "1646049710.370299",
+        "client_msg_id": "72c10608-62a0-4243-8d02-166ed1a40328",
+        "text": "thanks Mo",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "22449732efe3",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2022-02-26\/3163398650530_22449732efe359b352bc_72.png",
+            "first_name": "Tony",
+            "real_name": "Tony",
+            "display_name": "Tony",
+            "team": "T4G9NBD2M",
+            "name": "tonysound101",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1646049126.915409",
+        "parent_user_id": "U034TBZ5H6F",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "cJu",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "thanks Mo"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U010GM77S4W",
+        "type": "message",
+        "ts": "1646060405.058529",
+        "client_msg_id": "7c212329-23c4-4b32-ab63-2933f4f7c578",
+        "text": "Awesome! How are the recordings of RaceDataStream named? For example one from today is `<tel:312669081425|31266908.1425>` , what is 31266908 from?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "66cae8f5399c",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-03-20\/1004508356769_66cae8f5399cf91a07ae_72.jpg",
+            "first_name": "",
+            "real_name": "mandelbot",
+            "display_name": "mandelbot",
+            "team": "T4G9NBD2M",
+            "name": "demhadbale",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1646040143.432099",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "sVEK",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Awesome! How are the recordings of RaceDataStream named? For example one from today is "
+                            },
+                            {
+                                "type": "link",
+                                "url": "tel:312669081425",
+                                "text": "31266908.1425",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " , what is 31266908 from?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1646061010.566469",
+        "edited": {
+            "user": "U4H19D1D2",
+            "ts": "1646061045.000000"
+        },
+        "client_msg_id": "60271a4d-054c-4121-822a-600a05b4f1b2",
+        "text": "Try changing the `MARKET_ID_LOOKUP` to `mid` as `id` is the TPD id, I missed this from the docs",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1646040143.432099",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "7lT0",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Try changing the "
+                            },
+                            {
+                                "type": "text",
+                                "text": "MARKET_ID_LOOKUP",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " to "
+                            },
+                            {
+                                "type": "text",
+                                "text": "mid",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " as "
+                            },
+                            {
+                                "type": "text",
+                                "text": "id",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " is the TPD id, I missed this from the docs"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "U010GM77S4W"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "U010GM77S4W",
+        "type": "message",
+        "ts": "1646062516.556119",
+        "client_msg_id": "b9c6790b-3d60-4acc-8b88-f7dbdd467eb6",
+        "text": "seems to do the trick",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "66cae8f5399c",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-03-20\/1004508356769_66cae8f5399cf91a07ae_72.jpg",
+            "first_name": "",
+            "real_name": "mandelbot",
+            "display_name": "mandelbot",
+            "team": "T4G9NBD2M",
+            "name": "demhadbale",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1646040143.432099",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "=58Uj",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "seems to do the trick"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U010GM77S4W",
+        "type": "message",
+        "ts": "1646075984.554299",
+        "edited": {
+            "user": "U010GM77S4W",
+            "ts": "1646076012.000000"
+        },
+        "client_msg_id": "393a4d70-c180-4041-8b64-549649e3f5b0",
+        "text": "Do you have to jump through any hoops to get onto the betdaq api? Do many people here use it?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "66cae8f5399c",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-03-20\/1004508356769_66cae8f5399cf91a07ae_72.jpg",
+            "first_name": "",
+            "real_name": "mandelbot",
+            "display_name": "mandelbot",
+            "team": "T4G9NBD2M",
+            "name": "demhadbale",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1646075984.554299",
+        "reply_count": 6,
+        "reply_users_count": 3,
+        "latest_reply": "1646122986.859839",
+        "reply_users": [
+            "U4H19D1D2",
+            "UPMUFSGCR",
+            "U010GM77S4W"
+        ],
+        "replies": [
+            {
+                "user": "U4H19D1D2",
+                "ts": "1646079412.114249"
+            },
+            {
+                "user": "UPMUFSGCR",
+                "ts": "1646085125.938539"
+            },
+            {
+                "user": "U010GM77S4W",
+                "ts": "1646116481.535929"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1646122281.861149"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1646122402.305579"
+            },
+            {
+                "user": "UPMUFSGCR",
+                "ts": "1646122986.859839"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": true,
+        "last_read": "1646122986.859839",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "I1S",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Do you have to jump through any hoops to get onto the betdaq api? Do many people here use it?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1646079412.114249",
+        "client_msg_id": "4323E4B9-76E4-4523-A073-4E3E19EDC88B",
+        "text": "From memory you have to apply and tell them what you plan on doing \/ turnover but once in they are keen to help, well they where for me up until I got banned from XSP",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1646075984.554299",
+        "parent_user_id": "U010GM77S4W",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "oeV",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "From memory you have to apply and tell them what you plan on doing \/ turnover but once in they are keen to help, well they where for me up until I got banned from XSP"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UPMUFSGCR",
+        "type": "message",
+        "ts": "1646085125.938539",
+        "client_msg_id": "29eb545a-3db2-4ead-9086-0cd067206232",
+        "text": "I think you need £200 in your account. Otherwise it wasn't hard for me to get access. But they didn't like my strategy of placing orders far away from the current market, so I didn't get anywhere with it.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "31c0bb5a442c",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2019-10-28\/812386967189_31c0bb5a442c5b8d2c61_72.png",
+            "first_name": "Jon",
+            "real_name": "Jon Jon Jon Jon Jon Jon Jon Jon",
+            "display_name": "Jonjonjon",
+            "team": "T4G9NBD2M",
+            "name": "fcmisc",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1646075984.554299",
+        "parent_user_id": "U010GM77S4W",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "vZ4L",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I think you need £200 in your account. Otherwise it wasn't hard for me to get access. But they didn't like my strategy of placing orders far away from the current market, so I didn't get anywhere with it."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U010GM77S4W",
+        "type": "message",
+        "ts": "1646116481.535929",
+        "client_msg_id": "c75f2faa-650a-4742-badc-6d05965a1112",
+        "text": "<@UPMUFSGCR> Did they ban you? <@U4H19D1D2> were you being cheeky with it?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "66cae8f5399c",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-03-20\/1004508356769_66cae8f5399cf91a07ae_72.jpg",
+            "first_name": "",
+            "real_name": "mandelbot",
+            "display_name": "mandelbot",
+            "team": "T4G9NBD2M",
+            "name": "demhadbale",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1646075984.554299",
+        "parent_user_id": "U010GM77S4W",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "ed3",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "user",
+                                "user_id": "UPMUFSGCR"
+                            },
+                            {
+                                "type": "text",
+                                "text": " Did they ban you? "
+                            },
+                            {
+                                "type": "user",
+                                "user_id": "U4H19D1D2"
+                            },
+                            {
+                                "type": "text",
+                                "text": " were you being cheeky with it?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

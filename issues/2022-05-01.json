@@ -1,0 +1,357 @@
+[
+    {
+        "user": "UG03WDCHH",
+        "type": "message",
+        "ts": "1651466411.216999",
+        "client_msg_id": "702807b2-419b-49b5-872a-ac61dcb00dbd",
+        "text": "Hey, wondering if someone can help me debug, I am following the `QuickStart` in the Flumine docs, but not having much luck...details in :thread:",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g03ce37265ba",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/803ce37265ba7d4f1be4d779100eaa60.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0023-72.png",
+            "first_name": "Rudeger",
+            "real_name": "Rudeger Jamison",
+            "display_name": "Rudeger Jamison",
+            "team": "T4G9NBD2M",
+            "name": "ben.k.muller",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1651466411.216999",
+        "reply_count": 16,
+        "reply_users_count": 2,
+        "latest_reply": "1651608514.133529",
+        "reply_users": [
+            "UG03WDCHH",
+            "U4H19D1D2"
+        ],
+        "replies": [
+            {
+                "user": "UG03WDCHH",
+                "ts": "1651466486.939459"
+            },
+            {
+                "user": "UG03WDCHH",
+                "ts": "1651466497.817069"
+            },
+            {
+                "user": "UG03WDCHH",
+                "ts": "1651467347.224549"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1651470078.659049"
+            },
+            {
+                "user": "UG03WDCHH",
+                "ts": "1651534529.420239"
+            },
+            {
+                "user": "UG03WDCHH",
+                "ts": "1651534531.103249"
+            },
+            {
+                "user": "UG03WDCHH",
+                "ts": "1651534635.931579"
+            },
+            {
+                "user": "UG03WDCHH",
+                "ts": "1651534875.061129"
+            },
+            {
+                "user": "UG03WDCHH",
+                "ts": "1651535015.449529"
+            },
+            {
+                "user": "UG03WDCHH",
+                "ts": "1651535031.487769"
+            },
+            {
+                "user": "UG03WDCHH",
+                "ts": "1651555971.440469"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1651556018.041109"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1651556039.740679"
+            },
+            {
+                "user": "UG03WDCHH",
+                "ts": "1651556153.846219"
+            },
+            {
+                "user": "UG03WDCHH",
+                "ts": "1651572468.781519"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1651608514.133529"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": true,
+        "last_read": "1651608514.133529",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "AzA",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Hey, wondering if someone can help me debug, I am following the "
+                            },
+                            {
+                                "type": "text",
+                                "text": "QuickStart",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " in the Flumine docs, but not having much luck...details in "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "thread",
+                                "unicode": "1f9f5"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UG03WDCHH",
+        "type": "message",
+        "ts": "1651466486.939459",
+        "client_msg_id": "68266faf-7184-4feb-886d-46d2a0d181c1",
+        "text": "```from flumine import Flumine, clients\nfrom flumine import BaseStrategy\nfrom betfairlightweight.filters import (\n    streaming_market_filter, \n    streaming_market_data_filter,\n)\ntrading = betfairlightweight.APIClient(\n    username=Ssm.get_secret(f\"\/betfair\/username\/{account}\"),\n    password=Ssm.get_secret(f\"\/betfair\/password\/{account}\"),\n    app_key=Ssm.get_secret(f\"\/betfair\/app_key\/{account}\"),\n    # lightweight=True,\n)\n\nclient = clients.BetfairClient(trading)\n\nframework = Flumine(\n    client=client,\n)\n\nclass ExampleStrategy(BaseStrategy):\n    def start(self):\n        # subscribe to streams\n        print(\"starting strategy 'ExampleStrategy'\")\n\n    def check_market_book(self, market, market_book):\n        print(\"checking market book\")\n        # process_market_book only executed if this returns True\n        if market_book.status != \"CLOSED\":\n            return True\n\n    def process_market_book(self, market, market_book):\n        # process marketBook object\n        print(market_book.status)\n\n\n\nstrategy = ExampleStrategy(\n    market_filter=streaming_market_filter(\n        event_type_ids=[\"7\"],\n        country_codes=[\"AU\"],\n        market_types=[\"WIN\"],\n        # race_types=[\"Flat\"]\n        \n    ),\n    market_data_filter=streaming_market_data_filter(fields=[\"EX_ALL_OFFERS\"], ladder_levels=3)\n)\n\nframework.add_strategy(strategy)\n\nframework.run()```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g03ce37265ba",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/803ce37265ba7d4f1be4d779100eaa60.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0023-72.png",
+            "first_name": "Rudeger",
+            "real_name": "Rudeger Jamison",
+            "display_name": "Rudeger Jamison",
+            "team": "T4G9NBD2M",
+            "name": "ben.k.muller",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1651466411.216999",
+        "parent_user_id": "UG03WDCHH",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "ypwZE",
+                "elements": [
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "from flumine import Flumine, clients\nfrom flumine import BaseStrategy\nfrom betfairlightweight.filters import (\n    streaming_market_filter, \n    streaming_market_data_filter,\n)\ntrading = betfairlightweight.APIClient(\n    username=Ssm.get_secret(f\"\/betfair\/username\/{account}\"),\n    password=Ssm.get_secret(f\"\/betfair\/password\/{account}\"),\n    app_key=Ssm.get_secret(f\"\/betfair\/app_key\/{account}\"),\n    # lightweight=True,\n)\n\nclient = clients.BetfairClient(trading)\n\nframework = Flumine(\n    client=client,\n)\n\nclass ExampleStrategy(BaseStrategy):\n    def start(self):\n        # subscribe to streams\n        print(\"starting strategy 'ExampleStrategy'\")\n\n    def check_market_book(self, market, market_book):\n        print(\"checking market book\")\n        # process_market_book only executed if this returns True\n        if market_book.status != \"CLOSED\":\n            return True\n\n    def process_market_book(self, market, market_book):\n        # process marketBook object\n        print(market_book.status)\n\n\n\nstrategy = ExampleStrategy(\n    market_filter=streaming_market_filter(\n        event_type_ids=[\"7\"],\n        country_codes=[\"AU\"],\n        market_types=[\"WIN\"],\n        # race_types=[\"Flat\"]\n        \n    ),\n    market_data_filter=streaming_market_data_filter(fields=[\"EX_ALL_OFFERS\"], ladder_levels=3)\n)\n\nframework.add_strategy(strategy)\n\nframework.run()"
+                            }
+                        ],
+                        "border": 0
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UG03WDCHH",
+        "type": "message",
+        "ts": "1651466497.817069",
+        "edited": {
+            "user": "UG03WDCHH",
+            "ts": "1651466534.000000"
+        },
+        "client_msg_id": "019d9f72-7d92-4da0-bb3b-e4b194d2fe34",
+        "text": "*Then all I see printed is `starting strategy 'ExampleStrategy'` and it seems I am in an infinite loop.... not sure where to go from here!?*",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g03ce37265ba",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/803ce37265ba7d4f1be4d779100eaa60.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0023-72.png",
+            "first_name": "Rudeger",
+            "real_name": "Rudeger Jamison",
+            "display_name": "Rudeger Jamison",
+            "team": "T4G9NBD2M",
+            "name": "ben.k.muller",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1651466411.216999",
+        "parent_user_id": "UG03WDCHH",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "JlTE",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Then all I see printed is ",
+                                "style": {
+                                    "bold": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "starting strategy 'ExampleStrategy'",
+                                "style": {
+                                    "bold": true,
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " and it seems I am in an infinite loop.... not sure where to go from here!?",
+                                "style": {
+                                    "bold": true
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UG03WDCHH",
+        "type": "message",
+        "ts": "1651467347.224549",
+        "client_msg_id": "c87a0189-e6aa-4a95-bb06-0991549e5618",
+        "text": "I am obviously expecting to see *`check_market_book` entered at somepoint, but it appears as though it is never entered.*\n\n*I also used the bflw streaming implementation with all the same parameters, and it all seems to work fine* :shrug: ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g03ce37265ba",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/803ce37265ba7d4f1be4d779100eaa60.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0023-72.png",
+            "first_name": "Rudeger",
+            "real_name": "Rudeger Jamison",
+            "display_name": "Rudeger Jamison",
+            "team": "T4G9NBD2M",
+            "name": "ben.k.muller",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1651466411.216999",
+        "parent_user_id": "UG03WDCHH",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "obG",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I am obviously expecting to see "
+                            },
+                            {
+                                "type": "text",
+                                "text": "check_market_book",
+                                "style": {
+                                    "bold": true,
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " entered at somepoint, but it appears as though it is never entered.",
+                                "style": {
+                                    "bold": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "I also used the bflw streaming implementation with all the same parameters, and it all seems to work fine ",
+                                "style": {
+                                    "bold": true
+                                }
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "shrug",
+                                "unicode": "1f937",
+                                "style": {
+                                    "bold": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " ",
+                                "style": {
+                                    "bold": true
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1651470078.659049",
+        "client_msg_id": "09A43C7A-D448-4D11-A587-2566D3416BD1",
+        "text": "Look at the flumine example dir and add some logging to see what it’s doing ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1651466411.216999",
+        "parent_user_id": "UG03WDCHH",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "an4jR",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Look at the flumine example dir and add some logging to see what it’s doing "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

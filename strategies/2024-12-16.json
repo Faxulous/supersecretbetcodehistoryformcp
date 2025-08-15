@@ -1,0 +1,672 @@
+[
+    {
+        "text": "EV Middleware\n\nWhilst I have it open a few flumine users might find this useful, it calculates an ev for each order using a future price (seconds) Allows you to visualise ev against signals and\/or analysis on signals where data sample is small, for example not just relying on profit.\n\n```import logging\nfrom collections import defaultdict\nfrom flumine.markets.middleware import Middleware\n\nlogger = logging.getLogger(__name__)\n\nDEFAULT_SECONDS = 5\n\n\nclass EVMiddleware(Middleware):\n    \"\"\"\n    Store all LPT and calculate ev based on `seconds`\n    since order `execution_complete`\n    \"\"\"\n\n    def __init__(self, seconds=DEFAULT_SECONDS, notes_name=\"ev\", record=True):\n        self.seconds = seconds\n        self.notes_name = notes_name\n        self.record = record\n\n    def add_market(self, market) -&gt; None:\n        market.context[\"ev\"] = defaultdict()\n\n    def __call__(self, market) -&gt; None:\n        if self.record and market.blotter:\n            ev = market.context[\"ev\"]\n            for runner in market.market_book.runners:\n                if runner.selection_id not in ev:\n                    ev[runner.selection_id] = []\n                ev[runner.selection_id].append(\n                    (market.market_book.publish_time, runner.last_price_traded)\n                )\n\n    def remove_market(self, market) -&gt; None:\n        if \"ev\" in market.context:\n            ev = market.context[\"ev\"]\n            for order in market.blotter:\n                ev_data = ev[order.selection_id]\n                price = order.average_price_matched\n                pt = order.date_time_execution_complete\n                if not price or not pt:\n                    continue\n\n                final_price = None\n                for _pt, _price in ev_data:\n                    pt_delta = (_pt - pt).total_seconds()\n                    if pt_delta &gt;= self.seconds:\n                        final_price = _price\n                        break\n                if final_price and order.side == \"BACK\":\n                    order.notes[self.notes_name] = (1 \/ final_price) - (1 \/ price)\n                elif final_price and order.side == \"LAY\":\n                    order.notes[self.notes_name] = (1 \/ price) - (1 \/ final_price)```",
+        "files": [
+            {
+                "id": "F085M8NBM25",
+                "created": 1734337497,
+                "timestamp": 1734337497,
+                "name": "cricket_ev.png",
+                "title": "cricket_ev.png",
+                "mimetype": "image\/png",
+                "filetype": "png",
+                "pretty_type": "PNG",
+                "user": "U4H19D1D2",
+                "user_team": "T4G9NBD2M",
+                "editable": false,
+                "size": 22562,
+                "mode": "hosted",
+                "is_external": false,
+                "external_type": "",
+                "is_public": true,
+                "public_url_shared": false,
+                "display_as_bot": false,
+                "username": "",
+                "url_private": "https:\/\/files.slack.com\/files-pri\/T4G9NBD2M-F085M8NBM25\/cricket_ev.png?t=xoxe-152328387089-8357743338709-8373272928225-dfe8ebcd8ca3d2f633bcafeb95191840",
+                "url_private_download": "https:\/\/files.slack.com\/files-pri\/T4G9NBD2M-F085M8NBM25\/download\/cricket_ev.png?t=xoxe-152328387089-8357743338709-8373272928225-dfe8ebcd8ca3d2f633bcafeb95191840",
+                "media_display_type": "unknown",
+                "thumb_64": "https:\/\/files.slack.com\/files-tmb\/T4G9NBD2M-F085M8NBM25-3b00b07dff\/cricket_ev_64.png?t=xoxe-152328387089-8357743338709-8373272928225-dfe8ebcd8ca3d2f633bcafeb95191840",
+                "thumb_80": "https:\/\/files.slack.com\/files-tmb\/T4G9NBD2M-F085M8NBM25-3b00b07dff\/cricket_ev_80.png?t=xoxe-152328387089-8357743338709-8373272928225-dfe8ebcd8ca3d2f633bcafeb95191840",
+                "thumb_360": "https:\/\/files.slack.com\/files-tmb\/T4G9NBD2M-F085M8NBM25-3b00b07dff\/cricket_ev_360.png?t=xoxe-152328387089-8357743338709-8373272928225-dfe8ebcd8ca3d2f633bcafeb95191840",
+                "thumb_360_w": 360,
+                "thumb_360_h": 174,
+                "thumb_480": "https:\/\/files.slack.com\/files-tmb\/T4G9NBD2M-F085M8NBM25-3b00b07dff\/cricket_ev_480.png?t=xoxe-152328387089-8357743338709-8373272928225-dfe8ebcd8ca3d2f633bcafeb95191840",
+                "thumb_480_w": 480,
+                "thumb_480_h": 232,
+                "thumb_160": "https:\/\/files.slack.com\/files-tmb\/T4G9NBD2M-F085M8NBM25-3b00b07dff\/cricket_ev_160.png?t=xoxe-152328387089-8357743338709-8373272928225-dfe8ebcd8ca3d2f633bcafeb95191840",
+                "original_w": 706,
+                "original_h": 341,
+                "thumb_tiny": "AwAXADDRNJSnrSUwCiiigAzQOtFHegB2KTbTqKQDdv4UBT1zTqB0FADdtG05p1FAH\/\/Z",
+                "permalink": "https:\/\/betcode-org.slack.com\/files\/U4H19D1D2\/F085M8NBM25\/cricket_ev.png",
+                "permalink_public": "https:\/\/slack-files.com\/T4G9NBD2M-F085M8NBM25-2a42b1279d",
+                "is_starred": false,
+                "has_rich_preview": false,
+                "file_access": "visible"
+            }
+        ],
+        "upload": false,
+        "user": "U4H19D1D2",
+        "display_as_bot": false,
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "NxPT8",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "EV Middleware\n\nWhilst I have it open a few flumine users might find this useful, it calculates an ev for each order using a future price (seconds) Allows you to visualise ev against signals and\/or analysis on signals where data sample is small, for example not just relying on profit.\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "import logging\nfrom collections import defaultdict\nfrom flumine.markets.middleware import Middleware\n\nlogger = logging.getLogger(__name__)\n\nDEFAULT_SECONDS = 5\n\n\nclass EVMiddleware(Middleware):\n    \"\"\"\n    Store all LPT and calculate ev based on `seconds`\n    since order `execution_complete`\n    \"\"\"\n\n    def __init__(self, seconds=DEFAULT_SECONDS, notes_name=\"ev\", record=True):\n        self.seconds = seconds\n        self.notes_name = notes_name\n        self.record = record\n\n    def add_market(self, market) -> None:\n        market.context[\"ev\"] = defaultdict()\n\n    def __call__(self, market) -> None:\n        if self.record and market.blotter:\n            ev = market.context[\"ev\"]\n            for runner in market.market_book.runners:\n                if runner.selection_id not in ev:\n                    ev[runner.selection_id] = []\n                ev[runner.selection_id].append(\n                    (market.market_book.publish_time, runner.last_price_traded)\n                )\n\n    def remove_market(self, market) -> None:\n        if \"ev\" in market.context:\n            ev = market.context[\"ev\"]\n            for order in market.blotter:\n                ev_data = ev[order.selection_id]\n                price = order.average_price_matched\n                pt = order.date_time_execution_complete\n                if not price or not pt:\n                    continue\n\n                final_price = None\n                for _pt, _price in ev_data:\n                    pt_delta = (_pt - pt).total_seconds()\n                    if pt_delta >= self.seconds:\n                        final_price = _price\n                        break\n                if final_price and order.side == \"BACK\":\n                    order.notes[self.notes_name] = (1 \/ final_price) - (1 \/ price)\n                elif final_price and order.side == \"LAY\":\n                    order.notes[self.notes_name] = (1 \/ price) - (1 \/ final_price)"
+                            }
+                        ],
+                        "border": 0
+                    }
+                ]
+            }
+        ],
+        "type": "message",
+        "ts": "1734337511.103059",
+        "client_msg_id": "10ec44ef-b50d-4b8e-a623-2c5b471cfd3b",
+        "thread_ts": "1734337511.103059",
+        "reply_count": 10,
+        "reply_users_count": 5,
+        "latest_reply": "1734675529.945889",
+        "reply_users": [
+            "U01DCR5PXDY",
+            "U4H19D1D2",
+            "U0128E7BEHW",
+            "U016TGY3676",
+            "U07M5JNP0HZ"
+        ],
+        "replies": [
+            {
+                "user": "U01DCR5PXDY",
+                "ts": "1734372268.217139"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1734377900.097089"
+            },
+            {
+                "user": "U0128E7BEHW",
+                "ts": "1734474816.750539"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1734506209.498869"
+            },
+            {
+                "user": "U016TGY3676",
+                "ts": "1734549616.324219"
+            },
+            {
+                "user": "U07M5JNP0HZ",
+                "ts": "1734629014.531669"
+            },
+            {
+                "user": "U07M5JNP0HZ",
+                "ts": "1734631009.462799"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1734631595.986989"
+            },
+            {
+                "user": "U07M5JNP0HZ",
+                "ts": "1734674574.361289"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1734675529.945889"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": true,
+        "last_read": "1734675529.945889",
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "UQL0QDEKA",
+                    "U80AMMRKP",
+                    "U0128E7BEHW"
+                ],
+                "count": 3
+            },
+            {
+                "name": "raised_hands",
+                "users": [
+                    "U05C31YKZ1C",
+                    "U03MB25MTK7",
+                    "U01FJN59B52"
+                ],
+                "count": 3
+            },
+            {
+                "name": "clap",
+                "users": [
+                    "U02RN7YDRQ9",
+                    "U07M5JNP0HZ"
+                ],
+                "count": 2
+            },
+            {
+                "name": "rocket",
+                "users": [
+                    "U016TGY3676"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "U01DCR5PXDY",
+        "type": "message",
+        "ts": "1734372268.217139",
+        "client_msg_id": "0027b054-2849-4720-92c9-1ae1c4d432bb",
+        "text": "Just implemented a monitoring graph tracking the current expected value of all open bets based on LPT. I've been worried in the past that upon launching a new binary, there might be a bug which makes a ton of really bad trades, and it would be impossible to identify till many hours later and those bets settle. I tried monitoring the expected value using mid price, but many markets I trade are fairly low liquidity. LPT was the perfect solution, thanks for the inspiration Liam!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "903bc20cd9db",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-10-26\/1448127317798_903bc20cd9dba9a758e0_72.png",
+            "first_name": "thambie1",
+            "real_name": "thambie1",
+            "display_name": "thambie1",
+            "team": "T4G9NBD2M",
+            "name": "thambie1",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1734337511.103059",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Oc0nf",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Just implemented a monitoring graph tracking the current expected value of all open bets based on LPT. I've been worried in the past that upon launching a new binary, there might be a bug which makes a ton of really bad trades, and it would be impossible to identify till many hours later and those bets settle. I tried monitoring the expected value using mid price, but many markets I trade are fairly low liquidity. LPT was the perfect solution, thanks for the inspiration Liam!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "rocket",
+                "users": [
+                    "U4H19D1D2"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "U80AMMRKP",
+        "type": "message",
+        "ts": "1734372282.387579",
+        "client_msg_id": "9019a659-0841-4e81-87cf-75b5a77131e2",
+        "text": "Semi related but anyway to insert settled orders into historical prices \/ backtesting?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g09081be09e4",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/709081be09e4187898ec0e3540c4bb49.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0004-72.png",
+            "first_name": "J",
+            "real_name": "J",
+            "display_name": "Gooat",
+            "team": "T4G9NBD2M",
+            "name": "maunders.abie",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1734372282.387579",
+        "reply_count": 8,
+        "reply_users_count": 2,
+        "latest_reply": "1734381576.582879",
+        "reply_users": [
+            "U4H19D1D2",
+            "U80AMMRKP"
+        ],
+        "replies": [
+            {
+                "user": "U4H19D1D2",
+                "ts": "1734377836.061919"
+            },
+            {
+                "user": "U80AMMRKP",
+                "ts": "1734378856.376399"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1734379157.871009"
+            },
+            {
+                "user": "U80AMMRKP",
+                "ts": "1734380968.919669"
+            },
+            {
+                "user": "U80AMMRKP",
+                "ts": "1734381032.449499"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1734381109.323669"
+            },
+            {
+                "user": "U80AMMRKP",
+                "ts": "1734381389.311799"
+            },
+            {
+                "user": "U80AMMRKP",
+                "ts": "1734381576.582879"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": true,
+        "last_read": "1734385484.933876",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "rvEXX",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Semi related but anyway to insert settled orders into historical prices \/ backtesting?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1734377836.061919",
+        "client_msg_id": "4EAB5A71-AA37-465D-A268-AF05C4BFD6A7",
+        "text": "Huh?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1734372282.387579",
+        "parent_user_id": "U80AMMRKP",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "dpRLd",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Huh?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1734377900.097089",
+        "client_msg_id": "7304258F-98B1-4ADA-9771-D47F7FD3AB0D",
+        "text": "Yeah I have used mid price before but LPT always seems to be the most accurate ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1734337511.103059",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "DcV3+",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Yeah I have used mid price before but LPT always seems to be the most accurate "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U80AMMRKP",
+        "type": "message",
+        "ts": "1734378856.376399",
+        "client_msg_id": "27ca8ce0-88f4-46a4-897e-275a6b50d92e",
+        "text": "I've got old markets where I have prices and my orders but can't recreate the strategy part.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g09081be09e4",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/709081be09e4187898ec0e3540c4bb49.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0004-72.png",
+            "first_name": "J",
+            "real_name": "J",
+            "display_name": "Gooat",
+            "team": "T4G9NBD2M",
+            "name": "maunders.abie",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1734372282.387579",
+        "parent_user_id": "U80AMMRKP",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "HW2Ue",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I've got old markets where I have prices and my orders but can't recreate the strategy part."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1734379157.871009",
+        "client_msg_id": "492932E1-E6DD-48DE-8449-4E4AB100FDA3",
+        "text": "Still don’t understand the question ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1734372282.387579",
+        "parent_user_id": "U80AMMRKP",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "sLK0s",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Still "
+                            },
+                            {
+                                "type": "text",
+                                "text": "don’t"
+                            },
+                            {
+                                "type": "text",
+                                "text": " understand the question "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U80AMMRKP",
+        "type": "message",
+        "ts": "1734380968.919669",
+        "client_msg_id": "aaad7206-b586-4b5f-bedc-5b46c7fad512",
+        "text": "What would my ev graph look like from 2018 v 2024? \n\nThen how would I create that from the data I have.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g09081be09e4",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/709081be09e4187898ec0e3540c4bb49.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0004-72.png",
+            "first_name": "J",
+            "real_name": "J",
+            "display_name": "Gooat",
+            "team": "T4G9NBD2M",
+            "name": "maunders.abie",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1734372282.387579",
+        "parent_user_id": "U80AMMRKP",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "V+efF",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "What would my ev graph look like from 2018 v 2024? \n\nThen how would I create that from the data I have."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U80AMMRKP",
+        "type": "message",
+        "ts": "1734381032.449499",
+        "client_msg_id": "7b95e763-2f90-4f6a-bc48-2eb5a8a55136",
+        "text": "Broadly speaking could a middleware solution insert the bets into a market and create the trade objects? Or should I jump to Pandas?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g09081be09e4",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/709081be09e4187898ec0e3540c4bb49.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0004-72.png",
+            "first_name": "J",
+            "real_name": "J",
+            "display_name": "Gooat",
+            "team": "T4G9NBD2M",
+            "name": "maunders.abie",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1734372282.387579",
+        "parent_user_id": "U80AMMRKP",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "PwvXQ",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Broadly speaking could a middleware solution insert the bets into a market and create the trade objects? Or should I jump to Pandas?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1734381109.323669",
+        "client_msg_id": "ADEFA3DC-BF7B-455A-935F-80E51F56616A",
+        "text": "Right, you have the order placed date time right? I would have thought just processing the files through bflw and logging the price x seconds after would be the quickest \/ easiest way of doing this ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1734372282.387579",
+        "parent_user_id": "U80AMMRKP",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "X7OMT",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Right, you have the order placed date time right? I would have thought just processing the files through bflw and logging the price x seconds after would be the quickest \/ easiest way of doing this "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U80AMMRKP",
+        "type": "message",
+        "ts": "1734381389.311799",
+        "client_msg_id": "f821ce9f-de87-4c99-98d4-35582452faf6",
+        "text": "Cheers, I'll start with the clear question next time.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g09081be09e4",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/709081be09e4187898ec0e3540c4bb49.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0004-72.png",
+            "first_name": "J",
+            "real_name": "J",
+            "display_name": "Gooat",
+            "team": "T4G9NBD2M",
+            "name": "maunders.abie",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1734372282.387579",
+        "parent_user_id": "U80AMMRKP",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "QocOf",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Cheers, I'll start with the clear question next time."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U80AMMRKP",
+        "type": "message",
+        "ts": "1734381576.582879",
+        "client_msg_id": "9eafe856-8cb4-48ce-8113-bb68a82f9998",
+        "text": "I want an excuse to start testing a dataframe store, this might actually push me to do it.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g09081be09e4",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/709081be09e4187898ec0e3540c4bb49.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0004-72.png",
+            "first_name": "J",
+            "real_name": "J",
+            "display_name": "Gooat",
+            "team": "T4G9NBD2M",
+            "name": "maunders.abie",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1734372282.387579",
+        "parent_user_id": "U80AMMRKP",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "iR2Fs",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I want an excuse to start testing a dataframe store, this might actually push me to do it."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

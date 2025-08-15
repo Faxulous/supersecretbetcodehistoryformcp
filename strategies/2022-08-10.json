@@ -1,0 +1,455 @@
+[
+    {
+        "user": "UCQB6S222",
+        "type": "message",
+        "ts": "1660120523.408109",
+        "client_msg_id": "4c811a7a-bcd2-41df-91a5-955f1d319efa",
+        "text": "If I want to simulate an inplay strategy for Place markets, with TPD data, how should I set that up? The TPD files are named (by default) with the Market ID of the win-market, so it won't work without making some kind of intervention in the Flumine code itself, I think.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g953ffd5e3b7",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/5813be539113b05ece8212c2a06d006a.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "George",
+            "real_name": "George",
+            "display_name": "George",
+            "team": "T4G9NBD2M",
+            "name": "gd",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "EeKV=",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "If I want to simulate an inplay strategy for Place markets, with TPD data, how should I set that up? The TPD files are named (by default) with the Market ID of the win-market, so it won't work without making some kind of intervention in the Flumine code itself, I think."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01C12ZEADQ",
+        "type": "message",
+        "ts": "1660120803.247279",
+        "client_msg_id": "d28e9955-64c5-4e42-b422-de94869d3278",
+        "text": "you have event id and market type, can't you just use those to match? i assume you use some form of middleware to inject TPD data, so for backtesting you can precompute the mapping. Then you can think of the book-keeping for live management later",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "e3b7687b0ef8",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-10-06\/1432945617648_e3b7687b0ef86e4f28b8_72.png",
+            "first_name": "Alessio",
+            "real_name": "Alessio",
+            "display_name": "Alessio",
+            "team": "T4G9NBD2M",
+            "name": "alessio",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "=6k",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "you have event id and market type, can't you just use those to match? i assume you use some form of middleware to inject TPD data, so for backtesting you can precompute the mapping. Then you can think of the book-keeping for live management later"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1660121235.934589",
+        "client_msg_id": "8612e1fd-b774-4eed-b199-0775fc122a82",
+        "text": "Yeah you need to provide your middleware with a lookup:\n\n```    def add_market(self, market) -&gt; None:\n        # create sports data generator\n        win_market_id = self.lookup[market.market_id]\n        file_path = os.path.join(self.directory, win_market_id)\n        self._gen = self._create_generator(file_path, self.operation, 123)()\n        self._next = next(self._gen)```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "ja1F",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Yeah you need to provide your middleware with a lookup:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "    def add_market(self, market) -> None:\n        # create sports data generator\n        win_market_id = self.lookup[market.market_id]\n        file_path = os.path.join(self.directory, win_market_id)\n        self._gen = self._create_generator(file_path, self.operation, 123)()\n        self._next = next(self._gen)"
+                            }
+                        ],
+                        "border": 0
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UCQB6S222",
+        "type": "message",
+        "ts": "1660121273.800459",
+        "client_msg_id": "6b7de9a1-848f-49ec-a222-1ceade397608",
+        "text": "Got it, thanks both. Makes sense.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g953ffd5e3b7",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/5813be539113b05ece8212c2a06d006a.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "George",
+            "real_name": "George",
+            "display_name": "George",
+            "team": "T4G9NBD2M",
+            "name": "gd",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "LN4",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Got it, thanks both. Makes sense."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UCQB6S222",
+        "type": "message",
+        "ts": "1660124113.217179",
+        "edited": {
+            "user": "UCQB6S222",
+            "ts": "1660124119.000000"
+        },
+        "client_msg_id": "486dacf7-f4cb-4bae-b616-48bb8a3bc568",
+        "text": "Actually, I think it's slightly more complicated than what you say <@U01C12ZEADQ> because an event ID seems to represent an entire day's racing at a particular racecourse. But I guess you can use the race start time to differentiate.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g953ffd5e3b7",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/5813be539113b05ece8212c2a06d006a.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "George",
+            "real_name": "George",
+            "display_name": "George",
+            "team": "T4G9NBD2M",
+            "name": "gd",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1660124113.217179",
+        "reply_count": 1,
+        "reply_users_count": 1,
+        "latest_reply": "1660137416.058209",
+        "reply_users": [
+            "U01C12ZEADQ"
+        ],
+        "replies": [
+            {
+                "user": "U01C12ZEADQ",
+                "ts": "1660137416.058209"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": false,
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "oxX",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Actually, I think it's slightly more complicated than what you say "
+                            },
+                            {
+                                "type": "user",
+                                "user_id": "U01C12ZEADQ"
+                            },
+                            {
+                                "type": "text",
+                                "text": " because an event ID seems to represent an entire day's racing at a particular racecourse. But I guess you can use the race start time to differentiate."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UCQB6S222",
+        "type": "message",
+        "ts": "1660128260.711569",
+        "client_msg_id": "512fd878-ac93-4586-93a4-2fec5c280a43",
+        "text": "Sorry <@U4H19D1D2> but it still doesn't work. <https:\/\/github.com\/betcode-org\/flumine\/blob\/master\/flumine\/markets\/middleware.py#L306> says that if the market ID from the update (i.e. the TPD data) does not match the market ID from the market book (i.e. the BF Exchange Place market data) then the update should be ignored",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g953ffd5e3b7",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/5813be539113b05ece8212c2a06d006a.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "George",
+            "real_name": "George",
+            "display_name": "George",
+            "team": "T4G9NBD2M",
+            "name": "gd",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "attachments": [
+            {
+                "id": 1,
+                "footer_icon": "https:\/\/slack.github.com\/static\/img\/favicon-neutral.png",
+                "color": "24292f",
+                "bot_id": "B021ZJYSBMW",
+                "app_unfurl_url": "https:\/\/github.com\/betcode-org\/flumine\/blob\/master\/flumine\/markets\/middleware.py#L306",
+                "is_app_unfurl": true,
+                "app_id": "A01BP7R4KNY",
+                "fallback": "<https:\/\/github.com\/betcode-org\/flumine\/blob\/master\/flumine\/markets\/middleware.py | middleware.py>",
+                "text": "```\n                if update.market_id != market.market_id:\n```",
+                "title": "<https:\/\/github.com\/betcode-org\/flumine\/blob\/master\/flumine\/markets\/middleware.py | middleware.py>",
+                "footer": "<https:\/\/github.com\/betcode-org\/flumine|betcode-org\/flumine>",
+                "mrkdwn_in": [
+                    "text"
+                ]
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "adF=",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Sorry "
+                            },
+                            {
+                                "type": "user",
+                                "user_id": "U4H19D1D2"
+                            },
+                            {
+                                "type": "text",
+                                "text": " but it still doesn't work. "
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/betcode-org\/flumine\/blob\/master\/flumine\/markets\/middleware.py#L306"
+                            },
+                            {
+                                "type": "text",
+                                "text": " says that if the market ID from the update (i.e. the TPD data) does not match the market ID from the market book (i.e. the BF Exchange Place market data) then the update should be ignored"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1660128279.347439",
+        "client_msg_id": "f9e65648-f60b-4785-840a-d1eb76fb18fe",
+        "text": "remove the line then",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "nB5kR",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "remove the line then"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UCQB6S222",
+        "type": "message",
+        "ts": "1660128488.985279",
+        "client_msg_id": "cc87a7e2-2547-4dea-8168-ffb0ab33641c",
+        "text": "Of course, but, now we are getting into the realms of making \"changes\" to Flumine which I'd rather not do. And it feels odd to subclass just to change one line...\nAlso, I expect that line is in there for a good reason, and by removing it without knowing why it's there, I'm going to cause unexpected knock-on effects.\nSurely there is a better way to resolve this?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g953ffd5e3b7",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/5813be539113b05ece8212c2a06d006a.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "George",
+            "real_name": "George",
+            "display_name": "George",
+            "team": "T4G9NBD2M",
+            "name": "gd",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "g9L8",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Of course, but, now we are getting into the realms of making \"changes\" to Flumine which I'd rather not do. And it feels odd to subclass just to change one line...\nAlso, I expect that line is in there for a good reason, and by removing it without knowing why it's there, I'm going to cause unexpected knock-on effects.\nSurely there is a better way to resolve this?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1660128530.174819",
+        "client_msg_id": "ec97baaf-9dca-410b-a82f-a886a4cd0432",
+        "text": "it's middleware, its there to be changed\/modified\/patched",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "U6Z+",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "it's middleware, its there to be changed\/modified\/patched"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01C12ZEADQ",
+        "type": "message",
+        "ts": "1660137416.058209",
+        "client_msg_id": "2b2ae9dd-95ec-4d56-b4cb-10e7da91aee2",
+        "text": "Hah interesting. I don't do horses, so I wasn't aware ;-)",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "e3b7687b0ef8",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-10-06\/1432945617648_e3b7687b0ef86e4f28b8_72.png",
+            "first_name": "Alessio",
+            "real_name": "Alessio",
+            "display_name": "Alessio",
+            "team": "T4G9NBD2M",
+            "name": "alessio",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1660124113.217179",
+        "parent_user_id": "UCQB6S222",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "kg9",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Hah interesting. I don't do horses, so I wasn't aware ;-)"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

@@ -1,0 +1,896 @@
+[
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1621673504.053800",
+        "client_msg_id": "ff79996b-2646-4c57-8e82-a265c29b656e",
+        "text": "Playing around more, its appears the thread itself isn't an issue (i.e. if I start Flumine in a thread that behaves correctly, however if I start Flask it does not).\n\n```from flask_socketio import SocketIO, emit\nfrom flask import Flask, render_template\nimport time\nimport os\nimport threading\nfrom startup import startup\n\nrun_flask = False\n\nif __name__ == '__main__':\n\n    print('Process ID_a' + str(os.getpid()))\n    def f():        \n        import time\n        global snapshot\n        time.sleep(0.1)\n        lock = threading.Lock()\n        with lock:\n            snapshot = {}\n            print('Process ID_b' + str(os.getpid()))\n            ''' Initiates and runs all Flumine Framework elements '''\n            startup()\n\n    t1 = threading.Thread(target=f)\n    t1.start()\n    time.sleep(0.1)\n\n    if run_flask is True:\n        ''' When this runs it causes the problem (i.e. a new process which duplicates the above thread) '''\n        app = Flask(__name__)\n        app.config['SECRET_KEY'] = 'secret!'\n        app.config['DEBUG'] = True\n\n        # turn the flask app into a socketio app\n        socketio = SocketIO(app, async_mode=None, logger=True, engineio_logger=True)\n\n        @app.route('\/')\n        def index():\n            # only by sending this page first will the client be connected to the socketio instance\n            return render_template('index.html')\n\n        @socketio.on('ping')\n        def handle_message(*_args, **_kwargs):\n            print(snapshot)\n            emit('market_update', {'market_update': snapshot})\n\n        @socketio.on('connect')\n        def test_connect():\n            print('Client connected')\n\n        @socketio.on('disconnect')\n        def test_disconnect():\n            print('Client disconnected')\n\n        socketio.run(app, debug=True, port=5678)```\nI haven't figured it out yet, but clearly I need to change this approach somehow, will post if I figure it out (just in case it helps anyone else) and if anyone happens to have any suggestions, please shout (and appreciate the time you spent looking at this <@U4H19D1D2> , apologies if it was a bit of a wild goose chase)!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1621528734.022300",
+        "parent_user_id": "UFTBRB3F1",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "YhR",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Playing around more, its appears the thread itself isn't an issue (i.e. if I start Flumine in a thread that behaves correctly, however if I start Flask it does not).\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "from flask_socketio import SocketIO, emit\nfrom flask import Flask, render_template\nimport time\nimport os\nimport threading\nfrom startup import startup\n\nrun_flask = False\n\nif __name__ == '__main__':\n\n    print('Process ID_a' + str(os.getpid()))\n    def f():        \n        import time\n        global snapshot\n        time.sleep(0.1)\n        lock = threading.Lock()\n        with lock:\n            snapshot = {}\n            print('Process ID_b' + str(os.getpid()))\n            ''' Initiates and runs all Flumine Framework elements '''\n            startup()\n\n    t1 = threading.Thread(target=f)\n    t1.start()\n    time.sleep(0.1)\n\n    if run_flask is True:\n        ''' When this runs it causes the problem (i.e. a new process which duplicates the above thread) '''\n        app = Flask(__name__)\n        app.config['SECRET_KEY'] = 'secret!'\n        app.config['DEBUG'] = True\n\n        # turn the flask app into a socketio app\n        socketio = SocketIO(app, async_mode=None, logger=True, engineio_logger=True)\n\n        @app.route('\/')\n        def index():\n            # only by sending this page first will the client be connected to the socketio instance\n            return render_template('index.html')\n\n        @socketio.on('ping')\n        def handle_message(*_args, **_kwargs):\n            print(snapshot)\n            emit('market_update', {'market_update': snapshot})\n\n        @socketio.on('connect')\n        def test_connect():\n            print('Client connected')\n\n        @socketio.on('disconnect')\n        def test_disconnect():\n            print('Client disconnected')\n\n        socketio.run(app, debug=True, port=5678)"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\nI haven't figured it out yet, but clearly I need to change this approach somehow, will post if I figure it out (just in case it helps anyone else) and if anyone happens to have any suggestions, please shout (and appreciate the time you spent looking at this "
+                            },
+                            {
+                                "type": "user",
+                                "user_id": "U4H19D1D2"
+                            },
+                            {
+                                "type": "text",
+                                "text": " , apologies if it was a bit of a wild goose chase)!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "U4H19D1D2"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1621674105.054100",
+        "client_msg_id": "02e6c1d8-39c3-4bf5-8aad-13cd96337d0f",
+        "text": "Ah I think I may have got it!\n\n```socketio.run(app, debug=False, port=5678)```\nIf debug is set to True apparently that starts a concurrent process, so setting that to False appears to allow it to work correctly (well based on a very quick test anyway)!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1621528734.022300",
+        "parent_user_id": "UFTBRB3F1",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "vnC+",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Ah I think I may have got it!\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "socketio.run(app, debug=False, port=5678)"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\nIf debug is set to True apparently that starts a concurrent process, so setting that to False appears to allow it to work correctly (well based on a very quick test anyway)!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1621704723.059500",
+        "client_msg_id": "7ac1dd39-ca4e-42cf-acd6-d553150b7cbc",
+        "text": "<@U4H19D1D2> this may well be intended behaviour, but it seemed a bit odd.\n\nUsing your middleware example (as opposed to my adjusted one we spoke about previously): <https:\/\/github.com\/liampauling\/flumine\/blob\/5b0d3f24a3e27dc6d50d8de9f154df326d37924e\/examples\/middleware\/orders.py>\n\nLine 63: `order = trade.create_order_from_current(current_order, order_id)`\n\nThis appears to reset the size_matched and size_remaining (presumably as it was never intended to be used for EXECUTION_COMPLETE orders).\n\nSo as an example, this quick test:\n\n```print({'timeline': 'before trade.create_order_from_current', 'bet_id': current_order.bet_id, 'status': current_order.status,\n       'size': current_order.price_size.size, 'size_remaining': current_order.size_remaining, 'size_matched': current_order.size_matched})\norder = trade.create_order_from_current(current_order, order_id)\nprint({'timeline': 'after trade.create_order_from_current', 'bet_id': order.bet_id, 'status': order.status,\n       'size': order.order_type.size, 'size_remaining': order.size_remaining, 'size_matched': order.size_matched})```\nProduces:\n\n```{'timeline': 'before trade.create_order_from_current', 'bet_id': '233585245155', 'status': 'EXECUTION_COMPLETE', 'size': 3.45, 'size_remaining': 0.0, 'size_matched': 3.45}\n{'timeline': 'after trade.create_order_from_current', 'bet_id': '233585245155', 'status': None, 'size': 3.45, 'size_remaining': 3.45, 'size_matched': 0.0}\n{'timeline': 'before trade.create_order_from_current', 'bet_id': '233997105844', 'status': 'EXECUTABLE', 'size': 16.67, 'size_remaining': 16.67, 'size_matched': 0.0}\n{'timeline': 'after trade.create_order_from_current', 'bet_id': '233997105844', 'status': None, 'size': 16.67, 'size_remaining': 16.67, 'size_matched': 0.0}\n{'timeline': 'before trade.create_order_from_current', 'bet_id': '233997105880', 'status': 'EXECUTABLE', 'size': 17.64, 'size_remaining': 17.64, 'size_matched': 0.0}\n{'timeline': 'after trade.create_order_from_current', 'bet_id': '233997105880', 'status': None, 'size': 17.64, 'size_remaining': 17.64, 'size_matched': 0.0}```\nSo whilst for the EXECUTABLE bets it works as expected, for the first one, it presumably sets size_remaining == size, rather than validating against current_order.size_remaining and current_order.size_matched.\n\nObviously there is an easy enough work around, but if middleware is expected to be used for this purpose then could it be worth updating the functionality here (assuming you can replicate and its not just some weird quirk happening only to me of course)?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "attachments": [
+            {
+                "text": "```\nimport logging\nfrom flumine import config\nfrom flumine.utils import STRATEGY_NAME_HASH_LENGTH\nfrom flumine.markets.middleware import Middleware\nfrom flumine.order.trade import Trade\n\nlogger = logging.getLogger(__name__)\n\n\nclass OrdersMiddleware(Middleware):\n    \"\"\"\n    Middleware to add execution complete orders\n    to the blotter. This is required on a restart\n    as the order stream does not include\n    EXECUTION_COMPLETE orders\n    \"\"\"\n\n    def __init__(self, flumine):\n        self.flumine = flumine\n\n    def add_market(self, market) -&gt; None:\n        resp = self.flumine.client.betting_client.betting.list_current_orders(\n            customer_strategy_refs=[config.hostname],\n            order_projection=\"EXECUTION_COMPLETE\",\n        )\n        for current_order in resp.orders:\n            <http:\/\/logger.info|logger.info>(\n                \"OrdersMiddleware: Processing order {0}\".format(current_order.bet_id),\n                extra={\n                    \"bet_id\": current_order.bet_id,\n                    \"market_id\": current_order.market_id,\n                    \"customer_strategy_ref\": current_order.customer_strategy_ref,\n                    \"customer_order_ref\": current_order.customer_order_ref,\n                },\n            )\n            strategy_name_hash = current_order.customer_order_ref[\n                :STRATEGY_NAME_HASH_LENGTH\n            ]\n            order_id = current_order.customer_order_ref[STRATEGY_NAME_HASH_LENGTH + 1 :]\n            # get strategy\n            strategy = self.flumine.strategies.hashes.get(strategy_name_hash)\n            if strategy is None:\n                logger.warning(\n                    \"OrdersMiddleware: Strategy not available to create order {0}\".format(\n                        order_id\n                    ),\n                    extra={\n                        \"bet_id\": current_order.bet_id,\n                        \"market_id\": current_order.market_id,\n                        \"customer_strategy_ref\": current_order.customer_strategy_ref,\n                        \"customer_order_ref\": current_order.customer_order_ref,\n                        \"strategy_name_hash\": strategy_name_hash,\n                    },\n                )\n                continue\n            # add trade\/order\n            trade = Trade(\n                market.market_id,\n                current_order.selection_id,\n                current_order.handicap,\n                strategy,\n            )\n            order = trade.create_order_from_current(current_order, order_id)\n            market.blotter[order.id] = order\n            order.execution_complete()\n            <http:\/\/logger.info|logger.info>(\n                \"OrdersMiddleware: New order trade created\",\n                extra={\n                    \"bet_id\": current_order.bet_id,\n                    \"market_id\": current_order.market_id,\n                    \"customer_strategy_ref\": current_order.customer_strategy_ref,\n                    \"customer_order_ref\": current_order.customer_order_ref,\n                    \"strategy_name\": str(strategy),\n                },\n            )\n\n```",
+                "title": "<https:\/\/github.com\/liampauling\/flumine\/blob\/5b0d3f24a3e27dc6d50d8de9f154df326d37924e\/examples\/middleware\/orders.py | orders.py>",
+                "footer": "<https:\/\/github.com\/liampauling\/flumine|liampauling\/flumine>",
+                "id": 1,
+                "footer_icon": "https:\/\/slack.github.com\/static\/img\/favicon-neutral.png",
+                "color": "24292f",
+                "mrkdwn_in": [
+                    "text"
+                ],
+                "fallback": "<https:\/\/github.com\/liampauling\/flumine\/blob\/5b0d3f24a3e27dc6d50d8de9f154df326d37924e\/examples\/middleware\/orders.py | orders.py>",
+                "bot_id": "B021ZJYSBMW",
+                "app_unfurl_url": "https:\/\/github.com\/liampauling\/flumine\/blob\/5b0d3f24a3e27dc6d50d8de9f154df326d37924e\/examples\/middleware\/orders.py",
+                "is_app_unfurl": true
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "drj",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "user",
+                                "user_id": "U4H19D1D2"
+                            },
+                            {
+                                "type": "text",
+                                "text": " this may well be intended behaviour, but it seemed a bit odd.\n\nUsing your middleware example (as opposed to my adjusted one we spoke about previously): "
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/liampauling\/flumine\/blob\/5b0d3f24a3e27dc6d50d8de9f154df326d37924e\/examples\/middleware\/orders.py"
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n\nLine 63: "
+                            },
+                            {
+                                "type": "text",
+                                "text": "order = trade.create_order_from_current(current_order, order_id)",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n\nThis appears to reset the size_matched and size_remaining (presumably as it was never intended to be used for EXECUTION_COMPLETE orders).\n\nSo as an example, this quick test:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "print({'timeline': 'before trade.create_order_from_current', 'bet_id': current_order.bet_id, 'status': current_order.status,\n       'size': current_order.price_size.size, 'size_remaining': current_order.size_remaining, 'size_matched': current_order.size_matched})\norder = trade.create_order_from_current(current_order, order_id)\nprint({'timeline': 'after trade.create_order_from_current', 'bet_id': order.bet_id, 'status': order.status,\n       'size': order.order_type.size, 'size_remaining': order.size_remaining, 'size_matched': order.size_matched})"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\nProduces:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "{'timeline': 'before trade.create_order_from_current', 'bet_id': '233585245155', 'status': 'EXECUTION_COMPLETE', 'size': 3.45, 'size_remaining': 0.0, 'size_matched': 3.45}\n{'timeline': 'after trade.create_order_from_current', 'bet_id': '233585245155', 'status': None, 'size': 3.45, 'size_remaining': 3.45, 'size_matched': 0.0}\n{'timeline': 'before trade.create_order_from_current', 'bet_id': '233997105844', 'status': 'EXECUTABLE', 'size': 16.67, 'size_remaining': 16.67, 'size_matched': 0.0}\n{'timeline': 'after trade.create_order_from_current', 'bet_id': '233997105844', 'status': None, 'size': 16.67, 'size_remaining': 16.67, 'size_matched': 0.0}\n{'timeline': 'before trade.create_order_from_current', 'bet_id': '233997105880', 'status': 'EXECUTABLE', 'size': 17.64, 'size_remaining': 17.64, 'size_matched': 0.0}\n{'timeline': 'after trade.create_order_from_current', 'bet_id': '233997105880', 'status': None, 'size': 17.64, 'size_remaining': 17.64, 'size_matched': 0.0}"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\nSo whilst for the EXECUTABLE bets it works as expected, for the first one, it presumably sets size_remaining == size, rather than validating against current_order.size_remaining and current_order.size_matched.\n\nObviously there is an easy enough work around, but if middleware is expected to be used for this purpose then could it be worth updating the functionality here (assuming you can replicate and its not just some weird quirk happening only to me of course)?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1621708123.060000",
+        "client_msg_id": "4153e46a-7d2d-4820-8e5e-f7591fcdb4dd",
+        "text": "Actually just adding in this line did the trick: `order.update_current_order(current_order)`",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "gqon",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Actually just adding in this line did the trick: "
+                            },
+                            {
+                                "type": "text",
+                                "text": "order.update_current_order(current_order)",
+                                "style": {
+                                    "code": true
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1621708160.060600",
+        "client_msg_id": "3210e601-b995-47f0-becf-6308de4cbe0f",
+        "text": "(I guess that simulates a response which would occur in real world use so makes sense as we're trying to emulate that here)",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "oKV",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "(I guess that simulates a response which would occur in real world use so makes sense as we're trying to emulate that here)"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1621708278.060700",
+        "client_msg_id": "897CEB77-BC91-49DE-A24F-579816FDB93D",
+        "text": "You have linked to an old version, was that intentional?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "qu6",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "You have linked to an old version, was that intentional?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1621708356.061100",
+        "client_msg_id": "e4c250d5-9c36-4f2d-8934-395edff12562",
+        "text": "no, just had it up! But presumably would be the same with the current one?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "ZnX=9",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "no, just had it up! But presumably would be the same with the current one?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1621708374.061600",
+        "client_msg_id": "5bdcc133-306b-4c27-a437-63a3fe71869f",
+        "text": "as self.responses.current_order never gets populated?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "LSVSP",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "as self.responses.current_order never gets populated?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1621708380.061700",
+        "client_msg_id": "ACABCA22-3842-499C-A441-98AA838A1A05",
+        "text": "Nope check master ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "9CEjA",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Nope check master "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1621708786.062800",
+        "client_msg_id": "efeef596-f510-4935-a0f7-80e8d71ba6c8",
+        "text": "hmm I'm using 1.18.12 rather than 1.18.11b0, could anything have changed between versions (with regards to this specifically)?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Cnm\/x",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "hmm I'm using 1.18.12 rather than 1.18.11b0, could anything have changed between versions (with regards to this specifically)?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1621708974.062900",
+        "client_msg_id": "85BA1053-1AAE-4AF0-9348-1CC930E4129F",
+        "text": "Huh? Examples aren’t included in the versions",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "4TINa",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Huh? Examples aren’t included in the versions"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1621709150.063400",
+        "client_msg_id": "2874e330-48e0-4e82-901d-4d4f20358950",
+        "text": "No sorry, I mean in terms of the <http:\/\/flumine.order.xxx|flumine.order.xxx>",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "A6P",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "No sorry, I mean in terms of the flumine.order.xxx"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1621709200.063600",
+        "client_msg_id": "571c9cd2-2091-48f2-b550-23fc9e3b8a14",
+        "text": "But that aside...",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "dAUO",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "But that aside..."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1621709223.063800",
+        "client_msg_id": "1bc65e3e-20d9-4549-8ecf-4651baef6f74",
+        "text": "ignoring what I actually linked to",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "zdVT",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "ignoring what I actually linked to"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1621709304.065000",
+        "client_msg_id": "ce35c129-18d3-40ab-9cae-21c030a9d7f0",
+        "text": "Line 63, surely the same problem occurs as per my description, i.e. orders.response.current_order never gets populated and so the size_matched remains at 0?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "51q",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Line 63, surely the same problem occurs as per my description, i.e. orders.response.current_order never gets populated and so the size_matched remains at 0?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1621709590.065100",
+        "client_msg_id": "D4F61BD5-B01B-4CDF-BEEC-70F281E77F84",
+        "text": "<https:\/\/github.com\/liampauling\/flumine\/blob\/44ceeed0fa77b9d16dc8034d0935244a65ccc0b2\/examples\/middleware\/orders.py#L38|https:\/\/github.com\/liampauling\/flumine\/blob\/44ceeed0fa77b9d16dc8034d0935244a65ccc0b2\/examples\/middleware\/orders.py#L38>",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "attachments": [
+            {
+                "text": "```\n                order.update_current_order(current_order)\n```",
+                "title": "<https:\/\/github.com\/liampauling\/flumine\/blob\/44ceeed0fa77b9d16dc8034d0935244a65ccc0b2\/examples\/middleware\/orders.py | orders.py>",
+                "footer": "<https:\/\/github.com\/liampauling\/flumine|liampauling\/flumine>",
+                "id": 1,
+                "footer_icon": "https:\/\/slack.github.com\/static\/img\/favicon-neutral.png",
+                "color": "24292f",
+                "mrkdwn_in": [
+                    "text"
+                ],
+                "fallback": "<https:\/\/github.com\/liampauling\/flumine\/blob\/44ceeed0fa77b9d16dc8034d0935244a65ccc0b2\/examples\/middleware\/orders.py | orders.py>",
+                "bot_id": "B021ZJYSBMW",
+                "app_unfurl_url": "https:\/\/github.com\/liampauling\/flumine\/blob\/44ceeed0fa77b9d16dc8034d0935244a65ccc0b2\/examples\/middleware\/orders.py#L38",
+                "is_app_unfurl": true
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "L1R",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/liampauling\/flumine\/blob\/44ceeed0fa77b9d16dc8034d0935244a65ccc0b2\/examples\/middleware\/orders.py#L38",
+                                "text": "https:\/\/github.com\/liampauling\/flumine\/blob\/44ceeed0fa77b9d16dc8034d0935244a65ccc0b2\/examples\/middleware\/orders.py#L38"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1621709646.065700",
+        "client_msg_id": "29ab7ffd-3c4c-4fbe-8881-d894dcfc4d92",
+        "text": "haha ffs, on my screen it genuinely doesn't show that!!! Will delete my cache!!!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "KJbFJ",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "haha ffs, on my screen it genuinely doesn't show that!!! Will delete my cache!!!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1621709659.065900",
+        "client_msg_id": "317dcb58-1050-45a4-8212-2f92fcd60a72",
+        "text": "I must be looking at the old version",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "IfIFD",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I must be looking at the old version"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1621709833.066500",
+        "client_msg_id": "b94e3578-694f-42c3-b2f9-359790ae917f",
+        "text": "all good now, cool okay that obviously works so all good :slightly_smiling_face:",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Ggbh",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "all good now, cool okay that obviously works so all good "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "slightly_smiling_face",
+                                "unicode": "1f642"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "U4H19D1D2"
+                ],
+                "count": 1
+            }
+        ]
+    }
+]

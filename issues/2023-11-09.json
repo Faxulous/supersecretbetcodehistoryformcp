@@ -1,0 +1,803 @@
+[
+    {
+        "user": "U01PJ5YMFBJ",
+        "type": "message",
+        "ts": "1699557872.818899",
+        "client_msg_id": "8d543039-7a1b-45eb-a575-8d9eb248d377",
+        "text": "<@U4H19D1D2> had a bit of an issue with one of my Flumine processes that eventually crashed the VM, thought i'd pass it by you incase it looks familiar. My naive view it looks a bit like a run-away thread\/resource issue..?\n• Flumine 2.4.2 betfairlightweight 2.17.3\nlooking at the \"logs\", the issue looked to start gradually with periodic:\n```High latency between current time and OrderPackage creation time, it is likely that the thread pool is currently exhausted\", \"trading_function\": \"cancel\", \"session\": \"&lt;requests.sessions.Session object at 0x7f70f376bc40&gt;\", \"latency\": 0.381, \"order_package\": {\"id\": \"xxxxx\", \"client\": \"&lt;flumine.clients.betfairclient.BetfairClient object at 0x7f7119b1b6a0&gt;\", \"market_id\": \"1.220926100\", \"orders\": [\"139188221331829894\"], \"order_count\": 1, \"package_type\": \"Cancel\", \"customer_strategy_ref\": \"XXXXX\", \"bet_delay\": 0, \"market_version\": null, \"retry\": true, \"retry_count\": 0, \"async\": false}, \"thread_pool\": {\"num_threads\": 26, \"work_queue_size\": 3}}```\nthen a few mins later got:\n```\"High latency between current time and MarketBook publish time\", \"market_id\": \"1.220920848\", \"latency\": 2.08534836769104, \"pt\": \"2023-11-09T11:37:19.521000\"}```\nthis repeated then \"continuously\" with latency time steadily increasing... message being issued about 50\/second\n```{\"asctime\": \"2023-11-09 11:40:30,227\", \"levelname\": \"WARNING\", \"message\": \"High latency between current time and MarketBook publish time\", \"market_id\": \"1.220926100\", \"latency\": 14.246732711791992, \"pt\": \"2023-11-09T11:40:15.981000\"}```\nthen about 150 warnings\/second\n```{\"asctime\": \"2023-11-09 11:54:22,299\", \"levelname\": \"WARNING\", \"message\": \"High latency between current time and MarketBook publish time\", \"market_id\": \"1.220920734\", \"latency\": 176.0338258743286, \"pt\": \"2023-11-09T11:51:26.266000\"}```\neventually the increasing CPU usage killed the AWS VM which I had to reboot via the console",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g819c7f591cc",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/819c7f591cc888486f19b3f2f49f2011.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0014-72.png",
+            "first_name": "AndyL",
+            "real_name": "AndyL",
+            "display_name": "AndyL",
+            "team": "T4G9NBD2M",
+            "name": "andrew_m_leonard",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1699557872.818899",
+        "reply_count": 52,
+        "reply_users_count": 6,
+        "latest_reply": "1699866238.795239",
+        "reply_users": [
+            "U4H19D1D2",
+            "U01PJ5YMFBJ",
+            "UQL0QDEKA",
+            "UUCD6P13J",
+            "UUE6E1LA1",
+            "UEA14GBRR"
+        ],
+        "replies": [
+            {
+                "user": "U4H19D1D2",
+                "ts": "1699562462.348919"
+            },
+            {
+                "user": "U01PJ5YMFBJ",
+                "ts": "1699562836.217569"
+            },
+            {
+                "user": "U01PJ5YMFBJ",
+                "ts": "1699562896.558369"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1699562949.612399"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1699562969.810409"
+            },
+            {
+                "user": "U01PJ5YMFBJ",
+                "ts": "1699563016.338469"
+            },
+            {
+                "user": "U01PJ5YMFBJ",
+                "ts": "1699563031.626189"
+            },
+            {
+                "user": "U01PJ5YMFBJ",
+                "ts": "1699563087.243419"
+            },
+            {
+                "user": "UQL0QDEKA",
+                "ts": "1699611591.906309"
+            },
+            {
+                "user": "UQL0QDEKA",
+                "ts": "1699620428.309399"
+            },
+            {
+                "user": "U01PJ5YMFBJ",
+                "ts": "1699639611.691809"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1699640052.080079"
+            },
+            {
+                "user": "U01PJ5YMFBJ",
+                "ts": "1699640086.790669"
+            },
+            {
+                "user": "U01PJ5YMFBJ",
+                "ts": "1699640138.812919"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1699640195.288079"
+            },
+            {
+                "user": "U01PJ5YMFBJ",
+                "ts": "1699640222.225999"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1699640503.933359"
+            },
+            {
+                "user": "U01PJ5YMFBJ",
+                "ts": "1699640792.836459"
+            },
+            {
+                "user": "U01PJ5YMFBJ",
+                "ts": "1699640834.420359"
+            },
+            {
+                "user": "U01PJ5YMFBJ",
+                "ts": "1699641526.224049"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1699643105.371279"
+            },
+            {
+                "user": "U01PJ5YMFBJ",
+                "ts": "1699643381.037959"
+            },
+            {
+                "user": "U01PJ5YMFBJ",
+                "ts": "1699643438.450069"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1699643472.455769"
+            },
+            {
+                "user": "U01PJ5YMFBJ",
+                "ts": "1699643503.068769"
+            },
+            {
+                "user": "U01PJ5YMFBJ",
+                "ts": "1699643558.552789"
+            },
+            {
+                "user": "U01PJ5YMFBJ",
+                "ts": "1699643682.996009"
+            },
+            {
+                "user": "U01PJ5YMFBJ",
+                "ts": "1699644517.643349"
+            },
+            {
+                "user": "U01PJ5YMFBJ",
+                "ts": "1699645651.375389"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1699645836.066239"
+            },
+            {
+                "user": "U01PJ5YMFBJ",
+                "ts": "1699645954.593339"
+            },
+            {
+                "user": "U01PJ5YMFBJ",
+                "ts": "1699645989.708269"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1699645995.019549"
+            },
+            {
+                "user": "U01PJ5YMFBJ",
+                "ts": "1699646003.542469"
+            },
+            {
+                "user": "U01PJ5YMFBJ",
+                "ts": "1699652631.429029"
+            },
+            {
+                "user": "U01PJ5YMFBJ",
+                "ts": "1699716893.781279"
+            },
+            {
+                "user": "U01PJ5YMFBJ",
+                "ts": "1699717069.519249"
+            },
+            {
+                "user": "U01PJ5YMFBJ",
+                "ts": "1699718128.105709"
+            },
+            {
+                "user": "UUCD6P13J",
+                "ts": "1699718468.717309"
+            },
+            {
+                "user": "UUE6E1LA1",
+                "ts": "1699718574.999219"
+            },
+            {
+                "user": "U01PJ5YMFBJ",
+                "ts": "1699718634.461029"
+            },
+            {
+                "user": "UUCD6P13J",
+                "ts": "1699718636.482319"
+            },
+            {
+                "user": "UUE6E1LA1",
+                "ts": "1699718655.132639"
+            },
+            {
+                "user": "U01PJ5YMFBJ",
+                "ts": "1699718691.607239"
+            },
+            {
+                "user": "U01PJ5YMFBJ",
+                "ts": "1699718721.026919"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1699719321.642699"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1699719331.290319"
+            },
+            {
+                "user": "U01PJ5YMFBJ",
+                "ts": "1699719485.036709"
+            },
+            {
+                "user": "U01PJ5YMFBJ",
+                "ts": "1699719508.959799"
+            },
+            {
+                "user": "UEA14GBRR",
+                "ts": "1699722426.244499"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1699730331.450089"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1699866238.795239"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": true,
+        "last_read": "1699866238.795239",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "rjGl0",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "user",
+                                "user_id": "U4H19D1D2"
+                            },
+                            {
+                                "type": "text",
+                                "text": " had a bit of an issue with one of my Flumine processes that eventually crashed the VM, thought i'd pass it by you incase it looks familiar. My naive view it looks a bit like a run-away thread\/resource issue..?\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_list",
+                        "elements": [
+                            {
+                                "type": "rich_text_section",
+                                "elements": [
+                                    {
+                                        "type": "text",
+                                        "text": "Flumine 2.4.2 betfairlightweight 2.17.3"
+                                    }
+                                ]
+                            }
+                        ],
+                        "style": "bullet",
+                        "indent": 0,
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "looking at the \"logs\", the issue looked to start gradually with periodic:\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "High latency between current time and OrderPackage creation time, it is likely that the thread pool is currently exhausted\", \"trading_function\": \"cancel\", \"session\": \"<requests.sessions.Session object at 0x7f70f376bc40>\", \"latency\": 0.381, \"order_package\": {\"id\": \"xxxxx\", \"client\": \"<flumine.clients.betfairclient.BetfairClient object at 0x7f7119b1b6a0>\", \"market_id\": \"1.220926100\", \"orders\": [\"139188221331829894\"], \"order_count\": 1, \"package_type\": \"Cancel\", \"customer_strategy_ref\": \"XXXXX\", \"bet_delay\": 0, \"market_version\": null, \"retry\": true, \"retry_count\": 0, \"async\": false}, \"thread_pool\": {\"num_threads\": 26, \"work_queue_size\": 3}}"
+                            }
+                        ],
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "then a few mins later got:\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\"High latency between current time and MarketBook publish time\", \"market_id\": \"1.220920848\", \"latency\": 2.08534836769104, \"pt\": \"2023-11-09T11:37:19.521000\"}"
+                            }
+                        ],
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "this repeated then \"continuously\" with latency time steadily increasing... message being issued about 50\/second\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "{\"asctime\": \"2023-11-09 11:40:30,227\", \"levelname\": \"WARNING\", \"message\": \"High latency between current time and MarketBook publish time\", \"market_id\": \"1.220926100\", \"latency\": 14.246732711791992, \"pt\": \"2023-11-09T11:40:15.981000\"}"
+                            }
+                        ],
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "then about 150 warnings\/second\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "{\"asctime\": \"2023-11-09 11:54:22,299\", \"levelname\": \"WARNING\", \"message\": \"High latency between current time and MarketBook publish time\", \"market_id\": \"1.220920734\", \"latency\": 176.0338258743286, \"pt\": \"2023-11-09T11:51:26.266000\"}"
+                            }
+                        ],
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "eventually the increasing CPU usage killed the AWS VM which I had to reboot via the console"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1699562462.348919",
+        "client_msg_id": "AE4CED34-3E52-4778-973D-2380D4F07DCD",
+        "text": "Very tricky to know what caused it, I assume this is first time you have had something like this? ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1699557872.818899",
+        "parent_user_id": "U01PJ5YMFBJ",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "JV\/S7",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Very tricky to know what caused it, I assume this is first time you have had something like this? "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "text": "yes the crash yes, although i've just been looking at my AWS CPU history and i've recently noticed periodic spikes in CPU. I recently added PLACE markets an am wondering if my VM is under powered....",
+        "files": [
+            {
+                "id": "F06565GFHJQ",
+                "mode": "hidden_by_limit"
+            }
+        ],
+        "upload": false,
+        "user": "U01PJ5YMFBJ",
+        "display_as_bot": false,
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "a1hpe",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "yes the crash yes, although i've just been looking at my AWS CPU history and i've recently noticed periodic spikes in CPU. I recently added PLACE markets an am wondering if my VM is under powered...."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "type": "message",
+        "ts": "1699562836.217569",
+        "client_msg_id": "95814079-0e06-4c4a-9064-8e34a086301f",
+        "thread_ts": "1699557872.818899",
+        "parent_user_id": "U01PJ5YMFBJ"
+    },
+    {
+        "user": "U01PJ5YMFBJ",
+        "type": "message",
+        "ts": "1699562896.558369",
+        "client_msg_id": "1a1b11e0-42cd-4a55-b3d5-597a65a91869",
+        "text": "burst capacity never been below 80% until today!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g819c7f591cc",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/819c7f591cc888486f19b3f2f49f2011.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0014-72.png",
+            "first_name": "AndyL",
+            "real_name": "AndyL",
+            "display_name": "AndyL",
+            "team": "T4G9NBD2M",
+            "name": "andrew_m_leonard",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1699557872.818899",
+        "parent_user_id": "U01PJ5YMFBJ",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "UScOL",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "burst capacity never been below 80% until today!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1699562949.612399",
+        "client_msg_id": "A55AB41C-CF7E-41B0-A17C-00B4581C78F4",
+        "text": "Looks like it, common for burstable instances to shit themselves if pushed ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1699557872.818899",
+        "parent_user_id": "U01PJ5YMFBJ",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "UBZ\/Q",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Looks like it, common for burstable instances to shit themselves if pushed "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1699562969.810409",
+        "client_msg_id": "104B4C15-7C4D-4CBB-A654-63225ABA2796",
+        "text": "It will be some dodgy code or the instance, the latter is a quick fix ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1699557872.818899",
+        "parent_user_id": "U01PJ5YMFBJ",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "BC6\/v",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "It will be some dodgy code or the instance, the latter is a quick fix "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01PJ5YMFBJ",
+        "type": "message",
+        "ts": "1699563016.338469",
+        "client_msg_id": "6cea939d-9cd5-42f2-b662-99051ae11410",
+        "text": "yeah i've been looking through the code and logs... the one other thing i've noticed periodically is:\n```Exception processing order for 1.220920786 : 54907 : Order does not currently have a betId\"```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g819c7f591cc",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/819c7f591cc888486f19b3f2f49f2011.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0014-72.png",
+            "first_name": "AndyL",
+            "real_name": "AndyL",
+            "display_name": "AndyL",
+            "team": "T4G9NBD2M",
+            "name": "andrew_m_leonard",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1699557872.818899",
+        "parent_user_id": "U01PJ5YMFBJ",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "m8gRE",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "yeah i've been looking through the code and logs... the one other thing i've noticed periodically is:\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Exception processing order for 1.220920786 : 54907 : Order does not currently have a betId\""
+                            }
+                        ],
+                        "border": 0
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01PJ5YMFBJ",
+        "type": "message",
+        "ts": "1699563031.626189",
+        "client_msg_id": "485b1b8e-8c48-4b54-a9a3-0c95245120ca",
+        "text": "happens more frequently when latency spikes",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g819c7f591cc",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/819c7f591cc888486f19b3f2f49f2011.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0014-72.png",
+            "first_name": "AndyL",
+            "real_name": "AndyL",
+            "display_name": "AndyL",
+            "team": "T4G9NBD2M",
+            "name": "andrew_m_leonard",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1699557872.818899",
+        "parent_user_id": "U01PJ5YMFBJ",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "8KeSG",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "happens more frequently when latency spikes"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01PJ5YMFBJ",
+        "type": "message",
+        "ts": "1699563087.243419",
+        "client_msg_id": "86d475d5-6a70-4440-84bc-52da2c742d37",
+        "text": "i'm going to provision a better VM for this instance I think, then monitor....",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g819c7f591cc",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/819c7f591cc888486f19b3f2f49f2011.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0014-72.png",
+            "first_name": "AndyL",
+            "real_name": "AndyL",
+            "display_name": "AndyL",
+            "team": "T4G9NBD2M",
+            "name": "andrew_m_leonard",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1699557872.818899",
+        "parent_user_id": "U01PJ5YMFBJ",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "XLFbW",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "i'm going to provision a better VM for this instance I think, then monitor...."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "U4H19D1D2"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "text": "Has anyone else found that when running a simulation in Flumine that it'll match any price you give a MARKET_ON_CLOSE bet? Ignoring the lay bets, the initial back bet placed at 1 sec from start with market_on_close is getting matched far higher than the BSP\n```trade = Trade(market_id=market_book.market_id,selection_id=runner['selection_id'],handicap=0,strategy=self,)\norder = trade.create_order(side=strSide, order_type=LimitOrder(price=MoveMarketOdds(nAmount,100,1), size=1.0, persistence_type='MARKET_ON_CLOSE')) # MARKET_ON_CLOSE\nmarket.place_order(order)```\n",
+        "files": [
+            {
+                "id": "F065TU39H6U",
+                "mode": "hidden_by_limit"
+            }
+        ],
+        "upload": false,
+        "user": "U0657C00V36",
+        "display_as_bot": false,
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "gHNjf",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Has anyone else found that when running a simulation in Flumine that it'll match any price you give a MARKET_ON_CLOSE bet? Ignoring the lay bets, the initial back bet placed at 1 sec from start with market_on_close is getting matched far higher than the BSP\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "trade = Trade(market_id=market_book.market_id,selection_id=runner['selection_id'],handicap=0,strategy=self,)\norder = trade.create_order(side=strSide, order_type=LimitOrder(price=MoveMarketOdds(nAmount,100,1), size=1.0, persistence_type='MARKET_ON_CLOSE')) # MARKET_ON_CLOSE\nmarket.place_order(order)"
+                            }
+                        ],
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": []
+                    }
+                ]
+            }
+        ],
+        "type": "message",
+        "ts": "1699581583.308559",
+        "client_msg_id": "dc0535d9-a134-4021-a4ac-d405feef8d00",
+        "thread_ts": "1699581583.308559",
+        "reply_count": 10,
+        "reply_users_count": 2,
+        "latest_reply": "1699617178.037099",
+        "reply_users": [
+            "U4H19D1D2",
+            "U0657C00V36"
+        ],
+        "replies": [
+            {
+                "user": "U4H19D1D2",
+                "ts": "1699603579.504919"
+            },
+            {
+                "user": "U0657C00V36",
+                "ts": "1699613710.049549"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1699613754.488929"
+            },
+            {
+                "user": "U0657C00V36",
+                "ts": "1699613950.596289"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1699614175.194659"
+            },
+            {
+                "user": "U0657C00V36",
+                "ts": "1699614276.281609"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1699614297.538219"
+            },
+            {
+                "user": "U0657C00V36",
+                "ts": "1699614315.617419"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1699614946.449349"
+            },
+            {
+                "user": "U0657C00V36",
+                "ts": "1699617178.037099"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": true,
+        "last_read": "1699617178.037099"
+    }
+]

@@ -1,0 +1,1908 @@
+[
+    {
+        "user": "U016TGY3676",
+        "type": "message",
+        "ts": "1606997930.001200",
+        "client_msg_id": "24fd4a4c-9668-4da5-ba72-6db00b5ee285",
+        "text": "<@U4H19D1D2> Update:\nThe following runs for about 15 minutes with CPU at 100% and memory gradually increases until 80%+ and then starts using swap. Lots of 'High Latency' warnings in the logger ~700 (not sure if this is seconds or milliseconds?). This is on a Lightsail instance with 2GB RAM. Are you able to replicate?\n```class Dummy(BaseStrategy):\n    \"\"\"dummy strategy\"\"\"\n    def __init__(self, *args, **kwargs):\n        BaseStrategy.__init__(self, *args, **kwargs)\n\n    def check_market_book(self, market, market_book):\n        return True\n\n    def process_market_book(self, market, market_book):\n        \"\"\"only called if check_market_book() returns True\"\"\"\n        return\n\n    def process_orders(self, market, orders):\n        return```\n```strategy = Strat(\n    conflate_ms=3000,\n    market_filter=bflw.filters.streaming_market_filter(\n        event_type_ids=['7', '1', '4339'],\n    ),\n)\nframework.add_strategy(strategy)\nframework.run()```\n",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6a681220e11",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6a681220e11c1a2ed3685375d658dadb.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0001-72.png",
+            "first_name": "",
+            "real_name": "birchy",
+            "display_name": "birchy",
+            "team": "T4G9NBD2M",
+            "name": "birchy",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1606732952.491600",
+        "parent_user_id": "U016TGY3676",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "=CO7",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "user",
+                                "user_id": "U4H19D1D2"
+                            },
+                            {
+                                "type": "text",
+                                "text": " Update:\nThe following runs for about 15 minutes with CPU at 100% and memory gradually increases until 80%+ and then starts using swap. Lots of 'High Latency' warnings in the logger ~700 (not sure if this is seconds or milliseconds?). This is on a Lightsail instance with 2GB RAM. Are you able to replicate?\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "class Dummy(BaseStrategy):\n    \"\"\"dummy strategy\"\"\"\n    def __init__(self, *args, **kwargs):\n        BaseStrategy.__init__(self, *args, **kwargs)\n\n    def check_market_book(self, market, market_book):\n        return True\n\n    def process_market_book(self, market, market_book):\n        \"\"\"only called if check_market_book() returns True\"\"\"\n        return\n\n    def process_orders(self, market, orders):\n        return"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "strategy = Strat(\n    conflate_ms=3000,\n    market_filter=bflw.filters.streaming_market_filter(\n        event_type_ids=['7', '1', '4339'],\n    ),\n)\nframework.add_strategy(strategy)\nframework.run()"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": []
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1606998757.001900",
+        "client_msg_id": "8B97271A-3425-435D-AF89-A51CA5E628B1",
+        "text": "Ouch, that would be 700s, how many markets?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1606732952.491600",
+        "parent_user_id": "U016TGY3676",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "iI1W",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Ouch, that would be 700s, how many markets?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1607000272.002100",
+        "client_msg_id": "83448655-66ee-4f53-a709-e4dbc42ae0b8",
+        "text": "So two issues I can see, the first one is the logging module is actually spiralling out of control using more and more CPU cycles as the latency increases the second is the `_add_market` function is slow, its slow because `.info` property is really really slow however not sure why it is soo slow",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1606732952.491600",
+        "parent_user_id": "U016TGY3676",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "YNZ",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "So two issues I can see, the first one is the logging module is actually spiralling out of control using more and more CPU cycles as the latency increases the second is the "
+                            },
+                            {
+                                "type": "text",
+                                "text": "_add_market",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " function is slow, its slow because "
+                            },
+                            {
+                                "type": "text",
+                                "text": ".info",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " property is really really slow however not sure why it is soo slow"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "text": "",
+        "files": [
+            {
+                "id": "F01FZMT5PC5",
+                "mode": "hidden_by_limit"
+            }
+        ],
+        "upload": false,
+        "user": "U4H19D1D2",
+        "display_as_bot": false,
+        "type": "message",
+        "ts": "1607000346.002300",
+        "thread_ts": "1606732952.491600",
+        "parent_user_id": "U016TGY3676"
+    },
+    {
+        "user": "U016TGY3676",
+        "type": "message",
+        "ts": "1607000959.002700",
+        "client_msg_id": "e210a82c-cbc1-4453-8e8a-fd9c14b6b644",
+        "text": "Not sure on the quantity of markets as it was running with `logging.StreamHandler()` and I was unable to access the terminal but I'd guess it gotta be in the thousands.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6a681220e11",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6a681220e11c1a2ed3685375d658dadb.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0001-72.png",
+            "first_name": "",
+            "real_name": "birchy",
+            "display_name": "birchy",
+            "team": "T4G9NBD2M",
+            "name": "birchy",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1606732952.491600",
+        "parent_user_id": "U016TGY3676",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "PC=U",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Not sure on the quantity of markets as it was running with "
+                            },
+                            {
+                                "type": "text",
+                                "text": "logging.StreamHandler()",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " and I was unable to access the terminal but I'd guess it gotta be in the thousands."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U016TGY3676",
+        "type": "message",
+        "ts": "1607004554.006000",
+        "client_msg_id": "bb0c6538-ddd8-4fe8-9fe2-f5bef0ba1c60",
+        "text": "Trying to get my head around developing inplay strategies for the gee gees. Struggling to work with the inplay delay, i.e. how the hell are we supposed to predict what the market will be in 2 seconds time? A lot can happen, rendering any \"now\" triggers useless. Or am I overthinking this?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6a681220e11",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6a681220e11c1a2ed3685375d658dadb.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0001-72.png",
+            "first_name": "",
+            "real_name": "birchy",
+            "display_name": "birchy",
+            "team": "T4G9NBD2M",
+            "name": "birchy",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1607004554.006000",
+        "reply_count": 24,
+        "reply_users_count": 5,
+        "latest_reply": "1607091247.055000",
+        "reply_users": [
+            "UGV299K6H",
+            "U016TGY3676",
+            "U4H19D1D2",
+            "UQL0QDEKA",
+            "UV6F64HPG"
+        ],
+        "replies": [
+            {
+                "user": "UGV299K6H",
+                "ts": "1607011617.008700"
+            },
+            {
+                "user": "U016TGY3676",
+                "ts": "1607012133.012000"
+            },
+            {
+                "user": "UGV299K6H",
+                "ts": "1607012318.012200"
+            },
+            {
+                "user": "UGV299K6H",
+                "ts": "1607012423.012500"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1607013087.012700"
+            },
+            {
+                "user": "U016TGY3676",
+                "ts": "1607016832.021700"
+            },
+            {
+                "user": "UGV299K6H",
+                "ts": "1607017220.022500"
+            },
+            {
+                "user": "U016TGY3676",
+                "ts": "1607017580.022700"
+            },
+            {
+                "user": "UGV299K6H",
+                "ts": "1607020301.023500"
+            },
+            {
+                "user": "UQL0QDEKA",
+                "ts": "1607020333.023700"
+            },
+            {
+                "user": "U016TGY3676",
+                "ts": "1607021305.025600"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1607021832.026900"
+            },
+            {
+                "user": "U016TGY3676",
+                "ts": "1607024631.027100"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1607025056.030800"
+            },
+            {
+                "user": "U016TGY3676",
+                "ts": "1607025799.031200"
+            },
+            {
+                "user": "UV6F64HPG",
+                "ts": "1607029350.035000"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1607029617.035300"
+            },
+            {
+                "user": "UV6F64HPG",
+                "ts": "1607029743.037000"
+            },
+            {
+                "user": "U016TGY3676",
+                "ts": "1607029771.037200"
+            },
+            {
+                "user": "UGV299K6H",
+                "ts": "1607090041.045600"
+            },
+            {
+                "user": "UV6F64HPG",
+                "ts": "1607090655.050000"
+            },
+            {
+                "user": "UGV299K6H",
+                "ts": "1607090872.050200"
+            },
+            {
+                "user": "UQL0QDEKA",
+                "ts": "1607090875.050400"
+            },
+            {
+                "user": "UV6F64HPG",
+                "ts": "1607091247.055000"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": true,
+        "last_read": "1607091247.055000",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Rx7P",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Trying to get my head around developing inplay strategies for the gee gees. Struggling to work with the inplay delay, i.e. how the hell are we supposed to predict what the market will be in 2 seconds time? A lot can happen, rendering any \"now\" triggers useless. Or am I overthinking this?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01C12ZEADQ",
+        "type": "message",
+        "ts": "1607005681.006200",
+        "client_msg_id": "c0357742-7996-4bef-9a5c-cd65c8795226",
+        "text": "Welcome to game",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "e3b7687b0ef8",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-10-06\/1432945617648_e3b7687b0ef86e4f28b8_72.png",
+            "first_name": "Alessio",
+            "real_name": "Alessio",
+            "display_name": "Alessio",
+            "team": "T4G9NBD2M",
+            "name": "alessio",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "TeoS",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Welcome to game"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "joy",
+                "users": [
+                    "U016TGY3676"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "U0128E7BEHW",
+        "type": "message",
+        "ts": "1607011034.008600",
+        "client_msg_id": "ab2c04fa-7747-42b0-b959-e06cbe5b9340",
+        "text": "Not much use forecasting over a horizon shorter than your latency (where latency is anything slowing you down including the enforced delay). Remember it's asymmetric though, so your total latency for cancels doesn't include this enforced delay ;o",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gb57a2bdd15a",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/b57a2bdd15acccdb845ce257f38940cc.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "Dave",
+            "real_name": "Dave R",
+            "display_name": "Dave",
+            "team": "T4G9NBD2M",
+            "name": "d7m",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "s+Q",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Not much use forecasting over a horizon shorter than your latency (where latency is anything slowing you down including the enforced delay). Remember it's asymmetric though, so your total latency for cancels doesn't include this enforced delay ;o"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "U016TGY3676"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "UGV299K6H",
+        "type": "message",
+        "ts": "1607011617.008700",
+        "edited": {
+            "user": "UGV299K6H",
+            "ts": "1607011635.000000"
+        },
+        "client_msg_id": "49efe25f-4ab5-4391-b001-bca1a6f048ec",
+        "text": "No. You're either under-thinking it or thinking it wrong. Excess of thinking in not the problem.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g3a262a3cfba",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/b3a262a3cfba292c18acf5777f65908a.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0006-72.png",
+            "first_name": "Michael",
+            "real_name": "Michael C",
+            "display_name": "Michael",
+            "team": "T4G9NBD2M",
+            "name": "michael",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1607004554.006000",
+        "parent_user_id": "U016TGY3676",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "+wv",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "No. You're either under-thinking it or thinking it wrong. Excess of thinking in not the problem."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "grinning",
+                "users": [
+                    "U016TGY3676"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "UGV299K6H",
+        "type": "message",
+        "ts": "1607012127.011900",
+        "client_msg_id": "a185e160-b051-475c-b7e2-0aa15a68730f",
+        "text": "I've never really nailed the conditionally cancelling thing which is funny because you'd think it would be a goldmine. I do it for some bets but it only delivers a few extra pence per transaction on those.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g3a262a3cfba",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/b3a262a3cfba292c18acf5777f65908a.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0006-72.png",
+            "first_name": "Michael",
+            "real_name": "Michael C",
+            "display_name": "Michael",
+            "team": "T4G9NBD2M",
+            "name": "michael",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "kCL",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I've never really nailed the conditionally cancelling thing which is funny because you'd think it would be a goldmine. I do it for some bets but it only delivers a few extra pence per transaction on those."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U016TGY3676",
+        "type": "message",
+        "ts": "1607012133.012000",
+        "client_msg_id": "1c4cecbf-ae4b-4344-89e9-f01ce7db8071",
+        "text": "My assumption is that everyone else has the same delay, and therefore it's irrelevant?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6a681220e11",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6a681220e11c1a2ed3685375d658dadb.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0001-72.png",
+            "first_name": "",
+            "real_name": "birchy",
+            "display_name": "birchy",
+            "team": "T4G9NBD2M",
+            "name": "birchy",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1607004554.006000",
+        "parent_user_id": "U016TGY3676",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "z8d",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "My assumption is that everyone else has the same delay, and therefore it's irrelevant?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UGV299K6H",
+        "type": "message",
+        "ts": "1607012318.012200",
+        "edited": {
+            "user": "UGV299K6H",
+            "ts": "1607012354.000000"
+        },
+        "client_msg_id": "0162cd4a-1d33-4ff0-b020-124b7c4fde3d",
+        "text": "It's not irrelevant. The normal punters are reacting to information in real-time (ish), assuming  no TPD we see that one second later in the form of their bets and then we react and our bets hit the market 1 second after that, so we're behind on the info and have to make up the difference somehow.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g3a262a3cfba",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/b3a262a3cfba292c18acf5777f65908a.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0006-72.png",
+            "first_name": "Michael",
+            "real_name": "Michael C",
+            "display_name": "Michael",
+            "team": "T4G9NBD2M",
+            "name": "michael",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1607004554.006000",
+        "parent_user_id": "U016TGY3676",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "nmsgq",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "It's not irrelevant. The normal punters are reacting to information in real-time (ish), assuming  no TPD we see that one second later in the form of their bets and then we react and our bets hit the market 1 second after that, so we're behind on the info and have to make up the difference somehow."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UGV299K6H",
+        "type": "message",
+        "ts": "1607012423.012500",
+        "client_msg_id": "908c1e6d-9fff-4702-a87d-3f1a241a8cf5",
+        "text": "We can see their cancellations quicker, but we're still only reacting to their reactions.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g3a262a3cfba",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/b3a262a3cfba292c18acf5777f65908a.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0006-72.png",
+            "first_name": "Michael",
+            "real_name": "Michael C",
+            "display_name": "Michael",
+            "team": "T4G9NBD2M",
+            "name": "michael",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1607004554.006000",
+        "parent_user_id": "U016TGY3676",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Ot1X2",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "We can see their cancellations quicker, but we're still only reacting to their reactions."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1607013087.012700",
+        "client_msg_id": "b1fa10eb-b697-4d4a-a5d1-c617862797b2",
+        "text": "I see it as you have the first ‘mover’ which could be on course\/facetime\/dodgy hotel in wolverhampton\/tpd but then there are those 1s\/2s\/3s\/5s\/6s behind that so what you see at time 0 is then normally repeated (hence the bounces) Of course it gets very messy as everyone reacts and you get all sorts of feedback..",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1607004554.006000",
+        "parent_user_id": "U016TGY3676",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "yfgc",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I see it as you have the first ‘mover’ which could be on course\/facetime\/dodgy hotel in wolverhampton\/tpd but then there are those 1s\/2s\/3s\/5s\/6s behind that so what you see at time 0 is then normally repeated (hence the bounces) Of course it gets very messy as everyone reacts and you get all sorts of feedback.."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U0128E7BEHW",
+        "type": "message",
+        "ts": "1607016473.017600",
+        "edited": {
+            "user": "U0128E7BEHW",
+            "ts": "1607016705.000000"
+        },
+        "client_msg_id": "c93df8ba-b702-46c4-baaf-01a3c52b6bef",
+        "text": "It's useful for market making - if you're maintaining a spread then you can avoid getting swept where you anticipate the price to move sharply. Obvious and hypothetical example - if you have a realtime football feed you might want to cancel _fast_ whenever a player with the ball reaches a certain area of the pitch. I think it's just a feature you might want to take advantage of if your strategy suits (and use as protection), but not necessarily a source for inspiration.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gb57a2bdd15a",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/b57a2bdd15acccdb845ce257f38940cc.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "Dave",
+            "real_name": "Dave R",
+            "display_name": "Dave",
+            "team": "T4G9NBD2M",
+            "name": "d7m",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "JQM",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "It's useful for market making - if you're maintaining a spread then you can avoid getting swept where you anticipate the price to move sharply. Obvious and hypothetical example - if you have a realtime football feed you might want to cancel _fast_ whenever a player with the ball reaches a certain area of the pitch. I think it's just a feature you might want to take advantage of if your strategy suits (and use as protection), but not necessarily a source for inspiration."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U0128E7BEHW",
+        "type": "message",
+        "ts": "1607016605.019000",
+        "client_msg_id": "b7c878fb-5af5-4ada-8b84-33e89ff688f4",
+        "text": "But yeah, I've never looked at building a strategy focused on the asymmetry",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gb57a2bdd15a",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/b57a2bdd15acccdb845ce257f38940cc.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "Dave",
+            "real_name": "Dave R",
+            "display_name": "Dave",
+            "team": "T4G9NBD2M",
+            "name": "d7m",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Xq1F8",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "But yeah, I've never looked at building a strategy focused on the asymmetry"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U016TGY3676",
+        "type": "message",
+        "ts": "1607016832.021700",
+        "client_msg_id": "c6e7cbb7-fc81-4d2d-b629-cb90a10c08d1",
+        "text": "Interesting insights. I've been looking at the bounces recently in a few messy atb\/atl\/lpt pyplot graphs but still trying to correlate where I might get matched and how long to leave my offers there. Was previously backtesting with a \"bet age\" of 2s-5s but more inclined to think I should be using 0.5s-1.5s at most? Is there any mileage in tracking the last 'N' prices, or am I pissing in the wind?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6a681220e11",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6a681220e11c1a2ed3685375d658dadb.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0001-72.png",
+            "first_name": "",
+            "real_name": "birchy",
+            "display_name": "birchy",
+            "team": "T4G9NBD2M",
+            "name": "birchy",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1607004554.006000",
+        "parent_user_id": "U016TGY3676",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "L4g4",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Interesting insights. I've been looking at the bounces recently in a few messy atb\/atl\/lpt pyplot graphs but still trying to correlate where I might get matched and how long to leave my offers there. Was previously backtesting with a \"bet age\" of 2s-5s but more inclined to think I should be using 0.5s-1.5s at most? Is there any mileage in tracking the last 'N' prices, or am I pissing in the wind?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UGV299K6H",
+        "type": "message",
+        "ts": "1607016835.021900",
+        "client_msg_id": "3ad20b80-b646-4e58-ac65-6127c3c9c274",
+        "text": "In theory it ought to be possible using market signals and I'm a little bit annoyed that I've never made it fly - even as a kicker on something else. I suppose I haven't tried all that hard.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g3a262a3cfba",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/b3a262a3cfba292c18acf5777f65908a.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0006-72.png",
+            "first_name": "Michael",
+            "real_name": "Michael C",
+            "display_name": "Michael",
+            "team": "T4G9NBD2M",
+            "name": "michael",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "3+q",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "In theory it ought to be possible using market signals and I'm a little bit annoyed that I've never made it fly - even as a kicker on something else. I suppose I haven't tried all that hard."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UGV299K6H",
+        "type": "message",
+        "ts": "1607016873.022400",
+        "client_msg_id": "fa216425-310a-4d1c-a6fb-248b3acd5181",
+        "text": "I certainly believe it to be possible though and I don't doubt that there are specialists.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g3a262a3cfba",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/b3a262a3cfba292c18acf5777f65908a.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0006-72.png",
+            "first_name": "Michael",
+            "real_name": "Michael C",
+            "display_name": "Michael",
+            "team": "T4G9NBD2M",
+            "name": "michael",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "RD3ST",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I certainly believe it to be possible though and I don't doubt that there are specialists."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UGV299K6H",
+        "type": "message",
+        "ts": "1607017220.022500",
+        "client_msg_id": "ff1d5499-8824-435d-9182-85199c1f1d61",
+        "text": "I wouldn't try to simulate that, I'd just track your times to match on real bets and work out where your optimum is. It won't take long.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g3a262a3cfba",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/b3a262a3cfba292c18acf5777f65908a.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0006-72.png",
+            "first_name": "Michael",
+            "real_name": "Michael C",
+            "display_name": "Michael",
+            "team": "T4G9NBD2M",
+            "name": "michael",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1607004554.006000",
+        "parent_user_id": "U016TGY3676",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "RFh0a",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I wouldn't try to simulate that, I'd just track your times to match on real bets and work out where your optimum is. It won't take long."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U016TGY3676",
+        "type": "message",
+        "ts": "1607017580.022700",
+        "client_msg_id": "af67e0a4-1838-413f-9b2c-dcadf1b3f649",
+        "text": "I would do that if I had the balls to place some _real_ bets on inplay horses. Currently only backtesting various triggers but it's very tedious.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6a681220e11",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6a681220e11c1a2ed3685375d658dadb.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0001-72.png",
+            "first_name": "",
+            "real_name": "birchy",
+            "display_name": "birchy",
+            "team": "T4G9NBD2M",
+            "name": "birchy",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1607004554.006000",
+        "parent_user_id": "U016TGY3676",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "+ZiSd",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I would do that if I had the balls to place some "
+                            },
+                            {
+                                "type": "text",
+                                "text": "real",
+                                "style": {
+                                    "italic": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " bets on inplay horses. Currently only backtesting various triggers but it's very tedious."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U016TGY3676",
+        "type": "message",
+        "ts": "1607019814.023100",
+        "client_msg_id": "7a47b320-2dc7-421e-b80b-84a3ff19d7a8",
+        "text": "<@U4H19D1D2> Not directly related to this issue, but am I using Flumine incorrectly by putting strategy functions in the strategy object? e.g.\n```class SomeStrategy(BaseStrategy):\n    \"\"\"strategy\"\"\"\n    def __init__(self, *args, **kwargs):\n        BaseStrategy.__init__(self, *args, **kwargs)\n        self.bet_age = 2\n\n    def calc_lay_price(self, runner):\n        # do some calcs....\n        return\n\n    def check_triggers(self, market_book, market):\n        \"\"\"returns list of bets\"\"\"\n        bets = []\n        # do some magical wizardy stuff...\n        return\n\n    def check_market_book(self, market, market_book):\n        if not market_book.inplay: return\n        if market_book.status != 'OPEN': return\n        return True\n\n    def process_market_book(self, market, market_book):\n        bets = self.check_triggers(market_book, market)\n        if not bets: return\n        for bet in bets:\n            trade = Trade(\n                market_book.market_id, bet['id'], bet['hcp'], self,\n            )\n            order = trade.create_order(\n                side=bet['side'],\n                order_type=LimitOrder(\n                    price=bet['price'],\n                    size=bet['stake']\n                ),\n            )\n            self.place_order(market, order)\n        return\n\n    def process_orders(self, market, orders):\n        for order in orders:\n            if (order.status == OrderStatus.EXECUTABLE\n                and order.elapsed_seconds\n                and order.elapsed_seconds &gt;= self.bet_age\n            ):\n                self.cancel_order(market, order)```\nThat was how I'd started off when I first used Flumine and I just carried it forward, but in hindsight, my functions should probably static?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6a681220e11",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6a681220e11c1a2ed3685375d658dadb.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0001-72.png",
+            "first_name": "",
+            "real_name": "birchy",
+            "display_name": "birchy",
+            "team": "T4G9NBD2M",
+            "name": "birchy",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1606732952.491600",
+        "parent_user_id": "U016TGY3676",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "cS4k",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "user",
+                                "user_id": "U4H19D1D2"
+                            },
+                            {
+                                "type": "text",
+                                "text": " Not directly related to this issue, but am I using Flumine incorrectly by putting strategy functions in the strategy object? e.g.\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "class SomeStrategy(BaseStrategy):\n    \"\"\"strategy\"\"\"\n    def __init__(self, *args, **kwargs):\n        BaseStrategy.__init__(self, *args, **kwargs)\n        self.bet_age = 2\n\n    def calc_lay_price(self, runner):\n        # do some calcs....\n        return\n\n    def check_triggers(self, market_book, market):\n        \"\"\"returns list of bets\"\"\"\n        bets = []\n        # do some magical wizardy stuff...\n        return\n\n    def check_market_book(self, market, market_book):\n        if not market_book.inplay: return\n        if market_book.status != 'OPEN': return\n        return True\n\n    def process_market_book(self, market, market_book):\n        bets = self.check_triggers(market_book, market)\n        if not bets: return\n        for bet in bets:\n            trade = Trade(\n                market_book.market_id, bet['id'], bet['hcp'], self,\n            )\n            order = trade.create_order(\n                side=bet['side'],\n                order_type=LimitOrder(\n                    price=bet['price'],\n                    size=bet['stake']\n                ),\n            )\n            self.place_order(market, order)\n        return\n\n    def process_orders(self, market, orders):\n        for order in orders:\n            if (order.status == OrderStatus.EXECUTABLE\n                and order.elapsed_seconds\n                and order.elapsed_seconds >= self.bet_age\n            ):\n                self.cancel_order(market, order)"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "That was how I'd started off when I first used Flumine and I just carried it forward, but in hindsight, my functions should probably static?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "subtype": "channel_join",
+        "user": "U01G0QJCHEZ",
+        "text": "<@U01G0QJCHEZ> has joined the channel",
+        "type": "message",
+        "ts": "1607019978.023400"
+    },
+    {
+        "user": "UGV299K6H",
+        "type": "message",
+        "ts": "1607020301.023500",
+        "client_msg_id": "a3c00d06-1372-4ef8-b571-974644e4ff50",
+        "text": "If I were you I'd just take your best idea that generates bets at moderate odds,, back-test only enough to make sure the bets are +EV and just ignore the matching. Assuming they are +EV by some respectable margin whack some on at minimum stakes and with a sensible exposure limit and get yourself some proper data. If you lack the stomach for a fist full of £2 lays at 3 then maybe it's not for you.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g3a262a3cfba",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/b3a262a3cfba292c18acf5777f65908a.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0006-72.png",
+            "first_name": "Michael",
+            "real_name": "Michael C",
+            "display_name": "Michael",
+            "team": "T4G9NBD2M",
+            "name": "michael",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1607004554.006000",
+        "parent_user_id": "U016TGY3676",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "T=Hfw",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "If I were you I'd just take your best idea that generates bets at moderate odds,, back-test only enough to make sure the bets are +EV and just ignore the matching. Assuming they are +EV by some respectable margin whack some on at minimum stakes and with a sensible exposure limit and get yourself some proper data. If you lack the stomach for a fist full of £2 lays at 3 then maybe it's not for you."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "U4H19D1D2",
+                    "U016TGY3676"
+                ],
+                "count": 2
+            }
+        ]
+    },
+    {
+        "user": "UQL0QDEKA",
+        "type": "message",
+        "ts": "1607020333.023700",
+        "client_msg_id": "1cf0ad08-8d05-4d56-82c9-195049ea749c",
+        "text": "<@U016TGY3676> once you have a concept of a new strategy (assuming it is well thought out and reasonable) Theres no substitute for placing real bets and gathering the data. Ive done exactly that today on something that is completely different to what Ive done before (in an attempt to increase matching rates). Whilst I have shown a slight loss I can already see how i might modify it tomorrow (and Ill be modifying it in such a way that is also counter-intuitive). Im not expecting to win much, but Im not expecting to lose much either. What I will have tomorrow is more data that I can look how to hone and refine. In the back ground Ill keep all my other bots churning away",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g444d10128c0",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/444d10128c0aaf094041a52a76796602.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0005-72.png",
+            "first_name": "Peter",
+            "real_name": "Peter Lenagh",
+            "display_name": "PeterLe",
+            "team": "T4G9NBD2M",
+            "name": "lenagh",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1607004554.006000",
+        "parent_user_id": "U016TGY3676",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Suw",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "user",
+                                "user_id": "U016TGY3676"
+                            },
+                            {
+                                "type": "text",
+                                "text": " once you have a concept of a new strategy (assuming it is well thought out and reasonable) Theres no substitute for placing real bets and gathering the data. Ive done exactly that today on something that is completely different to what Ive done before (in an attempt to increase matching rates). Whilst I have shown a slight loss I can already see how i might modify it tomorrow (and Ill be modifying it in such a way that is also counter-intuitive). Im not expecting to win much, but Im not expecting to lose much either. What I will have tomorrow is more data that I can look how to hone and refine. In the back ground Ill keep all my other bots churning away"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "U4H19D1D2",
+                    "U016TGY3676"
+                ],
+                "count": 2
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1607020958.025200",
+        "client_msg_id": "D9E6A649-01D9-4EAE-B2EB-A1DB6CE37BE0",
+        "text": "Yeah that’s fine, I do that, you just need to be careful not to accidentally override some of the standard functions ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1606732952.491600",
+        "parent_user_id": "U016TGY3676",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "DPqB7",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Yeah that’s fine, I do that, you just need to be careful not to accidentally override some of the standard functions "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "U016TGY3676"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "U016TGY3676",
+        "type": "message",
+        "ts": "1607021305.025600",
+        "client_msg_id": "b5860aa3-4388-4042-a08a-520ee1106e66",
+        "text": "Thanks fellas. I've got no issues with laying runners at any price as the £10 payout target is a decent protection that allows sub-£2 bets.\nBearing in mind that I'm fairly new to this Flumine wizardry, what's the best way to save 'real' market data? I have a MarketRecorder running but that's a strategy of it's own, taken from the Flumine examples.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6a681220e11",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6a681220e11c1a2ed3685375d658dadb.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0001-72.png",
+            "first_name": "",
+            "real_name": "birchy",
+            "display_name": "birchy",
+            "team": "T4G9NBD2M",
+            "name": "birchy",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1607004554.006000",
+        "parent_user_id": "U016TGY3676",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "F56",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Thanks fellas. I've got no issues with laying runners at any price as the £10 payout target is a decent protection that allows sub-£2 bets.\nBearing in mind that I'm fairly new to this Flumine wizardry, what's the best way to save 'real' market data? I have a MarketRecorder running but that's a strategy of it's own, taken from the Flumine examples."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1607021832.026900",
+        "client_msg_id": "FC8C212D-6455-4A7F-B093-D037195303B2",
+        "text": "That’s where trades.market_notes and trade.notes come in handy, it’s where I store market signals for later analysis ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1607004554.006000",
+        "parent_user_id": "U016TGY3676",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "zvJo\/",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "That’s where trades.market_notes and trade.notes come in handy, it’s where I store market signals for later analysis "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "UUCD6P13J",
+                    "U016TGY3676"
+                ],
+                "count": 2
+            }
+        ]
+    },
+    {
+        "user": "U016TGY3676",
+        "type": "message",
+        "ts": "1607024631.027100",
+        "edited": {
+            "user": "U016TGY3676",
+            "ts": "1607024641.000000"
+        },
+        "client_msg_id": "8a084000-e729-4de3-b410-671476c011a6",
+        "text": "<@U4H19D1D2> great features, and will definitely start using them. Probably missing something here, but I presume the MarketRecorder won't pick up any bets I've got placed as it's a different strategy, so what's the recommended way to save data from a live bot?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6a681220e11",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6a681220e11c1a2ed3685375d658dadb.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0001-72.png",
+            "first_name": "",
+            "real_name": "birchy",
+            "display_name": "birchy",
+            "team": "T4G9NBD2M",
+            "name": "birchy",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1607004554.006000",
+        "parent_user_id": "U016TGY3676",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "0E7",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "user",
+                                "user_id": "U4H19D1D2"
+                            },
+                            {
+                                "type": "text",
+                                "text": " great features, and will definitely start using them. Probably missing something here, but I presume the MarketRecorder won't pick up any bets I've got placed as it's a different strategy, so what's the recommended way to save data from a live bot?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1607025056.030800",
+        "client_msg_id": "FDB02AF9-4CAD-48E9-87F7-F425FF54E7B1",
+        "text": "Logging control, see example <https:\/\/github.com\/liampauling\/flumine\/blob\/master\/examples\/controls\/backtestloggingcontrol.py|here>, if you look at the class you can see all the events it receives. I and a few others send the data to an API but you can just log to a csv \/ db ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1607004554.006000",
+        "parent_user_id": "U016TGY3676",
+        "attachments": [
+            {
+                "fallback": "[liampauling\/flumine] examples\/controls\/backtestloggingcontrol.py",
+                "text": "```\nimport csv\nimport logging\nfrom flumine.controls.loggingcontrols import LoggingControl\n\nlogger = logging.getLogger(__name__)\n\nFIELDNAMES = [\n    \"bet_id\",\n    \"strategy_name\",\n    \"market_id\",\n    \"selection_id\",\n    \"trade_id\",\n    \"date_time_placed\",\n    \"price\",\n    \"price_matched\",\n    \"size\",\n    \"size_matched\",\n    \"profit\",\n    \"side\",\n    \"elapsed_seconds_executable\",\n    \"order_status\",\n    \"market_note\",\n    \"notes\",\n]\n\n\nclass BacktestLoggingControl(LoggingControl):\n    NAME = \"BACKTEST_LOGGING_CONTROL\"\n\n    def __init__(self, *args, **kwargs):\n        super(BacktestLoggingControl, self).__init__(*args, **kwargs)\n        self._setup()\n\n    def _setup(self):\n        with open(\"orders.txt\", \"w\") as m:\n            csv_writer = csv.DictWriter(m, delimiter=\",\", fieldnames=FIELDNAMES)\n            csv_writer.writeheader()\n\n    def _process_cleared_orders_meta(self, event):\n        orders = event.event\n        with open(\"orders.txt\", \"a\") as m:\n            for order in orders:\n                try:\n                    order_data = {\n                        \"bet_id\": order.bet_id,\n                        \"strategy_name\": order.trade.strategy,\n                        \"market_id\": order.market_id,\n                        \"selection_id\": order.selection_id,\n                        \"trade_id\": order.trade.id,\n                        \"date_time_placed\": order.responses.date_time_placed,\n                        \"price\": order.order_type.price,\n                        \"price_matched\": order.average_price_matched,\n                        \"size\": order.order_type.size,\n                        \"size_matched\": order.size_matched,\n                        \"profit\": order.simulated.profit,\n                        \"side\": order.side,\n                        \"elapsed_seconds_executable\": order.elapsed_seconds_executable,\n                        \"order_status\": order.status.value,\n                        \"market_note\": order.trade.market_notes,\n                        \"notes\": order.trade.notes_str,\n                    }\n                    csv_writer = csv.DictWriter(m, delimiter=\",\", fieldnames=FIELDNAMES)\n                    csv_writer.writerow(order_data)\n                except Exception as e:\n                    logger.error(\n                        \"_process_cleared_orders_meta: %s\" % e,\n                        extra={\"order\": order, \"error\": e},\n                    )\n\n        <http:\/\/logger.info|logger.info>(\"Orders updated\", extra={\"order_count\": len(orders)})\n\n```",
+                "title": "examples\/controls\/backtestloggingcontrol.py",
+                "footer": "<https:\/\/github.com\/liampauling\/flumine|liampauling\/flumine>",
+                "id": 1,
+                "title_link": "https:\/\/github.com\/liampauling\/flumine\/blob\/master\/examples\/controls\/backtestloggingcontrol.py",
+                "footer_icon": "https:\/\/github.githubassets.com\/favicon.ico",
+                "color": "24292f",
+                "mrkdwn_in": [
+                    "text"
+                ],
+                "bot_id": "B01144Z0734",
+                "app_unfurl_url": "https:\/\/github.com\/liampauling\/flumine\/blob\/master\/examples\/controls\/backtestloggingcontrol.py",
+                "is_app_unfurl": true
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "L=l",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Logging control, see example "
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/liampauling\/flumine\/blob\/master\/examples\/controls\/backtestloggingcontrol.py",
+                                "text": "here"
+                            },
+                            {
+                                "type": "text",
+                                "text": ", if you look at the class you can see all the events it receives. I and a few others send the data to an API but you can just log to a csv \/ db "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "U016TGY3676"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "U016TGY3676",
+        "type": "message",
+        "ts": "1607025799.031200",
+        "client_msg_id": "46394224-b345-473c-aafc-74e251ba687b",
+        "text": "Thanks <@U4H19D1D2>. Not seen that before, has it always been there???",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6a681220e11",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6a681220e11c1a2ed3685375d658dadb.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0001-72.png",
+            "first_name": "",
+            "real_name": "birchy",
+            "display_name": "birchy",
+            "team": "T4G9NBD2M",
+            "name": "birchy",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1607004554.006000",
+        "parent_user_id": "U016TGY3676",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "DFPZ",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Thanks "
+                            },
+                            {
+                                "type": "user",
+                                "user_id": "U4H19D1D2"
+                            },
+                            {
+                                "type": "text",
+                                "text": ". Not seen that before, has it always been there???"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UV6F64HPG",
+        "type": "message",
+        "ts": "1607029350.035000",
+        "client_msg_id": "F4465765-99A0-4573-BC20-D31EABB65DDC",
+        "text": "Also starting using InPlay Horse Racing with TPD, quick tip don’t use EX_BEST_OFFERS to avoid backing 1000\/1 losers ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "c268dc84f257",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-08-18\/1312781667300_c268dc84f257fee36619_72.png",
+            "first_name": "Amanda",
+            "real_name": "Amanda",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "amandahere2020",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1607004554.006000",
+        "parent_user_id": "U016TGY3676",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Gbt",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Also starting using InPlay Horse Racing with TPD, quick tip don’t use EX_BEST_OFFERS to avoid backing 1000\/1 losers "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1607029617.035300",
+        "client_msg_id": "D02D64F4-FCC4-4F15-941C-C7CD85B3B282",
+        "text": "Wat?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1607004554.006000",
+        "parent_user_id": "U016TGY3676",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "cSn",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Wat?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UV6F64HPG",
+        "type": "message",
+        "ts": "1607029743.037000",
+        "client_msg_id": "1C0A183F-1443-4574-BFA4-733B0592A3FB",
+        "text": "Place a bet at 5, 1 second later it’s a loser at 1000, best price ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "c268dc84f257",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-08-18\/1312781667300_c268dc84f257fee36619_72.png",
+            "first_name": "Amanda",
+            "real_name": "Amanda",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "amandahere2020",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1607004554.006000",
+        "parent_user_id": "U016TGY3676",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "RXG",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Place a bet at 5, 1 second later it’s a loser at 1000, best price "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U016TGY3676",
+        "type": "message",
+        "ts": "1607029771.037200",
+        "client_msg_id": "f9ab497c-eaab-492f-850a-7d6c01bc1a98",
+        "text": "That BPE isn't it?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6a681220e11",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6a681220e11c1a2ed3685375d658dadb.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0001-72.png",
+            "first_name": "",
+            "real_name": "birchy",
+            "display_name": "birchy",
+            "team": "T4G9NBD2M",
+            "name": "birchy",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1607004554.006000",
+        "parent_user_id": "U016TGY3676",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "HHS",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "That BPE isn't it?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U017FQEPV1U",
+        "type": "message",
+        "ts": "1607049757.042000",
+        "client_msg_id": "4ec981fa-1cb7-4298-a1a4-5bbde8c5c88f",
+        "text": "Just on this. Do each sports guaranteed to have the same delay when in play? For example, tennis=2sec, horses=5sec etc? Or is it basically random per event\/country?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gc5e9f194eb1",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/c5e9f194eb1ababcca14bbc25c327548.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0009-72.png",
+            "first_name": "",
+            "real_name": "qwerty.nat",
+            "display_name": "qwerty.nat",
+            "team": "T4G9NBD2M",
+            "name": "qwerty.nat",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "iGh\/",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Just on this. Do each sports guaranteed to have the same delay when in play? For example, tennis=2sec, horses=5sec etc? Or is it basically random per event\/country?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U016535QCJ2",
+        "type": "message",
+        "ts": "1607050141.042900",
+        "client_msg_id": "637be0c6-55f0-4ac8-a9de-ae628de2a872",
+        "text": "No - varies between sport, and even between different types of tournaments, and is subject to change at any time",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "048f61bdc189",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-07-01\/1216267094995_048f61bdc189acecaafc_72.jpg",
+            "first_name": "Misha",
+            "real_name": "Misha Charrett",
+            "display_name": "Misha",
+            "team": "T4G9NBD2M",
+            "name": "misha",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "yPx4",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "No - varies between sport, and even between different types of tournaments, and is subject to change at any time"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U017FQEPV1U",
+        "type": "message",
+        "ts": "1607050980.043700",
+        "client_msg_id": "588b2f3c-d5bb-42d5-9769-d64ac75b5c3d",
+        "text": "I haven't yet looked is this info in the stream market def or similar so i can programaticaly find out ?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gc5e9f194eb1",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/c5e9f194eb1ababcca14bbc25c327548.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0009-72.png",
+            "first_name": "",
+            "real_name": "qwerty.nat",
+            "display_name": "qwerty.nat",
+            "team": "T4G9NBD2M",
+            "name": "qwerty.nat",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "9Nw",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I haven't yet looked is this info in the stream market def or similar so i can programaticaly find out ?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U016535QCJ2",
+        "type": "message",
+        "ts": "1607051032.044200",
+        "client_msg_id": "f5d750ca-800b-488a-9861-346f78e8bcf2",
+        "text": "I am fairly certain it is in the stream",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "048f61bdc189",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-07-01\/1216267094995_048f61bdc189acecaafc_72.jpg",
+            "first_name": "Misha",
+            "real_name": "Misha Charrett",
+            "display_name": "Misha",
+            "team": "T4G9NBD2M",
+            "name": "misha",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "yAWA",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I am fairly certain it is in the stream"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U016535QCJ2",
+        "type": "message",
+        "ts": "1607051202.044800",
+        "client_msg_id": "8d944ca1-f9af-4615-9dad-01b6fff73a79",
+        "text": "Yep, it's in the stream. MarketDefinition\/BetDelay",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "048f61bdc189",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-07-01\/1216267094995_048f61bdc189acecaafc_72.jpg",
+            "first_name": "Misha",
+            "real_name": "Misha Charrett",
+            "display_name": "Misha",
+            "team": "T4G9NBD2M",
+            "name": "misha",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "z9ap2",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Yep, it's in the stream. MarketDefinition\/BetDelay"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U017FQEPV1U",
+        "type": "message",
+        "ts": "1607051242.045100",
+        "edited": {
+            "user": "U017FQEPV1U",
+            "ts": "1607051253.000000"
+        },
+        "client_msg_id": "d30d1c91-8804-4d19-80c1-36757b5a683a",
+        "text": "ok great. many thanks!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gc5e9f194eb1",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/c5e9f194eb1ababcca14bbc25c327548.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0009-72.png",
+            "first_name": "",
+            "real_name": "qwerty.nat",
+            "display_name": "qwerty.nat",
+            "team": "T4G9NBD2M",
+            "name": "qwerty.nat",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "DAU0J",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "ok great. many thanks!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

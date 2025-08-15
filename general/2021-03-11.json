@@ -1,0 +1,906 @@
+[
+    {
+        "subtype": "channel_join",
+        "user": "U01Q94VE1AB",
+        "text": "<@U01Q94VE1AB> has joined the channel",
+        "type": "message",
+        "ts": "1615453937.080300"
+    },
+    {
+        "user": "U01PNBCPSKT",
+        "type": "message",
+        "ts": "1615454936.082500",
+        "client_msg_id": "650e1b29-cb86-422b-a127-a44cfd4aa4fc",
+        "text": "Can anyone point me to some documentation that will give me a quick-and-dirty start to getting a live feed. Over time, I will be going through the documentation and refining my knowledge, but I'd like a preview if that's possible.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "dd487a1a3898",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2021-02-25\/1797934283412_dd487a1a3898ed0b4ec6_72.png",
+            "first_name": "Steve",
+            "real_name": "Steve Roach",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "steve_roach",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "8jLS",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Can anyone point me to some documentation that will give me a quick-and-dirty start to getting a live feed. Over time, I will be going through the documentation and refining my knowledge, but I'd like a preview if that's possible."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1615455008.082700",
+        "client_msg_id": "586999B0-A21B-458B-B9F2-6165CAA90E5F",
+        "text": "<https:\/\/github.com\/liampauling\/betfair\/blob\/master\/examples\/examplestreaming.py|https:\/\/github.com\/liampauling\/betfair\/blob\/master\/examples\/examplestreaming.py>",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1615455008.082700",
+        "reply_count": 1,
+        "reply_users_count": 1,
+        "latest_reply": "1615765355.104800",
+        "reply_users": [
+            "U01PNBCPSKT"
+        ],
+        "replies": [
+            {
+                "user": "U01PNBCPSKT",
+                "ts": "1615765355.104800"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": false,
+        "attachments": [
+            {
+                "fallback": "[liampauling\/betfair] examples\/examplestreaming.py",
+                "text": "```\nimport logging\nimport queue\nimport threading\n\nimport betfairlightweight\nfrom betfairlightweight.filters import (\n    streaming_market_filter,\n    streaming_market_data_filter,\n)\n\n\n# setup logging\nlogging.basicConfig(level=<http:\/\/logging.INFO|logging.INFO>)  # change to DEBUG to see log all updates\n\n# create trading instance (app key must be activated for streaming)\ntrading = betfairlightweight.APIClient(\"username\", \"password\", app_key=\"appKey\")\n\n# login\ntrading.login()\n\n# create queue\noutput_queue = queue.Queue()\n\n# create stream listener\nlistener = betfairlightweight.StreamListener(output_queue=output_queue)\n\n# create stream\nstream = trading.streaming.create_stream(listener=listener)\n\n# create filters (GB WIN racing)\nmarket_filter = streaming_market_filter(\n    event_type_ids=[\"7\"], country_codes=[\"GB\"], market_types=[\"WIN\"]\n)\nmarket_data_filter = streaming_market_data_filter(\n    fields=[\"EX_BEST_OFFERS\", \"EX_MARKET_DEF\"], ladder_levels=3\n)\n\n# subscribe\nstreaming_unique_id = stream.subscribe_to_markets(\n    market_filter=market_filter,\n    market_data_filter=market_data_filter,\n    conflate_ms=1000,  # send update every 1000ms\n)\n\n# start stream in a new thread (in production would need err handling)\nt = threading.Thread(target=stream.start, daemon=True)\nt.start()\n\n\"\"\"\nData can also be accessed by using the snap function in the listener, e.g:\n\n    market_books = listener.snap(\n        market_ids=[1.12345323]\n    )\n\nErrors need to be caught at stream.start, resubscribe can then be used to\nprevent full image being sent, e.g:\n\n    streaming_unique_id = stream.subscribe_to_markets(\n        market_filter=market_filter,\n        market_data_filter=market_data_filter,\n        conflate_ms=1000,  # send update every 1000ms\n        initial_clk=listener.initial_clk,\n        clk=listener.clk,\n    )\n\nThe streaming unique id is returned in the market book which allows multiple\nstreams to be differentiated if multiple streams feed into the same queue.\n\"\"\"\n\n# check for updates in output queue\nwhile True:\n    market_books = output_queue.get()\n    print(market_books)\n\n    for market_book in market_books:\n        print(\n            market_book,\n            market_book.streaming_unique_id,  # unique id of stream (returned from subscribe request)\n            market_book.streaming_update,  # json update received\n            market_book.market_definition,  # streaming definition, similar to catalogue request\n            market_book.publish_time,  # betfair publish time of update\n        )\n\n```",
+                "title": "examples\/examplestreaming.py",
+                "footer": "<https:\/\/github.com\/liampauling\/betfair|liampauling\/betfair>",
+                "id": 1,
+                "title_link": "https:\/\/github.com\/liampauling\/betfair\/blob\/master\/examples\/examplestreaming.py",
+                "footer_icon": "https:\/\/github.githubassets.com\/favicon.ico",
+                "color": "24292f",
+                "mrkdwn_in": [
+                    "text"
+                ],
+                "bot_id": "B01144Z0734",
+                "app_unfurl_url": "https:\/\/github.com\/liampauling\/betfair\/blob\/master\/examples\/examplestreaming.py",
+                "is_app_unfurl": true
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "bXe\/",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/liampauling\/betfair\/blob\/master\/examples\/examplestreaming.py",
+                                "text": "https:\/\/github.com\/liampauling\/betfair\/blob\/master\/examples\/examplestreaming.py"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "ULDAVFDRP",
+        "type": "message",
+        "ts": "1615466602.083000",
+        "client_msg_id": "55b98cb0-df8d-402d-b966-c72a1fb717f1",
+        "text": "would you recommend hard back or is a kindle sufficient ?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g46fe1c1bf03",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/b46fe1c1bf03e18d951e7032fb494283.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0019-72.png",
+            "first_name": "",
+            "real_name": "Oliver Varney",
+            "display_name": "Oliver Varney",
+            "team": "T4G9NBD2M",
+            "name": "oliverashleyvarney",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1615213281.459100",
+        "parent_user_id": "UBS7QANF3",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Y4e\/o",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "would you recommend hard back or is a kindle sufficient ?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1615466829.083200",
+        "client_msg_id": "f8de047b-96cc-4cad-9912-5797a93269f9",
+        "text": "For all of them?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1615213281.459100",
+        "parent_user_id": "UBS7QANF3",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "i9m",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "For all of them?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "ULDAVFDRP",
+        "type": "message",
+        "ts": "1615468687.086500",
+        "client_msg_id": "6493ffa4-0a57-4c2b-95f6-f5d2eab8165e",
+        "text": "well im just thinking I would porbably pick them all up at some point, but maybe for now just looking for a fairly light read before bed \/ in the evening. Maybe one of the books that would reconfirm the basics, to see if I have missed anything obvious",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g46fe1c1bf03",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/b46fe1c1bf03e18d951e7032fb494283.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0019-72.png",
+            "first_name": "",
+            "real_name": "Oliver Varney",
+            "display_name": "Oliver Varney",
+            "team": "T4G9NBD2M",
+            "name": "oliverashleyvarney",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1615213281.459100",
+        "parent_user_id": "UBS7QANF3",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "xPw",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "well im just thinking I would porbably pick them all up at some point, but maybe for now just looking for a fairly light read before bed \/ in the evening. Maybe one of the books that would reconfirm the basics, to see if I have missed anything obvious"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "subtype": "channel_join",
+        "user": "U01RME87V3J",
+        "text": "<@U01RME87V3J> has joined the channel",
+        "type": "message",
+        "ts": "1615468692.086700"
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1615468811.088200",
+        "edited": {
+            "user": "UBS7QANF3",
+            "ts": "1615468936.000000"
+        },
+        "client_msg_id": "662DF6B4-8C79-4D6D-9BF7-7E9155269EFC",
+        "text": "A man for all markets and trading bases are more autobiographical so I think those are fine on kindle. Precision, efficiency of race track betting markets and the Kelly criterion book are all text book-y so better to have hard copies if you like to make notes\/highlight and easier to refer back to that way. The logic of sports betting is somewhere between the two. Statistical sports models in excel is a very practical book so nice to be able to read on a computer while also running excel ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1615213281.459100",
+        "parent_user_id": "UBS7QANF3",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Bnx",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "A man for all markets and trading bases are more autobiographical so I think those are fine on kindle. Precision, efficiency of race track betting markets and the Kelly criterion book are all text book-y so better to have hard copies if you like to make notes\/highlight and easier to refer back to that way. The logic of sports betting is somewhere between the two. Statistical sports models in excel is a very practical book so nice to be able to read on a computer while also running excel "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "ULDAVFDRP",
+        "type": "message",
+        "ts": "1615469660.088800",
+        "client_msg_id": "87e83e96-22a3-4d6b-bacb-a81107609dd2",
+        "text": "sweet cheers, appreciate it :+1:",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g46fe1c1bf03",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/b46fe1c1bf03e18d951e7032fb494283.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0019-72.png",
+            "first_name": "",
+            "real_name": "Oliver Varney",
+            "display_name": "Oliver Varney",
+            "team": "T4G9NBD2M",
+            "name": "oliverashleyvarney",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1615213281.459100",
+        "parent_user_id": "UBS7QANF3",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "2B8rd",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "sweet cheers, appreciate it "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "+1",
+                                "unicode": "1f44d"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "ULDAVFDRP",
+        "type": "message",
+        "ts": "1615469972.089000",
+        "client_msg_id": "a5d5ccc9-a6fa-491f-b620-bf313bd7ff1e",
+        "text": "I think A man for all markets and trading bases will be a good one to read before bed, then the others when my brain is more awake",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g46fe1c1bf03",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/b46fe1c1bf03e18d951e7032fb494283.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0019-72.png",
+            "first_name": "",
+            "real_name": "Oliver Varney",
+            "display_name": "Oliver Varney",
+            "team": "T4G9NBD2M",
+            "name": "oliverashleyvarney",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1615213281.459100",
+        "parent_user_id": "UBS7QANF3",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "ODh",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I think A man for all markets and trading bases will be a good one to read before bed, then the others when my brain is more awake"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1615470821.089200",
+        "client_msg_id": "ed8cf061-2e75-4308-9834-6a16b79f67ec",
+        "text": "Of the two I would suggest A Man for All Markets as Trading Bases still has some technical content in it",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1615213281.459100",
+        "parent_user_id": "UBS7QANF3",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "g=K3",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Of the two I would suggest A Man for All Markets as Trading Bases still has some technical content in it"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U013MLED3V1",
+        "type": "message",
+        "ts": "1615481135.089900",
+        "client_msg_id": "7c45298b-dae1-48fd-ac3d-527c90674469",
+        "text": "By race distance, which horse races are started from stalls?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g76de2b0594d",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/76de2b0594d8598d76169231046f271a.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0001-72.png",
+            "first_name": "StefanBelo",
+            "real_name": "StefanBelo",
+            "display_name": "Stefan",
+            "team": "T4G9NBD2M",
+            "name": "stefanbelopotocan",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1615481135.089900",
+        "reply_count": 3,
+        "reply_users_count": 2,
+        "latest_reply": "1615623744.101000",
+        "reply_users": [
+            "UGV299K6H",
+            "U013MLED3V1"
+        ],
+        "replies": [
+            {
+                "user": "UGV299K6H",
+                "ts": "1615555323.100400"
+            },
+            {
+                "user": "U013MLED3V1",
+                "ts": "1615556534.100700"
+            },
+            {
+                "user": "UGV299K6H",
+                "ts": "1615623744.101000"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": false,
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "pko6L",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "By race distance, which horse races are started from stalls?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01B8031PM1",
+        "type": "message",
+        "ts": "1615487105.091400",
+        "client_msg_id": "1a8a34ff-3aaa-454b-a7f1-d85f9b6ab4dd",
+        "text": "working from a dodgy internet connection at the moment on my dev machine. having trouble finding the parameter that controls this: `WARNING High latency between current time and MarketBook publish time` where can I set this high enough please to reduce occurrences of this log?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6e482a0e41b",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6e482a0e41b232f48d801454006dfa56.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0016-72.png",
+            "first_name": "river_shah",
+            "real_name": "river_shah",
+            "display_name": "river_shah",
+            "team": "T4G9NBD2M",
+            "name": "ansar.sa",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "9GL",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "working from a dodgy internet connection at the moment on my dev machine. having trouble finding the parameter that controls this: "
+                            },
+                            {
+                                "type": "text",
+                                "text": "WARNING High latency between current time and MarketBook publish time",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " where can I set this high enough please to reduce occurrences of this log?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UUCD6P13J",
+        "type": "message",
+        "ts": "1615487174.091800",
+        "client_msg_id": "a17f1511-1904-476d-9114-fa99f4209340",
+        "text": "```latency = time.time() - (market_book.publish_time_epoch \/ 1e3)\nif latency &gt; 2:```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6898272ab81",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6898272ab810e419c2c9ca9af1e53da8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0012-72.png",
+            "first_name": "Lee",
+            "real_name": "Lee U",
+            "display_name": "Lee",
+            "team": "T4G9NBD2M",
+            "name": "lunswor",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "jdty",
+                "elements": [
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "latency = time.time() - (market_book.publish_time_epoch \/ 1e3)\nif latency > 2:"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UUCD6P13J",
+        "type": "message",
+        "ts": "1615487197.092100",
+        "edited": {
+            "user": "UUCD6P13J",
+            "ts": "1615487209.000000"
+        },
+        "client_msg_id": "371192ab-5cc4-4fb6-9c7f-07abe2101135",
+        "text": "as far as i know it's not configurable",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6898272ab81",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6898272ab810e419c2c9ca9af1e53da8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0012-72.png",
+            "first_name": "Lee",
+            "real_name": "Lee U",
+            "display_name": "Lee",
+            "team": "T4G9NBD2M",
+            "name": "lunswor",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "8yO\/",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "as far as i know it's not configurable"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01B8031PM1",
+        "type": "message",
+        "ts": "1615487252.092400",
+        "client_msg_id": "9094bceb-c10c-4e1f-a1fe-4bfab95c28c8",
+        "text": "thanks",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6e482a0e41b",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6e482a0e41b232f48d801454006dfa56.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0016-72.png",
+            "first_name": "river_shah",
+            "real_name": "river_shah",
+            "display_name": "river_shah",
+            "team": "T4G9NBD2M",
+            "name": "ansar.sa",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "6yd4",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "thanks"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UUCD6P13J",
+        "type": "message",
+        "ts": "1615487383.094600",
+        "client_msg_id": "a1845f78-ccd6-4d1b-aa7e-b00c235fcb15",
+        "text": "if it's only for local stuff where you don't care about the delay then you could add a logging filter but probably will end up causing more harm than good",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6898272ab81",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6898272ab810e419c2c9ca9af1e53da8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0012-72.png",
+            "first_name": "Lee",
+            "real_name": "Lee U",
+            "display_name": "Lee",
+            "team": "T4G9NBD2M",
+            "name": "lunswor",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "KTkI",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "if it's only for local stuff where you don't care about the delay then you could add a logging filter but probably will end up causing more harm than good"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "U01B8031PM1"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "U01C12ZEADQ",
+        "type": "message",
+        "ts": "1615497297.095500",
+        "edited": {
+            "user": "U01C12ZEADQ",
+            "ts": "1615497332.000000"
+        },
+        "client_msg_id": "66ea046d-5f09-4a7b-b58e-8cdbe235b46f",
+        "text": "For those of you who look at the betgenius stream, how often do you poll? I've noticed the site goes every 5 seconds, but looks eternal.. (a websocket would be soo much better, but heh). (I was considering going at 1 \/ sec).",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "e3b7687b0ef8",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-10-06\/1432945617648_e3b7687b0ef86e4f28b8_72.png",
+            "first_name": "Alessio",
+            "real_name": "Alessio",
+            "display_name": "Alessio",
+            "team": "T4G9NBD2M",
+            "name": "alessio",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1615497297.095500",
+        "reply_count": 1,
+        "reply_users_count": 1,
+        "latest_reply": "1615497415.095700",
+        "reply_users": [
+            "U01B8031PM1"
+        ],
+        "replies": [
+            {
+                "user": "U01B8031PM1",
+                "ts": "1615497415.095700"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": false,
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "f57",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "For those of you who look at the betgenius stream, how often do you poll? I've noticed the site goes every 5 seconds, but looks eternal.. (a websocket would be soo much better, but heh). (I was considering going at 1 \/ sec)."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01B8031PM1",
+        "type": "message",
+        "ts": "1615497415.095700",
+        "edited": {
+            "user": "U01B8031PM1",
+            "ts": "1615497440.000000"
+        },
+        "client_msg_id": "998fcce8-8eb1-4970-be75-10ebd5660bd5",
+        "text": "I am going with 1 \/ sec. total noob using this though",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6e482a0e41b",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6e482a0e41b232f48d801454006dfa56.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0016-72.png",
+            "first_name": "river_shah",
+            "real_name": "river_shah",
+            "display_name": "river_shah",
+            "team": "T4G9NBD2M",
+            "name": "ansar.sa",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1615497297.095500",
+        "parent_user_id": "U01C12ZEADQ",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "vt4C",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I am going with 1 \/ sec. total noob using this though"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U0128E7BEHW",
+        "type": "message",
+        "ts": "1615501205.097500",
+        "client_msg_id": "1d75e7ce-bb05-4130-b7b9-548e72b9cac4",
+        "text": "If you replace \"JSON\" with \"html\" in the URL you get the fancy rendering. I'm not sure if this also comes with a websocket implementation that is used to update the page, or if the page just refreshes itself on some kind of timer. But anyway maybe it will point to a useful refresh rate",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gb57a2bdd15a",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/b57a2bdd15acccdb845ce257f38940cc.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "Dave",
+            "real_name": "Dave R",
+            "display_name": "Dave",
+            "team": "T4G9NBD2M",
+            "name": "d7m",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "ddes",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "If you replace \"JSON\" with \"html\" in the URL you get the fancy rendering. I'm not sure if this also comes with a websocket implementation that is used to update the page, or if the page just refreshes itself on some kind of timer. But anyway maybe it will point to a useful refresh rate"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01C12ZEADQ",
+        "type": "message",
+        "ts": "1615501281.097900",
+        "client_msg_id": "7b114ae3-859f-44f5-90cf-683ebf1f9111",
+        "text": "No i already checked, it polls",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "e3b7687b0ef8",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-10-06\/1432945617648_e3b7687b0ef86e4f28b8_72.png",
+            "first_name": "Alessio",
+            "real_name": "Alessio",
+            "display_name": "Alessio",
+            "team": "T4G9NBD2M",
+            "name": "alessio",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "jEN",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "No i already checked, it polls"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U0128E7BEHW",
+        "type": "message",
+        "ts": "1615502482.098400",
+        "client_msg_id": "aee23e67-8cf3-463b-bab3-c7c1d3209316",
+        "text": "Ahh ok fair enough.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gb57a2bdd15a",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/b57a2bdd15acccdb845ce257f38940cc.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "Dave",
+            "real_name": "Dave R",
+            "display_name": "Dave",
+            "team": "T4G9NBD2M",
+            "name": "d7m",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Mwc1h",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Ahh ok fair enough."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

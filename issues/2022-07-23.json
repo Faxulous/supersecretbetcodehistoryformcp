@@ -1,0 +1,461 @@
+[
+    {
+        "user": "U010GM77S4W",
+        "type": "message",
+        "ts": "1658583378.779949",
+        "client_msg_id": "d50ebfe2-bddd-43f8-bb6f-fc854bd73aa6",
+        "text": "So I have a couple of strategies that seem to be causing memory leaks and causing my script to get killed. They are fairly simple strategies by do place lots of bets periodically and also make use of a couple of market contexts per runner. Could these contexts be the cause of my memory leaks? Can I solve by just getting more memory?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "66cae8f5399c",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-03-20\/1004508356769_66cae8f5399cf91a07ae_72.jpg",
+            "first_name": "",
+            "real_name": "mandelbot",
+            "display_name": "mandelbot",
+            "team": "T4G9NBD2M",
+            "name": "demhadbale",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "GppJ",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "So I have a couple of strategies that seem to be causing memory leaks and causing my script to get killed. They are fairly simple strategies by do place lots of bets periodically and also make use of a couple of market contexts per runner. Could these contexts be the cause of my memory leaks? Can I solve by just getting more memory?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U0128E7BEHW",
+        "type": "message",
+        "ts": "1658584599.944949",
+        "client_msg_id": "883f081a-f815-45b5-b267-268e26976d7e",
+        "text": "Worth checking if flumine clears the context on market closure (guessing not) and in that case clearing the context yourself?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gb57a2bdd15a",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/b57a2bdd15acccdb845ce257f38940cc.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "Dave",
+            "real_name": "Dave R",
+            "display_name": "Dave",
+            "team": "T4G9NBD2M",
+            "name": "d7m",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "+95H",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Worth checking if flumine clears the context on market closure (guessing not) and in that case clearing the context yourself?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1658589068.373729",
+        "client_msg_id": "6A385EB2-2163-437B-8A83-BF97C7E711F5",
+        "text": "There are no known memory leaks ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Xyv",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "There are no known memory leaks "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U02RN7YDRQ9",
+        "type": "message",
+        "ts": "1658590656.617469",
+        "client_msg_id": "e4285dbd-08e2-4842-a93f-a4b63b94aa47",
+        "text": "I got caught in some confusion and determined that if one framework is running multiple strategies on the same markets then a single market.context is being shared across all strategies. This is obviously correct since it is a \"market context\" but that was not the way I was using it and was storing strategy specific data for that market in there ! So, since all my strats have my own common base above flumine, I patched things up by making a dict per strategy within the market context like this which was a simple refactor of \"market.context\" usage. Maybe you're in a similar rabbit hole ?\nI also ended up having to solve unique strategy naming for \"customer_order_ref\" on orders so that the blotter could be parsed per strategy if needed.\n\n```class myBaseStrategy(BaseStrategy):\n\n    def add(self) -&gt; None:\n        self.ctxname = self.__class__.__name__\n        ...\n    def check_market_book(self, market, market_book) -&gt; bool:\n        ...\n        if self.ctxname not in market.context:\n            market.context[self.ctxname] = {}\n            market.context[self.ctxname][\"mktBetsThisStrategy\"] = 0\n            ...\n        ...\n\nclass strategy_XYZ(myBaseStrategy):\n\n    def add(self) -&gt; None:\n        myBaseStrategy.add(self)\n        ...```\n",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "ge46f1f8b708",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/e46f1f8b708a630e3191de7b2c42b1d1.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0023-72.png",
+            "first_name": "edblock",
+            "real_name": "edblock",
+            "display_name": "foxwood",
+            "team": "T4G9NBD2M",
+            "name": "eanb",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1658590656.617469",
+        "reply_count": 1,
+        "reply_users_count": 1,
+        "latest_reply": "1658636971.170059",
+        "reply_users": [
+            "U010GM77S4W"
+        ],
+        "replies": [
+            {
+                "user": "U010GM77S4W",
+                "ts": "1658636971.170059"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": false,
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "4z8",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I got caught in some confusion and determined that if one framework is running multiple strategies on the same markets then a single market.context is being shared across all strategies. This is obviously correct since it is a \"market context\" but that was not the way I was using it and was storing strategy specific data for that market in there ! So, since all my strats have my own common base above flumine, I patched things up by making a dict per strategy within the market context like this which was a simple refactor of \"market.context\" usage. Maybe you're in a similar rabbit hole ?\nI also ended up having to solve unique strategy naming for \"customer_order_ref\" on orders so that the blotter could be parsed per strategy if needed.\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "class myBaseStrategy(BaseStrategy):\n\n    def add(self) -> None:\n        self.ctxname = self.__class__.__name__\n        ...\n    def check_market_book(self, market, market_book) -> bool:\n        ...\n        if self.ctxname not in market.context:\n            market.context[self.ctxname] = {}\n            market.context[self.ctxname][\"mktBetsThisStrategy\"] = 0\n            ...\n        ...\n\nclass strategy_XYZ(myBaseStrategy):\n\n    def add(self) -> None:\n        myBaseStrategy.add(self)\n        ..."
+                            }
+                        ],
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": []
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U03CZHR6HM0",
+        "type": "message",
+        "ts": "1658610734.380489",
+        "edited": {
+            "user": "U03CZHR6HM0",
+            "ts": "1658610878.000000"
+        },
+        "client_msg_id": "93690013-5f3f-4586-8b53-04ec8ced07f6",
+        "text": "I confess that I was a little confused when trying to automate my investments via `Betfairlightweight`, so my request for help is as simple as possible:\n\nI have market id `1.201255552` and runner id `55270`, and I want to invest `210.00` in `Back`.\n\nTo login I already used:\n\n```trading = betfairlightweight.APIClient(...)\ntrading.login()```\nNow, to actually make the investment, how should I pass the arguments? As I understand it, I should use:\n\n`betfairlightweight.endpoints.betting.place_orders()`\n\nCould someone show me an example of how I should do it using this values?\nI looked at the `flumine` examples on strategies but couldn't understand (*sorry for my lack of knowledge*).\n\nI just really want to use an option to set the values and place the bet, I'm not generating a complex strategy or anything like that.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "b1c2a2d27548",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2022-04-26\/3427011754679_b1c2a2d27548a7ec94c7_72.png",
+            "first_name": "Start",
+            "real_name": "Start Code",
+            "display_name": "Beginner",
+            "team": "T4G9NBD2M",
+            "name": "teststackoverflowbooy",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "mww",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I confess that I was a little confused when trying to automate my investments via "
+                            },
+                            {
+                                "type": "text",
+                                "text": "Betfairlightweight",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": ", so my request for help is as simple as possible:\n\nI have market id "
+                            },
+                            {
+                                "type": "text",
+                                "text": "1.201255552",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " and runner id "
+                            },
+                            {
+                                "type": "text",
+                                "text": "55270",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": ", and I want to invest "
+                            },
+                            {
+                                "type": "text",
+                                "text": "210.00",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " in "
+                            },
+                            {
+                                "type": "text",
+                                "text": "Back",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": ".\n\nTo login I already used:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "trading = betfairlightweight.APIClient(...)\ntrading.login()"
+                            }
+                        ],
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\nNow, to actually make the investment, how should I pass the arguments? As I understand it, I should use:\n\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "betfairlightweight.endpoints.betting.place_orders()",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n\nCould someone show me an example of how I should do it using this values?\nI looked at the "
+                            },
+                            {
+                                "type": "text",
+                                "text": "flumine",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " examples on strategies but couldn't understand ("
+                            },
+                            {
+                                "type": "text",
+                                "text": "sorry for my lack of knowledge",
+                                "style": {
+                                    "bold": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": ").\n\nI just really want to use an option to set the values and place the bet, I'm not generating a complex strategy or anything like that."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U010GM77S4W",
+        "type": "message",
+        "ts": "1658636971.170059",
+        "client_msg_id": "2a47d3b4-fccf-4428-93fe-c29d6121cf33",
+        "text": "Thanks! But I actually use unique contexts per strategy already",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "66cae8f5399c",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2020-03-20\/1004508356769_66cae8f5399cf91a07ae_72.jpg",
+            "first_name": "",
+            "real_name": "mandelbot",
+            "display_name": "mandelbot",
+            "team": "T4G9NBD2M",
+            "name": "demhadbale",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1658590656.617469",
+        "parent_user_id": "U02RN7YDRQ9",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "SO6z0",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Thanks! But I actually use unique contexts per strategy already"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "U02RN7YDRQ9"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "USWDY5P7G",
+        "type": "message",
+        "ts": "1658645580.260379",
+        "client_msg_id": "E25383B2-CFB1-45DC-9C26-79F950CC7678",
+        "text": "<@U03CZHR6HM0> Check this example out for placing bets: <https:\/\/github.com\/betcode-org\/betfair\/blob\/master\/examples\/exampletwo.py#L25|https:\/\/github.com\/betcode-org\/betfair\/blob\/master\/examples\/exampletwo.py#L25>",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "693b14d0cc42",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2021-08-29\/2425858826214_693b14d0cc42bdbfb86a_72.jpg",
+            "first_name": "Fab",
+            "real_name": "Fab",
+            "display_name": "Fab",
+            "team": "T4G9NBD2M",
+            "name": "me1",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1658645580.260379",
+        "reply_count": 1,
+        "reply_users_count": 1,
+        "latest_reply": "1658704712.458329",
+        "reply_users": [
+            "U03CZHR6HM0"
+        ],
+        "replies": [
+            {
+                "user": "U03CZHR6HM0",
+                "ts": "1658704712.458329"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": false,
+        "attachments": [
+            {
+                "id": 1,
+                "footer_icon": "https:\/\/slack.github.com\/static\/img\/favicon-neutral.png",
+                "color": "24292f",
+                "bot_id": "B021ZJYSBMW",
+                "app_unfurl_url": "https:\/\/github.com\/betcode-org\/betfair\/blob\/master\/examples\/exampletwo.py#L25",
+                "is_app_unfurl": true,
+                "app_id": "A01BP7R4KNY",
+                "fallback": "<https:\/\/github.com\/betcode-org\/betfair\/blob\/master\/examples\/exampletwo.py | exampletwo.py>",
+                "text": "```\n    place_orders = trading.betting.place_orders(\n```",
+                "title": "<https:\/\/github.com\/betcode-org\/betfair\/blob\/master\/examples\/exampletwo.py | exampletwo.py>",
+                "footer": "<https:\/\/github.com\/betcode-org\/betfair|betcode-org\/betfair>",
+                "mrkdwn_in": [
+                    "text"
+                ]
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "peyW",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "user",
+                                "user_id": "U03CZHR6HM0"
+                            },
+                            {
+                                "type": "text",
+                                "text": " Check this example out for placing bets: "
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/betcode-org\/betfair\/blob\/master\/examples\/exampletwo.py#L25",
+                                "text": "https:\/\/github.com\/betcode-org\/betfair\/blob\/master\/examples\/exampletwo.py#L25"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

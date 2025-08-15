@@ -1,0 +1,366 @@
+[
+    {
+        "subtype": "channel_join",
+        "user": "U01C8UB7LSZ",
+        "text": "<@U01C8UB7LSZ> has joined the channel",
+        "type": "message",
+        "ts": "1602315722.301700"
+    },
+    {
+        "subtype": "channel_join",
+        "user": "U01BXF65YH5",
+        "text": "<@U01BXF65YH5> has joined the channel",
+        "type": "message",
+        "ts": "1602339912.301900"
+    },
+    {
+        "user": "U0160KZB6QP",
+        "type": "message",
+        "ts": "1602341069.302400",
+        "client_msg_id": "8ddce485-7950-4cc4-b42d-3437fc074227",
+        "text": "Question on the max number of connections \/ sockets in flumine,\ni used flumine for price recording, becasue i want to manage customised price calculation for different market, i need create few instance of PriceRecorder as example below:\n\nmy_event_id = [30050835]\nstrategy1 = PriceRecorder(\n    market_filter = betfairlightweight.filters.streaming_market_filter(\n        event_type_ids=[\"1\"], market_types=[\"MATCH_ODDS\", \"OVER_UNDER_25\"], event_ids=my_event_id\n    ),\n    market_data_filter = betfairlightweight.filters.streaming_market_data_filter(\n        fields=[\"EX_BEST_OFFERS\", \"EX_MARKET_DEF\", \"EX_TRADED\", \"EX_TRADED_VOL\", \"EX_LTP\"], ladder_levels=3\n    ),\n)\n\nmy_event_id = [30050836]\nstrategy2 = PriceRecorder1(\n    market_filter = betfairlightweight.filters.streaming_market_filter(\n        event_type_ids=[\"1\"], market_types=[\"MATCH_ODDS\", \"OVER_UNDER_25\"], event_ids=my_event_id\n    ),\n    market_data_filter = betfairlightweight.filters.streaming_market_data_filter(\n        fields=[\"EX_BEST_OFFERS\", \"EX_MARKET_DEF\", \"EX_TRADED\", \"EX_TRADED_VOL\", \"EX_LTP\"], ladder_levels=3\n    ),\n)\n\nframework.add_strategy(strategy1)\nframework.add_strategy(strategy2)\n...\n\nWhen i tested with 10 or more strategies, I got exceed max number of connection error, expect 10 got 11. I thought there is not limitation in terms of number of strategies? in this example, Did each strategies create separate socket connection to befair? any possible work around?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g4b10fa305fe",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/4b10fa305fee22d94246281f32cfef31.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0004-72.png",
+            "first_name": "",
+            "real_name": "ricky",
+            "display_name": "ricky",
+            "team": "T4G9NBD2M",
+            "name": "yuqianguk",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "=Wfxs",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Question on the max number of connections \/ sockets in flumine,\ni used flumine for price recording, becasue i want to manage customised price calculation for different market, i need create few instance of PriceRecorder as example below:\n\nmy_event_id = [30050835]\nstrategy1 = PriceRecorder(\n    market_filter = betfairlightweight.filters.streaming_market_filter(\n        event_type_ids=[\"1\"], market_types=[\"MATCH_ODDS\", \"OVER_UNDER_25\"], event_ids=my_event_id\n    ),\n    market_data_filter = betfairlightweight.filters.streaming_market_data_filter(\n        fields=[\"EX_BEST_OFFERS\", \"EX_MARKET_DEF\", \"EX_TRADED\", \"EX_TRADED_VOL\", \"EX_LTP\"], ladder_levels=3\n    ),\n)\n\nmy_event_id = [30050836]\nstrategy2 = PriceRecorder1(\n    market_filter = betfairlightweight.filters.streaming_market_filter(\n        event_type_ids=[\"1\"], market_types=[\"MATCH_ODDS\", \"OVER_UNDER_25\"], event_ids=my_event_id\n    ),\n    market_data_filter = betfairlightweight.filters.streaming_market_data_filter(\n        fields=[\"EX_BEST_OFFERS\", \"EX_MARKET_DEF\", \"EX_TRADED\", \"EX_TRADED_VOL\", \"EX_LTP\"], ladder_levels=3\n    ),\n)\n\nframework.add_strategy(strategy1)\nframework.add_strategy(strategy2)\n...\n\nWhen i tested with 10 or more strategies, I got exceed max number of connection error, expect 10 got 11. I thought there is not limitation in terms of number of strategies? in this example, Did each strategies create separate socket connection to befair? any possible work around?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UUCD6P13J",
+        "type": "message",
+        "ts": "1602341283.304500",
+        "edited": {
+            "user": "UUCD6P13J",
+            "ts": "1602341389.000000"
+        },
+        "client_msg_id": "2183d785-009e-4ca7-abbd-8be1f90fdf39",
+        "text": "If the market_filters are the same (which in your case above they are) it should re use the stream. That's my understanding at least",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6898272ab81",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6898272ab810e419c2c9ca9af1e53da8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0012-72.png",
+            "first_name": "Lee",
+            "real_name": "Lee U",
+            "display_name": "Lee",
+            "team": "T4G9NBD2M",
+            "name": "lunswor",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "S0UD",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "If the market_filters are the same (which in your case above they are) it should re use the stream. That's my understanding at least"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U0160KZB6QP",
+        "type": "message",
+        "ts": "1602341402.306100",
+        "client_msg_id": "64b88190-9dec-44dc-a23b-cb1672d07844",
+        "text": "<@UUCD6P13J> my example \"market_filters\" field have different event_ids",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g4b10fa305fe",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/4b10fa305fee22d94246281f32cfef31.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0004-72.png",
+            "first_name": "",
+            "real_name": "ricky",
+            "display_name": "ricky",
+            "team": "T4G9NBD2M",
+            "name": "yuqianguk",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "I1WS",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "user",
+                                "user_id": "UUCD6P13J"
+                            },
+                            {
+                                "type": "text",
+                                "text": " my example \"market_filters\" field have different event_ids"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UUCD6P13J",
+        "type": "message",
+        "ts": "1602341449.307000",
+        "edited": {
+            "user": "UUCD6P13J",
+            "ts": "1602341922.000000"
+        },
+        "client_msg_id": "41550d59-d0b2-4821-a2ce-d36e843d913a",
+        "text": "ah that would probably be the reason, could you remove the event_ids filter from there and filter within the strategy instead in `check_market_book`?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6898272ab81",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6898272ab810e419c2c9ca9af1e53da8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0012-72.png",
+            "first_name": "Lee",
+            "real_name": "Lee U",
+            "display_name": "Lee",
+            "team": "T4G9NBD2M",
+            "name": "lunswor",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "XOYpi",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "ah that would probably be the reason, could you remove the event_ids filter from there and filter within the strategy instead in "
+                            },
+                            {
+                                "type": "text",
+                                "text": "check_market_book",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U0160KZB6QP",
+        "type": "message",
+        "ts": "1602343384.307500",
+        "client_msg_id": "b6ee8d06-f4c6-4b8a-bd5e-4804be27bdb5",
+        "text": "market_filter=streaming_market_filter(\n        event_type_ids=[1],\n        market_types=[\n            \"MATCH_ODDS\",\n            \"OVER_UNDER_25\",\n        ],\n        country_codes=[\"GB\"],\n    ),\n\nIf above is the high level market filter, Any example how to filter only \"premier league\" in check_market_book?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g4b10fa305fe",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/4b10fa305fee22d94246281f32cfef31.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0004-72.png",
+            "first_name": "",
+            "real_name": "ricky",
+            "display_name": "ricky",
+            "team": "T4G9NBD2M",
+            "name": "yuqianguk",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "=ZhiL",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "market_filter=streaming_market_filter(\n        event_type_ids=[1],\n        market_types=[\n            \"MATCH_ODDS\",\n            \"OVER_UNDER_25\",\n        ],\n        country_codes=[\"GB\"],\n    ),\n\nIf above is the high level market filter, Any example how to filter only \"premier league\" in check_market_book?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UUCD6P13J",
+        "type": "message",
+        "ts": "1602343761.309500",
+        "client_msg_id": "3567ded7-1e34-45e2-860d-c6b7b1fca021",
+        "text": "i've not really looked at football so someone please correct if there's a better way but you could try something like this\n```def check_market_book(self, market, market_book):\n    if (\n        market_book.status not in [\"CLOSED\", \"SUSPENDED\"]\n        and market.market_catalogue.competition.id == 10932509\n    ):\n        return True```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6898272ab81",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6898272ab810e419c2c9ca9af1e53da8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0012-72.png",
+            "first_name": "Lee",
+            "real_name": "Lee U",
+            "display_name": "Lee",
+            "team": "T4G9NBD2M",
+            "name": "lunswor",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "thKx",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "i've not really looked at football so someone please correct if there's a better way but you could try something like this\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "def check_market_book(self, market, market_book):\n    if (\n        market_book.status not in [\"CLOSED\", \"SUSPENDED\"]\n        and market.market_catalogue.competition.id == 10932509\n    ):\n        return True"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "UBS7QANF3",
+                    "U4H19D1D2"
+                ],
+                "count": 2
+            }
+        ]
+    },
+    {
+        "user": "U0160KZB6QP",
+        "type": "message",
+        "ts": "1602343853.310300",
+        "client_msg_id": "bd7da595-7fe1-40cd-9b07-399f03021427",
+        "text": "<@UUCD6P13J> Looks good, i will give a try, thank you for your help.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g4b10fa305fe",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/4b10fa305fee22d94246281f32cfef31.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0004-72.png",
+            "first_name": "",
+            "real_name": "ricky",
+            "display_name": "ricky",
+            "team": "T4G9NBD2M",
+            "name": "yuqianguk",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "LNf=",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "user",
+                                "user_id": "UUCD6P13J"
+                            },
+                            {
+                                "type": "text",
+                                "text": " Looks good, i will give a try, thank you for your help."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UUCD6P13J",
+        "type": "message",
+        "ts": "1602343861.310500",
+        "client_msg_id": "75a1adfc-84a0-4218-80e4-34699911d9fd",
+        "text": "no problem",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g6898272ab81",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/6898272ab810e419c2c9ca9af1e53da8.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0012-72.png",
+            "first_name": "Lee",
+            "real_name": "Lee U",
+            "display_name": "Lee",
+            "team": "T4G9NBD2M",
+            "name": "lunswor",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "9S4",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "no problem"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

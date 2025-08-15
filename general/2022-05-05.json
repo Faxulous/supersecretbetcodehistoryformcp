@@ -1,0 +1,605 @@
+[
+    {
+        "user": "U02B32JBR0B",
+        "type": "message",
+        "ts": "1651762044.708389",
+        "client_msg_id": "be3fecfa-7b08-4760-a14e-058399966db3",
+        "text": "Whats the best way to grab a log of your bets at the end of the day? Having issues using the blotter to collect results on a live strategy the same way as you would for a simulation\n```# Collect results\nresults = []\nfor market in framework.markets:\n    print(\"Profit: {0:.2f}\".format(sum([o.simulated.profit for o in market.blotter])))\n    for order in market.blotter:\n        results.append(\n            [\n                order.market_id,\n                order.selection_id,\n                order.responses.date_time_placed,\n                order.status,\n                order.order_type.price,\n                order.average_price_matched,\n                order.size_matched,\n                order.simulated.profit,\n            ]\n        )```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g0632106e050",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/0632106e05050875d3005a7872ab742a.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0005-72.png",
+            "first_name": "Ivan",
+            "real_name": "Ivan Zhou",
+            "display_name": "Ivan Zhou",
+            "team": "T4G9NBD2M",
+            "name": "ivan.zhou",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "+t5d",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Whats the best way to grab a log of your bets at the end of the day? Having issues using the blotter to collect results on a live strategy the same way as you would for a simulation\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "# Collect results\nresults = []\nfor market in framework.markets:\n    print(\"Profit: {0:.2f}\".format(sum([o.simulated.profit for o in market.blotter])))\n    for order in market.blotter:\n        results.append(\n            [\n                order.market_id,\n                order.selection_id,\n                order.responses.date_time_placed,\n                order.status,\n                order.order_type.price,\n                order.average_price_matched,\n                order.size_matched,\n                order.simulated.profit,\n            ]\n        )"
+                            }
+                        ],
+                        "border": 0
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1651762178.677089",
+        "client_msg_id": "d80c48e3-6585-403c-ac72-732c6b14e2f8",
+        "text": "<https:\/\/github.com\/betcode-org\/flumine\/blob\/master\/examples\/controls\/backtestloggingcontrol.py>",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1651762178.677089",
+        "reply_count": 1,
+        "reply_users_count": 1,
+        "latest_reply": "1651934081.584259",
+        "reply_users": [
+            "U02B32JBR0B"
+        ],
+        "replies": [
+            {
+                "user": "U02B32JBR0B",
+                "ts": "1651934081.584259"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": false,
+        "attachments": [
+            {
+                "id": 1,
+                "footer_icon": "https:\/\/slack.github.com\/static\/img\/favicon-neutral.png",
+                "color": "24292f",
+                "bot_id": "B021ZJYSBMW",
+                "app_unfurl_url": "https:\/\/github.com\/betcode-org\/flumine\/blob\/master\/examples\/controls\/backtestloggingcontrol.py",
+                "is_app_unfurl": true,
+                "app_id": "A01BP7R4KNY",
+                "fallback": "<https:\/\/github.com\/betcode-org\/flumine\/blob\/master\/examples\/controls\/backtestloggingcontrol.py | backtestloggingcontrol.py>",
+                "text": "```\nimport csv\nimport logging\nfrom flumine.controls.loggingcontrols import LoggingControl\nfrom flumine.order.ordertype import OrderTypes\n\nlogger = logging.getLogger(__name__)\n\nFIELDNAMES = [\n    \"bet_id\",\n    \"strategy_name\",\n    \"market_id\",\n    \"selection_id\",\n    \"trade_id\",\n    \"date_time_placed\",\n    \"price\",\n    \"price_matched\",\n    \"size\",\n    \"size_matched\",\n    \"profit\",\n    \"side\",\n    \"elapsed_seconds_executable\",\n    \"order_status\",\n    \"market_note\",\n    \"trade_notes\",\n    \"order_notes\",\n]\n\n\nclass BacktestLoggingControl(LoggingControl):\n    NAME = \"BACKTEST_LOGGING_CONTROL\"\n\n    def __init__(self, *args, **kwargs):\n        super(BacktestLoggingControl, self).__init__(*args, **kwargs)\n        self._setup()\n\n    def _setup(self):\n        with open(\"orders.txt\", \"w\") as m:\n            csv_writer = csv.DictWriter(m, delimiter=\",\", fieldnames=FIELDNAMES)\n            csv_writer.writeheader()\n\n    def _process_cleared_orders_meta(self, event):\n        orders = event.event\n        with open(\"orders.txt\", \"a\") as m:\n            for order in orders:\n                if order.order_type.ORDER_TYPE == OrderTypes.LIMIT:\n                    size = order.order_type.size\n                else:\n                    size = order.order_type.liability\n                if order.order_type.ORDER_TYPE == OrderTypes.MARKET_ON_CLOSE:\n                    price = None\n                else:\n                    price = order.order_type.price\n                try:\n                    order_data = {\n                        \"bet_id\": order.bet_id,\n                        \"strategy_name\": order.trade.strategy,\n                        \"market_id\": order.market_id,\n                        \"selection_id\": order.selection_id,\n                        \"trade_id\": order.trade.id,\n                        \"date_time_placed\": order.responses.date_time_placed,\n                        \"price\": price,\n                        \"price_matched\": order.average_price_matched,\n                        \"size\": size,\n                        \"size_matched\": order.size_matched,\n                        \"profit\": order.simulated.profit,\n                        \"side\": order.side,\n                        \"elapsed_seconds_executable\": order.elapsed_seconds_executable,\n                        \"order_status\": order.status.value,\n                        \"market_note\": order.trade.market_notes,\n                        \"trade_notes\": order.trade.notes_str,\n                        \"order_notes\": order.notes_str,\n                    }\n                    csv_writer = csv.DictWriter(m, delimiter=\",\", fieldnames=FIELDNAMES)\n                    csv_writer.writerow(order_data)\n                except Exception as e:\n                    logger.error(\n                        \"_process_cleared_orders_meta: %s\" % e,\n                        extra={\"order\": order, \"error\": e},\n                    )\n\n        <http:\/\/logger.info|logger.info>(\"Orders updated\", extra={\"order_count\": len(orders)})\n\n    def _process_cleared_markets(self, event):\n        cleared_markets = event.event\n        for cleared_market in cleared_markets.orders:\n            <http:\/\/logger.info|logger.info>(\n                \"Cleared market\",\n                extra={\n                    \"market_id\": cleared_market.market_id,\n                    \"bet_count\": cleared_market.bet_count,\n                    \"profit\": cleared_market.profit,\n                    \"commission\": cleared_market.commission,\n                },\n            )\n\n```",
+                "title": "<https:\/\/github.com\/betcode-org\/flumine\/blob\/master\/examples\/controls\/backtestloggingcontrol.py | backtestloggingcontrol.py>",
+                "footer": "<https:\/\/github.com\/betcode-org\/flumine|betcode-org\/flumine>",
+                "mrkdwn_in": [
+                    "text"
+                ]
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "4ygpM",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/betcode-org\/flumine\/blob\/master\/examples\/controls\/backtestloggingcontrol.py"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1651762212.601939",
+        "client_msg_id": "74271d57-288c-46a0-a60b-36fdd4acfb40",
+        "text": "That is probably the best starting point, tweak that example to suit your exact needs (e.g. can write to a JSON or database if preferable to a .txt file)",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "qFrE",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "That is probably the best starting point, tweak that example to suit your exact needs (e.g. can write to a JSON or database if preferable to a .txt file)"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "heart_eyes",
+                "users": [
+                    "U02B32JBR0B"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "U9JHLMZB4",
+        "type": "message",
+        "ts": "1651762552.154359",
+        "client_msg_id": "7a7d747d-241b-4992-adf4-739e73b6708d",
+        "text": "My preference is to use logging control to write each order to a database when it's placed and then update it when the market is closed.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g951ddcb43e7",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/3951ddcb43e788a387d6daf330dad5ca.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0018-72.png",
+            "first_name": "",
+            "real_name": "Peter Coles",
+            "display_name": "Peter",
+            "team": "T4G9NBD2M",
+            "name": "peter",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "3LI",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "My preference is to use logging control to write each order to a database when it's placed and then update it when the market is closed."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "100",
+                "users": [
+                    "U4H19D1D2"
+                ],
+                "count": 1
+            },
+            {
+                "name": "heart_eyes",
+                "users": [
+                    "U02B32JBR0B"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1651765019.085999",
+        "client_msg_id": "1DEA6B0B-71C4-47AD-B8D5-1297A2B77800",
+        "text": "Loggingcontrol is designed for this ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "pm+Z",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Loggingcontrol is designed for this "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UG03WDCHH",
+        "type": "message",
+        "ts": "1651768661.588689",
+        "client_msg_id": "2e449029-8175-4dd8-879d-26e91acc75aa",
+        "text": "Hey, when adding a Custom Streams for something like dynamically updated model odds that are written to a Db by another process. (is this a good use case?)\n\nHow do I then access that data in my strategy after adding it to the franweork.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g03ce37265ba",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/803ce37265ba7d4f1be4d779100eaa60.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0023-72.png",
+            "first_name": "Rudeger",
+            "real_name": "Rudeger Jamison",
+            "display_name": "Rudeger Jamison",
+            "team": "T4G9NBD2M",
+            "name": "ben.k.muller",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "HVvx",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Hey, when adding a Custom Streams for something like dynamically updated model odds that are written to a Db by another process. (is this a good use case?)\n\nHow do I then access that data in my strategy after adding it to the franweork."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1651768721.825089",
+        "client_msg_id": "4F59CEDB-0899-4F54-B4DB-E427287EE0CD",
+        "text": "Yeah that is the correct use case, use a custom event with a callback to update a market or strategy context ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1651768721.825089",
+        "reply_count": 10,
+        "reply_users_count": 2,
+        "latest_reply": "1652343316.108209",
+        "reply_users": [
+            "UG03WDCHH",
+            "U4H19D1D2"
+        ],
+        "replies": [
+            {
+                "user": "UG03WDCHH",
+                "ts": "1651783153.262309"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1651784332.330039"
+            },
+            {
+                "user": "UG03WDCHH",
+                "ts": "1651789356.126829"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1651813227.558739"
+            },
+            {
+                "user": "UG03WDCHH",
+                "ts": "1652322233.308059"
+            },
+            {
+                "user": "UG03WDCHH",
+                "ts": "1652322907.429029"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1652337154.188429"
+            },
+            {
+                "user": "UG03WDCHH",
+                "ts": "1652337805.388599"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1652342791.027119"
+            },
+            {
+                "user": "UG03WDCHH",
+                "ts": "1652343316.108209"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": true,
+        "last_read": "1652343316.108209",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "T4bWR",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Yeah that is the correct use case, use a custom event with a callback to update a market or strategy context "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UG03WDCHH",
+        "type": "message",
+        "ts": "1651769002.553819",
+        "client_msg_id": "72ddf396-9d82-4f10-82b4-7c134d6d68b3",
+        "text": "<https:\/\/betcode-org.github.io\/flumine\/advanced\/|https:\/\/betcode-org.github.io\/flumine\/advanced\/> - instead of process my event you mean to just actually add to the strategy.context.\n\nGot ya. Thanks.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g03ce37265ba",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/803ce37265ba7d4f1be4d779100eaa60.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0023-72.png",
+            "first_name": "Rudeger",
+            "real_name": "Rudeger Jamison",
+            "display_name": "Rudeger Jamison",
+            "team": "T4G9NBD2M",
+            "name": "ben.k.muller",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "attachments": [
+            {
+                "from_url": "https:\/\/betcode-org.github.io\/flumine\/advanced\/",
+                "service_icon": "https:\/\/betcode-org.github.io\/flumine\/images\/logo.png",
+                "id": 1,
+                "original_url": "https:\/\/betcode-org.github.io\/flumine\/advanced\/",
+                "fallback": "Advanced Usage - flumine",
+                "text": "Betting trading framework",
+                "title": "Advanced Usage - flumine",
+                "title_link": "https:\/\/betcode-org.github.io\/flumine\/advanced\/",
+                "service_name": "betcode-org.github.io"
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "86H",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "link",
+                                "url": "https:\/\/betcode-org.github.io\/flumine\/advanced\/",
+                                "text": "https:\/\/betcode-org.github.io\/flumine\/advanced\/"
+                            },
+                            {
+                                "type": "text",
+                                "text": " - instead of process my event you mean to just actually add to the strategy.context.\n\nGot ya. Thanks."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UG03WDCHH",
+        "type": "message",
+        "ts": "1651783153.262309",
+        "client_msg_id": "fc86f9bf-c58b-4bbe-a87a-a2550edda26b",
+        "text": "Hey mate, how often does the \"run\" command get called? Eg if it's a semi expensive api call and I only want it called once every 5 minutes, is that something I could configure?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g03ce37265ba",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/803ce37265ba7d4f1be4d779100eaa60.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0023-72.png",
+            "first_name": "Rudeger",
+            "real_name": "Rudeger Jamison",
+            "display_name": "Rudeger Jamison",
+            "team": "T4G9NBD2M",
+            "name": "ben.k.muller",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1651768721.825089",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "kscI",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Hey mate, how often does the \"run\" command get called? Eg if it's a semi expensive api call and I only want it called once every 5 minutes, is that something I could configure?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1651784332.330039",
+        "client_msg_id": "5C6C07E6-17F0-4CB9-9C32-343F5207B8B9",
+        "text": "Huh?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1651768721.825089",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "LqyzQ",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Huh?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UG03WDCHH",
+        "type": "message",
+        "ts": "1651789356.126829",
+        "client_msg_id": "8d9231f3-af71-42ea-b1bc-2bbffce03269",
+        "text": "I'm reffering to creating a CustomStream class like specified in the Advanced section of the docs.\n\nThere's a bit where you comment on making \"api calls\" I'm wondering how often those calls are made if it's not actually a stream and it's more technically polling an api.\n\nIs there a way to make sure those calls aren't made too often? Or am I missing the point a bit here...",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g03ce37265ba",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/803ce37265ba7d4f1be4d779100eaa60.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0023-72.png",
+            "first_name": "Rudeger",
+            "real_name": "Rudeger Jamison",
+            "display_name": "Rudeger Jamison",
+            "team": "T4G9NBD2M",
+            "name": "ben.k.muller",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1651768721.825089",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "1LeT",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I'm reffering to creating a CustomStream class like specified in the Advanced section of the docs.\n\nThere's a bit where you comment on making \"api calls\" I'm wondering how often those calls are made if it's not actually a stream and it's more technically polling an api.\n\nIs there a way to make sure those calls aren't made too often? Or am I missing the point a bit here..."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1651813227.558739",
+        "client_msg_id": "0CBBA9A0-588D-4AE5-8A7C-402C7E9CA943",
+        "text": "It’s up to you, in a custom stream they are in a thread you control ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1651768721.825089",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "b6cP",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "It’s up to you, in a custom stream they are in a thread you control "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

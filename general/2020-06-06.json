@@ -1,0 +1,1967 @@
+[
+    {
+        "user": "U013KB5R3T8",
+        "type": "message",
+        "ts": "1591432091.296600",
+        "client_msg_id": "81390cca-9ad1-454c-890a-ba824ec13cc7",
+        "text": "Does anyone have an example of calling the MarketRecorder class in the flumine examples (or similar)? What I mean is something like the marketrecorder.py example where it creates an S3MarketRecorder object:\nstrategy = S3MarketRecorder(\n    name=\"WIN\",\n    market_filter=betfairlightweight.filters.streaming_market_filter(\n        event_type_ids=[\"7\"],\n        country_codes=[\"GB\", \"IE\"],\n        market_types=[\"WIN\"],\n        # market_ids=[\"1.169056942\"],\n        # event_ids=[29671376]\n    ),\n    stream_class=DataStream,\n    context={\n        \"local_dir\": \"\/tmp\",\n        \"bucket\": \"fluminetest\",\n        \"force_update\": False,\n        \"remove_file\": True,\n    },\n)\nbut for the MarketRecorder class instead.\nI'm relatively comfortable with writing small scripts and functions, but I'm a bit overwhelmed trying to figure out what arguments I do and don't have to hand to a big class like MarketRecorder which inherits the BaseStrategy class when I instantiate it. Is learning to use the inspect module the right path for me to get more comfortable with this problem in the future?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g1886eb1420c",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/1886eb1420c6a6756bad7f0c2c3a7124.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Will Morrison",
+            "display_name": "Will Morrison",
+            "team": "T4G9NBD2M",
+            "name": "wam32008",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "1Yt4",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Does anyone have an example of calling the MarketRecorder class in the flumine examples (or similar)? What I mean is something like the marketrecorder.py example where it creates an S3MarketRecorder object:\nstrategy = S3MarketRecorder(\n    name=\"WIN\",\n    market_filter=betfairlightweight.filters.streaming_market_filter(\n        event_type_ids=[\"7\"],\n        country_codes=[\"GB\", \"IE\"],\n        market_types=[\"WIN\"],\n        # market_ids=[\"1.169056942\"],\n        # event_ids=[29671376]\n    ),\n    stream_class=DataStream,\n    context={\n        \"local_dir\": \"\/tmp\",\n        \"bucket\": \"fluminetest\",\n        \"force_update\": False,\n        \"remove_file\": True,\n    },\n)\nbut for the MarketRecorder class instead.\nI'm relatively comfortable with writing small scripts and functions, but I'm a bit overwhelmed trying to figure out what arguments I do and don't have to hand to a big class like MarketRecorder which inherits the BaseStrategy class when I instantiate it. Is learning to use the inspect module the right path for me to get more comfortable with this problem in the future?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1591432921.297100",
+        "client_msg_id": "2e64ea14-2fbe-4da6-a1b8-7026835f4c3c",
+        "text": "Need to improve the docs on this but here is a simple example:\n\n```strategy = MarketRecorder(\n    name=\"WIN\",\n    market_filter=betfairlightweight.filters.streaming_market_filter(\n        event_type_ids=[\"7\"],\n        country_codes=[\"GB\", \"IE\"],\n        market_types=[\"WIN\"],\n    ),\n    stream_class=DataStream,\n    context={\n        \"local_dir\": \"\/tmp\",\n        \"force_update\": False,\n        \"remove_file\": True,\n    },\n)```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "avxTs",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Need to improve the docs on this but here is a simple example:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "strategy = MarketRecorder(\n    name=\"WIN\",\n    market_filter=betfairlightweight.filters.streaming_market_filter(\n        event_type_ids=[\"7\"],\n        country_codes=[\"GB\", \"IE\"],\n        market_types=[\"WIN\"],\n    ),\n    stream_class=DataStream,\n    context={\n        \"local_dir\": \"\/tmp\",\n        \"force_update\": False,\n        \"remove_file\": True,\n    },\n)"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1591432993.297800",
+        "client_msg_id": "401e3120-6221-4816-9d8e-6f1af617f2c3",
+        "text": "Name is optional, want to remove stream_class for this and instead default to DataStream, context is the important part",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "6aqrz",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Name is optional, want to remove stream_class for this and instead default to DataStream, context is the important part"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U013KB5R3T8",
+        "type": "message",
+        "ts": "1591433577.298200",
+        "client_msg_id": "d9c2d055-1298-46f5-b315-06e1ac864fde",
+        "text": "Thanks liam, I'll give this a try!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g1886eb1420c",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/1886eb1420c6a6756bad7f0c2c3a7124.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Will Morrison",
+            "display_name": "Will Morrison",
+            "team": "T4G9NBD2M",
+            "name": "wam32008",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "JL9A",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Thanks liam, I'll give this a try!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U013KB5R3T8",
+        "type": "message",
+        "ts": "1591436995.307200",
+        "client_msg_id": "6fbf776d-7793-418c-bb3d-f3178e43bf11",
+        "text": "Worked like a charm, now I'm using flumine for the first time! If the following is too much \"teach me Python\", I apologize, and please feel free to tell me to just go learn more basics: I'm trying to make my first example custom strategy object, where I would like to modify the flumine example.py class to try to place a BACK on a single player if his batb is above a certain threshhold. In betfairlightweight, I was able to get these values by looping through the market book and using lines like\nmarket_book._data[\"runners\"][x][\"ex\"][\"availableToBack\"][lvl][\"price\"], where x and lvl are loop variables\nwhich I was able to figure out by using the variable explorer in my Spyder IDE too dig into the market_book object after running one loop of examplestreaming.py. Now in flumine I don't know how to get a similar thing to investigate. I want to take a conditional like this from the example -\nif (\n                runner.status == \"ACTIVE\"\n                and runner.last_price_traded\n                and runner.selection_id == 11946248\n\nand instead of runner.last_price_traded, say something like\n                and runner.ex.availableToBack[0][\"price\"] &gt;= 3.0\n\nIs there an easy way for me to figure out what all the runner.[things] available are named?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g1886eb1420c",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/1886eb1420c6a6756bad7f0c2c3a7124.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Will Morrison",
+            "display_name": "Will Morrison",
+            "team": "T4G9NBD2M",
+            "name": "wam32008",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "\/9Xz",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Worked like a charm, now I'm using flumine for the first time! If the following is too much \"teach me Python\", I apologize, and please feel free to tell me to just go learn more basics: I'm trying to make my first example custom strategy object, where I would like to modify the flumine example.py class to try to place a BACK on a single player if his batb is above a certain threshhold. In betfairlightweight, I was able to get these values by looping through the market book and using lines like\nmarket_book._data[\"runners\"][x][\"ex\"][\"availableToBack\"][lvl][\"price\"], where x and lvl are loop variables\nwhich I was able to figure out by using the variable explorer in my Spyder IDE too dig into the market_book object after running one loop of examplestreaming.py. Now in flumine I don't know how to get a similar thing to investigate. I want to take a conditional like this from the example -\nif (\n                runner.status == \"ACTIVE\"\n                and runner.last_price_traded\n                and runner.selection_id == 11946248\n\nand instead of runner.last_price_traded, say something like\n                and runner.ex.availableToBack[0][\"price\"] >= 3.0\n\nIs there an easy way for me to figure out what all the runner.[things] available are named?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U013KB5R3T8",
+        "type": "message",
+        "ts": "1591437938.309000",
+        "client_msg_id": "9ef9fbd6-1115-4b3e-911d-2b0faf4e83f4",
+        "text": "By running just\nclient = clients.BetfairClient(trading)\n\nframework = Flumine(client=client)\n\nstrategy = ExampleStrategy(\n    market_filter=streaming_market_filter(market_ids=[\"1.170643189\"]),\n    streaming_timeout=2,\n)\nat the end, but not the framework.run(), I think I was able to get what I needed!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g1886eb1420c",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/1886eb1420c6a6756bad7f0c2c3a7124.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Will Morrison",
+            "display_name": "Will Morrison",
+            "team": "T4G9NBD2M",
+            "name": "wam32008",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "GgR",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "By running just\nclient = clients.BetfairClient(trading)\n\nframework = Flumine(client=client)\n\nstrategy = ExampleStrategy(\n    market_filter=streaming_market_filter(market_ids=[\"1.170643189\"]),\n    streaming_timeout=2,\n)\nat the end, but not the framework.run(), I think I was able to get what I needed!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1591439736.310300",
+        "client_msg_id": "D0F98F85-430F-42BA-A6FB-EE635DE15102",
+        "text": "Recommend backtesting when testing strategies, debugger is helpful in investigating objects, have a search as we were discussing it the other week ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "fzX4",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Recommend backtesting when testing strategies, debugger is helpful in investigating objects, have a search as we were discussing it the other week "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U011VL3CA2Y",
+        "type": "message",
+        "ts": "1591459754.313000",
+        "client_msg_id": "8cd6d85f-baf9-432f-87ca-6994d637b4f1",
+        "text": "I am a bit puzzled here: Trying to find out why I am so damn slow, I noticed that on average every call to output_queue.get() takes about 0.2 seconds to return an item. This is when according to queue.qsize(), there are thousands of elements in the queue. what could be going on here? Could those be the locks in place?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g1ec6e88d1e4",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/1ec6e88d1e4dd0bff349d83e9edba6bd.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0005-72.png",
+            "first_name": "Ruben",
+            "real_name": "Ruben",
+            "display_name": "Ruben",
+            "team": "T4G9NBD2M",
+            "name": "tduqruqtgtpiioibww",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "lyGy",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I am a bit puzzled here: Trying to find out why I am so damn slow, I noticed that on average every call to output_queue.get() takes about 0.2 seconds to return an item. This is when according to queue.qsize(), there are thousands of elements in the queue. what could be going on here? Could those be the locks in place?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U011VL3CA2Y",
+        "type": "message",
+        "ts": "1591459879.313300",
+        "client_msg_id": "65b29694-9ada-4cf4-867c-d2c09b3922fb",
+        "text": "The code I am using is equivalent to examplestreaming.py",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g1ec6e88d1e4",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/1ec6e88d1e4dd0bff349d83e9edba6bd.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0005-72.png",
+            "first_name": "Ruben",
+            "real_name": "Ruben",
+            "display_name": "Ruben",
+            "team": "T4G9NBD2M",
+            "name": "tduqruqtgtpiioibww",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "rJD1",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "The code I am using is equivalent to examplestreaming.py"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U011VL3CA2Y",
+        "type": "message",
+        "ts": "1591459903.313500",
+        "client_msg_id": "f31dca75-e9f4-44ac-939a-871f305423e0",
+        "text": "any help is more than welcome",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g1ec6e88d1e4",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/1ec6e88d1e4dd0bff349d83e9edba6bd.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0005-72.png",
+            "first_name": "Ruben",
+            "real_name": "Ruben",
+            "display_name": "Ruben",
+            "team": "T4G9NBD2M",
+            "name": "tduqruqtgtpiioibww",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Zzj",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "any help is more than welcome"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U92CASP1B",
+        "type": "message",
+        "ts": "1591460205.314500",
+        "client_msg_id": "86d52558-849d-45f4-8c45-880ab08dd3d7",
+        "text": "My guess is that you do something very CPU intensive, 0.2s is a lot.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g374352c822f",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a374352c822fa856c4cfdd782bbb8669.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0007-72.png",
+            "first_name": "Jonatan",
+            "real_name": "Jonatan",
+            "display_name": "Jonatan (skyw)",
+            "team": "T4G9NBD2M",
+            "name": "almen.jonatan",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "GcTt",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "My guess is that you do something very CPU intensive, 0.2s is a lot."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U92CASP1B",
+        "type": "message",
+        "ts": "1591460272.315800",
+        "client_msg_id": "4d22447c-1be9-4e0b-a8c6-4c482b2c0be0",
+        "text": "Try just printing market Id  and see what latency you get.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g374352c822f",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a374352c822fa856c4cfdd782bbb8669.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0007-72.png",
+            "first_name": "Jonatan",
+            "real_name": "Jonatan",
+            "display_name": "Jonatan (skyw)",
+            "team": "T4G9NBD2M",
+            "name": "almen.jonatan",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Siqh",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Try just printing market Id  and see what latency you get."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U011VL3CA2Y",
+        "type": "message",
+        "ts": "1591460375.316800",
+        "client_msg_id": "0e70e884-d6ed-4292-b83b-ace1c5853359",
+        "text": "funny thing is, the 0.2 seconds come from a measurement inside a `while True: output_queue.get()`",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g1ec6e88d1e4",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/1ec6e88d1e4dd0bff349d83e9edba6bd.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0005-72.png",
+            "first_name": "Ruben",
+            "real_name": "Ruben",
+            "display_name": "Ruben",
+            "team": "T4G9NBD2M",
+            "name": "tduqruqtgtpiioibww",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "\/XZf8",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "funny thing is, the 0.2 seconds come from a measurement inside a "
+                            },
+                            {
+                                "type": "text",
+                                "text": "while True: output_queue.get()",
+                                "style": {
+                                    "code": true
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U92CASP1B",
+        "type": "message",
+        "ts": "1591460478.317500",
+        "client_msg_id": "83b1a45a-7086-4c76-a21e-26c557c036d7",
+        "text": "Yeah, that's the latency I'm referring to :)",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g374352c822f",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a374352c822fa856c4cfdd782bbb8669.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0007-72.png",
+            "first_name": "Jonatan",
+            "real_name": "Jonatan",
+            "display_name": "Jonatan (skyw)",
+            "team": "T4G9NBD2M",
+            "name": "almen.jonatan",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "bxcOx",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Yeah, that's the latency I'm referring to :)"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U011VL3CA2Y",
+        "type": "message",
+        "ts": "1591460796.318500",
+        "client_msg_id": "6ff1c118-a1c9-496e-a2ad-275dfcd6adfa",
+        "text": "regardless of how CPU-intensive the code is, a call to queue.get() should return \"instantly\" if the queue is not empty, or am I missing something obvious?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g1ec6e88d1e4",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/1ec6e88d1e4dd0bff349d83e9edba6bd.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0005-72.png",
+            "first_name": "Ruben",
+            "real_name": "Ruben",
+            "display_name": "Ruben",
+            "team": "T4G9NBD2M",
+            "name": "tduqruqtgtpiioibww",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "HNn+",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "regardless of how CPU-intensive the code is, a call to queue.get() should return \"instantly\" if the queue is not empty, or am I missing something obvious?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U92CASP1B",
+        "type": "message",
+        "ts": "1591460866.319600",
+        "client_msg_id": "ec2263d5-4141-4531-9a19-f2a1cc2b5fd6",
+        "text": "I believe so, as soon as it has acquired the lock, from my understanding.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g374352c822f",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a374352c822fa856c4cfdd782bbb8669.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0007-72.png",
+            "first_name": "Jonatan",
+            "real_name": "Jonatan",
+            "display_name": "Jonatan (skyw)",
+            "team": "T4G9NBD2M",
+            "name": "almen.jonatan",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "3PDV",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I believe so, as soon as it has acquired the lock, from my understanding."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U011VL3CA2Y",
+        "type": "message",
+        "ts": "1591460982.321000",
+        "client_msg_id": "eed73d88-b01e-4e2f-bf7b-7e93bb97a34c",
+        "text": "so are those 0.2 seconds spent in acquiring the lock? that seems like a lot of time",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g1ec6e88d1e4",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/1ec6e88d1e4dd0bff349d83e9edba6bd.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0005-72.png",
+            "first_name": "Ruben",
+            "real_name": "Ruben",
+            "display_name": "Ruben",
+            "team": "T4G9NBD2M",
+            "name": "tduqruqtgtpiioibww",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "dtcl",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "so are those 0.2 seconds spent in acquiring the lock? that seems like a lot of time"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U92CASP1B",
+        "type": "message",
+        "ts": "1591461047.322200",
+        "client_msg_id": "393ec2d2-f88c-4769-a5e2-866c9be4b412",
+        "text": "Can you post your while loop code ?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g374352c822f",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a374352c822fa856c4cfdd782bbb8669.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0007-72.png",
+            "first_name": "Jonatan",
+            "real_name": "Jonatan",
+            "display_name": "Jonatan (skyw)",
+            "team": "T4G9NBD2M",
+            "name": "almen.jonatan",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "VVXDk",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Can you post your while loop code ?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U011VL3CA2Y",
+        "type": "message",
+        "ts": "1591461291.322600",
+        "client_msg_id": "afef1763-3656-46ac-a832-ddbef2f6c42f",
+        "text": "```stream = trading.streaming.create_stream(listener=listener)\nstreaming_unique_id = stream.subscribe_to_markets(market_filter=market_filter,\n                                                  market_data_filter=market_data_filter,\n                                                  heartbeat_ms=500)\n\nt = threading.Thread(target=stream.start, daemon=True)\nt.start()\n\nevent_db = {}\nmarket_db = {}\nbefore_queue_get = time.time()\ncount = 0\nwhile True:\n   count += 1\n    market_books = output_queue.get()\n    current_time = time.time()\n   print(f\"Average time: {(current_time - before_queue_get)\/count}\")```\n",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g1ec6e88d1e4",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/1ec6e88d1e4dd0bff349d83e9edba6bd.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0005-72.png",
+            "first_name": "Ruben",
+            "real_name": "Ruben",
+            "display_name": "Ruben",
+            "team": "T4G9NBD2M",
+            "name": "tduqruqtgtpiioibww",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "oBQ",
+                "elements": [
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "stream = trading.streaming.create_stream(listener=listener)\nstreaming_unique_id = stream.subscribe_to_markets(market_filter=market_filter,\n                                                  market_data_filter=market_data_filter,\n                                                  heartbeat_ms=500)\n\nt = threading.Thread(target=stream.start, daemon=True)\nt.start()\n\nevent_db = {}\nmarket_db = {}\nbefore_queue_get = time.time()\ncount = 0\nwhile True:\n   count += 1\n    market_books = output_queue.get()\n    current_time = time.time()\n   print(f\"Average time: {(current_time - before_queue_get)\/count}\")"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": []
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U011VL3CA2Y",
+        "type": "message",
+        "ts": "1591461307.323000",
+        "client_msg_id": "eaad4f69-e058-4a24-8a15-c2b2be283c77",
+        "text": "this converges to an average time of 0.2 seconds \/ get",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g1ec6e88d1e4",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/1ec6e88d1e4dd0bff349d83e9edba6bd.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0005-72.png",
+            "first_name": "Ruben",
+            "real_name": "Ruben",
+            "display_name": "Ruben",
+            "team": "T4G9NBD2M",
+            "name": "tduqruqtgtpiioibww",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "G0UAT",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "this converges to an average time of 0.2 seconds \/ get"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1591461894.326200",
+        "client_msg_id": "b5960c9c-c6bf-4e07-8501-d26e8fa4d297",
+        "text": "What's the first reading?\n\nI wouldn't print while trying to time something, it's an incredibly expensive operation",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "eYpV",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "What's the first reading?\n\nI wouldn't print while trying to time something, it's an incredibly expensive operation"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U011VL3CA2Y",
+        "type": "message",
+        "ts": "1591462104.326600",
+        "client_msg_id": "a940ffdf-5ac6-4407-907f-6f644075d62d",
+        "text": "the first reading is ~0.7 seconds",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g1ec6e88d1e4",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/1ec6e88d1e4dd0bff349d83e9edba6bd.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0005-72.png",
+            "first_name": "Ruben",
+            "real_name": "Ruben",
+            "display_name": "Ruben",
+            "team": "T4G9NBD2M",
+            "name": "tduqruqtgtpiioibww",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "esfy",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "the first reading is ~0.7 seconds"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U92CASP1B",
+        "type": "message",
+        "ts": "1591462289.327800",
+        "client_msg_id": "ca256bf6-92f9-417c-bc03-a48edc6254c0",
+        "text": "Just to be clear, you are sure there are thousands of messages in the queue? depending on which market you subscribe to 5 messages\/s could be reasonable, which is a lower bound since it yields market books.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g374352c822f",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a374352c822fa856c4cfdd782bbb8669.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0007-72.png",
+            "first_name": "Jonatan",
+            "real_name": "Jonatan",
+            "display_name": "Jonatan (skyw)",
+            "team": "T4G9NBD2M",
+            "name": "almen.jonatan",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "15F17",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Just to be clear, you are sure there are thousands of messages in the queue? depending on which market you subscribe to 5 messages\/s could be reasonable, which is a lower bound since it yields market books."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U011VL3CA2Y",
+        "type": "message",
+        "ts": "1591462507.328500",
+        "client_msg_id": "005291b1-4abb-4df2-80d3-dd87d60091f6",
+        "text": "Yes; I am beginning to think it might have to do with qsize(). I will look into that, will post here when I find out what is going on",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g1ec6e88d1e4",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/1ec6e88d1e4dd0bff349d83e9edba6bd.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0005-72.png",
+            "first_name": "Ruben",
+            "real_name": "Ruben",
+            "display_name": "Ruben",
+            "team": "T4G9NBD2M",
+            "name": "tduqruqtgtpiioibww",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "CbJBI",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Yes; I am beginning to think it might have to do with qsize(). I will look into that, will post here when I find out what is going on"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U011VL3CA2Y",
+        "type": "message",
+        "ts": "1591462526.328800",
+        "client_msg_id": "7fe6fc87-93a1-4e94-877a-7e5b655a4e02",
+        "text": "thanks for your tips guys",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g1ec6e88d1e4",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/1ec6e88d1e4dd0bff349d83e9edba6bd.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0005-72.png",
+            "first_name": "Ruben",
+            "real_name": "Ruben",
+            "display_name": "Ruben",
+            "team": "T4G9NBD2M",
+            "name": "tduqruqtgtpiioibww",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "1GsQ",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "thanks for your tips guys"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UN1497LJC",
+        "type": "message",
+        "ts": "1591467614.329300",
+        "client_msg_id": "f2a0019b-2dd8-4fd3-94f9-e7662355b832",
+        "text": "Hi Liam. It was for backtesting. And for my matches on my own orders. I've had a look through the code, but can't find it myself.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "ga740a9a5a57",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/1a740a9a5a57633755157e17ebe96b27.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0018-72.png",
+            "first_name": "",
+            "real_name": "JonJonJon",
+            "display_name": "JonJonJon",
+            "team": "T4G9NBD2M",
+            "name": "edgetrading2",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1591422835.290000",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "W5a7",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Hi Liam. It was for backtesting. And for my matches on my own orders. I've had a look through the code, but can't find it myself."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01093Z1KF0",
+        "type": "message",
+        "ts": "1591468139.329900",
+        "client_msg_id": "7ee146e6-b0a0-4b17-ba08-d00658b9faa1",
+        "text": "Trying to retrieve a list of football markets but every time I run the following code:",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g0e065c4f427",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/0e065c4f4274fd0a565c58690dfc4a58.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0023-72.png",
+            "first_name": "",
+            "real_name": "brightcake",
+            "display_name": "brightcake",
+            "team": "T4G9NBD2M",
+            "name": "vlademelianov",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "\/wm01",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Trying to retrieve a list of football markets but every time I run the following code:"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01093Z1KF0",
+        "type": "message",
+        "ts": "1591468141.330100",
+        "client_msg_id": "41e9b153-f35b-40b7-a21b-b6904000e8c8",
+        "text": "```market_catalogues = trading.betting.list_market_catalogue(\n    filter=filters.market_filter(\n        event_type_ids=[football_id],\n        turn_in_play_enabled=True,\n        # in_play_only=True,\n        market_type_codes=['MATCH_ODDS','CORRECT_SCORE'],\n    ),\n    market_projection=[\n        \"RUNNER_DESCRIPTION\",\n        \"RUNNER_METADATA\",\n        \"COMPETITION\",\n        \"EVENT\",\n        \"EVENT_TYPE\",\n        \"MARKET_DESCRIPTION\",\n        \"MARKET_START_TIME\",\n        ],\n    max_results=1000,\n)```\n",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g0e065c4f427",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/0e065c4f4274fd0a565c58690dfc4a58.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0023-72.png",
+            "first_name": "",
+            "real_name": "brightcake",
+            "display_name": "brightcake",
+            "team": "T4G9NBD2M",
+            "name": "vlademelianov",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "74bq",
+                "elements": [
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "market_catalogues = trading.betting.list_market_catalogue(\n    filter=filters.market_filter(\n        event_type_ids=[football_id],\n        turn_in_play_enabled=True,\n        # in_play_only=True,\n        market_type_codes=['MATCH_ODDS','CORRECT_SCORE'],\n    ),\n    market_projection=[\n        \"RUNNER_DESCRIPTION\",\n        \"RUNNER_METADATA\",\n        \"COMPETITION\",\n        \"EVENT\",\n        \"EVENT_TYPE\",\n        \"MARKET_DESCRIPTION\",\n        \"MARKET_START_TIME\",\n        ],\n    max_results=1000,\n)"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": []
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01093Z1KF0",
+        "type": "message",
+        "ts": "1591468159.330400",
+        "client_msg_id": "9966d14e-b55e-47f7-931c-de4a587e96ae",
+        "text": "I seem to get hit with a 'TOO_MUCH_DATA' error code",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g0e065c4f427",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/0e065c4f4274fd0a565c58690dfc4a58.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0023-72.png",
+            "first_name": "",
+            "real_name": "brightcake",
+            "display_name": "brightcake",
+            "team": "T4G9NBD2M",
+            "name": "vlademelianov",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "lqjk",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I seem to get hit with a 'TOO_MUCH_DATA' error code"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01093Z1KF0",
+        "type": "message",
+        "ts": "1591468163.330600",
+        "client_msg_id": "1cc08745-f4f4-494b-a570-db9a81041081",
+        "text": "with no real explanation",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g0e065c4f427",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/0e065c4f4274fd0a565c58690dfc4a58.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0023-72.png",
+            "first_name": "",
+            "real_name": "brightcake",
+            "display_name": "brightcake",
+            "team": "T4G9NBD2M",
+            "name": "vlademelianov",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "YbKQ",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "with no real explanation"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1591468185.331000",
+        "client_msg_id": "483105b5-2c83-4e82-9aee-b45b06e097cc",
+        "text": "<https:\/\/docs.developer.betfair.com\/display\/1smk3cen4v3lu3yomq5qye0ni\/Market+Data+Request+Limits>",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "rQN",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "link",
+                                "url": "https:\/\/docs.developer.betfair.com\/display\/1smk3cen4v3lu3yomq5qye0ni\/Market+Data+Request+Limits"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1591468201.331500",
+        "client_msg_id": "c070e3f8-ab79-4b89-89a2-ffdf944fe482",
+        "text": "Get rid of RUNNER_METADATA and MARKET_DESCRIPTION",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "BpY",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Get rid of RUNNER_METADATA and MARKET_DESCRIPTION"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01093Z1KF0",
+        "type": "message",
+        "ts": "1591468324.332000",
+        "client_msg_id": "d858211a-6e66-4640-9dde-04e824d6bc85",
+        "text": "alright cheers, that solved it for me",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g0e065c4f427",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/0e065c4f4274fd0a565c58690dfc4a58.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0023-72.png",
+            "first_name": "",
+            "real_name": "brightcake",
+            "display_name": "brightcake",
+            "team": "T4G9NBD2M",
+            "name": "vlademelianov",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "bJA",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "alright cheers, that solved it for me"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01093Z1KF0",
+        "type": "message",
+        "ts": "1591468329.332200",
+        "client_msg_id": "24c354a4-ac83-4cb9-bf91-b4fc2cd2edb7",
+        "text": "was not aware of this point system they have",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g0e065c4f427",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/0e065c4f4274fd0a565c58690dfc4a58.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0023-72.png",
+            "first_name": "",
+            "real_name": "brightcake",
+            "display_name": "brightcake",
+            "team": "T4G9NBD2M",
+            "name": "vlademelianov",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Yl\/TR",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "was not aware of this point system they have"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1591468386.332800",
+        "client_msg_id": "78475230-8ac4-42fa-a621-e250d1e97c23",
+        "text": "Back in my day you had to actually read the API documentation :wink:",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1591468386.332800",
+        "reply_count": 3,
+        "reply_users_count": 2,
+        "latest_reply": "1591468752.336400",
+        "reply_users": [
+            "U01093Z1KF0",
+            "UBS7QANF3"
+        ],
+        "replies": [
+            {
+                "user": "U01093Z1KF0",
+                "ts": "1591468462.333400"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1591468568.334800"
+            },
+            {
+                "user": "U01093Z1KF0",
+                "ts": "1591468752.336400"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": false,
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "8KP2N",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Back in my day you had to actually read the API documentation "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "wink",
+                                "unicode": "1f609"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "sunglasses",
+                "users": [
+                    "U4H19D1D2"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "U01093Z1KF0",
+        "type": "message",
+        "ts": "1591468428.333300",
+        "client_msg_id": "ffb73d87-d3e0-4000-a8ab-51cf1b6e7f41",
+        "text": "i don't have much experience with APIs in general, but based on my admitedly limited experience Betfair seem to be really stingy with data etc",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g0e065c4f427",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/0e065c4f4274fd0a565c58690dfc4a58.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0023-72.png",
+            "first_name": "",
+            "real_name": "brightcake",
+            "display_name": "brightcake",
+            "team": "T4G9NBD2M",
+            "name": "vlademelianov",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "41gl6",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "i don't have much experience with APIs in general, but based on my admitedly limited experience Betfair seem to be really stingy with data etc"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01093Z1KF0",
+        "type": "message",
+        "ts": "1591468462.333400",
+        "client_msg_id": "9800d074-e547-4577-8d3e-3d1a6280dad1",
+        "text": "oof",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g0e065c4f427",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/0e065c4f4274fd0a565c58690dfc4a58.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0023-72.png",
+            "first_name": "",
+            "real_name": "brightcake",
+            "display_name": "brightcake",
+            "team": "T4G9NBD2M",
+            "name": "vlademelianov",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1591468386.332800",
+        "parent_user_id": "UBS7QANF3",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "ZXdE",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "oof"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1591468535.334600",
+        "client_msg_id": "1246D031-30CD-4B28-B135-BDF13FB278D3",
+        "text": "Can look at adding the marketbook.publish_time, if you add an issue on GitHub we can add it in ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1591422835.290000",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Dg=",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Can look at adding the marketbook.publish_time, if you add an issue on GitHub we can add it in "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "UN1497LJC"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1591468568.334800",
+        "client_msg_id": "13c32a86-3352-4c90-8e9b-e812a009b932",
+        "text": "No judgement, I think it's interesting that the accessibility of betfairlightweight means that you can potentially use the API without ever looking at the documentation",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1591468386.332800",
+        "parent_user_id": "UBS7QANF3",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "AHy",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "No judgement, I think it's interesting that the accessibility of betfairlightweight means that you can potentially use the API without ever looking at the documentation"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1591468633.336300",
+        "client_msg_id": "CCA1F5C2-5F92-4AFF-8AC3-5C4A7E99853B",
+        "text": "<@U011VL3CA2Y> I don’t understand your code as it will only show the first time accurately but even then you are timing the initial subscribe + response which is slow by default, what the filter? ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "\/MO",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "user",
+                                "user_id": "U011VL3CA2Y"
+                            },
+                            {
+                                "type": "text",
+                                "text": " I don’t understand your code as it will only show the first time accurately but even then you are timing the initial subscribe + response which is slow by default, what the filter? "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01093Z1KF0",
+        "type": "message",
+        "ts": "1591468752.336400",
+        "client_msg_id": "b05f04d3-d321-4e6a-8654-7911ac7ee6fc",
+        "text": "The documentation isn't exactly a bed time read so it's quite nice to not have to do that :smile:",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g0e065c4f427",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/0e065c4f4274fd0a565c58690dfc4a58.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0023-72.png",
+            "first_name": "",
+            "real_name": "brightcake",
+            "display_name": "brightcake",
+            "team": "T4G9NBD2M",
+            "name": "vlademelianov",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1591468386.332800",
+        "parent_user_id": "UBS7QANF3",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "sd++",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "The documentation isn't exactly a bed time read so it's quite nice to not have to do that "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "smile",
+                                "unicode": "1f604"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1591469043.337600",
+        "client_msg_id": "0ADA8F16-AAAD-45F5-BCE3-F46E26454A92",
+        "text": "And if you want to measure your latency you should be comparing the time to `MarketBook.publish_time`",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Tg8",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "And if you want to measure your latency you should be comparing the time to "
+                            },
+                            {
+                                "type": "text",
+                                "text": "MarketBook.publish_time",
+                                "style": {
+                                    "code": true
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UN1497LJC",
+        "type": "message",
+        "ts": "1591469317.337800",
+        "client_msg_id": "7a31f722-dcb8-48a3-b323-1d34046c238e",
+        "text": "Hmmm... Not sure if I explained what I meant clearly, as I'm not sure if it's related to the market book.\n\nSo I am using flumine to place limit orders. The orders sometimes get matched. I'm trying to find the times of those matches.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "ga740a9a5a57",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/1a740a9a5a57633755157e17ebe96b27.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0018-72.png",
+            "first_name": "",
+            "real_name": "JonJonJon",
+            "display_name": "JonJonJon",
+            "team": "T4G9NBD2M",
+            "name": "edgetrading2",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1591422835.290000",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "i8+Gm",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Hmmm... Not sure if I explained what I meant clearly, as I'm not sure if it's related to the market book.\n\nSo I am using flumine to place limit orders. The orders sometimes get matched. I'm trying to find the times of those matches."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1591474376.338900",
+        "client_msg_id": "5BB0A72A-68D8-4CAC-B188-B33E458A255F",
+        "text": "Backtesting uses market books to calculate matching so storing the publish time would give you the time of your fills ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1591422835.290000",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "AEpYf",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Backtesting uses market books to calculate matching so storing the publish time would give you the time of your fills "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UN1497LJC",
+        "type": "message",
+        "ts": "1591474410.339100",
+        "client_msg_id": "252864b8-5ed9-48d8-8713-b6172d39a583",
+        "text": "Ah OK. Thanks for clarification. I'll add the issue later.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "ga740a9a5a57",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/1a740a9a5a57633755157e17ebe96b27.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0018-72.png",
+            "first_name": "",
+            "real_name": "JonJonJon",
+            "display_name": "JonJonJon",
+            "team": "T4G9NBD2M",
+            "name": "edgetrading2",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1591422835.290000",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "wVjA",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Ah OK. Thanks for clarification. I'll add the issue later."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U011VL3CA2Y",
+        "type": "message",
+        "ts": "1591478122.339600",
+        "client_msg_id": "812ee426-4469-42ac-88cd-84cf5d16a472",
+        "text": "I am actually interested in measuring how much every call to `output_queue.get()`  takes",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g1ec6e88d1e4",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/1ec6e88d1e4dd0bff349d83e9edba6bd.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0005-72.png",
+            "first_name": "Ruben",
+            "real_name": "Ruben",
+            "display_name": "Ruben",
+            "team": "T4G9NBD2M",
+            "name": "tduqruqtgtpiioibww",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "I4qL",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I am actually interested in measuring how much every call to "
+                            },
+                            {
+                                "type": "text",
+                                "text": "output_queue.get()",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "  takes"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U011VL3CA2Y",
+        "type": "message",
+        "ts": "1591478149.340200",
+        "client_msg_id": "f7b07f56-081a-4ebb-a99a-f1ef16825a74",
+        "text": "so I measure the elapsed time since the beginning, and divide by the number of calls",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g1ec6e88d1e4",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/1ec6e88d1e4dd0bff349d83e9edba6bd.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0005-72.png",
+            "first_name": "Ruben",
+            "real_name": "Ruben",
+            "display_name": "Ruben",
+            "team": "T4G9NBD2M",
+            "name": "tduqruqtgtpiioibww",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "PkIg",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "so I measure the elapsed time since the beginning, and divide by the number of calls"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U011VL3CA2Y",
+        "type": "message",
+        "ts": "1591488881.341600",
+        "text": "I agree that this is a much better way to measure latency",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g1ec6e88d1e4",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/1ec6e88d1e4dd0bff349d83e9edba6bd.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0005-72.png",
+            "first_name": "Ruben",
+            "real_name": "Ruben",
+            "display_name": "Ruben",
+            "team": "T4G9NBD2M",
+            "name": "tduqruqtgtpiioibww",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "attachments": [
+            {
+                "fallback": "[June 6th, 2020 8:44 PM] liam: And if you want to measure your latency you should be comparing the time to `MarketBook.publish_time`",
+                "ts": "1591469043.337600",
+                "author_id": "U4H19D1D2",
+                "author_subname": "liam",
+                "channel_id": "C4HL6EZTQ",
+                "is_msg_unfurl": true,
+                "text": "And if you want to measure your latency you should be comparing the time to `MarketBook.publish_time`",
+                "author_name": "liam",
+                "author_link": "https:\/\/betfairlightweight.slack.com\/team\/U4H19D1D2",
+                "author_icon": "https:\/\/secure.gravatar.com\/avatar\/cebcb7a36736d2bfe25c0fcb2d1dcc66.jpg?s=48&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0023-48.png",
+                "mrkdwn_in": [
+                    "text"
+                ],
+                "color": "D0D0D0",
+                "from_url": "https:\/\/betfairlightweight.slack.com\/archives\/C4HL6EZTQ\/p1591469043337600",
+                "is_share": true,
+                "footer": "Slack conversation"
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "VXJ",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I agree that this is a much better way to measure latency"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "subtype": "channel_join",
+        "user": "U014Z5VG5GS",
+        "text": "<@U014Z5VG5GS> has joined the channel",
+        "type": "message",
+        "ts": "1591513002.343800"
+    }
+]

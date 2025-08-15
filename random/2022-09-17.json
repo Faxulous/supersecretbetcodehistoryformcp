@@ -1,0 +1,1183 @@
+[
+    {
+        "text": "Last 24hrs, tbh yours seems high but as long as you aren't getting latency warnings I don't see an issue",
+        "files": [
+            {
+                "id": "F043HQCBSN4",
+                "mode": "hidden_by_limit"
+            }
+        ],
+        "upload": false,
+        "user": "U4H19D1D2",
+        "display_as_bot": false,
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "lTAV3",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Last 24hrs, tbh yours seems high but as long as you aren't getting latency warnings I don't see an issue"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "type": "message",
+        "ts": "1663402074.209359",
+        "client_msg_id": "751d8aa7-b853-4a5c-bbda-9e80e4e86751"
+    },
+    {
+        "user": "UPMUFSGCR",
+        "type": "message",
+        "ts": "1663407251.988259",
+        "client_msg_id": "53404c39-1e1c-4daf-976b-723c467eb39f",
+        "text": "Thanks for sharing. How many Flumine scripts do you run per instance? I think I am doing 4 or 5. I like the simplicity of having everything on one machine",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "31c0bb5a442c",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2019-10-28\/812386967189_31c0bb5a442c5b8d2c61_72.png",
+            "first_name": "Jon",
+            "real_name": "Jon Jon Jon Jon Jon Jon Jon Jon",
+            "display_name": "Jonjonjon",
+            "team": "T4G9NBD2M",
+            "name": "fcmisc",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "pfXt",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Thanks for sharing. How many Flumine scripts do you run per instance? I think I am doing 4 or 5. I like the simplicity of having everything on one machine"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1663418423.863989",
+        "edited": {
+            "user": "UFTBRB3F1",
+            "ts": "1663418614.000000"
+        },
+        "client_msg_id": "cb1dc813-ba6b-4a33-b7c8-937496d77042",
+        "text": "Just to come back to this again, I'm having trouble passing parameters, my data is as follows (should it be a list of tuples instead or does it not matter), which are all grouped by event_id):\n\n```[['Y:\/betcode\/unzipped_files\\\\1.201875723', 'Y:\/betcode\/unzipped_files\\\\1.202058901', 'Y:\/betcode\/unzipped_files\\\\1.202058903', 'Y:\/betcode\/unzipped_files\\\\1.202058896', 'Y:\/betcode\/unzipped_files\\\\1.202058942', 'Y:\/betcode\/unzipped_files\\\\1.202020603', 'Y:\/betcode\/unzipped_files\\\\1.202020594', 'Y:\/betcode\/unzipped_files\\\\1.202020596', 'Y:\/betcode\/unzipped_files\\\\1.202020589'], ['Y:\/betcode\/unzipped_files\\\\1.202347516', 'Y:\/betcode\/unzipped_files\\\\1.202108260', 'Y:\/betcode\/unzipped_files\\\\1.202108265', 'Y:\/betcode\/unzipped_files\\\\1.202108267', 'Y:\/betcode\/unzipped_files\\\\1.202108306', 'Y:\/betcode\/unzipped_files\\\\1.202228381', 'Y:\/betcode\/unzipped_files\\\\1.202228342', 'Y:\/betcode\/unzipped_files\\\\1.202228335'], ['Y:\/betcode\/unzipped_files\\\\1.202261399', 'Y:\/betcode\/unzipped_files\\\\1.202261353', 'Y:\/betcode\/unzipped_files\\\\1.202261358', 'Y:\/betcode\/unzipped_files\\\\1.202261360', 'Y:\/betcode\/unzipped_files\\\\1.202277070', 'Y:\/betcode\/unzipped_files\\\\1.202277031', 'Y:\/betcode\/unzipped_files\\\\1.202277029', 'Y:\/betcode\/unzipped_files\\\\1.202277024'], ['Y:\/betcode\/unzipped_files\\\\1.202093071', 'Y:\/betcode\/unzipped_files\\\\1.202084753', 'Y:\/betcode\/unzipped_files\\\\1.202084748', 'Y:\/betcode\/unzipped_files\\\\1.202084755', 'Y:\/betcode\/unzipped_files\\\\1.202084762', 'Y:\/betcode\/unzipped_files\\\\1.202346073', 'Y:\/betcode\/unzipped_files\\\\1.202346071']]```\nMy function is as follows:\n\n```def start_backtest_a(chunked_markets, max_workers, snapshot, strategy_names, event_list):\n\n    with ProcessPoolExecutor(max_workers=max_workers) as executor:\n        futures = executor.map(startup, chunked_markets, snapshot, strategy_names, event_list)```\nWhere startup is essentially this (from Liam's example in the docs):\n\n```def run_process(markets):\n    client = clients.SimulatedClient()\n    framework = FlumineSimulation(client=client)\n    strategy = LowestLayer(\n        market_filter={\"markets\": markets},\n        context={\"stake\": 2},\n    )\n    with mock_patch(\"builtins.open\", smart_open.open):\n        framework.add_strategy(strategy)\n        framework.run()```\nBut it needs some parameters, which are causing the issue.\n\nsnapshot is a static dict (e.g. {'a': 1})\nstrategy_names is a list of strategy names (e.g. ['strat_a', 'strat_b'])\nevent_list is either a list of historic data (e.g. scores data to map against a betfair event) or a bool, so in this instance False as I'm not passing any historic data.\n\nHowever it appears to be expecting an iterable for each parameter.\n\n```Traceback (most recent call last):\n  File \"D:\/Python37\/webpages\/backtesting.py\", line 484, in &lt;module&gt;\n    output_list = start_backtest_a(chunked_markets, CPUs, snapshot, strategy_names, event_list)\n  File \"D:\/Python37\/webpages\/backtesting.py\", line 346, in start_backtest_a\n    futures = executor.map(startup, chunked_markets, snapshot, strategy_names, event_list)\n  File \"D:\\Python38\\lib\\concurrent\\futures\\process.py\", line 674, in map\n    results = super().map(partial(_process_chunk, fn),\n  File \"D:\\Python38\\lib\\concurrent\\futures\\_base.py\", line 600, in map\n    fs = [self.submit(fn, *args) for args in zip(*iterables)]\n  File \"D:\\Python38\\lib\\concurrent\\futures\\_base.py\", line 600, in &lt;listcomp&gt;\n    fs = [self.submit(fn, *args) for args in zip(*iterables)]\n  File \"D:\\Python38\\lib\\concurrent\\futures\\process.py\", line 182, in _get_chunks\n    it = zip(*iterables)\nTypeError: 'bool' object is not iterable```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1663340593.295379",
+        "parent_user_id": "U9JHLMZB4",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "eu3M",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Just to come back to this again, I'm having trouble passing parameters, my data is as follows (should it be a list of tuples instead or does it not matter), which are all grouped by event_id):\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "[['Y:\/betcode\/unzipped_files\\\\1.201875723', 'Y:\/betcode\/unzipped_files\\\\1.202058901', 'Y:\/betcode\/unzipped_files\\\\1.202058903', 'Y:\/betcode\/unzipped_files\\\\1.202058896', 'Y:\/betcode\/unzipped_files\\\\1.202058942', 'Y:\/betcode\/unzipped_files\\\\1.202020603', 'Y:\/betcode\/unzipped_files\\\\1.202020594', 'Y:\/betcode\/unzipped_files\\\\1.202020596', 'Y:\/betcode\/unzipped_files\\\\1.202020589'], ['Y:\/betcode\/unzipped_files\\\\1.202347516', 'Y:\/betcode\/unzipped_files\\\\1.202108260', 'Y:\/betcode\/unzipped_files\\\\1.202108265', 'Y:\/betcode\/unzipped_files\\\\1.202108267', 'Y:\/betcode\/unzipped_files\\\\1.202108306', 'Y:\/betcode\/unzipped_files\\\\1.202228381', 'Y:\/betcode\/unzipped_files\\\\1.202228342', 'Y:\/betcode\/unzipped_files\\\\1.202228335'], ['Y:\/betcode\/unzipped_files\\\\1.202261399', 'Y:\/betcode\/unzipped_files\\\\1.202261353', 'Y:\/betcode\/unzipped_files\\\\1.202261358', 'Y:\/betcode\/unzipped_files\\\\1.202261360', 'Y:\/betcode\/unzipped_files\\\\1.202277070', 'Y:\/betcode\/unzipped_files\\\\1.202277031', 'Y:\/betcode\/unzipped_files\\\\1.202277029', 'Y:\/betcode\/unzipped_files\\\\1.202277024'], ['Y:\/betcode\/unzipped_files\\\\1.202093071', 'Y:\/betcode\/unzipped_files\\\\1.202084753', 'Y:\/betcode\/unzipped_files\\\\1.202084748', 'Y:\/betcode\/unzipped_files\\\\1.202084755', 'Y:\/betcode\/unzipped_files\\\\1.202084762', 'Y:\/betcode\/unzipped_files\\\\1.202346073', 'Y:\/betcode\/unzipped_files\\\\1.202346071']]"
+                            }
+                        ],
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\nMy function is as follows:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "def start_backtest_a(chunked_markets, max_workers, snapshot, strategy_names, event_list):\n\n    with ProcessPoolExecutor(max_workers=max_workers) as executor:\n        futures = executor.map(startup, chunked_markets, snapshot, strategy_names, event_list)"
+                            }
+                        ],
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\nWhere startup is essentially this (from Liam's example in the docs):\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "def run_process(markets):\n    client = clients.SimulatedClient()\n    framework = FlumineSimulation(client=client)\n    strategy = LowestLayer(\n        market_filter={\"markets\": markets},\n        context={\"stake\": 2},\n    )\n    with mock_patch(\"builtins.open\", smart_open.open):\n        framework.add_strategy(strategy)\n        framework.run()"
+                            }
+                        ],
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\nBut it needs some parameters, which are causing the issue.\n\nsnapshot is a static dict (e.g. {'a': 1})\nstrategy_names is a list of strategy names (e.g. ['strat_a', 'strat_b'])\nevent_list is either a list of historic data (e.g. scores data to map against a betfair event) or a bool, so in this instance False as I'm not passing any historic data.\n\nHowever it appears to be expecting an iterable for each parameter.\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Traceback (most recent call last):\n  File \"D:\/Python37\/webpages\/backtesting.py\", line 484, in <module>\n    output_list = start_backtest_a(chunked_markets, CPUs, snapshot, strategy_names, event_list)\n  File \"D:\/Python37\/webpages\/backtesting.py\", line 346, in start_backtest_a\n    futures = executor.map(startup, chunked_markets, snapshot, strategy_names, event_list)\n  File \"D:\\Python38\\lib\\concurrent\\futures\\process.py\", line 674, in map\n    results = super().map(partial(_process_chunk, fn),\n  File \"D:\\Python38\\lib\\concurrent\\futures\\_base.py\", line 600, in map\n    fs = [self.submit(fn, *args) for args in zip(*iterables)]\n  File \"D:\\Python38\\lib\\concurrent\\futures\\_base.py\", line 600, in <listcomp>\n    fs = [self.submit(fn, *args) for args in zip(*iterables)]\n  File \"D:\\Python38\\lib\\concurrent\\futures\\process.py\", line 182, in _get_chunks\n    it = zip(*iterables)\nTypeError: 'bool' object is not iterable"
+                            }
+                        ],
+                        "border": 0
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1663418697.331339",
+        "client_msg_id": "8817b154-3902-42f0-8ed0-8f10274c7111",
+        "text": "I tried an alternative approach too, but this doesn't work (i.e. it runs, but the same issue arises in that it seems to split up the markets, even though they are grouped), so I think I'm using this incorrectly:\n\n```def start_backtest_b(chunked_markets, max_workers, snapshot, strategy_names, event_list):\n\n    with ProcessPoolExecutor(max_workers=max_workers) as executor:\n        futures = [executor.submit(startup, chunk, snapshot, strategy_names, event_list) for chunk in chunked_markets]```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1663340593.295379",
+        "parent_user_id": "U9JHLMZB4",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "NbEg",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I tried an alternative approach too, but this doesn't work (i.e. it runs, but the same issue arises in that it seems to split up the markets, even though they are grouped), so I think I'm using this incorrectly:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "def start_backtest_b(chunked_markets, max_workers, snapshot, strategy_names, event_list):\n\n    with ProcessPoolExecutor(max_workers=max_workers) as executor:\n        futures = [executor.submit(startup, chunk, snapshot, strategy_names, event_list) for chunk in chunked_markets]"
+                            }
+                        ],
+                        "border": 0
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1663418842.981809",
+        "client_msg_id": "611bca5a-ee17-4391-b7f8-05818890c783",
+        "text": "So I believe if I'm understanding correctly, if I can pass a single parameter for each of the parameters it expects (apart from markets) then it should work.\n\nBut I can't work out how to do that.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1663340593.295379",
+        "parent_user_id": "U9JHLMZB4",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "=8=",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "So I believe if I'm understanding correctly, if I can pass a single parameter for each of the parameters it expects (apart from markets) then it should work.\n\nBut I can't work out how to do that."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1663420686.698479",
+        "client_msg_id": "541b2c04-958e-4061-9775-e39f50740b41",
+        "text": "Actually ignoring those parameters for a second (I just hard coded some default values in the startup function for now).\n\nIt still doesn't work, when I pass my data, the way it chunks it, is not as expected, it doesn't keep each group of markets together.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1663340593.295379",
+        "parent_user_id": "U9JHLMZB4",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "X2L=",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Actually ignoring those parameters for a second (I just hard coded some default values in the startup function for now).\n\nIt still doesn't work, when I pass my data, the way it chunks it, is not as expected, it doesn't keep each group of markets together."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1663427041.131949",
+        "client_msg_id": "E6E7A565-29FA-4901-B9A0-614E63942F52",
+        "text": "1 per CPU",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "oWhAf",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "1 per CPU"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "rocket",
+                "users": [
+                    "UPMUFSGCR"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1663427447.743229",
+        "client_msg_id": "564c4145-55be-4e7f-bd3c-57e58be9dcc8",
+        "text": "This is following on from the earlier conversation about backtesting with multi-proc (but isn't specific to chunking and event_processing, or at least I don't think it is...that said who knows).\n\nSo, I pass a list of markets to this function called startup, which runs as expected, in this instance it calls a worker, which doesn't run as expected.\n\nHere is the startup function (this appears to run correctly, i.e. I can see the markets are loaded, market catalogues added and profit \/ orders always show as 0, but at least that confirms the script is working):\n\n```def startup(markets, snapshot={}, strategy_names=strategy_names, event_list=False):\n    logger = logging.getLogger()\n\n    custom_format = \"%(asctime) %(levelname) %(message)\"\n    log_handler = logging.StreamHandler()\n    formatter = jsonlogger.JsonFormatter(custom_format)\n    formatter.converter = time.gmtime\n    log_handler.setFormatter(formatter)\n    logger.addHandler(log_handler)\n    logger.setLevel(logging.CRITICAL)  # Set to logging.CRITICAL to speed up simulation\n\n    start_time = get_utc_time()\n\n    settings = [setting for setting in rc if setting['on'] is True and setting['strategy_name'] in strategy_names]\n\n    client = clients.SimulatedClient(simulated_full_match=False)\n\n    framework = FlumineSimulation(client=client)\n\n    print('Start of chunk', '-' * 150)\n    for market in markets:\n        print(check_event_id(market))\n\n    with mock_patch(\"builtins.open\", smart_open.open):\n        for s in settings:\n            max_selection_exposure = s['max_selection_exposure'] if true_or_false(s['max_selection_exposure']) != False else None\n            if s['strategy_type'] == 'simple':\n\n                ### ---- Remember to change listener kwargs , \"listener_kwargs\": {\"seconds_to_start\": 7200, \"inplay\":False}\n\n                strategy = betting_strategy(start_time=start_time, settings=s, paper=client.paper_trade,\n                                            market_filter={\"markets\": markets, \"listener_kwargs\": {\"seconds_to_start\": 7200, \"inplay\":False}, \"event_processing\": True},\n                market_data_filter=streaming_market_data_filter(\n                fields=[\n                    \"EX_ALL_OFFERS\",\n                    \"EX_TRADED\",\n                    \"EX_TRADED_VOL\",\n                    \"EX_LTP\",\n                    \"EX_MARKET_DEF\",\n                    \"SP_TRADED\",\n                    \"SP_PROJECTED\",\n                ]\n                ),\n                streaming_timeout=2,\n                max_selection_exposure=max_selection_exposure,\n                max_order_exposure=s['max_order_exposure'],\n                conflate_ms=s['conflate'],\n                name=s['strategy_name'],\n\n                )\n\n                framework.add_strategy(strategy)\n\n\n        worker_settings_list = [\n            {'function_name': 'get_in_play_football_data', 'function': get_in_play_football_data, 'func_kwargs': None ,'interval': 15, 'start_delay': 0}\n        ]\n\n        for f in get_worker_functions(settings):\n            function_setting = [ws for ws in worker_settings_list if str(ws['function_name']) == f['function_name']]\n            if len(function_setting) &gt; 0:\n                function_setting = function_setting[0]\n\n                framework.add_worker((BackgroundWorker(\n                            framework,\n                            function_setting['function'],\n                            func_kwargs=function_setting['func_kwargs'],\n                            interval=function_setting['interval'],\n                            start_delay=function_setting['start_delay']\n                        )))\n\n        ''' Always add Risk Calc worker '''\n        framework.add_worker(\n            BackgroundWorker(\n                framework,\n                calc_risk,\n                func_kwargs=None,\n                interval=0.5,\n                start_delay=5\n            ))\n\n        ''' Add in Middleware to get Market Catalogue '''\n        framework.add_market_middleware(MarketCatalogueMiddleware())\n\n        framework.run()\n\n    for market in framework.markets:\n        print(\"Order Count: {0}\".format(len([o for o in market.blotter])))\n        print(\"Profit: {0:.2f}\".format(sum([o.profit for o in market.blotter])))\n\n    if strategy_names[0] == 'market_data_extract':\n        return write_market_context_to_json(framework)\n    else:\n        return write_pl_to_json(framework,group_by_market=False)```\nNow, when I noticed the worker wasn't producing anything I did a quick test as follows:\n\n```def get_in_play_football_data(context: dict, flumine) -&gt; None:\n    print('ABCD')\n    s = [m for m in flumine.markets]\n    print(s)```\nOn screen I see the following:\n\n```1.202093022 added\nABCD\n[]\nOrder Count: 0\nProfit: 0.00```\nSo the worker is running as we can see the printout, but how can s be an empty list?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "e\/Mr",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "This is following on from the earlier conversation about backtesting with multi-proc (but isn't specific to chunking and event_processing, or at least I don't think it is...that said who knows).\n\nSo, I pass a list of markets to this function called startup, which runs as expected, in this instance it calls a worker, which doesn't run as expected.\n\nHere is the startup function (this appears to run correctly, i.e. I can see the markets are loaded, market catalogues added and profit \/ orders always show as 0, but at least that confirms the script is working):\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "def startup(markets, snapshot={}, strategy_names=strategy_names, event_list=False):\n    logger = logging.getLogger()\n\n    custom_format = \"%(asctime) %(levelname) %(message)\"\n    log_handler = logging.StreamHandler()\n    formatter = jsonlogger.JsonFormatter(custom_format)\n    formatter.converter = time.gmtime\n    log_handler.setFormatter(formatter)\n    logger.addHandler(log_handler)\n    logger.setLevel(logging.CRITICAL)  # Set to logging.CRITICAL to speed up simulation\n\n    start_time = get_utc_time()\n\n    settings = [setting for setting in rc if setting['on'] is True and setting['strategy_name'] in strategy_names]\n\n    client = clients.SimulatedClient(simulated_full_match=False)\n\n    framework = FlumineSimulation(client=client)\n\n    print('Start of chunk', '-' * 150)\n    for market in markets:\n        print(check_event_id(market))\n\n    with mock_patch(\"builtins.open\", smart_open.open):\n        for s in settings:\n            max_selection_exposure = s['max_selection_exposure'] if true_or_false(s['max_selection_exposure']) != False else None\n            if s['strategy_type'] == 'simple':\n\n                ### ---- Remember to change listener kwargs , \"listener_kwargs\": {\"seconds_to_start\": 7200, \"inplay\":False}\n\n                strategy = betting_strategy(start_time=start_time, settings=s, paper=client.paper_trade,\n                                            market_filter={\"markets\": markets, \"listener_kwargs\": {\"seconds_to_start\": 7200, \"inplay\":False}, \"event_processing\": True},\n                market_data_filter=streaming_market_data_filter(\n                fields=[\n                    \"EX_ALL_OFFERS\",\n                    \"EX_TRADED\",\n                    \"EX_TRADED_VOL\",\n                    \"EX_LTP\",\n                    \"EX_MARKET_DEF\",\n                    \"SP_TRADED\",\n                    \"SP_PROJECTED\",\n                ]\n                ),\n                streaming_timeout=2,\n                max_selection_exposure=max_selection_exposure,\n                max_order_exposure=s['max_order_exposure'],\n                conflate_ms=s['conflate'],\n                name=s['strategy_name'],\n\n                )\n\n                framework.add_strategy(strategy)\n\n\n        worker_settings_list = [\n            {'function_name': 'get_in_play_football_data', 'function': get_in_play_football_data, 'func_kwargs': None ,'interval': 15, 'start_delay': 0}\n        ]\n\n        for f in get_worker_functions(settings):\n            function_setting = [ws for ws in worker_settings_list if str(ws['function_name']) == f['function_name']]\n            if len(function_setting) > 0:\n                function_setting = function_setting[0]\n\n                framework.add_worker((BackgroundWorker(\n                            framework,\n                            function_setting['function'],\n                            func_kwargs=function_setting['func_kwargs'],\n                            interval=function_setting['interval'],\n                            start_delay=function_setting['start_delay']\n                        )))\n\n        ''' Always add Risk Calc worker '''\n        framework.add_worker(\n            BackgroundWorker(\n                framework,\n                calc_risk,\n                func_kwargs=None,\n                interval=0.5,\n                start_delay=5\n            ))\n\n        ''' Add in Middleware to get Market Catalogue '''\n        framework.add_market_middleware(MarketCatalogueMiddleware())\n\n        framework.run()\n\n    for market in framework.markets:\n        print(\"Order Count: {0}\".format(len([o for o in market.blotter])))\n        print(\"Profit: {0:.2f}\".format(sum([o.profit for o in market.blotter])))\n\n    if strategy_names[0] == 'market_data_extract':\n        return write_market_context_to_json(framework)\n    else:\n        return write_pl_to_json(framework,group_by_market=False)"
+                            }
+                        ],
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\nNow, when I noticed the worker wasn't producing anything I did a quick test as follows:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "def get_in_play_football_data(context: dict, flumine) -> None:\n    print('ABCD')\n    s = [m for m in flumine.markets]\n    print(s)"
+                            }
+                        ],
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\nOn screen I see the following:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "1.202093022 added\nABCD\n[]\nOrder Count: 0\nProfit: 0.00"
+                            }
+                        ],
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\nSo the worker is running as we can see the printout, but how can s be an empty list?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1663438055.106189",
+        "client_msg_id": "9703EBA7-7540-4CCF-86AC-6D711DB43802",
+        "text": "Workers (threads) don't work when simulating (single thread)",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "dtlqd",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Workers (threads) don't work when simulating (single thread)"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1663439626.768689",
+        "client_msg_id": "7931eafe-4abe-417a-8cd6-056a7aeb16c2",
+        "text": "But they work when not using multi proc?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "vnL",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "But they work when not using multi proc?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1663439646.692369",
+        "client_msg_id": "3AA33D9D-FA1F-4E9C-982F-3CF1046C7286",
+        "text": "No",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "psz",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "No"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1663439656.089759",
+        "client_msg_id": "8996FC84-F7EA-4E47-B9F3-90B1C9EAF9C6",
+        "text": "You want to be using middleware ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "d+Mkv",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "You want to be using middleware "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1663439866.226929",
+        "client_msg_id": "e84b4e11-b01a-4395-b066-ce40f304863b",
+        "text": "I can probably re-write what I need in a single thread in all honesty for this one, I've got into the habit of using workers as in live otherwise I end up with a lot of latency warnings (probably not for this one as it happens, its not very CPU intensive).",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "s0c3c",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I can probably re-write what I need in a single thread in all honesty for this one, I've got into the habit of using workers as in live otherwise I end up with a lot of latency warnings (probably not for this one as it happens, its not very CPU intensive)."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1663439898.208799",
+        "client_msg_id": "8581fa68-445d-458a-a16c-62bedec2bb09",
+        "text": "That said I'll try and think how to re-write for middleware as I'd like to get more up to speed with how that works",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "uCWQ",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "That said I'll try and think how to re-write for middleware as I'd like to get more up to speed with how that works"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1663439964.198019",
+        "client_msg_id": "14B8A20A-B853-4236-90E1-8AEB3B345C22",
+        "text": "Yeah that is the issue, when simulating we have to process event by event, not really possible to get a worker operating in a different thread in sync ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "kR=",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Yeah that is the issue, when simulating we have to process event by event, not really possible to get a worker operating in a different thread in sync "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1663440602.825709",
+        "client_msg_id": "ec6bbbd4-4c79-417f-a266-ddeae62be0db",
+        "text": "Makes sense, what confused me is that I have strategies that use workers to calc fair value and orders should only be placed if market.context is populated with a fair value for each runner....and these produce results! So if the workers don't function fully I need to look into how they were doing that, as it shouldn't be happening!!!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "8a+I",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Makes sense, what confused me is that I have strategies that use workers to calc fair value and orders should only be placed if market.context is populated with a fair value for each runner....and these produce results! So if the workers don't function fully I need to look into how they were doing that, as it shouldn't be happening!!!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1663440852.881059",
+        "client_msg_id": "62CB305B-BF5E-40D2-82B5-D9CEFE3E4CA6",
+        "text": "Looking at the code they actually will be added and started when simulating, should probably stop this ",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "vn2",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Looking at the code they actually will be added and started when simulating, should probably stop this "
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1663440902.940069",
+        "client_msg_id": "f5af90e4-d2ac-4f5c-88ed-bbc3019fc34d",
+        "text": "Ah so that would explain why I get odd results, okay cool that makes sense then. Will try and work out a middleware solution",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "72OG",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Ah so that would explain why I get odd results, okay cool that makes sense then. Will try and work out a middleware solution"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1663444323.343639",
+        "client_msg_id": "8cfe5165-593c-4ce6-ad59-64946a25f2fa",
+        "text": "Sorry to dwell on this, but looking at: <https:\/\/betcode-org.github.io\/flumine\/markets\/#middleware>\n\nI tried the following:\n\n```from flumine.markets.middleware import Middleware\n\nclass FootballMiddleware(Middleware):\n    def __call__(self, market) -&gt; None:\n        if market.event_type_id in ['1', 1] and market.market_catalogue is not None \\\n            and market.market_book is not None and market.seconds_to_start &lt;= 7200 \\\n            and market.market_book.status not in ['CLOSED', 'SUSPENDED'] \\\n            and market.market_type not in ['HALF_TIME_SCORE']:\n            update_market(market)```\nAdding to the framework as follows:\n\n```framework.add_logging_control(FootballMiddleware())```\nBut I get the following:\n\n```concurrent.futures.process._RemoteTraceback: \n\"\"\"\nTraceback (most recent call last):\n  File \"D:\\Python38\\lib\\concurrent\\futures\\process.py\", line 239, in _process_worker\n    r = call_item.fn(*call_item.args, **call_item.kwargs)\n  File \"D:\\Python37\\webpages\\backtesting.py\", line 170, in startup\n    framework.add_logging_control(FootballMiddleware())\n  File \"D:\\Python38\\lib\\site-packages\\flumine\\baseflumine.py\", line 124, in add_logging_control\n    <http:\/\/logger.info|logger.info>(\"Adding logging control {0}\".format(logging_control.NAME))\nAttributeError: 'FootballMiddleware' object has no attribute 'NAME'\n\"\"\"\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"D:\/Python37\/webpages\/backtesting.py\", line 445, in &lt;module&gt;\n    output_list = start_backtest_a(chunked_markets, CPUs, snapshot, strategy_names, event_list)\n  File \"D:\/Python37\/webpages\/backtesting.py\", line 365, in start_backtest_a\n    mini_output_list = job.result()  # wait for result\n  File \"D:\\Python38\\lib\\concurrent\\futures\\_base.py\", line 432, in result\n    return self.__get_result()\n  File \"D:\\Python38\\lib\\concurrent\\futures\\_base.py\", line 388, in __get_result\n    raise self._exception\nAttributeError: 'FootballMiddleware' object has no attribute 'NAME'```\nI assumed it would be a simple change:\n\n```class FootballMiddleware(Middleware):\n    def __call__(self, market) -&gt; None:\n        self.NAME = 'Football_Logging_Control'\n        if market.event_type_id in ['1', 1] and market.market_catalogue is not None \\\n            and market.market_book is not None and market.seconds_to_start &lt;= 7200 \\\n            and market.market_book.status not in ['CLOSED', 'SUSPENDED'] \\\n            and market.market_type not in ['HALF_TIME_SCORE']:\n            update_market(market)```\n\nBut the error still persists, so I'm clearly mis-understanding this. Do you have any suggestions by chance?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "attachments": [
+            {
+                "from_url": "https:\/\/betcode-org.github.io\/flumine\/markets\/#middleware",
+                "service_icon": "https:\/\/betcode-org.github.io\/flumine\/images\/logo.png",
+                "id": 1,
+                "original_url": "https:\/\/betcode-org.github.io\/flumine\/markets\/#middleware",
+                "fallback": "Markets - flumine",
+                "text": "Betting trading framework",
+                "title": "Markets - flumine",
+                "title_link": "https:\/\/betcode-org.github.io\/flumine\/markets\/#middleware",
+                "service_name": "betcode-org.github.io"
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "q6Qb",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Sorry to dwell on this, but looking at: "
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/betcode-org.github.io\/flumine\/markets\/#middleware"
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n\nI tried the following:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "from flumine.markets.middleware import Middleware\n\nclass FootballMiddleware(Middleware):\n    def __call__(self, market) -> None:\n        if market.event_type_id in ['1', 1] and market.market_catalogue is not None \\\n            and market.market_book is not None and market.seconds_to_start <= 7200 \\\n            and market.market_book.status not in ['CLOSED', 'SUSPENDED'] \\\n            and market.market_type not in ['HALF_TIME_SCORE']:\n            update_market(market)"
+                            }
+                        ],
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\nAdding to the framework as follows:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "framework.add_logging_control(FootballMiddleware())"
+                            }
+                        ],
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\nBut I get the following:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "concurrent.futures.process._RemoteTraceback: \n\"\"\"\nTraceback (most recent call last):\n  File \"D:\\Python38\\lib\\concurrent\\futures\\process.py\", line 239, in _process_worker\n    r = call_item.fn(*call_item.args, **call_item.kwargs)\n  File \"D:\\Python37\\webpages\\backtesting.py\", line 170, in startup\n    framework.add_logging_control(FootballMiddleware())\n  File \"D:\\Python38\\lib\\site-packages\\flumine\\baseflumine.py\", line 124, in add_logging_control\n    logger.info(\"Adding logging control {0}\".format(logging_control.NAME))\nAttributeError: 'FootballMiddleware' object has no attribute 'NAME'\n\"\"\"\n\nThe above exception was the direct cause of the following exception:\n\nTraceback (most recent call last):\n  File \"D:\/Python37\/webpages\/backtesting.py\", line 445, in <module>\n    output_list = start_backtest_a(chunked_markets, CPUs, snapshot, strategy_names, event_list)\n  File \"D:\/Python37\/webpages\/backtesting.py\", line 365, in start_backtest_a\n    mini_output_list = job.result()  # wait for result\n  File \"D:\\Python38\\lib\\concurrent\\futures\\_base.py\", line 432, in result\n    return self.__get_result()\n  File \"D:\\Python38\\lib\\concurrent\\futures\\_base.py\", line 388, in __get_result\n    raise self._exception\nAttributeError: 'FootballMiddleware' object has no attribute 'NAME'"
+                            }
+                        ],
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\nI assumed it would be a simple change:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "class FootballMiddleware(Middleware):\n    def __call__(self, market) -> None:\n        self.NAME = 'Football_Logging_Control'\n        if market.event_type_id in ['1', 1] and market.market_catalogue is not None \\\n            and market.market_book is not None and market.seconds_to_start <= 7200 \\\n            and market.market_book.status not in ['CLOSED', 'SUSPENDED'] \\\n            and market.market_type not in ['HALF_TIME_SCORE']:\n            update_market(market)"
+                            }
+                        ],
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\n\nBut the error still persists, so I'm clearly mis-understanding this. Do you have any suggestions by chance?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1663444651.677869",
+        "client_msg_id": "E77BCC3C-D6BA-46A7-A696-D4BA91B1BABE",
+        "text": "add_middleware not add_logging_control…",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "+kcq",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "add_middleware not add_logging_control…"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1663445188.920379",
+        "client_msg_id": "81033c0c-56c8-4f68-aadf-107d3a58f4e6",
+        "text": "I probably should have tried that first tbh! Cool that all works now, but FYI the docs still say:\n\nThe above middleware can then be added to the framework:\n```framework.add_logging_control(CustomMiddleware())```\n",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Gvb",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I probably should have tried that first tbh! Cool that all works now, but FYI the docs still say:\n\nThe above middleware can then be added to the framework:\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "framework.add_logging_control(CustomMiddleware())"
+                            }
+                        ],
+                        "border": 0
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": []
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1663445407.947379",
+        "client_msg_id": "ed3f91f4-b64d-4da8-aab8-2e3cc5aeff5c",
+        "text": "(sorry that may have come across as ungrateful, didn't mean it that way, appreciate all the help)!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "2Dy6",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "(sorry that may have come across as ungrateful, didn't mean it that way, appreciate all the help)!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1663446280.805929",
+        "client_msg_id": "207AC41B-D7C4-414D-B2D5-0D6FC5F87423",
+        "text": "PRs always open…",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "r4qcF",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "PRs always open…"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1663451882.820699",
+        "client_msg_id": "b90763ac-bee5-48b5-9ded-66641655375e",
+        "text": "Cool, will add",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "BjUm",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Cool, will add"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "U4H19D1D2"
+                ],
+                "count": 1
+            }
+        ]
+    }
+]

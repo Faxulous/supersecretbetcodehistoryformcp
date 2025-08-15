@@ -1,0 +1,1237 @@
+[
+    {
+        "user": "UQ379K087",
+        "type": "message",
+        "ts": "1622713099.098000",
+        "client_msg_id": "83328d03-9c99-4f97-bb7e-2fb713b9495a",
+        "text": "Hi guys, I have a Betfair account that's been set up by a client who is based in Asia. I have been told that all betfair code needs to be ran from a Hong Kong server. I am running into connection problems when I run some flumine based price scraping code from an AWS server in HK. I see a huge ramp up in the latency and then a fairly nasty connection error message:\n\n```{\"asctime\": \"2021-06-02 12:37:54,900\", \"levelname\": \"WARNING\", \"message\": \"[FlumineStream: 2001]: Latency high: 0.5828690528869629\"}                                                                        \n{\"asctime\": \"2021-06-02 12:40:35,503\", \"levelname\": \"INFO\", \"message\": \"[MarketStream: 2001] 1.184035567 removed, 139 markets in cache\"}                                                                    \n{\"asctime\": \"2021-06-02 12:45:32,223\", \"levelname\": \"WARNING\", \"message\": \"[FlumineStream: 2001]: Latency high: 5.051729917526245\"}                                                                         \n{\"asctime\": \"2021-06-02 12:46:17,490\", \"levelname\": \"WARNING\", \"message\": \"[FlumineStream: 2001]: Latency high: 50.812371015548706\"}                                                                        \n{\"asctime\": \"2021-06-02 12:46:55,148\", \"levelname\": \"WARNING\", \"message\": \"[FlumineStream: 2001]: Latency high: 88.5535352230072\"}                                                                          \n{\"asctime\": \"2021-06-02 12:47:41,872\", \"levelname\": \"WARNING\", \"message\": \"[FlumineStream: 2001]: Latency high: 133.0834095478058\"}                                                                         \n{\"asctime\": \"2021-06-02 12:48:34,090\", \"levelname\": \"WARNING\", \"message\": \"[FlumineStream: 2001]: Latency high: 182.7278220653534\"}                                                                         \n{\"asctime\": \"2021-06-02 12:50:47,754\", \"levelname\": \"WARNING\", \"message\": \"[FlumineStream: 2001]: Latency high: 297.83341121673584\"}                                                                        \n{\"asctime\": \"2021-06-02 12:56:28,947\", \"levelname\": \"WARNING\", \"message\": \"[FlumineStream: 2001]: Latency high: 664.3587987422943\"}                                                                         \n{\"asctime\": \"2021-06-02 12:57:00,334\", \"levelname\": \"WARNING\", \"message\": \"[FlumineStream: 2001]: Latency high: 695.7359499931335\"}                                                                         \n{\"asctime\": \"2021-06-02 12:58:46,348\", \"levelname\": \"ERROR\", \"message\": \"get_account_details error\", \"exc_info\": \"Traceback (most recent call last):\\n  File \\\"\/usr\/lib\/python3\/dist-packages\/urllib3\/connec\ntion.py\\\", line 159, in _new_conn\\n    conn = connection.create_connection(\\n  File \\\"\/usr\/lib\/python3\/dist-packages\/urllib3\/util\/connection.py\\\", line 61, in create_connection\\n    for res in socket.geta\nddrinfo(host, port, family, socket.SOCK_STREAM):\\n  File \\\"\/usr\/lib\/python3.8\/socket.py\\\", line 918, in getaddrinfo\\n    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):\\nsocket.gai\nerror: [Errno -3] Temporary failure in name resolution\\n\\nDuring handling of the above exception, another exception occurred:\\n\\nTraceback (most recent call last):\\n  File \\\"\/usr\/lib\/python3\/dist-packages\n\/urllib3\/connectionpool.py\\\", line 665, in urlopen\\n    httplib_response = self._make_request(\\n  File \\\"\/usr\/lib\/python3\/dist-packages\/urllib3\/connectionpool.py\\\", line 376, in _make_request\\n    self._v\nalidate_conn(conn)\\n  File \\\"\/usr\/lib\/python3\/dist-packages\/urllib3\/connectionpool.py\\\", line 996, in _validate_conn\\n    conn.connect()\\n  File \\\"\/usr\/lib\/python3\/dist-packages\/urllib3\/connection.py\\\", l\nine 314, in connect\\n    conn = self._new_conn()\\n  File \\\"\/usr\/lib\/python3\/dist-packages\/urllib3\/connection.py\\\", line 171, in _new_conn\\n    raise NewConnectionError(\\nurllib3.exceptions.NewConnectionEr\nror: &lt;urllib3.connection.VerifiedHTTPSConnection object at 0x7f7c3bde0c10&gt;: Failed to establish a new connection: [Errno -3] Temporary failure in name resolution\\n\\nDuring handling of the above exception,\n another exception occurred:\\n\\nTraceback (most recent call last):\\n  File \\\"\/usr\/lib\/python3\/dist-packages\/requests\/adapters.py\\\", line 439, in send\\n    resp = conn.urlopen(\\n  File \\\"\/usr\/lib\/python3\/d\nist-packages\/urllib3\/connectionpool.py\\\", line 719, in urlopen\\n    retries = retries.increment(\\n  File \\\"\/usr\/lib\/python3\/dist-packages\/urllib3\/util\/retry.py\\\", line 436, in increment\\n    raise MaxRetr\nyError(_pool, url, error or ResponseError(cause))\\nurllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='<http:\/\/api.betfair.com|api.betfair.com>', port=443): Max retries exceeded with url: \/exchange\/account\/json-rpc\/v1 (Ca\nused by NewConnectionError('&lt;urllib3.connection.VerifiedHTTPSConnection object at 0x7f7c3bde0c10&gt;: Failed to establish a new connection: [Errno -3] Temporary failure in name resolution'))\\n\\nDuring handli\nng of the above exception, another exception occurred:\\n\\nTraceback (most recent call last):\\n  File \\\"\/home\/ubuntu\/.local\/lib\/python3.8\/site-packages\/betfairlightweight\/endpoints\/baseendpoint.py\\\", line \n36, in request\\n    response = <http:\/\/session.post|session.post>(\\n  File \\\"\/usr\/lib\/python3\/dist-packages\/requests\/api.py\\\", line 116, in post\\n    return request('post', url, data=data, json=json, **kwargs)\\n  File \\\"\/usr\/l\nib\/python3\/dist-packages\/requests\/api.py\\\", line 60, in request\\n    return session.request(method=method, url=url, **kwargs)\\n  File \\\"\/usr\/lib\/python3\/dist-packages\/requests\/sessions.py\\\", line 533, in \nrequest\\n    resp = self.send(prep, **send_kwargs)\\n  File \\\"\/usr\/lib\/python3\/dist-packages\/requests\/sessions.py\\\", line 646, in send\\n    r = adapter.send(request, **kwargs)\\n  File \\\"\/usr\/lib\/python3\/di\nst-packages\/requests\/adapters.py\\\", line 516, in send\\n    raise ConnectionError(e, request=request)\\nrequests.exceptions.ConnectionError: HTTPSConnectionPool(host='<http:\/\/api.betfair.com|api.betfair.com>', port=443): Max retrie\ns exceeded with url: \/exchange\/account\/json-rpc\/v1 (Caused by NewConnectionError('&lt;urllib3.connection.VerifiedHTTPSConnection object at 0x7f7c3bde0c10&gt;: Failed to establish a new connection: [Errno -3] Te\nmporary failure in name resolution'))\\n\\nDuring handling of the above exception, another exception occurred:\\n\\nTraceback (most recent call last):\\n  File \\\"\/home\/ubuntu\/.local\/lib\/python3.8\/site-packages\n\/flumine\/clients\/betfairclient.py\\\", line 50, in _get_account_details\\n    return self.betting_client.account.get_account_details()\\n  File \\\"\/home\/ubuntu\/.local\/lib\/python3.8\/site-packages\/betfairlightwe\night\/endpoints\/account.py\\\", line 54, in get_account_details\\n    (response, response_json, elapsed_time) = self.request(method, params, session)\\n  File \\\"\/home\/ubuntu\/.local\/lib\/python3.8\/site-packages\/\nbetfairlightweight\/endpoints\/baseendpoint.py\\\", line 43, in request\\n    raise APIError(None, method, params, e)\\nbetfairlightweight.exceptions.APIError: AccountAPING\/v1.0\/getAccountDetails \\nParams: {} \\\nnException: HTTPSConnectionPool(host='<http:\/\/api.betfair.com|api.betfair.com>', port=443): Max retries exceeded with url: \/exchange\/account\/json-rpc\/v1 (Caused by NewConnectionError('&lt;urllib3.connection.VerifiedHTTPSConnection o\nbject at 0x7f7c3bde0c10&gt;: Failed to establish a new connection: [Errno -3] Temporary failure in name resolution'))\", \"error\": \"AccountAPING\/v1.0\/getAccountDetails \\nParams: {} \\nException: HTTPSConnection\nPool(host='<http:\/\/api.betfair.com|api.betfair.com>', port=443): Max retries exceeded with url: \/exchange\/account\/json-rpc\/v1 (Caused by NewConnectionError('&lt;urllib3.connection.VerifiedHTTPSConnection object at 0x7f7c3bde0c10&gt;: F\nailed to establish a new connection: [Errno -3] Temporary failure in name resolution'))\"}             \n{\"asctime\": \"2021-06-02 12:58:46,360\", \"levelname\": \"WARNING\", \"message\": \"[FlumineStream: 2001]: Latency high: 801.6888477802277\"}\nKilled```\nDoes anyone have any ideas about the cause of the problem and how I might resolve it. Much appreciated.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g454a622d575",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/454a622d57566f9f550d99ae30d74287.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0007-72.png",
+            "first_name": "",
+            "real_name": "James McKenzie",
+            "display_name": "James McKenzie",
+            "team": "T4G9NBD2M",
+            "name": "jamesmckenzie4",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "I23",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Hi guys, I have a Betfair account that's been set up by a client who is based in Asia. I have been told that all betfair code needs to be ran from a Hong Kong server. I am running into connection problems when I run some flumine based price scraping code from an AWS server in HK. I see a huge ramp up in the latency and then a fairly nasty connection error message:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "{\"asctime\": \"2021-06-02 12:37:54,900\", \"levelname\": \"WARNING\", \"message\": \"[FlumineStream: 2001]: Latency high: 0.5828690528869629\"}                                                                        \n{\"asctime\": \"2021-06-02 12:40:35,503\", \"levelname\": \"INFO\", \"message\": \"[MarketStream: 2001] 1.184035567 removed, 139 markets in cache\"}                                                                    \n{\"asctime\": \"2021-06-02 12:45:32,223\", \"levelname\": \"WARNING\", \"message\": \"[FlumineStream: 2001]: Latency high: 5.051729917526245\"}                                                                         \n{\"asctime\": \"2021-06-02 12:46:17,490\", \"levelname\": \"WARNING\", \"message\": \"[FlumineStream: 2001]: Latency high: 50.812371015548706\"}                                                                        \n{\"asctime\": \"2021-06-02 12:46:55,148\", \"levelname\": \"WARNING\", \"message\": \"[FlumineStream: 2001]: Latency high: 88.5535352230072\"}                                                                          \n{\"asctime\": \"2021-06-02 12:47:41,872\", \"levelname\": \"WARNING\", \"message\": \"[FlumineStream: 2001]: Latency high: 133.0834095478058\"}                                                                         \n{\"asctime\": \"2021-06-02 12:48:34,090\", \"levelname\": \"WARNING\", \"message\": \"[FlumineStream: 2001]: Latency high: 182.7278220653534\"}                                                                         \n{\"asctime\": \"2021-06-02 12:50:47,754\", \"levelname\": \"WARNING\", \"message\": \"[FlumineStream: 2001]: Latency high: 297.83341121673584\"}                                                                        \n{\"asctime\": \"2021-06-02 12:56:28,947\", \"levelname\": \"WARNING\", \"message\": \"[FlumineStream: 2001]: Latency high: 664.3587987422943\"}                                                                         \n{\"asctime\": \"2021-06-02 12:57:00,334\", \"levelname\": \"WARNING\", \"message\": \"[FlumineStream: 2001]: Latency high: 695.7359499931335\"}                                                                         \n{\"asctime\": \"2021-06-02 12:58:46,348\", \"levelname\": \"ERROR\", \"message\": \"get_account_details error\", \"exc_info\": \"Traceback (most recent call last):\\n  File \\\"\/usr\/lib\/python3\/dist-packages\/urllib3\/connec\ntion.py\\\", line 159, in _new_conn\\n    conn = connection.create_connection(\\n  File \\\"\/usr\/lib\/python3\/dist-packages\/urllib3\/util\/connection.py\\\", line 61, in create_connection\\n    for res in socket.geta\nddrinfo(host, port, family, socket.SOCK_STREAM):\\n  File \\\"\/usr\/lib\/python3.8\/socket.py\\\", line 918, in getaddrinfo\\n    for res in _socket.getaddrinfo(host, port, family, type, proto, flags):\\nsocket.gai\nerror: [Errno -3] Temporary failure in name resolution\\n\\nDuring handling of the above exception, another exception occurred:\\n\\nTraceback (most recent call last):\\n  File \\\"\/usr\/lib\/python3\/dist-packages\n\/urllib3\/connectionpool.py\\\", line 665, in urlopen\\n    httplib_response = self._make_request(\\n  File \\\"\/usr\/lib\/python3\/dist-packages\/urllib3\/connectionpool.py\\\", line 376, in _make_request\\n    self._v\nalidate_conn(conn)\\n  File \\\"\/usr\/lib\/python3\/dist-packages\/urllib3\/connectionpool.py\\\", line 996, in _validate_conn\\n    conn.connect()\\n  File \\\"\/usr\/lib\/python3\/dist-packages\/urllib3\/connection.py\\\", l\nine 314, in connect\\n    conn = self._new_conn()\\n  File \\\"\/usr\/lib\/python3\/dist-packages\/urllib3\/connection.py\\\", line 171, in _new_conn\\n    raise NewConnectionError(\\nurllib3.exceptions.NewConnectionEr\nror: <urllib3.connection.VerifiedHTTPSConnection object at 0x7f7c3bde0c10>: Failed to establish a new connection: [Errno -3] Temporary failure in name resolution\\n\\nDuring handling of the above exception,\n another exception occurred:\\n\\nTraceback (most recent call last):\\n  File \\\"\/usr\/lib\/python3\/dist-packages\/requests\/adapters.py\\\", line 439, in send\\n    resp = conn.urlopen(\\n  File \\\"\/usr\/lib\/python3\/d\nist-packages\/urllib3\/connectionpool.py\\\", line 719, in urlopen\\n    retries = retries.increment(\\n  File \\\"\/usr\/lib\/python3\/dist-packages\/urllib3\/util\/retry.py\\\", line 436, in increment\\n    raise MaxRetr\nyError(_pool, url, error or ResponseError(cause))\\nurllib3.exceptions.MaxRetryError: HTTPSConnectionPool(host='api.betfair.com', port=443): Max retries exceeded with url: \/exchange\/account\/json-rpc\/v1 (Ca\nused by NewConnectionError('<urllib3.connection.VerifiedHTTPSConnection object at 0x7f7c3bde0c10>: Failed to establish a new connection: [Errno -3] Temporary failure in name resolution'))\\n\\nDuring handli\nng of the above exception, another exception occurred:\\n\\nTraceback (most recent call last):\\n  File \\\"\/home\/ubuntu\/.local\/lib\/python3.8\/site-packages\/betfairlightweight\/endpoints\/baseendpoint.py\\\", line \n36, in request\\n    response = session.post(\\n  File \\\"\/usr\/lib\/python3\/dist-packages\/requests\/api.py\\\", line 116, in post\\n    return request('post', url, data=data, json=json, **kwargs)\\n  File \\\"\/usr\/l\nib\/python3\/dist-packages\/requests\/api.py\\\", line 60, in request\\n    return session.request(method=method, url=url, **kwargs)\\n  File \\\"\/usr\/lib\/python3\/dist-packages\/requests\/sessions.py\\\", line 533, in \nrequest\\n    resp = self.send(prep, **send_kwargs)\\n  File \\\"\/usr\/lib\/python3\/dist-packages\/requests\/sessions.py\\\", line 646, in send\\n    r = adapter.send(request, **kwargs)\\n  File \\\"\/usr\/lib\/python3\/di\nst-packages\/requests\/adapters.py\\\", line 516, in send\\n    raise ConnectionError(e, request=request)\\nrequests.exceptions.ConnectionError: HTTPSConnectionPool(host='api.betfair.com', port=443): Max retrie\ns exceeded with url: \/exchange\/account\/json-rpc\/v1 (Caused by NewConnectionError('<urllib3.connection.VerifiedHTTPSConnection object at 0x7f7c3bde0c10>: Failed to establish a new connection: [Errno -3] Te\nmporary failure in name resolution'))\\n\\nDuring handling of the above exception, another exception occurred:\\n\\nTraceback (most recent call last):\\n  File \\\"\/home\/ubuntu\/.local\/lib\/python3.8\/site-packages\n\/flumine\/clients\/betfairclient.py\\\", line 50, in _get_account_details\\n    return self.betting_client.account.get_account_details()\\n  File \\\"\/home\/ubuntu\/.local\/lib\/python3.8\/site-packages\/betfairlightwe\night\/endpoints\/account.py\\\", line 54, in get_account_details\\n    (response, response_json, elapsed_time) = self.request(method, params, session)\\n  File \\\"\/home\/ubuntu\/.local\/lib\/python3.8\/site-packages\/\nbetfairlightweight\/endpoints\/baseendpoint.py\\\", line 43, in request\\n    raise APIError(None, method, params, e)\\nbetfairlightweight.exceptions.APIError: AccountAPING\/v1.0\/getAccountDetails \\nParams: {} \\\nnException: HTTPSConnectionPool(host='api.betfair.com', port=443): Max retries exceeded with url: \/exchange\/account\/json-rpc\/v1 (Caused by NewConnectionError('<urllib3.connection.VerifiedHTTPSConnection o\nbject at 0x7f7c3bde0c10>: Failed to establish a new connection: [Errno -3] Temporary failure in name resolution'))\", \"error\": \"AccountAPING\/v1.0\/getAccountDetails \\nParams: {} \\nException: HTTPSConnection\nPool(host='api.betfair.com', port=443): Max retries exceeded with url: \/exchange\/account\/json-rpc\/v1 (Caused by NewConnectionError('<urllib3.connection.VerifiedHTTPSConnection object at 0x7f7c3bde0c10>: F\nailed to establish a new connection: [Errno -3] Temporary failure in name resolution'))\"}             \n{\"asctime\": \"2021-06-02 12:58:46,360\", \"levelname\": \"WARNING\", \"message\": \"[FlumineStream: 2001]: Latency high: 801.6888477802277\"}\nKilled"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Does anyone have any ideas about the cause of the problem and how I might resolve it. Much appreciated."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1622713292.098600",
+        "client_msg_id": "6dd2e755-6b3b-4175-ae70-debe3d1a2d92",
+        "text": "So the connection error is on the account details endpoint, whats the setup here in terms of number of markets?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "0snS",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "So the connection error is on the account details endpoint, whats the setup here in terms of number of markets?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1622713304.098900",
+        "client_msg_id": "38ac21e4-5743-4fd8-b78b-e16c3e8bceaf",
+        "text": "I imagine any connection from HK is gonna be slow as",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "mwJk",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I imagine any connection from HK is gonna be slow as"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UQ379K087",
+        "type": "message",
+        "ts": "1622713436.099900",
+        "client_msg_id": "49f32542-087b-43c9-b36f-0f9d50cb9526",
+        "text": "I have two strategies that both pull all win market prices from AUS",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g454a622d575",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/454a622d57566f9f550d99ae30d74287.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0007-72.png",
+            "first_name": "",
+            "real_name": "James McKenzie",
+            "display_name": "James McKenzie",
+            "team": "T4G9NBD2M",
+            "name": "jamesmckenzie4",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "8Gf",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I have two strategies that both pull all win market prices from AUS"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UQ379K087",
+        "type": "message",
+        "ts": "1622713470.100600",
+        "client_msg_id": "067bed38-7202-459b-810d-54b3159ef5b8",
+        "text": "typically the latency from HK seems to be stable at around 0.5s",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g454a622d575",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/454a622d57566f9f550d99ae30d74287.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0007-72.png",
+            "first_name": "",
+            "real_name": "James McKenzie",
+            "display_name": "James McKenzie",
+            "team": "T4G9NBD2M",
+            "name": "jamesmckenzie4",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "rmNI3",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "typically the latency from HK seems to be stable at around 0.5s"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1622713536.100900",
+        "client_msg_id": "8b9ff19b-8947-4382-a484-a1aa1b566615",
+        "text": "what killed it? CPU ok?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "vDhdo",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "what killed it? CPU ok?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UQ379K087",
+        "type": "message",
+        "ts": "1622713725.104000",
+        "client_msg_id": "2038ea22-eade-4e5e-9a36-918e0fc6f72d",
+        "text": "I was going to ask about that as well. I have noticed that when I run my flumine code, or a previous betfairlightweight price scraper I have on the HK box I see the RAM usage slowly creep up until the process is killed. I had previously tried to flush the queue every 10 seconds (presuming it was the queue gathering data) and I still saw the RAM usage increase. The same code ran on a UK based AWS instance for my own use didnt have the memory problems.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g454a622d575",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/454a622d57566f9f550d99ae30d74287.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0007-72.png",
+            "first_name": "",
+            "real_name": "James McKenzie",
+            "display_name": "James McKenzie",
+            "team": "T4G9NBD2M",
+            "name": "jamesmckenzie4",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "MOLPG",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I was going to ask about that as well. I have noticed that when I run my flumine code, or a previous betfairlightweight price scraper I have on the HK box I see the RAM usage slowly creep up until the process is killed. I had previously tried to flush the queue every 10 seconds (presuming it was the queue gathering data) and I still saw the RAM usage increase. The same code ran on a UK based AWS instance for my own use didnt have the memory problems."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1622713758.104600",
+        "client_msg_id": "81b1ddb5-1043-4d59-9aac-0097bf40044a",
+        "text": "there are no known memory leaks in bflw or flumine",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "45O3",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "there are no known memory leaks in bflw or flumine"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UQ379K087",
+        "type": "message",
+        "ts": "1622713802.105100",
+        "client_msg_id": "1893d858-34b8-49b0-a392-03d00448d759",
+        "text": "yeah must be something to do with running the code on the HK server?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g454a622d575",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/454a622d57566f9f550d99ae30d74287.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0007-72.png",
+            "first_name": "",
+            "real_name": "James McKenzie",
+            "display_name": "James McKenzie",
+            "team": "T4G9NBD2M",
+            "name": "jamesmckenzie4",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "1fTIy",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "yeah must be something to do with running the code on the HK server?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1622713865.105500",
+        "client_msg_id": "0854aebf-67e7-47dc-8718-8ba2e3d0e699",
+        "text": "looks like it, the way the latency increases like that isn't good, why HK?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "gKzo",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "looks like it, the way the latency increases like that isn't good, why HK?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UQ379K087",
+        "type": "message",
+        "ts": "1622713922.106300",
+        "client_msg_id": "d1f244b2-f74c-4845-9f3a-fe4b3a941fcc",
+        "text": "Ive been told that all betfair accounts set up by Asian clients need to be ran out of HK or Korea",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g454a622d575",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/454a622d57566f9f550d99ae30d74287.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0007-72.png",
+            "first_name": "",
+            "real_name": "James McKenzie",
+            "display_name": "James McKenzie",
+            "team": "T4G9NBD2M",
+            "name": "jamesmckenzie4",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "FnRDK",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Ive been told that all betfair accounts set up by Asian clients need to be ran out of HK or Korea"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1622714097.107000",
+        "client_msg_id": "d83d86a9-bd50-4cc9-8cc8-cf5e601d0047",
+        "text": "Are you just using the data recorder? Nothing else?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "jlW",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Are you just using the data recorder? Nothing else?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UQ379K087",
+        "type": "message",
+        "ts": "1622714126.107400",
+        "client_msg_id": "dcd7af0b-a36c-4100-b848-a21494ee6c89",
+        "text": "thats one strat and the other is a class that pushes to redis",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g454a622d575",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/454a622d57566f9f550d99ae30d74287.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0007-72.png",
+            "first_name": "",
+            "real_name": "James McKenzie",
+            "display_name": "James McKenzie",
+            "team": "T4G9NBD2M",
+            "name": "jamesmckenzie4",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "r7G8L",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "thats one strat and the other is a class that pushes to redis"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1622714151.107900",
+        "client_msg_id": "7ad4746c-81f4-416e-be49-a0e1c322d333",
+        "text": "are you confident that isn't blocking? \/ slow?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "m4x11",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "are you confident that isn't blocking? \/ slow?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UQ379K087",
+        "type": "message",
+        "ts": "1622714215.108300",
+        "client_msg_id": "5e9f18f5-838e-4f4c-8291-64d4fb01b7fc",
+        "text": "not confident at all no haha",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g454a622d575",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/454a622d57566f9f550d99ae30d74287.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0007-72.png",
+            "first_name": "",
+            "real_name": "James McKenzie",
+            "display_name": "James McKenzie",
+            "team": "T4G9NBD2M",
+            "name": "jamesmckenzie4",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "KC3i",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "not confident at all no haha"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1622714224.108700",
+        "client_msg_id": "ff7ddba6-cc73-402e-8361-4ff67e16b92a",
+        "text": "remove it and try again",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1622714224.108700",
+        "reply_count": 2,
+        "reply_users_count": 1,
+        "latest_reply": "1622801006.115100",
+        "reply_users": [
+            "UQ379K087"
+        ],
+        "replies": [
+            {
+                "user": "UQ379K087",
+                "ts": "1622800725.114900"
+            },
+            {
+                "user": "UQ379K087",
+                "ts": "1622801006.115100"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": true,
+        "last_read": "1622801006.115100",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "kHcAP",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "remove it and try again"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UQ379K087",
+        "type": "message",
+        "ts": "1622714251.109300",
+        "client_msg_id": "c4c07feb-8806-4952-9492-9be38f23df41",
+        "text": "ok will do. cheers Liam",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g454a622d575",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/454a622d57566f9f550d99ae30d74287.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0007-72.png",
+            "first_name": "",
+            "real_name": "James McKenzie",
+            "display_name": "James McKenzie",
+            "team": "T4G9NBD2M",
+            "name": "jamesmckenzie4",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "ePLA",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "ok will do. cheers Liam"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1622714650.110000",
+        "client_msg_id": "A76E7F08-3AA5-4EE2-B311-A80AC200652A",
+        "text": "Use another account to do the scraping in a sensible location?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "oEu",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Use another account to do the scraping in a sensible location?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1622718573.110100",
+        "client_msg_id": "95b2da13-9e82-4faf-8a44-35a509707e58",
+        "text": "I can't replicate this, tried doing a few things and the middleware (EC) or process.py (E) picks all orders up",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1622622470.093400",
+        "parent_user_id": "UFTBRB3F1",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "rfy\/",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I can't replicate this, tried doing a few things and the middleware (EC) or process.py (E) picks all orders up"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1622726732.110300",
+        "client_msg_id": "71ef6f81-6655-48c0-9d3b-ce34d3a00380",
+        "text": "I can get the middleware to pick it up (if I pick up ALL rather than EXECUTION_COMPLETE), but not process, must be a weird edge case!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1622622470.093400",
+        "parent_user_id": "UFTBRB3F1",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "nFaC3",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I can get the middleware to pick it up (if I pick up ALL rather than EXECUTION_COMPLETE), but not process, must be a weird edge case!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1622726985.110500",
+        "client_msg_id": "ec3a06ee-ada7-4e0d-9b1b-6ccc4e9d78c9",
+        "text": "Managed to re-create finally, it is when an order is partially matched, then replaced. When you re-start it doesn't seem to get picked up (however I'm dubious it always happens, so am wondering if there's some other condition too)",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1622622470.093400",
+        "parent_user_id": "UFTBRB3F1",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "XcQz",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Managed to re-create finally, it is when an order is partially matched, then replaced. When you re-start it doesn't seem to get picked up (however I'm dubious it always happens, so am wondering if there's some other condition too)"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1622727355.110700",
+        "client_msg_id": "99582208-e300-4865-88e2-6239a7561e80",
+        "text": "Thats what I tried to replicate and picked it up fine :confused:",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1622622470.093400",
+        "parent_user_id": "UFTBRB3F1",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Sycz",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Thats what I tried to replicate and picked it up fine "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "confused",
+                                "unicode": "1f615"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1622728464.110900",
+        "client_msg_id": "d9b0340a-fa28-4096-ac48-d0551328f1a9",
+        "text": "Being across 2 sessions (i.e. after a shutdown), this is a very tricky one to debug!\n\nWill try to do a forced update of Flumine, although pretty sure I'm using the latest version.\n\nWill work on trying to pinpoint the issue.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1622622470.093400",
+        "parent_user_id": "UFTBRB3F1",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "dHR",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Being across 2 sessions (i.e. after a shutdown), this is a very tricky one to debug!\n\nWill try to do a forced update of Flumine, although pretty sure I'm using the latest version.\n\nWill work on trying to pinpoint the issue."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1622728681.111100",
+        "client_msg_id": "db3333c4-7c3f-4c3f-b14d-eb982d2b593b",
+        "text": "The only other condition that is consistent, is that the placed date of the original order, is never today.",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1622622470.093400",
+        "parent_user_id": "UFTBRB3F1",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "tcsp",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "The only other condition that is consistent, is that the placed date of the original order, is never today."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1622728718.111300",
+        "client_msg_id": "ec4489f9-135f-4c31-b13e-543ae0dbf3d2",
+        "text": "(as in the original order was placed yesterday or even further back...only playing around with illiquid markets whilst testing this stuff!)",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1622622470.093400",
+        "parent_user_id": "UFTBRB3F1",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "WBTod",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "(as in the original order was placed yesterday or even further back...only playing around with illiquid markets whilst testing this stuff!)"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U0155J92A7Q",
+        "type": "message",
+        "ts": "1622733604.112700",
+        "client_msg_id": "97df9108-33bc-46b7-ab77-631612374a75",
+        "text": "Is it mandatory that your server is located in the same country as your Betfair account? I assumed yes but it would be much better to have the server in London\/Dublin instead. Anyone with experience on this?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gde8c5d51af5",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/de8c5d51af54a5ac7b501f416ddb262c.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0016-72.png",
+            "first_name": "",
+            "real_name": "Jorge",
+            "display_name": "Jorge",
+            "team": "T4G9NBD2M",
+            "name": "jgarciam95",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "3veGm",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Is it mandatory that your server is located in the same country as your Betfair account? I assumed yes but it would be much better to have the server in London\/Dublin instead. Anyone with experience on this?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1622733628.113000",
+        "client_msg_id": "71608254-04a9-4c7c-a734-58151b64491b",
+        "text": "No",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "wlmFl",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "No"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1622733659.113600",
+        "client_msg_id": "eaeda5e8-81cd-4ea7-9389-6535b802950b",
+        "text": "The server just needs to be in a location where it is legal to use Betfair from",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "DLTq",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "The server just needs to be in a location where it is legal to use Betfair from"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U0155J92A7Q",
+        "type": "message",
+        "ts": "1622733788.114400",
+        "client_msg_id": "cdf71eac-9184-45ab-90a3-454bca25496e",
+        "text": "Does it also apply to the smaller exchanges like <http:\/\/betfair.it|betfair.it>? I guess in Italy you need to bet from Italy because it is not legal to have a <http:\/\/betfair.it|betfair.it> account if you live in UK",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gde8c5d51af5",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/de8c5d51af54a5ac7b501f416ddb262c.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0016-72.png",
+            "first_name": "",
+            "real_name": "Jorge",
+            "display_name": "Jorge",
+            "team": "T4G9NBD2M",
+            "name": "jgarciam95",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "blm+",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Does it also apply to the smaller exchanges like "
+                            },
+                            {
+                                "type": "link",
+                                "url": "http:\/\/betfair.it",
+                                "text": "betfair.it"
+                            },
+                            {
+                                "type": "text",
+                                "text": "? I guess in Italy you need to bet from Italy because it is not legal to have a "
+                            },
+                            {
+                                "type": "link",
+                                "url": "http:\/\/betfair.it",
+                                "text": "betfair.it"
+                            },
+                            {
+                                "type": "text",
+                                "text": " account if you live in UK"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UFTBRB3F1",
+        "type": "message",
+        "ts": "1622734651.114600",
+        "client_msg_id": "f7ef5d8a-874c-45ab-b900-53d87fbf1cda",
+        "text": "```if (\n    order.bet_id and order.bet_id != current_order.bet_id\n):  # replaceOrder handling (hacky)\n\n    if str(current_order.bet_id) == '235032486097':\n        print(current_order.bet_id, current_order.market_id, order.bet_id, order)\n\n    order = markets.get_order_from_bet_id(\n        market_id=current_order.market_id,\n        bet_id=current_order.bet_id,\n    )\n\n    if order is None:\n        print(current_order.bet_id, order)\n        continue```\nSo looking at process, this is the point where it goes wrong, when it tries to get the order from the blotter it can't, the output returned is as follows:\n\n```235032486097 1.176694234 234874322650 Order 234874322650: Execution complete\n235032486097 None```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g771e110be94",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/a771e110be945b86bede9d5c1bb551e3.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0024-72.png",
+            "first_name": "",
+            "real_name": "Newbie99",
+            "display_name": "",
+            "team": "T4G9NBD2M",
+            "name": "vjmehra",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1622622470.093400",
+        "parent_user_id": "UFTBRB3F1",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "cyZ",
+                "elements": [
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "if (\n    order.bet_id and order.bet_id != current_order.bet_id\n):  # replaceOrder handling (hacky)\n\n    if str(current_order.bet_id) == '235032486097':\n        print(current_order.bet_id, current_order.market_id, order.bet_id, order)\n\n    order = markets.get_order_from_bet_id(\n        market_id=current_order.market_id,\n        bet_id=current_order.bet_id,\n    )\n\n    if order is None:\n        print(current_order.bet_id, order)\n        continue"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "\nSo looking at process, this is the point where it goes wrong, when it tries to get the order from the blotter it can't, the output returned is as follows:\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "235032486097 1.176694234 234874322650 Order 234874322650: Execution complete\n235032486097 None"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]

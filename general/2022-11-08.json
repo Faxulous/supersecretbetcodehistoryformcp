@@ -1,0 +1,1512 @@
+[
+    {
+        "user": "U03T739JSTZ",
+        "type": "message",
+        "ts": "1667900386.841049",
+        "client_msg_id": "8ae02723-296d-4395-a49c-984d79721272",
+        "text": "Hi guys, I'm using the historical streaming example (<https:\/\/github.com\/betcode-org\/betfair\/blob\/master\/examples\/examplestreaminghistorical.py>). It works well but I would like to add team names to the output. Is this possible? I can see them in the market definition but can't work out how to parse them out. Thanks",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g4e9a37b8c27",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/4e9a37b8c271459be2dfd823961ccab6.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0023-72.png",
+            "first_name": "Andy",
+            "real_name": "Andy Bason",
+            "display_name": "Andy Bason",
+            "team": "T4G9NBD2M",
+            "name": "andybason8",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1667900386.841049",
+        "reply_count": 10,
+        "reply_users_count": 2,
+        "latest_reply": "1668097748.573829",
+        "reply_users": [
+            "U4H19D1D2",
+            "U03T739JSTZ"
+        ],
+        "replies": [
+            {
+                "user": "U4H19D1D2",
+                "ts": "1667900588.357419"
+            },
+            {
+                "user": "U03T739JSTZ",
+                "ts": "1667900805.605959"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1667900844.575829"
+            },
+            {
+                "user": "U03T739JSTZ",
+                "ts": "1667900943.516239"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1667901116.497109"
+            },
+            {
+                "user": "U03T739JSTZ",
+                "ts": "1667901320.665959"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1667901461.554199"
+            },
+            {
+                "user": "U03T739JSTZ",
+                "ts": "1668091362.354849"
+            },
+            {
+                "user": "U4H19D1D2",
+                "ts": "1668093062.811239"
+            },
+            {
+                "user": "U03T739JSTZ",
+                "ts": "1668097748.573829"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": true,
+        "last_read": "1668097748.573829",
+        "attachments": [
+            {
+                "id": 1,
+                "footer_icon": "https:\/\/slack.github.com\/static\/img\/favicon-neutral.png",
+                "color": "24292f",
+                "bot_id": "B021ZJYSBMW",
+                "app_unfurl_url": "https:\/\/github.com\/betcode-org\/betfair\/blob\/master\/examples\/examplestreaminghistorical.py",
+                "is_app_unfurl": true,
+                "app_id": "A01BP7R4KNY",
+                "fallback": "<https:\/\/github.com\/betcode-org\/betfair\/blob\/master\/examples\/examplestreaminghistorical.py | examplestreaminghistorical.py>",
+                "text": "```\nimport logging\n\nimport betfairlightweight\nfrom betfairlightweight import StreamListener\n\n\"\"\"\nData needs to be downloaded from:\n    <https:\/\/historicdata.betfair.com>\n    \nsmart-open library recommended for opening bz2\/gz files\n\"\"\"\n\n# setup logging\nlogging.basicConfig(level=<http:\/\/logging.INFO|logging.INFO>)\n\n# create trading instance (don't need username\/password)\ntrading = betfairlightweight.APIClient(\"username\", \"password\")\n\n# create listener\nlistener = StreamListener(max_latency=None)\n\n# create historical stream (update file_path to your file location)\nstream = trading.streaming.create_historical_generator_stream(\n    file_path=\"\/tmp\/BASIC-1.132153978\",\n    listener=listener,\n)\n\n# create generator\ngen = stream.get_generator()\n\n# print marketBooks\nfor market_books in gen():\n    for market_book in market_books:\n        print(market_book)\n\n# print based on seconds to start\nfor market_books in gen():\n    for market_book in market_books:\n        seconds_to_start = (\n            market_book.market_definition.market_time - market_book.publish_time\n        ).total_seconds()\n        if seconds_to_start < 100:\n            print(market_book.market_id, seconds_to_start, market_book.total_matched)\n\n        # print winner details once market is closed\n        if market_book.status == \"CLOSED\":\n            for runner in market_book.runners:\n                if runner.status == \"WINNER\":\n                    print(\n                        \"{0}: {1} with sp of {2}\".format(\n                            runner.status, runner.selection_id, runner.sp.actual_sp\n                        )\n                    )\n\n# record prices to a file\nwith open(\"output.txt\", \"w\") as output:\n    output.write(\"Time,MarketId,Status,Inplay,SelectionId,LastPriceTraded\\n\")\n\nfor market_books in gen():\n    for market_book in market_books:\n        with open(\"output.txt\", \"a\") as output:\n            for runner in market_book.runners:\n                # how to get runner details from the market definition\n                market_def = market_book.market_definition\n                runners_dict = {\n                    (runner.selection_id, runner.handicap): runner\n                    for runner in market_def.runners\n                }\n                runner_def = runners_dict.get((runner.selection_id, runner.handicap))\n\n                output.write(\n                    \"%s,%s,%s,%s,%s,%s\\n\"\n                    % (\n                        market_book.publish_time,\n                        market_book.market_id,\n                        market_book.status,\n                        market_book.inplay,\n                        runner.selection_id,\n                        runner.last_price_traded or \"\",\n                    )\n                )\n\n```",
+                "title": "<https:\/\/github.com\/betcode-org\/betfair\/blob\/master\/examples\/examplestreaminghistorical.py | examplestreaminghistorical.py>",
+                "footer": "<https:\/\/github.com\/betcode-org\/betfair|betcode-org\/betfair>",
+                "mrkdwn_in": [
+                    "text"
+                ]
+            }
+        ],
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "d362",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Hi guys, I'm using the historical streaming example ("
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/betcode-org\/betfair\/blob\/master\/examples\/examplestreaminghistorical.py"
+                            },
+                            {
+                                "type": "text",
+                                "text": "). It works well but I would like to add team names to the output. Is this possible? I can see them in the market definition but can't work out how to parse them out. Thanks"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1667900588.357419",
+        "client_msg_id": "f1b34263-6797-4afd-a742-e473114add88",
+        "text": "```runner_def.name```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1667900386.841049",
+        "parent_user_id": "U03T739JSTZ",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "lu=Ei",
+                "elements": [
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "runner_def.name"
+                            }
+                        ],
+                        "border": 0
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U03T739JSTZ",
+        "type": "message",
+        "ts": "1667900805.605959",
+        "client_msg_id": "50f70a97-b0c4-41be-80f6-94960e46c1ca",
+        "text": "Thanks Liam. Where do I put this?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g4e9a37b8c27",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/4e9a37b8c271459be2dfd823961ccab6.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0023-72.png",
+            "first_name": "Andy",
+            "real_name": "Andy Bason",
+            "display_name": "Andy Bason",
+            "team": "T4G9NBD2M",
+            "name": "andybason8",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1667900386.841049",
+        "parent_user_id": "U03T739JSTZ",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "uDXm",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Thanks Liam. Where do I put this?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1667900844.575829",
+        "client_msg_id": "99fb21a1-d681-4e95-9105-5f673cf18d04",
+        "text": "where do you want it? \/ what are you trying to achieve?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1667900386.841049",
+        "parent_user_id": "U03T739JSTZ",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "2ePn",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "where do you want it? \/ what are you trying to achieve?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U03T739JSTZ",
+        "type": "message",
+        "ts": "1667900943.516239",
+        "client_msg_id": "7c00aeb9-5305-4113-bd85-f1c5681e94b8",
+        "text": "I'd like to include it in the output along with:\n                    `output.write(`\n                        `\"%s,%s,%s,%s,%s,%s\\n\"`\n                        `% (`\n                            `market_book.publish_time,`\n                            `market_book.market_id,`\n                            `market_book.status,`\n                            `market_book.inplay,`\n                            `market_book.`\n                            `runner.selection_id,`\n                            `runner.last_price_traded or \"\",`\n                        `)`\n                    `)`",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g4e9a37b8c27",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/4e9a37b8c271459be2dfd823961ccab6.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0023-72.png",
+            "first_name": "Andy",
+            "real_name": "Andy Bason",
+            "display_name": "Andy Bason",
+            "team": "T4G9NBD2M",
+            "name": "andybason8",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1667900386.841049",
+        "parent_user_id": "U03T739JSTZ",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "syDD",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I'd like to include it in the output along with:\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "                    output.write(",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "                        \"%s,%s,%s,%s,%s,%s\\n\"",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "                        % (",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "                            market_book.publish_time,",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "                            market_book.market_id,",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "                            market_book.status,",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "                            market_book.inplay,",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "                            market_book.",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "                            runner.selection_id,",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "                            runner.last_price_traded or \"\",",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "                        )",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": "\n"
+                            },
+                            {
+                                "type": "text",
+                                "text": "                    )",
+                                "style": {
+                                    "code": true
+                                }
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1667901116.497109",
+        "client_msg_id": "3df095a1-05da-42bd-a660-9833385cec79",
+        "text": "just chuck it in\n\n```                output.write(\n                    \"%s,%s,%s,%s,%s,%s,%s\\n\"\n                    % (\n                        market_book.publish_time,\n                        market_book.market_id,\n                        market_book.status,\n                        market_book.inplay,\n                        runner.selection_id,\n                        runner.last_price_traded or \"\",\n                        runner_def.name,\n                    )\n                )```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1667900386.841049",
+        "parent_user_id": "U03T739JSTZ",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "sZwb",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "just chuck it in\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "                output.write(\n                    \"%s,%s,%s,%s,%s,%s,%s\\n\"\n                    % (\n                        market_book.publish_time,\n                        market_book.market_id,\n                        market_book.status,\n                        market_book.inplay,\n                        runner.selection_id,\n                        runner.last_price_traded or \"\",\n                        runner_def.name,\n                    )\n                )"
+                            }
+                        ],
+                        "border": 0
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "U03T739JSTZ"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "U03T739JSTZ",
+        "type": "message",
+        "ts": "1667901320.665959",
+        "client_msg_id": "1696fa5b-d971-4af8-8ecd-e7f5fab469fa",
+        "text": "Thanks and sorry for the basic question. I'm learning by doing. Thanks again",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g4e9a37b8c27",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/4e9a37b8c271459be2dfd823961ccab6.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0023-72.png",
+            "first_name": "Andy",
+            "real_name": "Andy Bason",
+            "display_name": "Andy Bason",
+            "team": "T4G9NBD2M",
+            "name": "andybason8",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1667900386.841049",
+        "parent_user_id": "U03T739JSTZ",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "ibu",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Thanks and sorry for the basic question. I'm learning by doing. Thanks again"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1667901461.554199",
+        "client_msg_id": "4a890da4-750c-4424-bd64-100ec8c78e35",
+        "text": "np, should probably be updated to use f strings...",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1667900386.841049",
+        "parent_user_id": "U03T739JSTZ",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "PGVk",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "np, should probably be updated to use f strings..."
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "100",
+                "users": [
+                    "U9JHLMZB4"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "U0155J92A7Q",
+        "type": "message",
+        "ts": "1667914457.108219",
+        "client_msg_id": "4eaf4422-d594-4137-bc6e-c791fffaafd3",
+        "text": "Hi guys. Is there any way to get the current exposure from a market\/strategy in flumine? Otherwise, I'd need to calculate it manually. For ex: If I placed a 3$ back order at 2.0 and a 2$ lay order at 2.0, the exposure would be 1$",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gde8c5d51af5",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/de8c5d51af54a5ac7b501f416ddb262c.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0016-72.png",
+            "first_name": "",
+            "real_name": "Jorge",
+            "display_name": "Jorge",
+            "team": "T4G9NBD2M",
+            "name": "jgarciam95",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1667914457.108219",
+        "reply_count": 1,
+        "reply_users_count": 1,
+        "latest_reply": "1667915644.144089",
+        "reply_users": [
+            "U0155J92A7Q"
+        ],
+        "replies": [
+            {
+                "user": "U0155J92A7Q",
+                "ts": "1667915644.144089"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": false,
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "D3T",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Hi guys. Is there any way to get the current exposure from a market\/strategy in flumine? Otherwise, I'd need to calculate it manually. For ex: If I placed a 3$ back order at 2.0 and a 2$ lay order at 2.0, the exposure would be 1$"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U0155J92A7Q",
+        "type": "message",
+        "ts": "1667915644.144089",
+        "client_msg_id": "ec30a80c-e4da-4628-8d52-bfc9c7686500",
+        "text": "Ah, I just discovered the <https:\/\/github.com\/betcode-org\/flumine\/blob\/master\/flumine\/markets\/blotter.py#L26|blotter> class, nice!",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gde8c5d51af5",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/de8c5d51af54a5ac7b501f416ddb262c.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0016-72.png",
+            "first_name": "",
+            "real_name": "Jorge",
+            "display_name": "Jorge",
+            "team": "T4G9NBD2M",
+            "name": "jgarciam95",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1667914457.108219",
+        "parent_user_id": "U0155J92A7Q",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "n4DkM",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Ah, I just discovered the "
+                            },
+                            {
+                                "type": "link",
+                                "url": "https:\/\/github.com\/betcode-org\/flumine\/blob\/master\/flumine\/markets\/blotter.py#L26",
+                                "text": "blotter"
+                            },
+                            {
+                                "type": "text",
+                                "text": " class, nice!"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "rocket",
+                "users": [
+                    "U4H19D1D2"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "U0155J92A7Q",
+        "type": "message",
+        "ts": "1667917992.094609",
+        "client_msg_id": "6db5fdae-4b87-4eb0-bfa6-be042f123655",
+        "text": "I know about the #nogreen but is there any function in flumine to send a cash out order for a market\/selection?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gde8c5d51af5",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/de8c5d51af54a5ac7b501f416ddb262c.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0016-72.png",
+            "first_name": "",
+            "real_name": "Jorge",
+            "display_name": "Jorge",
+            "team": "T4G9NBD2M",
+            "name": "jgarciam95",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1667917992.094609",
+        "reply_count": 5,
+        "reply_users_count": 2,
+        "latest_reply": "1667919448.791049",
+        "reply_users": [
+            "UBS7QANF3",
+            "U0155J92A7Q"
+        ],
+        "replies": [
+            {
+                "user": "UBS7QANF3",
+                "ts": "1667919306.614709"
+            },
+            {
+                "user": "U0155J92A7Q",
+                "ts": "1667919367.321749"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1667919404.072119"
+            },
+            {
+                "user": "U0155J92A7Q",
+                "ts": "1667919415.185099"
+            },
+            {
+                "user": "U0155J92A7Q",
+                "ts": "1667919448.791049"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": false,
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "mo1",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I know about the #nogreen but is there any function in flumine to send a cash out order for a market\/selection?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "x",
+                "users": [
+                    "U4H19D1D2"
+                ],
+                "count": 1
+            },
+            {
+                "name": "sweat_smile",
+                "users": [
+                    "U0155J92A7Q"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1667919306.614709",
+        "client_msg_id": "49D0FECA-082E-4F9D-9275-6BE3C7FC575F",
+        "text": "Sounds like a great first PR for you",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1667917992.094609",
+        "parent_user_id": "U0155J92A7Q",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "ORz",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Sounds like a great first PR for you"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U0155J92A7Q",
+        "type": "message",
+        "ts": "1667919367.321749",
+        "client_msg_id": "da86fc8e-9a59-4805-9e10-d3112a7cb2c2",
+        "text": "Not sure if liam would approve it:grin:",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gde8c5d51af5",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/de8c5d51af54a5ac7b501f416ddb262c.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0016-72.png",
+            "first_name": "",
+            "real_name": "Jorge",
+            "display_name": "Jorge",
+            "team": "T4G9NBD2M",
+            "name": "jgarciam95",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1667917992.094609",
+        "parent_user_id": "U0155J92A7Q",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "QQI",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Not sure if liam would approve it"
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "grin",
+                                "unicode": "1f601"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "neutral_face",
+                "users": [
+                    "U4H19D1D2"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1667919404.072119",
+        "client_msg_id": "842fc575-a960-40de-a549-d53aa37a3ae6",
+        "text": "Happy to add the logic to betfairutil as an alternative :wink:",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1667917992.094609",
+        "parent_user_id": "U0155J92A7Q",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "Rgo",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Happy to add the logic to betfairutil as an alternative "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "wink",
+                                "unicode": "1f609"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U0155J92A7Q",
+        "type": "message",
+        "ts": "1667919415.185099",
+        "client_msg_id": "1b431ffc-a30a-48d8-89fe-28947dabcd3b",
+        "text": "but yeah, why not?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gde8c5d51af5",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/de8c5d51af54a5ac7b501f416ddb262c.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0016-72.png",
+            "first_name": "",
+            "real_name": "Jorge",
+            "display_name": "Jorge",
+            "team": "T4G9NBD2M",
+            "name": "jgarciam95",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1667917992.094609",
+        "parent_user_id": "U0155J92A7Q",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "EOI",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "but yeah, why not?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U0155J92A7Q",
+        "type": "message",
+        "ts": "1667919448.791049",
+        "client_msg_id": "dfc1ab27-b13b-4255-84ef-ea57ff49f84b",
+        "text": "I can create it if I solve it for my strategy first",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gde8c5d51af5",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/de8c5d51af54a5ac7b501f416ddb262c.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0016-72.png",
+            "first_name": "",
+            "real_name": "Jorge",
+            "display_name": "Jorge",
+            "team": "T4G9NBD2M",
+            "name": "jgarciam95",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1667917992.094609",
+        "parent_user_id": "U0155J92A7Q",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "yMJ4A",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "I can create it if I solve it for my strategy first"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01R0JE9EJY",
+        "type": "message",
+        "ts": "1667920211.438869",
+        "client_msg_id": "b13da50d-3407-4df8-9306-50a22b5625ab",
+        "text": "In the PRO stream files the `marketDefinition` includes runner name, and event name. However I’m not seeing that in my own stream logs. Can someone explain why I’m being a retard?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g9e5892b2ebc",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/9e5892b2ebc9164b45d08e77ffcdaff6.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0019-72.png",
+            "first_name": "EB",
+            "real_name": "EB",
+            "display_name": "EB",
+            "team": "T4G9NBD2M",
+            "name": "jacquesdonnelly",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "3gmm",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "In the PRO stream files the "
+                            },
+                            {
+                                "type": "text",
+                                "text": "marketDefinition",
+                                "style": {
+                                    "code": true
+                                }
+                            },
+                            {
+                                "type": "text",
+                                "text": " includes runner name, and event name. However I’m not seeing that in my own stream logs. Can someone explain why I’m being a retard?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1667920238.287569",
+        "client_msg_id": "370a786c-44a2-464e-92f1-efbac3ec9ce4",
+        "text": "Not available in live. Get it from the market catalogue",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1667920238.287569",
+        "reply_count": 5,
+        "reply_users_count": 2,
+        "latest_reply": "1667920583.637289",
+        "reply_users": [
+            "U01R0JE9EJY",
+            "UBS7QANF3"
+        ],
+        "replies": [
+            {
+                "user": "U01R0JE9EJY",
+                "ts": "1667920267.487349"
+            },
+            {
+                "user": "U01R0JE9EJY",
+                "ts": "1667920278.165699"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1667920353.629319"
+            },
+            {
+                "user": "U01R0JE9EJY",
+                "ts": "1667920365.203119"
+            },
+            {
+                "user": "UBS7QANF3",
+                "ts": "1667920583.637289"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": false,
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "JBrX",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Not available in live. Get it from the market catalogue"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "+1",
+                "users": [
+                    "U01R0JE9EJY"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "U01R0JE9EJY",
+        "type": "message",
+        "ts": "1667920267.487349",
+        "client_msg_id": "23fcb793-5ef8-42c2-adb0-c8743d94df0f",
+        "text": "cheers",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g9e5892b2ebc",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/9e5892b2ebc9164b45d08e77ffcdaff6.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0019-72.png",
+            "first_name": "EB",
+            "real_name": "EB",
+            "display_name": "EB",
+            "team": "T4G9NBD2M",
+            "name": "jacquesdonnelly",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1667920238.287569",
+        "parent_user_id": "UBS7QANF3",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "B83X",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "cheers"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01R0JE9EJY",
+        "type": "message",
+        "ts": "1667920278.165699",
+        "client_msg_id": "7f8e2f28-bafc-41be-9309-5a87f2f2487f",
+        "text": "thats a bit shit tho",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g9e5892b2ebc",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/9e5892b2ebc9164b45d08e77ffcdaff6.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0019-72.png",
+            "first_name": "EB",
+            "real_name": "EB",
+            "display_name": "EB",
+            "team": "T4G9NBD2M",
+            "name": "jacquesdonnelly",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1667920238.287569",
+        "parent_user_id": "UBS7QANF3",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "N\/GK",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "thats a bit shit tho"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ],
+        "reactions": [
+            {
+                "name": "100",
+                "users": [
+                    "U01DCR5PXDY"
+                ],
+                "count": 1
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1667920353.629319",
+        "client_msg_id": "e1d05e46-adec-44fd-a7ba-f35274a72566",
+        "text": "Not that much of a hardship is it?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1667920238.287569",
+        "parent_user_id": "UBS7QANF3",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "JVP",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Not that much of a hardship is it?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U01R0JE9EJY",
+        "type": "message",
+        "ts": "1667920365.203119",
+        "client_msg_id": "d9b4e6f9-08cd-4525-a1e3-96fe45c49887",
+        "text": "any extra complexity sucks",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "g9e5892b2ebc",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/9e5892b2ebc9164b45d08e77ffcdaff6.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0019-72.png",
+            "first_name": "EB",
+            "real_name": "EB",
+            "display_name": "EB",
+            "team": "T4G9NBD2M",
+            "name": "jacquesdonnelly",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1667920238.287569",
+        "parent_user_id": "UBS7QANF3",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "z6X",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "any extra complexity sucks"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "UBS7QANF3",
+        "type": "message",
+        "ts": "1667920583.637289",
+        "client_msg_id": "56a4658e-5c87-4963-bc6a-9a31a3c99a6a",
+        "text": "Not that I'm a flumine user but it should handle it all for you",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gaaf844a4a90",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/eaaf844a4a905431d83430e563b077aa.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0011-72.png",
+            "first_name": "",
+            "real_name": "Maurice Berk",
+            "display_name": "Mo",
+            "team": "T4G9NBD2M",
+            "name": "maurice",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1667920238.287569",
+        "parent_user_id": "UBS7QANF3",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "QGo\/3",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Not that I'm a flumine user but it should handle it all for you"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U04AD6RAGGH",
+        "type": "message",
+        "ts": "1667924699.448309",
+        "edited": {
+            "user": "U04AD6RAGGH",
+            "ts": "1667924742.000000"
+        },
+        "client_msg_id": "7376fb57-19ee-4eb0-808b-fb8d377a3caa",
+        "text": "New face in the slack with a potentially dumb question: does flumine have a method to grab related markets in betfair?  e.g. from the win market I can navigate to the place market, forecast market, etc?",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "2f5fccb5d023",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2022-11-08\/4353229497089_2f5fccb5d0233ef1b00d_72.jpg",
+            "first_name": "Rory",
+            "real_name": "Rory",
+            "display_name": "R",
+            "team": "T4G9NBD2M",
+            "name": "rorytyrrell2",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "avQTJ",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "New face in the slack with a potentially dumb question: does flumine have a method to grab related markets in betfair?  e.g. from the win market I can navigate to the place market, forecast market, etc?"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U4H19D1D2",
+        "type": "message",
+        "ts": "1667925050.028479",
+        "client_msg_id": "77a47801-52ef-4caa-8dff-9d7b56074d3f",
+        "text": "Welcome, yes it does\n\n```win_market = market.event[\"WIN']```",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "137c5a3ef323",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2024-03-15\/6819395173841_137c5a3ef323f1944a1a_72.png",
+            "first_name": "liam",
+            "real_name": "liam",
+            "display_name": "liam",
+            "team": "T4G9NBD2M",
+            "name": "liam",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1667925050.028479",
+        "reply_count": 1,
+        "reply_users_count": 1,
+        "latest_reply": "1667925239.687689",
+        "reply_users": [
+            "U04AD6RAGGH"
+        ],
+        "replies": [
+            {
+                "user": "U04AD6RAGGH",
+                "ts": "1667925239.687689"
+            }
+        ],
+        "is_locked": false,
+        "subscribed": true,
+        "last_read": "1667925239.687689",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "lDG",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Welcome, yes it does\n\n"
+                            }
+                        ]
+                    },
+                    {
+                        "type": "rich_text_preformatted",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "win_market = market.event[\"WIN']"
+                            }
+                        ],
+                        "border": 0
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U04AD6RAGGH",
+        "type": "message",
+        "ts": "1667925239.687689",
+        "client_msg_id": "280299ac-f5bd-48fe-98db-8a8f7ec6631d",
+        "text": "thank you sir!   :bug: a happy caterpillar for  you",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "2f5fccb5d023",
+            "image_72": "https:\/\/avatars.slack-edge.com\/2022-11-08\/4353229497089_2f5fccb5d0233ef1b00d_72.jpg",
+            "first_name": "Rory",
+            "real_name": "Rory",
+            "display_name": "R",
+            "team": "T4G9NBD2M",
+            "name": "rorytyrrell2",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1667925050.028479",
+        "parent_user_id": "U4H19D1D2",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "ctl",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "thank you sir!   "
+                            },
+                            {
+                                "type": "emoji",
+                                "name": "bug",
+                                "unicode": "1f41b"
+                            },
+                            {
+                                "type": "text",
+                                "text": " a happy caterpillar for  you"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    },
+    {
+        "user": "U04980ZT6UX",
+        "type": "message",
+        "ts": "1667963234.796299",
+        "client_msg_id": "dfa068b8-1bb9-40b3-aa8c-51f78ba198f9",
+        "text": "Thank you so much <@UFTBRB3F1>, that's really helpful! I will try to implement during the weekend",
+        "team": "T4G9NBD2M",
+        "user_team": "T4G9NBD2M",
+        "source_team": "T4G9NBD2M",
+        "user_profile": {
+            "avatar_hash": "gb1b2f82a1a4",
+            "image_72": "https:\/\/secure.gravatar.com\/avatar\/b1b2f82a1a49a547cbc7487b48805187.jpg?s=72&d=https%3A%2F%2Fa.slack-edge.com%2Fdf10d%2Fimg%2Favatars%2Fava_0017-72.png",
+            "first_name": "AI",
+            "real_name": "AI Trader",
+            "display_name": "AI Trader",
+            "team": "T4G9NBD2M",
+            "name": "menocineto",
+            "is_restricted": false,
+            "is_ultra_restricted": false
+        },
+        "thread_ts": "1667771491.275069",
+        "parent_user_id": "U04980ZT6UX",
+        "blocks": [
+            {
+                "type": "rich_text",
+                "block_id": "s5A0",
+                "elements": [
+                    {
+                        "type": "rich_text_section",
+                        "elements": [
+                            {
+                                "type": "text",
+                                "text": "Thank you so much "
+                            },
+                            {
+                                "type": "user",
+                                "user_id": "UFTBRB3F1"
+                            },
+                            {
+                                "type": "text",
+                                "text": ", that's really helpful! I will try to implement during the weekend"
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
+    }
+]
